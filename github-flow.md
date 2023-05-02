@@ -1,3 +1,4 @@
+# Github flow
 1. Make sure your work on your feature branch is committed.
   
     `git add .`
@@ -22,7 +23,47 @@
 
 6. Resolve any conflicts that may occur during the rebase process. After resolving conflicts, stage the changes, and continue the rebase.
 
-   `git add .`
+    `git add .`
+
+    `git rebase --continue`
+
+7. Push your changes to your remote feature branch.
+
+    `git push origin your-feature-branch`
+
+8. Create a pull request from your feature branch to the main branch (in Github).
+
+9. Wait for the PR to be reviewed and approved by a teammate.
+
+10. Once the PR is approved, merge it into the main branch. 
+
+# Github flow for a Node.js project (unprotected)
+
+1. Make sure your work on your feature branch is committed.
+  
+    `git add .`
+    
+    `git commit -m "Your commit message"`
+
+2. Switch to the main branch.
+
+      `git checkout main`
+
+3. Pull the latest changes from the remote main branch.
+
+    `git pull origin main`
+
+4. Switch back to your feature branch.
+
+    `git checkout your-feature-branch`
+
+5. Rebase your feature branch onto the main branch to integrate the changes you just pulled. This will place your feature branch commits on top of the main branch commits, making it easier to merge later.
+
+    `git rebase main`
+
+6. Resolve any conflicts that may occur during the rebase process. After resolving conflicts, stage the changes, and continue the rebase.
+
+    `git add .`
 
     `git rebase --continue`
 
