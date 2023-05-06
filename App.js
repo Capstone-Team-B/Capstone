@@ -12,6 +12,10 @@ import MyAccount from "./client/screens/MyAccount/MyAccount";
 import Notifications from "./client/screens/Notifications/Notifications";
 import GuestScreen from './screens/GuestScreen';
 import GuestProfileScreen from './screens/GuestProfileScreen';
+import CreateEventForm from './screens/NewEvent/CreateEventScreen';
+import CreateSubEvents from './screens/NewEvent/CreateSubEventsScreen';
+import CreateNotifications from './screens/NewEvent/CreateNotificationsScreen';
+import CreateGuestList from './screens/NewEvent/CreateGuestListScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -20,15 +24,7 @@ export default function App() {
   // need to add if statement that checks if logged in; if true, nav to homepage on open; else, nav to login
   return (
     <NavigationContainer>
-      {/* <Stack.Navigator> */}
-      {/* <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} /> */}
-      {/* {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
-      {/* <Stack.Screen name="Users" component={AllUsers} /> */}
-        <Stack.Screen name="Guest" component={GuestScreen} />
-        <Stack.Screen name="GuestProfile" component={GuestProfileScreen} />
-      {/* <Stack.Screen name="Events List" component={EventList} /> */}
-      {/* </Stack.Navigator> */}
-      <Tab.Navigator
+      {/* <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, size, color }) => {
             let iconName;
@@ -51,7 +47,20 @@ export default function App() {
         <Tab.Screen name="My Account" component={MyAccount} />
         <Tab.Screen name="Events List" component={EventList} />
         <Tab.Screen name="Notifications" component={Notifications} />
-      </Tab.Navigator>
+      </Tab.Navigator> */}
+
+
+      <Stack.Navigator initialRouteName='Create Event'>
+        <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Users" component={AllUsers} />
+        <Stack.Screen name="Guest" component={GuestScreen} />
+        <Stack.Screen name="GuestProfile" component={GuestProfileScreen} />
+        <Stack.Screen name="Create Event" component={CreateEventForm} />
+        <Stack.Screen name="Create Sub Events" component={CreateSubEvents} />
+        <Stack.Screen name="Create Notifications" component={CreateNotifications} />
+        <Stack.Screen name="Create Guest List" component={CreateGuestList} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
