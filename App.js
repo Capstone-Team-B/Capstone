@@ -10,6 +10,7 @@ import AllUsers from './screens/AllUsers';
 import EventList from './client/screens/EventList/EventList';
 import MyAccount from './client/screens/MyAccount/MyAccount';
 import Notifications from './client/screens/Notifications/Notifications';
+import MessageboardScreen from './screens/MessageboardScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
