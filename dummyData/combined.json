@@ -46,7 +46,7 @@
         {
           "id": 1,
           "event_id": 1,
-          "guest_id": 2,
+          "user_id": 2,
           "tag_id": 1,
           "role": "Host",
           "flight_number": null,
@@ -56,7 +56,7 @@
         {
           "id": 2,
           "event_id": 1,
-          "guest_id": 3,
+          "user_id": 3,
           "tag_id": 2,
           "role": "Host",
           "flight_number": "UA123",
@@ -66,7 +66,7 @@
         {
           "id": 3,
           "event_id": 2,
-          "guest_id": 1,
+          "user_id": 1,
           "tag_id": 1,
           "role": "Guest",
           "flight_number": null,
@@ -76,7 +76,7 @@
         {
           "id": 4,
           "event_id": 2,
-          "guest_id": 2,
+          "user_id": 2,
           "tag_id": 2,
           "role": "Guest",
           "flight_number": null,
