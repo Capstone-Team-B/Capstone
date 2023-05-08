@@ -106,12 +106,12 @@ const CreateGuestList = () => {
             const newSubeventRef = push(subeventRef);
             const newSubeventKey = newSubeventRef.key;
             await set(newSubeventRef, {
-            event_id: eventId,
-            name: subeventName,
-            location: subeventLocation,
-            start_time: subeventStartTime,
-            end_time: subeventEndTime,
-            tag_id: newTagKey
+                event_id: eventId,
+                name: subeventName,
+                location: subeventLocation,
+                start_time: subeventStartTime,
+                end_time: subeventEndTime,
+                tag_id: newTagKey
             });
         }
     };

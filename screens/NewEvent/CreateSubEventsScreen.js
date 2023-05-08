@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
 import { KeyboardAvoidingView, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native'
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { useNavigation } from '@react-navigation/native'
-import { getDatabase, ref, child, get, set } from 'firebase/database'
+import DateTimePickerModal from 'react-native-modal-datetime-picker'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { getDatabase, ref, child, push, set } from 'firebase/database'
 
-const CreateSubEvents = ({ event }) => {
+const CreateSubEvents = (props) => {
+    const route = useRoute();
+    const { eventId } = route.params;
+
     const [subEvents, setSubEvents] = useState([]);
     const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
     const [selectedSubEventIndex, setSelectedSubEventIndex] = useState(null);
@@ -19,15 +22,21 @@ const CreateSubEvents = ({ event }) => {
         setIsTimePickerVisible(true);
     };
     
-    const handleTimeConfirm = (selectedDate, eventType) => {
-
+    const handleTimeConfirm = (selectedDate) => {
+        const formattedTime = selectedDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        const newSubEvents = [...subEvents];
+        const index = selectedSubEventIndex;
+        const eventType = selectedEventType;
+        if (eventType === 'start') {
+          newSubEvents[index] = { ...newSubEvents[index], startTime: formattedTime };
+        } else if (eventType === 'end') {
+          newSubEvents[index] = { ...newSubEvents[index], endTime: formattedTime };
+        }
+        setSubEvents(newSubEvents);
+        setIsTimePickerVisible(false);
     };
-    
-    const showDateTimePicker = (subEventIndex) => {
-        setSelectedSubEventIndex(subEventIndex);
-        setIsDateTimePickerVisible(true);
-    };
-    
+      
+        
     const handleAddSubEvent = () => {
         const newSubEvents = [...subEvents];
         newSubEvents.push({ name: '', location: '', date: '', startTime: '', endTime: '' });
@@ -48,32 +57,37 @@ const CreateSubEvents = ({ event }) => {
 
     const handleSubmit = async () => {
         const dbRef = ref(getDatabase());
-
         const subeventRef = child(dbRef, 'subevents');
         const tagRef = child(dbRef, 'tags');
       
         // Create a new subevent and associate it with a tag
-        for (const subEvent of subEvents) {
-            const { name: subeventName, location: subeventLocation, date: subeventDate, startTime: subeventStartTime, endTime: subeventEndTime } = subEvent;
+        for (const newSubEvent of subEvents) {
+            const { name: subeventName, location: subeventLocation, date: subeventDate, startTime: subeventStartTime, endTime: subeventEndTime } = newSubEvent;
+            const newSubEventData = { 
+                name: subeventName, 
+                location: subeventLocation, 
+                date: subeventDate, 
+                startTime: subeventStartTime, 
+                endTime: subeventEndTime,
+                event_id: eventId 
+            };
 
             // Create a new tag with the subevent name
+            const newTagData = { name: subeventName };
             const newTagRef = push(tagRef);
             const newTagKey = newTagRef.key;
-            await set(newTagRef, { name: subeventName });
+            await set(newTagRef, newTagData);
 
             // Create a new subevent and associate it with the new tag
-            const newSubeventRef = push(subeventRef);
-            const newSubeventKey = newSubeventRef.key;
-            await set(newSubeventRef, {
-                event_id: eventId,
-                name: subeventName,
-                location: subeventLocation,
-                date: subeventDate,
-                start_time: subeventStartTime,
-                end_time: subeventEndTime,
-                tag_id: newTagKey
-            });
+            const newSubEventWithTagData = {
+                tag_id: newTagKey,
+                ...newSubEventData
+            };
+            const newSubEventRef = push(subeventRef);
+            await set(newSubEventRef, newSubEventWithTagData);
+
         }
+        navigation.navigate("Create Notifications");
     };
       
     return (
@@ -99,18 +113,18 @@ const CreateSubEvents = ({ event }) => {
                         onChangeText={(value) =>
                         handleUpdateSubEvent(index, 'location', value)}
                     />
-                    <TouchableOpacity style={styles.outlineButton} onPress={() => showDateTimePicker(index)}>
+                    <TouchableOpacity style={styles.outlineButton}>
                         <TouchableOpacity onPress={() => setIsDateTimePickerVisible(true)}>
-                            <Text style={styles.outlineButtonText}>{date ? date.toLocaleDateString() : 'Select Date'}</Text>
+                            <Text style={styles.outlineButtonText}>{subEvent.date ? new Date(subEvent.date).toLocaleDateString() : 'Select Date'}</Text>
                         </TouchableOpacity>
                         <DateTimePickerModal
-                        isVisible={isDateTimePickerVisible}
-                        mode="date"
-                        onConfirm={(selectedDate) => {
-                            handleUpdateSubEvent(index, 'startTime', selectedDate)
+                            isVisible={isDateTimePickerVisible}
+                            mode="date"
+                            onConfirm={(selectedDate) => {
+                            handleUpdateSubEvent(index, 'date', selectedDate)
                             setIsDateTimePickerVisible(false);
-                        }}
-                        onCancel={() => setIsDateTimePickerVisible(false)}
+                            }}
+                            onCancel={() => setIsDateTimePickerVisible(false)}
                         />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.outlineButton} onPress={() => handleTimePicker('start', index)}>
@@ -124,20 +138,6 @@ const CreateSubEvents = ({ event }) => {
                         mode="time"
                         onConfirm={(time) => handleTimeConfirm(time)}
                         onCancel={() => setIsTimePickerVisible(false)}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Start Time"
-                        value={subEvent.startTime}
-                        onChangeText={(value) =>
-                        handleUpdateSubEvent(index, 'startTime', value)}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="End Time"
-                        value={subEvent.endTime}
-                        onChangeText={(value) =>
-                        handleUpdateSubEvent(index, 'endTime', value)}
                     />
                     <TouchableOpacity
                         style={styles.deleteButton}

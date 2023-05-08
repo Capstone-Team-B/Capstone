@@ -3,7 +3,7 @@ import { KeyboardAvoidingView, ScrollView, View, StyleSheet, Text, TextInput, To
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { auth } from '../../firebase';
 import { useNavigation } from '@react-navigation/native';
-import { getDatabase, ref, child, set } from 'firebase/database';
+import { getDatabase, ref, child, set, push } from 'firebase/database';
 
 const CreateEventForm = () => {
     const [weddingName, setWeddingName] = useState('');
@@ -38,29 +38,31 @@ const CreateEventForm = () => {
         
     const handleSubmit = async () => {
         try {
-          const dbRef = ref(getDatabase());
-          const currentUser = auth.currentUser;
-          if (!currentUser) {
-            navigation.navigate("Login");
-            return;
-          }
-          const currentUserId = currentUser.uid;
-          const eventRef = child(dbRef, "events");
-      
-          // Create a new event associated with the current user
-          const newEvent = {
-            name: weddingName,
-            location: location,
-            date: date,
-            startTime: startTime,
-            endTime: endTime,
-            host_id: currentUserId,
-          };
-          await set(child(eventRef, currentUserId), newEvent);
-      
-          navigation.navigate("Create Sub Events");
+            const dbRef = ref(getDatabase());
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                navigation.navigate("Login");
+                return;
+            }
+            const currentUserId = currentUser.uid;
+            const eventRef = child(dbRef, "events");
+        
+            const newEventRef = push(eventRef);
+            const newEvent = {
+                name: weddingName,
+                location: location,
+                date: date,
+                startTime: startTime,
+                endTime: endTime,
+                host_id: currentUserId,
+            };
+            await set(newEventRef, newEvent);
+            const eventId = newEventRef.key;
+
+            navigation.navigate("Create Sub Events", { eventId: eventId });
+          
         } catch (error) {
-          console.log(error);
+            console.log(error);
         }
     };
        
