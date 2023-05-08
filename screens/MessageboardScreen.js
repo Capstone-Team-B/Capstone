@@ -62,12 +62,12 @@ const MessageboardScreen = () => {
 
   // keeping sign out functionality
   const handleSubmitMessage = () => {
-    auth
-      .signOut()
-      .then(() => {
-        navigation.replace('Login');
-      })
-      .catch((error) => alert(error.message));
+    // auth
+    //   .then(() => {
+    console.log('user clicked');
+    // navigation.replace('Login');
+    // })
+    // .catch((error) => alert(error.message));
   };
 
   return (
