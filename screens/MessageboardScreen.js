@@ -7,11 +7,23 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  FlatList,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import { auth } from '../firebase';
 import { getDatabase, ref, child, get } from 'firebase/database';
 import { collection, query, where } from 'firebase/firestore';
 import { dummyDb } from '../server/seedData';
+
+const Item = ({ item, onPress, backgroundColor, textColor }) => (
+  <TouchableOpacity
+    onPress={onPress}
+    style={[styles.item, { backgroundColor }]}
+  >
+    <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
+  </TouchableOpacity>
+);
 
 let testMessageboard = dummyDb.messageboard;
 
@@ -60,12 +72,12 @@ const MessageboardScreen = () => {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <Text style={styles.eventLabel}>Messages for {event_name}</Text>
       <View style={styles.inputContainer}>
-        <Text>Messages for {event_name}</Text>
         {testMessageboard.map((message) => (
           <View key={message.id} style={styles.item}>
             <Text style={styles.firstName}>{message.message}</Text>
-            <Text style={styles.email}>{user_name}</Text>
+            <Text style={styles.nameText}>{user_name}</Text>
           </View>
         ))}
         <TextInput
@@ -101,10 +113,10 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#0782F9',
     width: '60%',
-    padding: 15,
+    padding: 5,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 40,
+    marginTop: 10,
   },
   buttonText: {
     color: 'white',
@@ -120,5 +132,23 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     marginTop: 5,
+  },
+  nameText: {
+    color: 'blue',
+    fontWeight: '400',
+    fontSize: '12',
+  },
+  eventLabel: {
+    color: 'purple',
+    fontWeight: '700',
+    fontSize: '24',
+  },
+  item: {
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+  },
+  title: {
+    fontSize: 32,
   },
 });
