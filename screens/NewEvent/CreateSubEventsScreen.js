@@ -4,7 +4,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { useNavigation } from '@react-navigation/native'
 import { getDatabase, ref, child, get, set } from 'firebase/database'
 
-const CreateSubEventForm = ({ event }) => {
+const CreateSubEvents = ({ event }) => {
     const [subEvents, setSubEvents] = useState([]);
     const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
     const [selectedSubEventIndex, setSelectedSubEventIndex] = useState(null);
@@ -240,4 +240,4 @@ const styles = StyleSheet.create({
     },
 });
     
-export default CreateSubEventForm;
+export default CreateSubEvents;
