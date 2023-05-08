@@ -45,7 +45,7 @@ export default function App() {
         })}
       >
         <Tab.Screen name="My Account" component={MyAccount} />
-        <Tab.Screen name="Events List" component={HomeScreen} />
+        <Tab.Screen name="Events List" component={EventList} />
         <Tab.Screen name="Notifications" component={Notifications} />
       </Tab.Navigator>
     </NavigationContainer>
