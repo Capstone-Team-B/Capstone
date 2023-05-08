@@ -1,0 +1,24 @@
+[
+    {
+      "id": 1,
+      "event_id": 1,
+      "title": "Reminder: Wedding Ceremony",
+      "body": "The wedding ceremony will start in 30 minutes!",
+      "scheduled_time": "2022-08-01T19:30:00Z"
+    },
+    {
+      "id": 2,
+      "event_id": 1,
+      "title": "Reminder: Wedding Reception",
+      "body": "The wedding reception will start in 1 hour!",
+      "scheduled_time": "2022-08-01T20:00:00Z"
+    },
+    {
+      "id": 3,
+      "event_id": 2,
+      "title": "Reminder: Birthday Party",
+      "body": "The birthday party will start in 2 hours!",
+      "scheduled_time": "2022-09-01T18:00:00Z"
+    }
+]
+  

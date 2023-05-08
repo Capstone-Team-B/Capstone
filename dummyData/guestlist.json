@@ -1,0 +1,43 @@
+[
+    {
+      "id": 1,
+      "event_id": 1,
+      "guest_id": 2,
+      "tag_id": 1,
+      "role": "Host",
+      "flight_number": null,
+      "arrival_time": null,
+      "departure_time": null
+    },
+    {
+      "id": 2,
+      "event_id": 1,
+      "guest_id": 3,
+      "tag_id": 2,
+      "role": "Host",
+      "flight_number": "UA123",
+      "arrival_time": "2022-07-31T18:00:00Z",
+      "departure_time": "2022-08-02T12:00:00Z"
+    },
+    {
+      "id": 3,
+      "event_id": 2,
+      "guest_id": 1,
+      "tag_id": 1,
+      "role": "Guest",
+      "flight_number": null,
+      "arrival_time": null,
+      "departure_time": null
+    },
+    {
+      "id": 4,
+      "event_id": 2,
+      "guest_id": 2,
+      "tag_id": 2,
+      "role": "Guest",
+      "flight_number": null,
+      "arrival_time": null,
+      "departure_time": null
+    }
+]
+  
