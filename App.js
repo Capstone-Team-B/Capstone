@@ -10,6 +10,8 @@ import AllUsers from "./screens/AllUsers";
 import EventList from "./client/screens/EventList/EventList";
 import MyAccount from "./client/screens/MyAccount/MyAccount";
 import Notifications from "./client/screens/Notifications/Notifications";
+import GuestScreen from './screens/GuestScreen';
+import GuestProfileScreen from './screens/GuestProfileScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -22,6 +24,8 @@ export default function App() {
       {/* <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} /> */}
       {/* {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
       {/* <Stack.Screen name="Users" component={AllUsers} /> */}
+        <Stack.Screen name="Guest" component={GuestScreen} />
+        <Stack.Screen name="GuestProfile" component={GuestProfileScreen} />
       {/* <Stack.Screen name="Events List" component={EventList} /> */}
       {/* </Stack.Navigator> */}
       <Tab.Navigator
