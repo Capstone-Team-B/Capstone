@@ -1,5 +1,5 @@
 //current as of 5/8/2023 1 pm
-const dummyDb = {
+export const dummyDb = {
   events: [
     {
       date: '2023-06-01',

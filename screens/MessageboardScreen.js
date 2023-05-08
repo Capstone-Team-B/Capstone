@@ -1,36 +1,20 @@
 import { useNavigation } from '@react-navigation/core';
-import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { auth } from '../firebase';
 import { getDatabase, ref, child, get } from 'firebase/database';
 import { collection, query, where } from 'firebase/firestore';
+import { dummyDb } from '../server/seedData';
 
-const testDataMessage = [
-  {
-    created_at: '2022-06-01T12:00:00Z',
-    event_id: 1,
-    id: 1,
-    message: 'Excited for the wedding!',
-    updated_at: '2022-06-01T12:00:00Z',
-    user_id: 2,
-  },
-  {
-    created_at: '2022-06-02T10:30:00Z',
-    event_id: 1,
-    id: 2,
-    message: "Me too! Can't wait to see everyone!",
-    updated_at: '2022-06-02T10:30:00Z',
-    user_id: 3,
-  },
-  {
-    created_at: '2022-07-01T09:15:00Z',
-    event_id: 2,
-    id: 3,
-    message: 'Had a great time at the wedding last night!',
-    updated_at: '2022-07-01T09:15:00Z',
-    user_id: 1,
-  },
-];
+let testMessageboard = dummyDb.messageboard;
+
 const testNotifications = [
   {
     body: 'The wedding ceremony will start in 30 minutes!',
@@ -54,8 +38,10 @@ const testNotifications = [
     title: 'Reminder: Birthday Party',
   },
 ];
-
+const event_name = dummyDb.events[0].name;
+const user_name = dummyDb.users[0].firstname + ' ' + dummyDb.users[0].lastname;
 const MessageboardScreen = () => {
+  // console.log(auth);
   const navigation = useNavigation();
   const [newMessage, setNewMessage] = useState('');
 
@@ -63,7 +49,7 @@ const MessageboardScreen = () => {
   const [notifications, setNotifications] = useState([]);
 
   // keeping sign out functionality
-  const handleSignOut = () => {
+  const handleSubmitMessage = () => {
     auth
       .signOut()
       .then(() => {
@@ -73,26 +59,34 @@ const MessageboardScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text>Messages: {auth.currentUser?.email}</Text>
-      {testDataMessage.map((message) => (
-        <View key={message.id} style={styles.item}>
-          <Text style={styles.firstName}>{message.message}</Text>
-          <Text style={styles.email}>{message.email}</Text>
-        </View>
-      ))}
-      <TouchableOpacity onPress={handleSignOut} style={styles.button}>
-        <Text style={styles.buttonText}>Sign out</Text>
-      </TouchableOpacity>
-      <Text style={{ fontSize: 12, textAlign: 'center', marginTop: 10 }}>
-        <Text
-          style={{ color: 'darkblue', fontWeight: 'bold' }}
-          onPress={() => navigation.navigate('Login')}
-        >
-          View Home
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <View style={styles.inputContainer}>
+        <Text>Messages for {event_name}</Text>
+        {testMessageboard.map((message) => (
+          <View key={message.id} style={styles.item}>
+            <Text style={styles.firstName}>{message.message}</Text>
+            <Text style={styles.email}>{user_name}</Text>
+          </View>
+        ))}
+        <TextInput
+          placeholder="Write here"
+          style={styles.input}
+          value={newMessage}
+          onChangeText={(text) => setNewMessage(text)}
+        />
+        <TouchableOpacity onPress={handleSubmitMessage} style={styles.button}>
+          <Text style={styles.buttonText}>Add Your Message</Text>
+        </TouchableOpacity>
+        <Text style={{ fontSize: 12, textAlign: 'center', marginTop: 10 }}>
+          <Text
+            style={{ color: 'darkblue', fontWeight: 'bold' }}
+            onPress={() => navigation.navigate('Login')}
+          >
+            View Home
+          </Text>
         </Text>
-      </Text>
-    </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -116,5 +110,15 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '700',
     fontSize: 16,
+  },
+  inputContainer: {
+    width: '80%',
+  },
+  input: {
+    backgroundColor: 'white',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginTop: 5,
   },
 });

@@ -1,4 +1,8 @@
 //nonfunctional needst to query database
+
+// Pseudo Code query needed
+// need to pull the message board the corresponds to the event clicked.
+
 const dbRef = ref(getDatabase());
 const messageboardRef = collection(dbRef, 'messageboard');
 const queryMessageBoard = query(messageboardRef, where('', '==', ''));
