@@ -5,7 +5,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
 import AllUsers from './screens/AllUsers';
-import CreateEventForm from './screens/CreateEventScreen';
+import CreateEventForm from './screens/NewEvent/CreateEventScreen';
+import CreateSubEvents from './screens/NewEvent/CreateSubEventsScreen';
+import CreateNotifications from './screens/NewEvent/CreateNotificationsScreen';
+import CreateGuestList from './screens/NewEvent/CreateGuestListScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +20,9 @@ export default function App() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Users" component={AllUsers} />
         <Stack.Screen name="Create Event" component={CreateEventForm} />
+        <Stack.Screen name="Create Sub Events" component={CreateSubEvents} />
+        <Stack.Screen name="Create Notifications" component={CreateNotifications} />
+        <Stack.Screen name="Create Guest List" component={CreateGuestList} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { auth } from '../firebase';
+import { auth } from '../../firebase';
 import { useNavigation } from '@react-navigation/native';
 import { getDatabase, ref, child, set } from 'firebase/database';
 
@@ -11,6 +11,7 @@ const CreateEventForm = () => {
     const [date, setDate] = useState('');
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
+    const [selectedEventType, setSelectedEventType] = useState('');
     const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
     const [isTimePickerVisible, setIsTimePickerVisible] = useState(false);
 
@@ -36,23 +37,33 @@ const CreateEventForm = () => {
     };
         
     const handleSubmit = async () => {
-        const dbRef = ref(getDatabase());
-        const currentUser = auth.currentUser;
-        const currentUserId = currentUser.uid
-        const eventRef = child(dbRef, 'events');
-            
-        // Create a new event associated with the current user
-        const newEventRef = eventRef.push();
-        newEventRef.set({
-        name: weddingName,
-        location: location,
-        date: date,
-        startTime: startTime,
-        endTime: endTime,
-        host_id: currentUserId
-        });
-    };
+        try {
+          const dbRef = ref(getDatabase());
+          const currentUser = auth.currentUser;
+          if (!currentUser) {
+            navigation.navigate("Login");
+            return;
+          }
+          const currentUserId = currentUser.uid;
+          const eventRef = child(dbRef, "events");
       
+          // Create a new event associated with the current user
+          const newEvent = {
+            name: weddingName,
+            location: location,
+            date: date,
+            startTime: startTime,
+            endTime: endTime,
+            host_id: currentUserId,
+          };
+          await set(child(eventRef, currentUserId), newEvent);
+      
+          navigation.navigate("Create Sub Events");
+        } catch (error) {
+          console.log(error);
+        }
+    };
+       
     return (
         <KeyboardAvoidingView
         style={styles.container}
@@ -73,7 +84,7 @@ const CreateEventForm = () => {
                 value={location}
                 onChangeText={setLocation}
                 />
-                <TouchableOpacity style={styles.outlineButton} onPress={() => showDateTimePicker(index)}>
+                <TouchableOpacity style={styles.outlineButton} onPress={() => showDateTimePicker()}>
                     <TouchableOpacity onPress={() => setIsDateTimePickerVisible(true)}>
                         <Text style={styles.outlineButtonText}>{date ? date.toLocaleDateString() : 'Select Date'}</Text>
                     </TouchableOpacity>

@@ -29,6 +29,11 @@ const HomeScreen = () => {
                 View All Users
             </Text>
         </Text>
+        <Text style={{ fontSize: 12, textAlign: 'center', marginTop: 10 }}>
+            <Text style={{ color: 'darkblue', fontWeight: 'bold' }} onPress={() => navigation.navigate("Create Event")}>
+                Create New Event
+            </Text>
+        </Text>
     </View>
                 
   )
