@@ -25,7 +25,7 @@ const HomeScreen = () => {
     {/*       <Text>Email: {auth.currentUser?.email}</Text> */}
           <TouchableOpacity onPress={() => navigation.navigate("Guest")}>
             <Text> 
-              View All Guest
+              View All Guests
             </Text>
           </TouchableOpacity>
 
