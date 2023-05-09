@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { KeyboardAvoidingView, Alert, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { auth } from '../../firebase';
 import { useNavigation } from '@react-navigation/native';
@@ -37,6 +37,10 @@ const CreateEventForm = () => {
     };
         
     const handleSubmit = async () => {
+        if (!weddingName || !location || !date || !startTime || !endTime) {
+          Alert.alert('Please fill in all fields');
+          return;
+        }
         try {
             const dbRef = ref(getDatabase());
             const currentUser = auth.currentUser;
@@ -79,12 +83,14 @@ const CreateEventForm = () => {
                 placeholder="Wedding Name"
                 value={weddingName}
                 onChangeText={setWeddingName}
+                required={true}
                 />
                 <TextInput
                 style={styles.input}
                 placeholder="Location"
                 value={location}
                 onChangeText={setLocation}
+                required={true}
                 />
                 <TouchableOpacity style={styles.outlineButton} onPress={() => showDateTimePicker()}>
                     <TouchableOpacity onPress={() => setIsDateTimePickerVisible(true)}>
@@ -98,12 +104,13 @@ const CreateEventForm = () => {
                         setIsDateTimePickerVisible(false);
                     }}
                     onCancel={() => setIsDateTimePickerVisible(false)}
+                    required={true}
                     />
                 </TouchableOpacity>
-                   <TouchableOpacity style={styles.outlineButton} onPress={() => handleTimePicker('start')}>
+                   <TouchableOpacity style={styles.outlineButton} required={true} onPress={() => handleTimePicker('start')}>
                     <Text style={styles.outlineButtonText}>{startTime ? startTime : 'Select Start Time'}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.outlineButton} onPress={() => handleTimePicker('end')}>
+                <TouchableOpacity style={styles.outlineButton} required={true} onPress={() => handleTimePicker('end')}>
                     <Text style={styles.outlineButtonText}>{endTime ? endTime : 'Select End Time'}</Text>
                 </TouchableOpacity>
                 <DateTimePickerModal
@@ -114,7 +121,7 @@ const CreateEventForm = () => {
                 />
             </View>
             <View>
-                <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+                <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} required={true}>
                     <Text style={styles.submitButtonText}>Create Event</Text>
                 </TouchableOpacity>
             </View>

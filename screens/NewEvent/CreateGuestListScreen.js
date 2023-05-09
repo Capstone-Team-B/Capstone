@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { KeyboardAvoidingView, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native'
+import { KeyboardAvoidingView, Alert, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { getDatabase, ref, child, get, set, push } from 'firebase/database'
 
@@ -30,6 +30,13 @@ const CreateGuestList = (props) => {
     };
 
     const handleSubmit = async () => {
+        for (const guest of guestList) {
+            if (!guest.email || !guest.firstname || !guest.lastname) {
+                Alert.alert('Please fill in all fields');
+                return;
+            }
+        }
+
         const dbRef = ref(getDatabase());
         const guestListRef = child(dbRef, 'guestlist');
       
@@ -67,18 +74,21 @@ const CreateGuestList = (props) => {
                         placeholder="First Name"
                         value={guest.firstname}
                         onChangeText={(value) => handleUpdateGuest(index, 'firstname', value)}
-                    />
+                        required={true}
+                        />
                     <TextInput
                         style={styles.input}
                         placeholder="Last Name"
                         value={guest.lastname}
                         onChangeText={(value) => handleUpdateGuest(index, 'lastname', value)}
-                    />
+                        required={true}
+                        />
                     <TextInput
                         style={styles.input}
                         placeholder="Email address"
                         value={guest.email}
                         onChangeText={(value) => handleUpdateGuest(index, 'email', value)}
+                        required={true}
                     />
                     <TouchableOpacity
                         style={styles.deleteButton}

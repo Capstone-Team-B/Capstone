@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { KeyboardAvoidingView, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native'
+import { KeyboardAvoidingView, Alert, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { getDatabase, ref, child, push, set } from 'firebase/database'
@@ -40,6 +40,13 @@ const CreateNotifications = (props) => {
     };
 
     const handleSubmit = async () => {
+        for (const notification of notifications) {
+            if (!notification.title || !notification.body || !notification.scheduled_date || !notification.scheduled_time) {
+                Alert.alert('Please fill in all fields');
+                return;
+            }
+        }
+
         const dbRef = ref(getDatabase());
         const notificationRef = child(dbRef, 'notifications');
         const tagRef = child(dbRef, 'tags');
@@ -87,7 +94,15 @@ const CreateNotifications = (props) => {
                     style={styles.input}
                     placeholder="RSVP deadline, Reminder to book flights, etc."
                     value={notification.type}
-                    onChangeText={(value) => handleUpdateNotification(index, 'type', value)}
+                    onChangeText={(value) => handleUpdateNotification(index, 'title', value)}
+                    required={true}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Enter notification text here..."
+                    value={notification.type}
+                    onChangeText={(value) => handleUpdateNotification(index, 'body', value)}
+                    required={true}
                 />
                 <TouchableOpacity style={styles.outlineButton} onPress={() => showDateTimePicker(index)}>
                 <TouchableOpacity onPress={() => setIsDateTimePickerVisible(true)}>
@@ -103,6 +118,7 @@ const CreateNotifications = (props) => {
                     setIsDateTimePickerVisible(false);
                     }}
                     onCancel={() => setIsDateTimePickerVisible(false)}
+                    required={true}
                 />
                 </TouchableOpacity>
                     <TouchableOpacity style={styles.outlineButton} onPress={() => setIsTimePickerVisible(true)}>
@@ -118,6 +134,7 @@ const CreateNotifications = (props) => {
                             setIsTimePickerVisible(false)
                         }}
                         onCancel={() => setIsTimePickerVisible(false)}
+                        required={true}
                     />
                 <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteNotification(index)}>
                     <Text style={styles.deleteButtonText}>Delete</Text>

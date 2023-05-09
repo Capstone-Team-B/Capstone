@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { KeyboardAvoidingView, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native'
+import { KeyboardAvoidingView, Alert, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { getDatabase, ref, child, push, set } from 'firebase/database'
@@ -55,6 +55,13 @@ const CreateSubEvents = (props) => {
     };
 
     const handleSubmit = async () => {
+        for (const subEvent of subEvents) {
+            if (!subEvent.name || !subEvent.location || !subEvent.date || !subEvent.startTime || !subEvent.endTime) {
+                Alert.alert('Please fill in all fields');
+                return;
+            }
+        }
+
         const dbRef = ref(getDatabase());
         const subeventRef = child(dbRef, 'subevents');
         const tagRef = child(dbRef, 'tags');
@@ -100,10 +107,11 @@ const CreateSubEvents = (props) => {
                 {subEvents.map((subEvent, index) => (
                 <View style={styles.section} key={index}>
                     <TextInput
-                    style={styles.input}
-                    placeholder="Name"
-                    value={subEvent.name}
-                    onChangeText={(value) => handleUpdateSubEvent(index, 'name', value)}
+                        style={styles.input}
+                        placeholder="Name"
+                        value={subEvent.name}
+                        onChangeText={(value) => handleUpdateSubEvent(index, 'name', value)}
+                        required={true}
                     />
                     <TextInput
                         style={styles.input}
@@ -111,6 +119,7 @@ const CreateSubEvents = (props) => {
                         value={subEvent.location}
                         onChangeText={(value) =>
                         handleUpdateSubEvent(index, 'location', value)}
+                        required={true}
                     />
                     <TouchableOpacity style={styles.outlineButton}>
                         <TouchableOpacity onPress={() => setIsDateTimePickerVisible(true)}>
@@ -124,6 +133,7 @@ const CreateSubEvents = (props) => {
                             setIsDateTimePickerVisible(false);
                             }}
                             onCancel={() => setIsDateTimePickerVisible(false)}
+                            required={true}
                         />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.outlineButton} onPress={() => handleTimePicker('start', index)}>
@@ -137,6 +147,7 @@ const CreateSubEvents = (props) => {
                         mode="time"
                         onConfirm={(time) => handleTimeConfirm(time)}
                         onCancel={() => setIsTimePickerVisible(false)}
+                        required={true}
                     />
                     <TouchableOpacity
                         style={styles.deleteButton}
