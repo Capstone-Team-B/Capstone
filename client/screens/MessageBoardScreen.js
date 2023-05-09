@@ -48,7 +48,7 @@ const testNotifications = [
 const event_name = 'test';
 const user_name = auth.firstname + ' ' + auth.lastname;
 const MessageboardScreen = () => {
-  // console.log(auth);
+  console.log(auth.currentUser);
   const dbRef = ref(getDatabase());
   const db = getDatabase();
   // const recentPostsRef = query(ref(db, 'messageboard'));
@@ -72,9 +72,6 @@ const MessageboardScreen = () => {
             ...data[key],
           }));
           setMessages(messageList);
-          // console.log(uid);
-          // console.log(messageList);
-          // console.log(newMessage);
         } else {
           console.log('No data available');
         }
