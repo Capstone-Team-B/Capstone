@@ -68,7 +68,7 @@ const LoginScreen = () => {
                     .catch(error => alert(error.message));
                 });
             }
-          } else {
+        } else {
             // Create a new record for the new user in the database
             auth.createUserWithEmailAndPassword(email, password)
             .then(userCredentials => {
@@ -93,7 +93,7 @@ const LoginScreen = () => {
                 });
             })
             .catch(error => alert(error.message));
-          }
+        }
         }).catch((error) => {
           console.error(error);
         });

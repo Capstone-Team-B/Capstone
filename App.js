@@ -14,11 +14,11 @@ import CreateEventForm from './client/screens/NewEvent/CreateEventScreen';
 import CreateSubEvents from './client/screens/NewEvent/CreateSubEventsScreen';
 import CreateNotifications from './client/screens/NewEvent/CreateNotificationsScreen';
 import CreateGuestList from './client/screens/NewEvent/CreateGuestListScreen';
-import GuestProfileScreen from './client/screens/GuestProfileScreen';
-import GuestScreen from './client/screens/GuestScreen';
-import GuestScreen from "./client/SingleEvent/GuestScreen";
-import GuestProfileScreen from "./client/SingleEvent/GuestProfileScreen";
-import SingleEvent from "./client/SingleEvent/SingleEvent";
+import GuestScreen from "./client/screens/SingleEvent/GuestScreen";
+import GuestProfileScreen from "./client/screens/SingleEvent/GuestProfileScreen";
+import SingleEvent from "./client/screens/SingleEvent/SingleEvent";
+import SingleEvent from "./client/screens/EventList/SingleEvent";
+
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
