@@ -41,10 +41,10 @@ const SingleEvent = ({ event, navigation }) => {
     //   onPress={handlePress}
     >
       <View key={event.id} style={styles.item}>
-        <Text style={styles.eventHeader}>{event.name}</Text>
-        <Text style={styles.eventSubHeader}>{formatDate(event.date)}</Text>
-        <Text style={styles.eventSubHeader}>{event.location}</Text>
-        <Text style={styles.eventDesc}>{event.description}</Text>
+        <Text style={styles.eventHeader}>{event.name ? event.name : "no data"}</Text>
+        <Text style={styles.eventSubHeader}>{event.date ? formatDate(event.date) : "no data"}</Text>
+        <Text style={styles.eventSubHeader}>{event.location ? event.location : "no data"}</Text>
+        <Text style={styles.eventDesc}>{event.description ? event.description: "no data"}</Text>
       </View>
     </Pressable>
   );
