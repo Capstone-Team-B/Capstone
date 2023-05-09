@@ -1,7 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator, createBottomTabNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
 import AllUsers from './screens/AllUsers';
@@ -13,7 +14,7 @@ import GuestProfileScreen from './screens/GuestProfileScreen';
 import GuestScreen from './screens/GuestScreen';
 
 const Stack = createNativeStackNavigator();
-// const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function App() {
   // need to add if statement that checks if logged in; if true, nav to homepage on open; else, nav to login
@@ -43,7 +44,6 @@ export default function App() {
         <Tab.Screen name="Events List" component={EventList} />
         <Tab.Screen name="Notifications" component={Notifications} />
       </Tab.Navigator> */}
-
 
       <Stack.Navigator initialRouteName='Create Event'>
         <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
