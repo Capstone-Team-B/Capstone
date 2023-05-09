@@ -13,14 +13,28 @@ import Notifications from "./client/screens/Notifications/Notifications";
 import GuestScreen from "./screens/GuestScreen";
 import GuestProfileScreen from "./screens/GuestProfileScreen";
 import RegisterScreen from "./screens/RegisterScreen";
+import * as firebase from "./firebase";
+import auth from "./firebase";
+import { useState, useEffect } from "react";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function App() {
-  let isSignedIn = true;
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const user = firebase.auth().currentUser
+      if (user) {
+        console.log(user);
+        setLoggedIn(true);
+      } else {
+        console.log("logged out");
+      }
+    }, []);
+
   // need to add if statement that checks if logged in; if true, nav to homepage on open; else, nav to login
-  return isSignedIn ? (
+  return loggedIn ? (
     <NavigationContainer>
       <Tab.Navigator
         initialRouteName="Events List"
@@ -61,11 +75,6 @@ export default function App() {
           options={{ headerShown: false }}
           name="Login"
           component={LoginScreen}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="RegisterScreen"
-          component={RegisterScreen}
         />
         {/* {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
         {/* <Stack.Screen name="Users" component={AllUsers} /> */}

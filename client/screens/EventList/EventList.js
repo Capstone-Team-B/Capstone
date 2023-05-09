@@ -6,7 +6,7 @@ import {
   FlatList,
 } from "react-native";
 import React, { useState } from "react";
-import SingleEvent from "./SingleEvent";
+import EventTile from "./EventTile";
 import { getDatabase, ref, child, get } from "firebase/database";
 
 // const dummyEvents = [
@@ -110,7 +110,7 @@ const EventList = ({navigation}) => {
       <FlatList
         data={events}
         renderItem={(itemData) => {
-          return <SingleEvent event={itemData.item} navigation={navigation}/>;
+          return <EventTile event={itemData.item} navigation={navigation}/>;
         }}
         keyExtractor={(item, index) => {
           return item.id;

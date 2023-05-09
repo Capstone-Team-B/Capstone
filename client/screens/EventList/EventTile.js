@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Pressable } from "react-native";
 import React from "react";
 
-const SingleEvent = ({ event, navigation }) => {
+const EventTile = ({ event, navigation }) => {
   // add logic that determines if logged in user id matches host ID; if so, add different styling or add indicator
 
   // convert ISO date to more legible format
@@ -50,7 +50,7 @@ const SingleEvent = ({ event, navigation }) => {
   );
 };
 
-export default SingleEvent;
+export default EventTile;
 
 const styles = StyleSheet.create({
   item: {
