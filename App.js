@@ -4,22 +4,55 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Feather from "react-native-vector-icons/Feather";
-import LoginScreen from './screens/LoginScreen';
-import HomeScreen from './screens/HomeScreen';
-import AllUsers from './screens/AllUsers';
+import LoginScreen from './client/screens/LoginScreen';
+import HomeScreen from './client/screens/HomeScreen';
+import AllUsers from './client/screens/AllUsers';
 import EventList from "./client/screens/EventList/EventList";
 import MyAccount from "./client/screens/MyAccount/MyAccount";
 import Notifications from "./client/screens/Notifications/Notifications";
-import CreateEventForm from './screens/NewEvent/CreateEventScreen';
-import CreateSubEvents from './screens/NewEvent/CreateSubEventsScreen';
-import CreateNotifications from './screens/NewEvent/CreateNotificationsScreen';
-import CreateGuestList from './screens/NewEvent/CreateGuestListScreen';
-import GuestProfileScreen from './screens/GuestProfileScreen';
-import GuestScreen from './screens/GuestScreen';
+import CreateEventForm from './client/screens/NewEvent/CreateEventScreen';
+import CreateSubEvents from './client/screens/NewEvent/CreateSubEventsScreen';
+import CreateNotifications from './client/screens/NewEvent/CreateNotificationsScreen';
+import CreateGuestList from './client/screens/NewEvent/CreateGuestListScreen';
+import GuestProfileScreen from './client/screens/GuestProfileScreen';
+import GuestScreen from './client/screens/GuestScreen';
+import GuestScreen from "./client/SingleEvent/GuestScreen";
+import GuestProfileScreen from "./client/SingleEvent/GuestProfileScreen";
+import SingleEvent from "./client/SingleEvent/SingleEvent";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const Tabs = () =>
+<Tab.Navigator
+screenOptions={({ route }) => ({
+  tabBarIcon: ({ focused, size, color }) => {
+    let iconName;
+    if (route.name === "My Account") {
+      iconName = "user";
+      color = focused ? "dodgerblue" : "gray";
+    } else if (route.name === "Events List") {
+      iconName = "home";
+      color = focused ? "dodgerblue" : "gray";
+    } else if (route.name === "Notifications") {
+      iconName = "bell";
+      color = focused ? "dodgerblue" : "gray";
+    }
+    return (
+      <Feather
+        name={iconName}
+        size={28}
+        color={focused ? "dodgerblue" : "gray"}
+      />
+    );
+  },
+})}
+>
+<Tab.Screen name="My Account" component={MyAccount} />
+<Tab.Screen name="Events List" component={EventList} />
+<Tab.Screen name="Notifications" component={Notifications} />
+</Tab.Navigator>
+//Nataly was here
 export default function App() {
   // need to add if statement that checks if logged in; if true, nav to homepage on open; else, nav to login
   return (
@@ -51,6 +84,7 @@ export default function App() {
 
       <Stack.Navigator initialRouteName='Create Event'>
         <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
+        {/* <Stack.Screen name="Home" component={Tabs} /> */}
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Users" component={AllUsers} />
         <Stack.Screen name="Guest" component={GuestScreen} />
@@ -59,6 +93,7 @@ export default function App() {
         <Stack.Screen name="Create Sub Events" component={CreateSubEvents} />
         <Stack.Screen name="Create Notifications" component={CreateNotifications} />
         <Stack.Screen name="Create Guest List" component={CreateGuestList} />
+        <Stack.Screen name="Single event" component={SingleEvent} />
       </Stack.Navigator>
     
 

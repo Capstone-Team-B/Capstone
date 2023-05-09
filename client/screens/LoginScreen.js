@@ -1,8 +1,8 @@
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { auth } from '../../firebase'
+import { auth } from '../firebase'
 import { useNavigation } from '@react-navigation/native'
-import { getDatabase, ref, child, get, set } from 'firebase/database';
+import { getDatabase, ref, child, get, set } from 'firebase/database'
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('')
@@ -119,15 +119,14 @@ const LoginScreen = () => {
             placeholder='Email'
             value={email}
             onChangeText={text => setEmail(text)}
-            style={styles.input}
-            />
-             <TextInput
+            style={styles.input}/>
+            <TextInput
             placeholder='Password'
             value={password}
             onChangeText={text => setPassword(text)}
             style={styles.input}
             secureTextEntry
-            />
+            /> 
         </View>
 
         <View style={styles.buttonContainer}>

@@ -1,3 +1,4 @@
+//Nataly was here 
 import {
   StyleSheet,
   View,
@@ -82,28 +83,28 @@ const EventList = ({navigation}) => {
       description: "Join us as we celebrate our love in the Mile High City",
     },
   ];
-  const [events, setEvents] = useState(dummyEvents);
+  const [events, setEvents] = useState([]);
 
   // all events query from firebase is working, but dummy data is currently being rendered to test formatting + scrolling functionality
   // add logic that queries all events and returns events for which logged in user ID is included in guest list || host ID
 
-  //   const dbRef = ref(getDatabase());
-  //   get(child(dbRef, "events"))
-  //     .then((snapshot) => {
-  //       if (snapshot.exists()) {
-  //         const data = snapshot.val();
-  //         const eventList = Object.keys(data).map((key) => ({
-  //           id: key,
-  //           ...data[key],
-  //         }));
-  //         setEvents(eventList);
-  //       } else {
-  //         console.log("No data available");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
+    const dbRef = ref(getDatabase());
+    get(child(dbRef, "events"))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const eventList = Object.keys(data).map((key) => ({
+            id: key,
+            ...data[key],
+          }));
+          setEvents(eventList);
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
   return (
     <SafeAreaView style={styles.container}>
