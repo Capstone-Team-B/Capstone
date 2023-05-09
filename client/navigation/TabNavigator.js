@@ -10,6 +10,13 @@ import MessageboardScreen from '../screens/MessageBoardScreen';
 
 const Tab = createBottomTabNavigator();
 
+//seeing some  repeated code here, as well as using strings where you should be using constants
+//also, consider making a style guide. Basically a file that exports a bunch of values to use while styling.
+//-for instance, `import { palette } from './styleGuide.js'` or something
+//-then line 28 below would be:
+//-color = focused ? palette.focused : palette.unfocused
+//-when you want to tweak styles later, you will only need to change them in one place
+
 const TabNavigator = () => {
   return (
     <Tab.Navigator
@@ -36,10 +43,10 @@ const TabNavigator = () => {
         },
       })}
     >
-      <Tab.Screen name="My Account" component={MyAccount} />
-      <Tab.Screen name="Events List" component={EventList} />
-      <Tab.Screen name="Notifications" component={Notifications} />
-      <Tab.Screen name="Messageboard" component={MessageboardScreen} />
+      <Tab.Screen name='My Account' component={MyAccount} />
+      <Tab.Screen name='Events List' component={EventList} />
+      <Tab.Screen name='Notifications' component={Notifications} />
+      <Tab.Screen name='Messageboard' component={MessageboardScreen} />
     </Tab.Navigator>
   );
 };

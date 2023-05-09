@@ -5,18 +5,27 @@ import { getDatabase, ref, child, get } from 'firebase/database';
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
 
+  //consider moving the database call to another file.
+  //Ideally, this component should only be concerned with displaying the data it recieves as props.
+  //it will also make debugging easier because all of your DB calls will be in the same place
+
   const dbRef = ref(getDatabase());
-  get(child(dbRef, `users`)).then((snapshot) => {
-    if (snapshot.exists()) {
-      const data = snapshot.val();
-      const userList = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-      setUsers(userList);
-    } else {
-      console.log("No data available");
-    }
-  }).catch((error) => {
-    console.error(error);
-  });
+  get(child(dbRef, `users`))
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const userList = Object.keys(data).map((key) => ({
+          id: key,
+          ...data[key],
+        }));
+        setUsers(userList);
+      } else {
+        console.log('No data available');
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 
   return (
     <View style={styles.container}>

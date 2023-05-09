@@ -102,7 +102,7 @@ const MessageboardScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
+    <KeyboardAvoidingView style={styles.container} behavior='padding'>
       <Text style={styles.eventLabel}>Messages for {event_name}</Text>
       <View style={styles.inputContainer}>
         {messages.map((message) => (
@@ -112,7 +112,7 @@ const MessageboardScreen = () => {
           </View>
         ))}
         <TextInput
-          placeholder="Write here"
+          placeholder='Write here'
           style={styles.input}
           value={newMessage}
           onChangeText={(text) => setNewMessage(text)}
