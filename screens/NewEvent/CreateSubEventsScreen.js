@@ -35,8 +35,7 @@ const CreateSubEvents = (props) => {
         setSubEvents(newSubEvents);
         setIsTimePickerVisible(false);
     };
-      
-        
+         
     const handleAddSubEvent = () => {
         const newSubEvents = [...subEvents];
         newSubEvents.push({ name: '', location: '', date: '', startTime: '', endTime: '' });
@@ -87,7 +86,7 @@ const CreateSubEvents = (props) => {
             await set(newSubEventRef, newSubEventWithTagData);
 
         }
-        navigation.navigate("Create Notifications");
+        navigation.navigate("Create Notifications", { eventId: eventId });
     };
       
     return (
