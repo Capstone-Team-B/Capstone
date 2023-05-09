@@ -16,15 +16,23 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-<<<<<<< HEAD
-=======
         <Text>Email: {auth.currentUser?.email}</Text>
-        <TouchableOpacity
-            onPress={handleSignOut}
-            style={styles.button}
-        >
-        <Text style={styles.buttonText}>Sign out</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("GuestProfile")}>
+            <Text> 
+              Guest Profile
+            </Text>
+          </TouchableOpacity>
+    {/*       <Text>Email: {auth.currentUser?.email}</Text> */}
+          <TouchableOpacity onPress={() => navigation.navigate("Guest")}>
+            <Text> 
+              View All Guest
+            </Text>
+          </TouchableOpacity>
+
+        <TouchableOpacity onPress={handleSignOut} style={styles.button}>
+          <Text style={styles.buttonText}>Sign out</Text>
         </TouchableOpacity>
+
         <Text style={{ fontSize: 12, textAlign: 'center', marginTop: 10 }}>
             <Text style={{ color: 'darkblue', fontWeight: 'bold' }} onPress={() => navigation.navigate("Users")}>
                 View All Users
@@ -35,38 +43,6 @@ const HomeScreen = () => {
                 Create New Event
             </Text>
         </Text>
-    </View>
-                
-  )
-}
->>>>>>> f3a3b65 (page one working)
-
-    <Text>Email: {auth.currentUser?.email}</Text>
-    <TouchableOpacity onPress={() => navigation.navigate("GuestProfile")}>
-        <Text> 
-          Guest Profile
-        </Text>
-      </TouchableOpacity>
-{/*       <Text>Email: {auth.currentUser?.email}</Text> */}
-      <TouchableOpacity onPress={() => navigation.navigate("Guest")}>
-        <Text> 
-          View All Guest
-        </Text>
-      </TouchableOpacity>
-
-
-
-      <TouchableOpacity onPress={handleSignOut} style={styles.button}>
-        <Text style={styles.buttonText}>Sign out</Text>
-      </TouchableOpacity>
-      <Text style={{ fontSize: 12, textAlign: "center", marginTop: 10 }}>
-        <Text
-          style={{ color: "darkblue", fontWeight: "bold" }}
-          onPress={() => navigation.navigate("Users")}
-        >
-          View All Users
-        </Text>
-      </Text>
     </View>
   );
 };
