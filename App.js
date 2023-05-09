@@ -10,12 +10,43 @@ import AllUsers from "./screens/AllUsers";
 import EventList from "./client/screens/EventList/EventList";
 import MyAccount from "./client/screens/MyAccount/MyAccount";
 import Notifications from "./client/screens/Notifications/Notifications";
-import GuestScreen from './screens/GuestScreen';
-import GuestProfileScreen from './screens/GuestProfileScreen';
+import GuestScreen from "./client/SingleEvent/GuestScreen";
+import GuestProfileScreen from "./client/SingleEvent/GuestProfileScreen";
+import SingleEvent from "./client/SingleEvent/SingleEvent";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const Tabs = () =>
+<Tab.Navigator
+screenOptions={({ route }) => ({
+  tabBarIcon: ({ focused, size, color }) => {
+    let iconName;
+    if (route.name === "My Account") {
+      iconName = "user";
+      color = focused ? "dodgerblue" : "gray";
+    } else if (route.name === "Events List") {
+      iconName = "home";
+      color = focused ? "dodgerblue" : "gray";
+    } else if (route.name === "Notifications") {
+      iconName = "bell";
+      color = focused ? "dodgerblue" : "gray";
+    }
+    return (
+      <Feather
+        name={iconName}
+        size={28}
+        color={focused ? "dodgerblue" : "gray"}
+      />
+    );
+  },
+})}
+>
+<Tab.Screen name="My Account" component={MyAccount} />
+<Tab.Screen name="Events List" component={EventList} />
+<Tab.Screen name="Notifications" component={Notifications} />
+</Tab.Navigator>
+//Nataly was here
 export default function App() {
   // need to add if statement that checks if logged in; if true, nav to homepage on open; else, nav to login
   return (
@@ -24,34 +55,15 @@ export default function App() {
       {/* <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} /> */}
       {/* {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
       {/* <Stack.Screen name="Users" component={AllUsers} /> */}
-        <Stack.Screen name="Guest" component={GuestScreen} />
-        <Stack.Screen name="GuestProfile" component={GuestProfileScreen} />
       {/* <Stack.Screen name="Events List" component={EventList} /> */}
       {/* </Stack.Navigator> */}
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, size, color }) => {
-            let iconName;
-            if (route.name === "My Account") {
-              iconName = "user";
-              color = focused ? "dodgerblue" : "gray";
-            } else if (route.name === "Events List") {
-              iconName = "home";
-              color = focused ? "dodgerblue" : "gray";
-            } else if (route.name === "Notifications") {
-              iconName = "bell";
-              color = focused ? "dodgerblue" : "gray";
-            }
-            return (
-              <Feather name={iconName} size={28} color={focused ? "dodgerblue" : "gray"}/>
-            );
-          },
-        })}
-      >
-        <Tab.Screen name="My Account" component={MyAccount} />
-        <Tab.Screen name="Events List" component={EventList} />
-        <Tab.Screen name="Notifications" component={Notifications} />
-      </Tab.Navigator>
+      
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={Tabs} />
+        <Stack.Screen name="Guest" component={GuestScreen} />
+        <Stack.Screen name="GuestProfile" component={GuestProfileScreen} />
+        <Stack.Screen name="Single event" component={SingleEvent} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

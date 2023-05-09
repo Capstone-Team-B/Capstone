@@ -1,15 +1,17 @@
+//Nataly was here
+import { useNavigation } from "@react-navigation/core";
 import {
-  KeyboardAvoidingView,
-  ScrollView,
+  //KeyboardAvoidingView,
+  //ScrollView,
   StyleSheet,
   Text,
-  TextInput,
+  //TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { auth } from "../firebase";
-import { useNavigation } from "@react-navigation/native";
+import { auth } from "/firebase";
+//import { useNavigation } from "@react-navigation/native";
 import {
   getDatabase,
   ref,
@@ -19,59 +21,43 @@ import {
   query,
   orderByChild,
   equalTo,
+  orderByValue
 } from "firebase/database";
 
-const GuestScreen = () => {
-  const [users, setUsers] = useState([]);
+const GuestScreen = (params) => {
   const [guestUsers, setguestUsers] = useState([]);
-
   const dbRef = ref(getDatabase());
-  //console.log(setguestUsers)
+  console.log(params.route.params.eventId)
+  
+  const navigation = useNavigation();
 
-  get(child(dbRef, `users`))
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        const userList = Object.keys(data).map((key) => ({
-          id: key,
-          ...data[key],
-        }));
-        setUsers(userList);
-      } else {
-        console.log("No data available");
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-
-  const _query = query(
-    child(dbRef, "guestlists"),
-    orderByChild("role"),
-    equalTo("Guest")
-  );
-  get(_query)
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        const userList = Object.keys(data).map((key) => ({
-          id: key,
-          ...data[key],
-        }));
-
-        setguestUsers(userList);
-      } else {
-        console.log("No data available");
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-
+useEffect(()=>{
+  get(query(child(dbRef, 'guestlist'), orderByChild("event_id"), equalTo(params.route.params.eventId)))
+  .then((snapshot) => {
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      console.log(data)
+      setguestUsers(data);
+    } else {
+      console.log("No data available");
+    }
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+}, [params.route.params.eventId])
+//
   return (
-    <ScrollView>
-      <Text>Guest List</Text>
-    </ScrollView>
+    <View style={styles.container}>
+        <Text> Guest list</Text>
+        {
+          guestUsers.map((user, index)=>
+      <TouchableOpacity key={index} onPress={() => navigation.navigate("GuestProfile", {user})}>
+      Guest Profile {user.guest_id}
+      </TouchableOpacity>
+      )
+        }
+    </View>
   );
 };
 

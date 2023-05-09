@@ -18,20 +18,6 @@ const HomeScreen = () => {
     <View style={styles.container}>
 
     <Text>Email: {auth.currentUser?.email}</Text>
-    <TouchableOpacity onPress={() => navigation.navigate("GuestProfile")}>
-        <Text> 
-          Guest Profile
-        </Text>
-      </TouchableOpacity>
-{/*       <Text>Email: {auth.currentUser?.email}</Text> */}
-      <TouchableOpacity onPress={() => navigation.navigate("Guest")}>
-        <Text> 
-          View All Guest
-        </Text>
-      </TouchableOpacity>
-
-
-
       <TouchableOpacity onPress={handleSignOut} style={styles.button}>
         <Text style={styles.buttonText}>Sign out</Text>
       </TouchableOpacity>

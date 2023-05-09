@@ -8,7 +8,7 @@ import {
     View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { auth } from "../firebase";
+import { auth } from "/firebase";
 import { useNavigation } from "@react-navigation/native";
 import {
     getDatabase,
@@ -21,56 +21,19 @@ import {
     equalTo,
 } from "firebase/database";
 
-const GuestScreen = () => {
-    const [users, setUsers] = useState([]);
-    const [guestUsers, setguestUsers] = useState([]);
-    const dbRef = ref(getDatabase());
-    //console.log(setguestUsers);
-    get(child(dbRef, `users`))
-    .then((snapshot) => {
-        if (snapshot.exists()) {
-            const data = snapshot.val();
-            const userList = Object.keys(data).map((key) => ({
-                id: key,
-                ...data[key],
-        }));
-        setUsers(userList);
-        } else {
-            console.log("No data available");
-        }
-    })
-    .catch((error) => {
-        console.error(error);
-    });
-    const _query = query(
-        child(dbRef, "guestlists"),
-        orderByChild("role"),
-        equalTo("Guest")
-    );
-    get(_query)
-    .then((snapshot) => {
-        if (snapshot.exists()) {
-            const data = snapshot.val();
-            const userList = Object.keys(data).map((key) => ({
-                id: key,
-                ...data[key],
-            }));
-        setguestUsers(userList);
-        } else {
-            console.log("No data available");
-        }
-    })
-    .catch((error) => {
-        console.error(error);
-    });
+const GuestProfileScreen = (params) => {
+    const [user, setUser] = useState(params.route.params.user);
+    //const dbRef = ref(getDatabase());
+    console.log(user);
+   
     return (
         <ScrollView>
-            <Text>Guest Profile</Text>
+            <Text>Guest Profile {user.guest_id}</Text>
         </ScrollView>
     );
 };
 
-export default GuestScreen;
+export default GuestProfileScreen;
 
 const styles = StyleSheet.create({
     container: {
