@@ -2,7 +2,7 @@ import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vi
 import React, { useEffect, useState } from 'react'
 import { auth } from '../../firebase'
 import { useNavigation } from '@react-navigation/native'
-import { getDatabase, ref, child, get, set } from 'firebase/database';
+import { getDatabase, ref, child, get, set } from 'firebase/database'
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('')
@@ -68,7 +68,7 @@ const LoginScreen = () => {
                     .catch(error => alert(error.message));
                 });
             }
-          } else {
+        } else {
             // Create a new record for the new user in the database
             auth.createUserWithEmailAndPassword(email, password)
             .then(userCredentials => {
@@ -93,7 +93,7 @@ const LoginScreen = () => {
                 });
             })
             .catch(error => alert(error.message));
-          }
+        }
         }).catch((error) => {
           console.error(error);
         });
@@ -119,15 +119,14 @@ const LoginScreen = () => {
             placeholder='Email'
             value={email}
             onChangeText={text => setEmail(text)}
-            style={styles.input}
-            />
-             <TextInput
+            style={styles.input}/>
+            <TextInput
             placeholder='Password'
             value={password}
             onChangeText={text => setPassword(text)}
             style={styles.input}
             secureTextEntry
-            />
+            /> 
         </View>
 
         <View style={styles.buttonContainer}>
