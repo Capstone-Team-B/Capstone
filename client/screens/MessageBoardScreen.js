@@ -7,11 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  FlatList,
-  SafeAreaView,
-  StatusBar,
 } from 'react-native';
-import { auth } from '../firebase';
 import {
   getDatabase,
   ref,
@@ -24,10 +20,7 @@ import {
   limitToLast,
   equalTo,
 } from 'firebase/database';
-import { dummyDb } from '../server/seedData';
-
-let testMessageboard = dummyDb.messageboard;
-
+import { auth } from '../../firebase';
 const testNotifications = [
   {
     body: 'The wedding ceremony will start in 30 minutes!',
@@ -51,38 +44,20 @@ const testNotifications = [
     title: 'Reminder: Birthday Party',
   },
 ];
-const event_name = dummyDb.events[0].name;
-const user_name = dummyDb.users[0].firstname + ' ' + dummyDb.users[0].lastname;
+
+const event_name = 'test';
+const user_name = auth.firstname + ' ' + auth.lastname;
 const MessageboardScreen = () => {
   // console.log(auth);
   const dbRef = ref(getDatabase());
   const db = getDatabase();
-  const recentPostsRef = query(
-    ref(db, 'messageboard'),
-    equalTo({ event_id: 2 })
-  );
+  // const recentPostsRef = query(ref(db, 'messageboard'));
 
-  // useEffect(() => {
-
-  //   const unsubscribe = auth.onAuthStateChanged((user) => {
-  //     if (user) {
-  //       navigation.navigate('Home');
-  //     }
-  //   });
-
-  //   return unsubscribe;
-  // }, []);
   const navigation = useNavigation();
   const [newMessage, setNewMessage] = useState('');
 
   const [messages, setMessages] = useState([]);
   const [notifications, setNotifications] = useState([]);
-
-  // console.log('dbRef is ', dbRef);
-  // const messageboardRef = db.collection('messageboard');
-  // console.log(messageboardRef);
-  // const queryMessageBoard = query(messageboardRef, where('event_id', '==', '2'));
-  // keeping sign out functionality
   const handleSubmitMessage = () => {
     console.log('user clicked ');
     // this makes the unique ID for the message
@@ -130,7 +105,7 @@ const MessageboardScreen = () => {
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <Text style={styles.eventLabel}>Messages for {event_name}</Text>
       <View style={styles.inputContainer}>
-        {testMessageboard.map((message) => (
+        {messages.map((message) => (
           <View key={message.id} style={styles.item}>
             <Text style={styles.firstName}>{message.message}</Text>
             <Text style={styles.nameText}>{user_name}</Text>
