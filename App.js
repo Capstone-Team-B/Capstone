@@ -56,7 +56,8 @@ export default function App() {
         <Stack.Screen name="Create Notifications" component={CreateNotifications} />
         <Stack.Screen name="Create Guest List" component={CreateGuestList} />
       </Stack.Navigator>
-      
+    
+
     </NavigationContainer>
   );
 }
