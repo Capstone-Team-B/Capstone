@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/core";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { auth } from "../firebase";
+import { auth } from "../../firebase";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -29,7 +29,6 @@ const HomeScreen = () => {
             </Text>
           </TouchableOpacity>
 
-<<<<<<< HEAD
         <TouchableOpacity onPress={handleSignOut} style={styles.button}>
           <Text style={styles.buttonText}>Sign out</Text>
         </TouchableOpacity>
@@ -44,20 +43,6 @@ const HomeScreen = () => {
                 Create New Event
             </Text>
         </Text>
-=======
-    <Text>Email: {auth.currentUser?.email}</Text>
-      <TouchableOpacity onPress={handleSignOut} style={styles.button}>
-        <Text style={styles.buttonText}>Sign out</Text>
-      </TouchableOpacity>
-      <Text style={{ fontSize: 12, textAlign: "center", marginTop: 10 }}>
-        <Text
-          style={{ color: "darkblue", fontWeight: "bold" }}
-          onPress={() => navigation.navigate("Users")}
-        >
-          View All Users
-        </Text>
-      </Text>
->>>>>>> 8342f16 (Single page Working and guest profile)
     </View>
   );
 };
