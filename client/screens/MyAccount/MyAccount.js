@@ -6,9 +6,9 @@ import {
   Image,
   Pressable,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Feather from "react-native-vector-icons/Feather";
-import { getDatabase, ref, child, get } from 'firebase/database';
+import { getDatabase, ref, child, get } from "firebase/database";
 import SignOutBtn from "./SignOutBtn";
 
 const dummyUser = {
@@ -21,11 +21,24 @@ const dummyUser = {
 };
 
 const MyAccount = () => {
-  const [user, setUser] = useState(dummyUser);
+  const [user, setUser] = useState({});
 
-  const dbRef = ref(getDatabase());
-  
-
+  let id = 1;
+  useEffect(() => {
+    const dbRef = ref(getDatabase());
+    get(child(dbRef, `users/${id}`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log("this is the data from the database -->", snapshot.val());
+          setUser(snapshot.val());
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -43,12 +56,12 @@ const MyAccount = () => {
       </View>
       <View style={styles.section}>
         <View>
-          <Text>First name: {user.firstName}</Text>
-          <Text>Last name: {user.lastName}</Text>
-          <Text>Password: {user.password}</Text>
-          <Text>Phone: {user.phoneNumber}</Text>
-          <Text>Email: {user.email}</Text>
-          <Text>Location: {user.location}</Text>
+          <Text>First name: {user.firstname ? user.firstname : "no data"}</Text>
+          <Text>Last name: {user.lastname ? user.lastname : "no data"}</Text>
+          <Text>Password: {user.password ? user.password : "no data"}</Text>
+          <Text>Phone: {user.phoneNumber ? user.phoneNumber : "no data"}</Text>
+          <Text>Email: {user.email ? user.email : "no data"}</Text>
+          <Text>Location: {user.location ? user.location : "no data"}</Text>
         </View>
         <View>
           <Image
