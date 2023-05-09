@@ -82,7 +82,7 @@ const CreateNotifications = (props) => {
             <Text style={styles.sectionTitle}>Notifications</Text>
             {notifications.map((notification, index) => (
                 <View style={styles.section} key={index}>
-                <View style={{ flexDirection: 'column' }}>
+                <View style={styles.section}>
                 <TextInput
                     style={styles.input}
                     placeholder="RSVP deadline, Reminder to book flights, etc."
