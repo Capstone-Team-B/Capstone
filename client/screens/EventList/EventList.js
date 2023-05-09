@@ -7,7 +7,7 @@ import {
   FlatList,
 } from "react-native";
 import React, { useState } from "react";
-import SingleEvent from "./SingleEvent";
+import SingleEvent from "./EventTile";
 import { getDatabase, ref, child, get } from "firebase/database";
 
 const EventList = ({navigation}) => {
