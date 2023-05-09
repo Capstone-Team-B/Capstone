@@ -16,33 +16,33 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
+        <Text>Email: {auth.currentUser?.email}</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("GuestProfile")}>
+            <Text> 
+              Guest Profile
+            </Text>
+          </TouchableOpacity>
+    {/*       <Text>Email: {auth.currentUser?.email}</Text> */}
+          <TouchableOpacity onPress={() => navigation.navigate("Guest")}>
+            <Text> 
+              View All Guests
+            </Text>
+          </TouchableOpacity>
 
-    <Text>Email: {auth.currentUser?.email}</Text>
-    <TouchableOpacity onPress={() => navigation.navigate("GuestProfile")}>
-        <Text> 
-          Guest Profile
+        <TouchableOpacity onPress={handleSignOut} style={styles.button}>
+          <Text style={styles.buttonText}>Sign out</Text>
+        </TouchableOpacity>
+
+        <Text style={{ fontSize: 12, textAlign: 'center', marginTop: 10 }}>
+            <Text style={{ color: 'darkblue', fontWeight: 'bold' }} onPress={() => navigation.navigate("Users")}>
+                View All Users
+            </Text>
         </Text>
-      </TouchableOpacity>
-{/*       <Text>Email: {auth.currentUser?.email}</Text> */}
-      <TouchableOpacity onPress={() => navigation.navigate("Guest")}>
-        <Text> 
-          View All Guest
+        <Text style={{ fontSize: 12, textAlign: 'center', marginTop: 10 }}>
+            <Text style={{ color: 'darkblue', fontWeight: 'bold' }} onPress={() => navigation.navigate("Create Event")}>
+                Create New Event
+            </Text>
         </Text>
-      </TouchableOpacity>
-
-
-
-      <TouchableOpacity onPress={handleSignOut} style={styles.button}>
-        <Text style={styles.buttonText}>Sign out</Text>
-      </TouchableOpacity>
-      <Text style={{ fontSize: 12, textAlign: "center", marginTop: 10 }}>
-        <Text
-          style={{ color: "darkblue", fontWeight: "bold" }}
-          onPress={() => navigation.navigate("Users")}
-        >
-          View All Users
-        </Text>
-      </Text>
     </View>
   );
 };

@@ -1,0 +1,48 @@
+[
+    {
+        "id": 1,
+        "event_id": 1,
+        "name": "Rehearsal Dinner",
+        "location": "123 Main St",
+        "date": "2022-06-10",
+        "start_time": "18:00:00",
+        "end_time": "22:00:00",
+        "guests": [
+            2,
+            4,
+            5
+        ]
+    },
+    {
+        "id": 2,
+        "event_id": 1,
+        "name": "Morning Brunch",
+        "location": "456 Oak Ave",
+        "date": "2022-06-11",
+        "start_time": "10:00:00",
+        "end_time": "12:00:00",
+        "guests": [
+            1,
+            2,
+            3,
+            4,
+            5
+        ]
+    },
+    {
+        "id": 3,
+        "event_id": 2,
+        "name": "Welcome Dinner",
+        "location": "789 Maple St",
+        "date": "2022-08-01",
+        "start_time": "18:30:00",
+        "end_time": "21:30:00",
+        "guests": [
+            1,
+            2,
+            3,
+            4,
+            5
+        ]
+    }
+]
