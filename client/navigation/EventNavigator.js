@@ -1,35 +1,41 @@
-import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import SingleEvent from '../screens/SingleEvent/SingleEvent';
-import GuestProfileScreen from '../screens/SingleEvent/GuestProfileScreen';
-import GuestScreen from '../screens/SingleEvent/GuestScreen';
-import EventListScreen from '../screens/EventList/EventListScreen';
-import MessageboardScreen from '../screens/SingleEvent/MessageBoardScreen';
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import SingleEvent from "../screens/SingleEvent/SingleEvent";
+import GuestProfileScreen from "../screens/SingleEvent/GuestProfileScreen";
+import GuestScreen from "../screens/SingleEvent/GuestScreen";
+import EventListScreen from "../screens/EventList/EventListScreen";
+
 
 const Stack = createNativeStackNavigator();
 
-const EventNavigator = () => {
+const EventNavigator = (props) => {
+  const { uid } = props.route.params;
+  // console.log("uid in EventNav -->", uid);
   return (
     <Stack.Navigator initialRouteName="EventListScreen">
       <Stack.Screen
         name="EventListScreen"
         component={EventListScreen}
-        options={{ title: 'Upcoming Events' }}
+        initialParams={{ uid: uid }}
+        options={{ title: "Upcoming Events" }}
       />
       <Stack.Screen
         name="SingleEvent"
         component={SingleEvent}
-        options={{ title: 'Event' }}
+        initialParams={{ uid: uid }}
+        options={{ title: "Event" }}
       />
       <Stack.Screen
         name="GuestProfileScreen"
         component={GuestProfileScreen}
-        options={{ title: 'My Guest Profile' }}
+        initialParams={{ uid: uid }}
+        options={{ title: "My Guest Profile" }}
       />
       <Stack.Screen
         name="GuestScreen"
         component={GuestScreen}
-        options={{ title: 'Guest List' }}
+        initialParams={{ uid: uid }}
+        options={{ title: "Guest List" }}
       />
       <Stack.Screen
         name="MessageboardScreen"
