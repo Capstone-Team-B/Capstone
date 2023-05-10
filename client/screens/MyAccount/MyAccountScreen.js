@@ -5,25 +5,24 @@ import {
   SafeAreaView,
   Image,
   Pressable,
-} from "react-native";
-import React, { useState, useEffect } from "react";
-import Feather from "react-native-vector-icons/Feather";
-import { getDatabase, ref, child, get } from "firebase/database";
-import SignOutBtn from "./SignOutBtn";
-import { useNavigation } from "@react-navigation/native";
+} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import Feather from 'react-native-vector-icons/Feather';
+import { getDatabase, ref, child, get } from 'firebase/database';
+import SignOutBtn from './SignOutBtn';
+import { useNavigation } from '@react-navigation/native';
 
 const dummyUser = {
-  firstName: "John",
-  lastName: "Doe",
-  password: "password123",
-  phoneNumber: "555-555-1234",
-  email: "johndoe@user.com",
-  location: "New York, NY, USA",
+  firstName: 'John',
+  lastName: 'Doe',
+  phoneNumber: '555-555-1234',
+  email: 'johndoe@user.com',
+  location: 'New York, NY, USA',
 };
 
 const MyAccountScreen = ({ route }) => {
   const [user, setUser] = useState(dummyUser);
-
+  console.log(route);
   // const {uid} = route.params
 
   // useEffect(() => {
@@ -47,19 +46,19 @@ const MyAccountScreen = ({ route }) => {
   const navigation = useNavigation();
 
   const handlePressCreateEvent = () => {
-    navigation.navigate("CreateEvent");
+    navigation.navigate('CreateEvent');
   };
 
   const handlePressEditAccount = () => {
-    navigation.navigate("EditAccountScreen");
+    navigation.navigate('EditAccountScreen', user);
   };
 
   const handlePressEditPrefs = () => {
-    navigation.navigate("EditPrefsScreen");
+    navigation.navigate('EditPrefsScreen', user);
   };
 
   const handlePressViewArchive = () => {
-    navigation.navigate("ViewArchiveScreen");
+    navigation.navigate('ViewArchiveScreen', user);
   };
 
   return (
@@ -78,18 +77,18 @@ const MyAccountScreen = ({ route }) => {
       </View>
       <View style={styles.section}>
         <View>
-          <Text>First name: {user.firstName ? user.firstName : "no data"}</Text>
-          <Text>Last name: {user.lastName ? user.lastName : "no data"}</Text>
-          <Text>Password: {user.password ? user.password : "no data"}</Text>
-          <Text>Phone: {user.phoneNumber ? user.phoneNumber : "no data"}</Text>
-          <Text>Email: {user.email ? user.email : "no data"}</Text>
-          <Text>Location: {user.location ? user.location : "no data"}</Text>
+          <Text>First name: {user.firstName ? user.firstName : 'no data'}</Text>
+          <Text>Last name: {user.lastName ? user.lastName : 'no data'}</Text>
+          <Text>Password: {user.password ? user.password : 'no data'}</Text>
+          <Text>Phone: {user.phoneNumber ? user.phoneNumber : 'no data'}</Text>
+          <Text>Email: {user.email ? user.email : 'no data'}</Text>
+          <Text>Location: {user.location ? user.location : 'no data'}</Text>
         </View>
         <View>
           <Image
             style={styles.profilePic}
             source={{
-              uri: "https://hips.hearstapps.com/hmg-prod/images/gettyimages-3091504.jpg",
+              uri: 'https://hips.hearstapps.com/hmg-prod/images/gettyimages-3091504.jpg',
             }}
           />
         </View>
@@ -127,13 +126,13 @@ export default MyAccountScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    justifyContent: "center",
+    backgroundColor: '#fff',
+    justifyContent: 'center',
   },
   createEvent: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     // borderWidth: 5,
     // borderStyle: "dotted",
     // borderRadius: 250,
@@ -147,25 +146,25 @@ const styles = StyleSheet.create({
   section: {
     margin: 10,
     borderWidth: 2,
-    borderColor: "dodgerblue",
+    borderColor: 'dodgerblue',
     padding: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   sectionHeader: {
     marginLeft: 14,
     marginRight: 14,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   profilePic: {
     width: 90,
     height: 90,
     borderRadius: 50,
-    resizeMode: "cover",
+    resizeMode: 'cover',
   },
 });
