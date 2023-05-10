@@ -5,6 +5,7 @@ import GuestProfileScreen from "../screens/SingleEvent/GuestProfileScreen";
 import GuestScreen from "../screens/SingleEvent/GuestScreen";
 import EventListScreen from "../screens/EventList/EventListScreen";
 
+
 const Stack = createNativeStackNavigator();
 
 const EventNavigator = (props) => {
@@ -35,6 +36,11 @@ const EventNavigator = (props) => {
         component={GuestScreen}
         initialParams={{ uid: uid }}
         options={{ title: "Guest List" }}
+      />
+      <Stack.Screen
+        name="MessageboardScreen"
+        component={MessageboardScreen}
+        options={{ title: 'Messageboard' }}
       />
     </Stack.Navigator>
   );

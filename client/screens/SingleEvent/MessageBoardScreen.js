@@ -1,4 +1,3 @@
-import { useNavigation } from '@react-navigation/core';
 import React, { useState, useEffect } from 'react';
 import {
   KeyboardAvoidingView,
@@ -16,54 +15,26 @@ import {
   set,
   query,
   orderByChild,
-  orderByValue,
-  limitToLast,
   equalTo,
 } from 'firebase/database';
-import { auth } from '../../firebase';
-const testNotifications = [
-  {
-    body: 'The wedding ceremony will start in 30 minutes!',
-    event_id: 1,
-    id: 1,
-    scheduled_time: '2022-08-01T19:30:00Z',
-    title: 'Reminder: Wedding Ceremony',
-  },
-  {
-    body: 'The wedding reception will start in 1 hour!',
-    event_id: 1,
-    id: 2,
-    scheduled_time: '2022-08-01T20:00:00Z',
-    title: 'Reminder: Wedding Reception',
-  },
-  {
-    body: 'The birthday party will start in 2 hours!',
-    event_id: 2,
-    id: 3,
-    scheduled_time: '2022-09-01T18:00:00Z',
-    title: 'Reminder: Birthday Party',
-  },
-];
+import { auth } from '../../../firebase';
 
-const event_name = 'test';
-const user_name = auth.firstname + ' ' + auth.lastname;
-const MessageboardScreen = () => {
-  // console.log(auth);
+const MessageboardScreen = (params) => {
+  const [eventId, setEventId] = useState(params.route.params.eventId);
   const dbRef = ref(getDatabase());
   const db = getDatabase();
-  // const recentPostsRef = query(ref(db, 'messageboard'));
-
-  const navigation = useNavigation();
   const [newMessage, setNewMessage] = useState('');
-
+  const [eventName, setEventName] = useState('');
   const [messages, setMessages] = useState([]);
-  const [notifications, setNotifications] = useState([]);
-  const handleSubmitMessage = () => {
-    console.log('user clicked ');
-    // this makes the unique ID for the message
-    let uid = Date.now();
-    const currentTime = new Date().toISOString();
-    get(child(dbRef, `messageboard`))
+
+  useEffect(() => {
+    get(
+      query(
+        child(dbRef, 'messageboard'),
+        orderByChild('event_id'),
+        equalTo(eventId)
+      )
+    )
       .then((snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.val();
@@ -72,9 +43,7 @@ const MessageboardScreen = () => {
             ...data[key],
           }));
           setMessages(messageList);
-          // console.log(uid);
-          // console.log(messageList);
-          // console.log(newMessage);
+          setEventName(params.route.params.name);
         } else {
           console.log('No data available');
         }
@@ -82,18 +51,46 @@ const MessageboardScreen = () => {
       .catch((error) => {
         console.error(error);
       });
-
+  }, [eventId]);
+  const handleSubmitMessage = () => {
+    // this makes the unique ID for the message
+    let uid = Date.now();
+    const currentTime = new Date().toISOString();
     if (newMessage !== '') {
       set(ref(db, `messageboard/${uid}`), {
         created_at: currentTime,
-        event_id: 2,
+        event_id: eventId,
         id: uid,
+        user_id: auth.currentUser.uid,
+        user_name:
+          `${auth.currentUser.firstName} ${auth.currentUser.lastName}` ||
+          'Unknown',
         message: newMessage,
-        updated_at: currentTime,
-        user_id: 1,
       })
         .then(() => {
-          console.log('message sent');
+          setNewMessage('');
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      get(
+        query(
+          child(dbRef, 'messageboard'),
+          orderByChild('event_id'),
+          equalTo(eventId)
+        )
+      )
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            const messageList = Object.keys(data).map((key) => ({
+              id: key,
+              ...data[key],
+            }));
+            setMessages(messageList);
+          } else {
+            console.log('No data available');
+          }
         })
         .catch((error) => {
           console.error(error);
@@ -103,12 +100,12 @@ const MessageboardScreen = () => {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <Text style={styles.eventLabel}>Messages for {event_name}</Text>
+      <Text style={styles.eventLabel}>Messages for {eventName}</Text>
       <View style={styles.inputContainer}>
         {messages.map((message) => (
           <View key={message.id} style={styles.item}>
             <Text style={styles.firstName}>{message.message}</Text>
-            <Text style={styles.nameText}>{user_name}</Text>
+            <Text style={styles.nameText}>{message.user_name}</Text>
           </View>
         ))}
         <TextInput
@@ -120,14 +117,6 @@ const MessageboardScreen = () => {
         <TouchableOpacity onPress={handleSubmitMessage} style={styles.button}>
           <Text style={styles.buttonText}>Add Your Message</Text>
         </TouchableOpacity>
-        <Text style={{ fontSize: 12, textAlign: 'center', marginTop: 10 }}>
-          <Text
-            style={{ color: 'darkblue', fontWeight: 'bold' }}
-            onPress={() => navigation.navigate('Login')}
-          >
-            View Home
-          </Text>
-        </Text>
       </View>
     </KeyboardAvoidingView>
   );
