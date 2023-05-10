@@ -8,14 +8,14 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const EditEvent = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
-    console.log("edit", event);
+    console.log("date", event.date);
   
-    const [weddingName, setWeddingName] = useState(event.name);
-    const [location, setLocation] = useState(event.location);
-    const [date, setDate] = useState({ startDate: event.startDate, endDate: event.endDate });
-    const [description, setDescription] = useState(event.description);
-    const [startTime, setStartTime] = useState(event.startTime);
-    const [endTime, setEndTime] = useState(event.endTime);
+    const [weddingName, setWeddingName] = useState(event.name || '');
+    const [location, setLocation] = useState(event.location || '');
+    const [date, setDate] = useState(event.date || '');
+    const [description, setDescription] = useState(event.description || '');
+    const [startTime, setStartTime] = useState(event.startTime || '');
+    const [endTime, setEndTime] = useState(event.endTime || '');
     const [selectedEventType, setSelectedEventType] = useState('');
     const [open, setOpen] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -24,14 +24,15 @@ const EditEvent = (params) => {
       setVisible(false)
     }, [setVisible])
 
-    const onDismissRange = useCallback(() => {
+    const onDismissSingle = useCallback((params) => {
         setOpen(false);
+        setDate(params.date)
     }, [setOpen]);
 
-    const onConfirmRange = useCallback(
-        ({ startDate, endDate }) => {
+    const onConfirmSingle = useCallback(
+        (params) => {
             setOpen(false);
-            setDate({ startDate, endDate });
+            setDate(params.date);
         },
         [setOpen, setDate]
     );
@@ -62,6 +63,7 @@ const EditEvent = (params) => {
         const eventRef = child(dbRef, `events/${eventId}`);
         const updatedEvent = {
           name: weddingName,
+          description: description,
           location: location,
           date: date,
           startTime: startTime,
@@ -94,6 +96,13 @@ const EditEvent = (params) => {
                 />
                 <TextInput
                     style={styles.input}
+                    placeholder="Description"
+                    value={description}
+                    onChangeText={setDescription}
+                    required={true}
+                />
+                <TextInput
+                    style={styles.input}
                     placeholder="Location"
                     value={location}
                     onChangeText={setLocation}
@@ -103,26 +112,22 @@ const EditEvent = (params) => {
                 <TouchableOpacity onPress={() => setOpen(true)}>
                 <TouchableOpacity onPress={() => setOpen(true)}>
                     <Text style={styles.outlineButtonText}>
-                        {date && date.startDate && date.endDate
-                            ? `${date.startDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })} - ${date.endDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}`
-                            : 'Select Date(s)'}
+                        {date 
+                            ? `${new Date(event.date).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}`
+                            : 'Select Date'}
                     </Text>
                 </TouchableOpacity>
                 </TouchableOpacity>
                     <SafeAreaProvider>
                         <DatePickerModal
-                            mode="range"
+                            mode="single"
                             locale="en"
                             visible={open}
-                            onDismiss={onDismissRange}
-                            startDate={date.startDate}
-                            endDate={date.endDate}
-                            onConfirm={onConfirmRange}
+                            onDismiss={onDismissSingle}
+                            date={date}
+                            onConfirm={onConfirmSingle}
                             saveLabel="Save" 
-                            label="Select period" 
-                            startLabel="From" 
-                            endLabel="To" 
-                            animationType="slide" 
+                            label="Select date" 
                         />
                     </SafeAreaProvider>
                 </TouchableOpacity>

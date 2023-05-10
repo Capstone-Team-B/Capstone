@@ -13,7 +13,8 @@ const SingleEvent = (params) => {
   return (
     <View style={styles.container}>
       <Text> {event.name}</Text>
-      <Text> {event.date}</Text>
+      <Text> {event.description}</Text>
+      <Text>{new Date(event.date).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</Text>
       <Text> {event.location}</Text>
       <Text>
         {' '}

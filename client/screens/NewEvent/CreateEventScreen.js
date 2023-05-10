@@ -10,6 +10,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 const CreateEventForm = () => {
     const [weddingName, setWeddingName] = useState('');
     const [location, setLocation] = useState('');
+    const [description, setDescription] = useState('');
     const [date, setDate] = useState(undefined);
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
@@ -67,6 +68,7 @@ const CreateEventForm = () => {
             const newEventRef = push(eventRef);
             const newEvent = {
                 name: weddingName,
+                description, description,
                 location: location,
                 date: date,
                 startTime: startTime,
@@ -100,6 +102,13 @@ const CreateEventForm = () => {
                 />
                 <TextInput
                     style={styles.input}
+                    placeholder="Description"
+                    value={description}
+                    onChangeText={setDescription}
+                    required={true}
+                />
+                <TextInput
+                    style={styles.input}
                     placeholder="Location"
                     value={location}
                     onChangeText={setLocation}
@@ -124,6 +133,7 @@ const CreateEventForm = () => {
                             date={date}
                             onConfirm={onConfirmSingle}
                             saveLabel="Save" 
+                            label="Select date" 
                         />
                     </SafeAreaProvider>
                 </TouchableOpacity>
