@@ -20,11 +20,8 @@ const LoginScreen = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        console.log('uid -->', user.uid);
-        navigation.navigate('TabNav', {
-          screen: 'EventNavigator',
-          uid: user.uid,
-        });
+        // console.log("uid on loginscreen -->", user.uid)
+        navigation.navigate("TabNav", {screen: "EventNavigator", uid: user.uid});
         return;
       }
     });
