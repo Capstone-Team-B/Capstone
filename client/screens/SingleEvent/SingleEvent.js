@@ -54,7 +54,19 @@ const SingleEvent = (params) => {
         >
         <Text>Edit Event</Text>
       </TouchableOpacity>
+   
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Guest", { eventId: event.id })}>
+        <Text>Guest List</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Maps", { eventId: event.id })}>
+        <Text>Maps and Events</Text>
+      </TouchableOpacity>
+
     </View>
+    
   );
 };
 

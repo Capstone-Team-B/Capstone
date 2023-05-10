@@ -8,6 +8,14 @@ import LoginScreen from './client/screens/LoginScreen';
 import TabNavigator from './client/navigation/TabNavigator';
 import SplashDown from './client/screens/Splash/SplashDown';
 import MessageboardScreen from './client/screens/SingleEvent/MessageBoardScreen';
+import HomeScreen from "./client/screens/HomeScreen";
+import CreateEventForm from "./client/screens/NewEvent/CreateEventScreen";
+import GuestScreen from "./client/screens/SingleEvent/GuestScreen";
+import GuestProfileScreen from "./client/screens/SingleEvent/GuestProfileScreen";
+import SingleEvent from "./client/screens/SingleEvent/SingleEvent";
+import MapEventScreen from "./client/screens/Maps/MapsandEvents";
+
+//import MessageboardScreen from "./client/screens/MessageBoardScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -42,7 +50,13 @@ export default function App() {
           component={TabNavigator}
           options={{ headerShown: false }}
         />
-      </Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Guest" component={GuestScreen} />
+        <Stack.Screen name="GuestProfile" component={GuestProfileScreen} />
+        <Stack.Screen name="Create Event" component={CreateEventForm} />
+        <Stack.Screen name="Single event" component={SingleEvent} />
+      </Stack.Navigator>  
+
     </NavigationContainer>
   );
 }

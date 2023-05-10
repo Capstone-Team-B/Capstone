@@ -60,6 +60,10 @@ const EventNavigator = (props) => {
         <Stack.Screen name="Create Guest List" component={CreateGuestList} />
         <Stack.Screen name="All Notifications" component={AllNotifications} />
         <Stack.Screen name="All Sub Events" component={AllSubEvents} />
+        {/* <Stack.Screen name="Guest" component={GuestScreen} />
+        <Stack.Screen name="GuestProfile" component={GuestProfileScreen} /> 
+        <Stack.Screen name="Single event" component={SingleEvent} />*/}
+        <Stack.Screen name="Maps" component={MapEventScreen}/>
     </Stack.Navigator>
   );
 };
