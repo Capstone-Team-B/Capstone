@@ -1,41 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { KeyboardAvoidingView, Alert, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { auth } from '../../../firebase';
 import { useNavigation } from '@react-navigation/native';
 import { getDatabase, ref, child, set, push } from 'firebase/database';
+import { DatePickerModal } from 'react-native-paper-dates';
+import { TimePickerModal } from 'react-native-paper-dates';
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const CreateEventForm = () => {
     const [weddingName, setWeddingName] = useState('');
     const [location, setLocation] = useState('');
-    const [date, setDate] = useState('');
+    const [date, setDate] = useState({ startDate: undefined, endDate: undefined });
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
     const [selectedEventType, setSelectedEventType] = useState('');
-    const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
-    const [isTimePickerVisible, setIsTimePickerVisible] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [visible, setVisible] = useState(false);
+
+    const onDismiss = useCallback(() => {
+      setVisible(false)
+    }, [setVisible])
+
+    const onDismissRange = useCallback(() => {
+        setOpen(false);
+    }, [setOpen]);
+
+    const onConfirmRange = useCallback(
+        ({ startDate, endDate }) => {
+            setOpen(false);
+            setDate({ startDate, endDate });
+        },
+        [setOpen, setDate]
+    );
 
     const navigation = useNavigation();
-
-    const handleTimePicker = (eventType) => {
-        setIsTimePickerVisible(true);
-        setSelectedEventType(eventType);
-    };
         
-    const handleTimeConfirm = (selectedDate) => {
-        const formattedTime = selectedDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    const handleTimeConfirm = (selectedTime) => {
+        const date = new Date();
+        date.setHours(selectedTime.hours);
+        date.setMinutes(selectedTime.minutes);
+        const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         if (selectedEventType === 'start') {
-        setStartTime(formattedTime);
+            setStartTime(formattedTime);
         } else if (selectedEventType === 'end') {
-        setEndTime(formattedTime);
+            setEndTime(formattedTime);
         }
-        setIsTimePickerVisible(false);
+        setVisible(false);
     };
-        
-    const showDateTimePicker = () => {
-        setIsDateTimePickerVisible(true);
-    };
-        
+
     const handleSubmit = async () => {
         if (!weddingName || !location || !date || !startTime || !endTime) {
           Alert.alert('Please fill in all fields');
@@ -79,46 +91,62 @@ const CreateEventForm = () => {
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Wedding Details</Text>
                 <TextInput
-                style={styles.input}
-                placeholder="Wedding Name"
-                value={weddingName}
-                onChangeText={setWeddingName}
-                required={true}
+                    style={styles.input}
+                    placeholder="Wedding Name"
+                    value={weddingName}
+                    onChangeText={setWeddingName}
+                    required={true}
                 />
                 <TextInput
-                style={styles.input}
-                placeholder="Location"
-                value={location}
-                onChangeText={setLocation}
-                required={true}
-                />
-                <TouchableOpacity style={styles.outlineButton} onPress={() => showDateTimePicker()}>
-                    <TouchableOpacity onPress={() => setIsDateTimePickerVisible(true)}>
-                        <Text style={styles.outlineButtonText}>{date ? date.toLocaleDateString() : 'Select Date'}</Text>
-                    </TouchableOpacity>
-                    <DateTimePickerModal
-                    isVisible={isDateTimePickerVisible}
-                    mode="date"
-                    onConfirm={(selectedDate) => {
-                        setDate(selectedDate)
-                        setIsDateTimePickerVisible(false);
-                    }}
-                    onCancel={() => setIsDateTimePickerVisible(false)}
+                    style={styles.input}
+                    placeholder="Location"
+                    value={location}
+                    onChangeText={setLocation}
                     required={true}
-                    />
+                />
+                <TouchableOpacity style={styles.outlineButton} onPress={() => setOpen(true)}>
+                <TouchableOpacity onPress={() => setOpen(true)}>
+                <TouchableOpacity onPress={() => setOpen(true)}>
+                    <Text style={styles.outlineButtonText}>
+                        {date && date.startDate && date.endDate
+                            ? `${date.startDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })} - ${date.endDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}`
+                            : 'Select Date(s)'}
+                    </Text>
                 </TouchableOpacity>
-                   <TouchableOpacity style={styles.outlineButton} required={true} onPress={() => handleTimePicker('start')}>
+                </TouchableOpacity>
+                    <SafeAreaProvider>
+                        <DatePickerModal
+                            mode="range"
+                            locale="en"
+                            visible={open}
+                            onDismiss={onDismissRange}
+                            startDate={date.startDate}
+                            endDate={date.endDate}
+                            onConfirm={onConfirmRange}
+                            saveLabel="Save" 
+                            label="Select period" 
+                            startLabel="From" 
+                            endLabel="To" 
+                            animationType="slide" 
+                        />
+                    </SafeAreaProvider>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.outlineButton} onPress={() => { setVisible(true); setSelectedEventType('start'); }}>
                     <Text style={styles.outlineButtonText}>{startTime ? startTime : 'Select Start Time'}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.outlineButton} required={true} onPress={() => handleTimePicker('end')}>
+                <TouchableOpacity style={styles.outlineButton} onPress={() => { setVisible(true); setSelectedEventType('end'); }}>
                     <Text style={styles.outlineButtonText}>{endTime ? endTime : 'Select End Time'}</Text>
                 </TouchableOpacity>
-                <DateTimePickerModal
-                    isVisible={isTimePickerVisible}
-                    mode="time"
-                    onConfirm={(time) => handleTimeConfirm(time)}
-                    onCancel={() => setIsTimePickerVisible(false)}
-                />
+                <SafeAreaProvider>
+                    <TimePickerModal
+                        visible={visible}
+                        mode="time"
+                        onConfirm={(time) => handleTimeConfirm(time)}
+                        onDismiss={onDismiss}
+                        hours={12}
+                        minutes={30}
+                    />
+                </SafeAreaProvider>
             </View>
             <View>
                 <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} required={true}>

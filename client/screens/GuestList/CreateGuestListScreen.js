@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { KeyboardAvoidingView, Alert, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { getDatabase, ref, child, get, set, push } from 'firebase/database'
@@ -99,9 +99,9 @@ const CreateGuestList = (props) => {
                 </View>
                 ))}
             </View>
-            <TouchableOpacity style={styles.outlineButton}>
+            {/* <TouchableOpacity style={styles.outlineButton}>
                 <Text style={styles.outlineButtonText}>Upload CSV</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity 
                 style={styles.addButton}
                 onPress={handleAddGuest}>
