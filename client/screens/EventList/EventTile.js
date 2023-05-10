@@ -4,36 +4,7 @@ import React from "react";
 import { useNavigation } from "@react-navigation/core";
 
 const EventTile = ({ event, uid }) => {
-  // add logic that determines if logged in user id matches host ID; if so, add different styling or add indicator
 
-  // convert ISO date to more legible format
-  // const formatDate = (date) => {
-  //   let year = date.slice(0, 4);
-  //   let month = date.slice(5, 7);
-  //   let day = date.slice(8, 10);
-  //   month < 10 ? (month = month % 10) : month;
-  //   day < 10 ? (day = day % 10) : day;
-  //   let monthName = [
-  //     "January",
-  //     "February",
-  //     "March",
-  //     "April",
-  //     "May",
-  //     "June",
-  //     "July",
-  //     "August",
-  //     "September",
-  //     "October",
-  //     "November",
-  //     "December",
-  //   ];
-  //   return `${monthName[month - 1]} ${day}, ${year}`;
-  // };
-
-  // 
-  //   const handlePress = () => {
-  //     navigation.naviate()
-  //   }
   const navigation = useNavigation();
 
   return (
@@ -44,7 +15,7 @@ const EventTile = ({ event, uid }) => {
     >
       <View key={event.id} style={uid === event.host_id? styles.itemHost : styles.itemGuest}>
         <Text style={styles.eventHeader}>{event.name}</Text>
-        {/* <Text style={styles.eventSubHeader}>{formatDate(event.date)}</Text> */}
+        <Text style={styles.eventSubHeader}>{event.date}</Text>
         <Text style={styles.eventSubHeader}>{event.location}</Text>
         <Text style={styles.eventDesc}>{event.description}</Text>
       </View>

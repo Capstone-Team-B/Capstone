@@ -32,8 +32,8 @@ const MyAccountScreen = (props) => {
       });
   }, []);
 
-  console.log("uid in MyAccountScreen -->", uid);
-  console.log("user on MyAccountScreen -->", user);
+  // console.log("uid in MyAccountScreen -->", uid);
+  // console.log("user on MyAccountScreen -->", user);
   const navigation = useNavigation();
 
   const handlePressCreateEvent = () => {

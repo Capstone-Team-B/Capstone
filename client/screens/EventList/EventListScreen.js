@@ -19,6 +19,7 @@ const EventListScreen = (props) => {
   const [guestList, setGuestList] = useState(null);
   const [eventIds, setEventIds] = useState([]);
   const [eventList, setEventList] = useState([]);
+
   useEffect(() => {
     const dbRef = ref(getDatabase());
     get(query(child(dbRef, "guestlist"), orderByChild("guest_id"), equalTo(uid)))
@@ -55,7 +56,7 @@ const EventListScreen = (props) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {guestList ? (
+      {eventList.length > 0 ? (
         <FlatList
           data={eventList}
           renderItem={(itemData) => {
@@ -66,7 +67,7 @@ const EventListScreen = (props) => {
           }}
         />
       ) : (
-        <Text>No events</Text>
+        <><Text>No events coming up</Text><Text>Plan something!</Text></>
       )}
     </SafeAreaView>
   );
