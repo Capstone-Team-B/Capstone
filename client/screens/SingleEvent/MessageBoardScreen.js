@@ -1,4 +1,3 @@
-import { useNavigation } from '@react-navigation/core';
 import React, { useState, useEffect } from 'react';
 import {
   KeyboardAvoidingView,
@@ -16,61 +15,25 @@ import {
   set,
   query,
   orderByChild,
-  orderByValue,
-  limitToLast,
   equalTo,
 } from 'firebase/database';
-import { auth } from '../../firebase';
-const testNotifications = [
-  {
-    body: 'The wedding ceremony will start in 30 minutes!',
-    event_id: 1,
-    id: 1,
-    scheduled_time: '2022-08-01T19:30:00Z',
-    title: 'Reminder: Wedding Ceremony',
-  },
-  {
-    body: 'The wedding reception will start in 1 hour!',
-    event_id: 1,
-    id: 2,
-    scheduled_time: '2022-08-01T20:00:00Z',
-    title: 'Reminder: Wedding Reception',
-  },
-  {
-    body: 'The birthday party will start in 2 hours!',
-    event_id: 2,
-    id: 3,
-    scheduled_time: '2022-09-01T18:00:00Z',
-    title: 'Reminder: Birthday Party',
-  },
-];
+import { auth } from '../../../firebase';
 
 const event_name = 'test';
 const MessageboardScreen = (params) => {
-  // const [event, setEvent] = useState(params.route.params.event);
-  // console.log(event);
-  // console.log(auth.currentUser);
+  const [eventId, setEventId] = useState(params.route.params.eventId);
   const dbRef = ref(getDatabase());
   const db = getDatabase();
-  // const recentPostsRef = query(ref(db, 'messageboard'));
-  // const dbRefTest = ref(getDatabase(), '/messageboard');
-  // const queryConstraints = [orderByChild('event_id'), equalTo(2)];
-  // const newMessageList = async () => {
-  //   await get(query(dbRefTest, ...queryConstraints));
-  // };
-
-  const navigation = useNavigation();
   const [newMessage, setNewMessage] = useState('');
 
   const [messages, setMessages] = useState([]);
-  let event_id = 3;
 
   useEffect(() => {
     get(
       query(
         child(dbRef, 'messageboard'),
         orderByChild('event_id'),
-        equalTo(event_id)
+        equalTo(eventId)
       )
     )
       .then((snapshot) => {
@@ -80,9 +43,6 @@ const MessageboardScreen = (params) => {
             id: key,
             ...data[key],
           }));
-          const eventsMessages = messageList.filter((message) => {
-            message.event_id == event_id;
-          });
           setMessages(messageList);
         } else {
           console.log('No data available');
@@ -91,23 +51,19 @@ const MessageboardScreen = (params) => {
       .catch((error) => {
         console.error(error);
       });
-  });
-  //.filter((message) => {
-  //   message.event_id === event_id;
-  // })
+  }, [eventId]);
   const handleSubmitMessage = () => {
     // this makes the unique ID for the message
     let uid = Date.now();
-    // const user_name = auth.currentUser.email + " " + auth.lastname;
     const currentTime = new Date().toISOString();
     if (newMessage !== '') {
       set(ref(db, `messageboard/${uid}`), {
         created_at: currentTime,
-        event_id: 2,
+        event_id: eventId,
         id: uid,
         user_id: auth.currentUser.uid,
         user_name:
-          auth.currentUser.firstName + ' ' + auth.currentUser.lastName ||
+          `${auth.currentUser.firstName} ${auth.currentUser.lastName}` ||
           'Unknown',
         message: newMessage,
       })
@@ -117,7 +73,13 @@ const MessageboardScreen = (params) => {
         .catch((error) => {
           console.error(error);
         });
-      get(child(dbRef, `messageboard/`))
+      get(
+        query(
+          child(dbRef, 'messageboard'),
+          orderByChild('event_id'),
+          equalTo(eventId)
+        )
+      )
         .then((snapshot) => {
           if (snapshot.exists()) {
             const data = snapshot.val();
@@ -155,14 +117,6 @@ const MessageboardScreen = (params) => {
         <TouchableOpacity onPress={handleSubmitMessage} style={styles.button}>
           <Text style={styles.buttonText}>Add Your Message</Text>
         </TouchableOpacity>
-        <Text style={{ fontSize: 12, textAlign: 'center', marginTop: 10 }}>
-          <Text
-            style={{ color: 'darkblue', fontWeight: 'bold' }}
-            onPress={() => navigation.navigate('Login')}
-          >
-            View Home
-          </Text>
-        </Text>
       </View>
     </KeyboardAvoidingView>
   );
