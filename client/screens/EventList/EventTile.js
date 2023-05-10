@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Pressable } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/core";
 
-const SingleEvent = ({ event }) => {
+const EventTile = ({ event }) => {
   // add logic that determines if logged in user id matches host ID; if so, add different styling or add indicator
 
   // convert ISO date to more legible format
@@ -39,9 +39,8 @@ const SingleEvent = ({ event }) => {
   return (
     <Pressable
       onPress={() =>
-        navigation.navigate('Single event', {event})
+        navigation.navigate('SingleEvent', {event})
       }
-    //   onPress={handlePress}
     >
       <View key={event.id} style={styles.item}>
         <Text style={styles.eventHeader}>{event.name}</Text>
@@ -53,7 +52,7 @@ const SingleEvent = ({ event }) => {
   );
 };
 
-export default SingleEvent;
+export default EventTile;
 
 const styles = StyleSheet.create({
   item: {
