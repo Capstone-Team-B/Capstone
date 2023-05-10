@@ -7,6 +7,7 @@ import { auth } from "./firebase";
 import LoginScreen from "./client/screens/LoginScreen";
 import TabNavigator from "./client/navigation/TabNavigator";
 import SplashDown from "./client/screens/Splash/SplashDown";
+import MessageboardScreen from './client/screens/MessageBoardScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -49,8 +50,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
