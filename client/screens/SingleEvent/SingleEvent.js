@@ -18,9 +18,14 @@ const SingleEvent = (params) => {
       <Text> {event.starttime} & {event.endtime}</Text> 
       <Text> {event.description}</Text>     
       <TouchableOpacity
-        onPress={() => navigation.navigate("Guest", { eventId: event.id })}
+        onPress={() => navigation.navigate("GuestScreen", { eventId: event.id })}
       >
         <Text>Get all guest</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("GuestProfileScreen", { eventId: event.id })}
+      >
+        <Text>My Guest Profile</Text>
       </TouchableOpacity>
     </View>
   );
