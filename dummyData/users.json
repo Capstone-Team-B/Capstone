@@ -1,24 +1,23 @@
 [
     {
-      "id": 1,
-      "firstname": "John",
-      "lastname": "Doe",
-      "email": "johndoe@example.com",
-      "password": "password123"
+        "id": 1,
+        "firstname": "John",
+        "lastname": "Doe",
+        "email": "johndoe@example.com",
+        "password": "password123"
     },
     {
-      "id": 2,
-      "firstname": "Jane",
-      "lastname": "Doe",
-      "email": "janedoe@example.com",
-      "password": "password456"
+        "id": 2,
+        "firstname": "Jane",
+        "lastname": "Doe",
+        "email": "janedoe@example.com",
+        "password": "password456"
     },
     {
-      "id": 3,
-      "firstname": "Bob",
-      "lastname": "Smith",
-      "email": "bobsmith@example.com",
-      "password": "password789"
+        "id": 3,
+        "firstname": "Bob",
+        "lastname": "Smith",
+        "email": "bobsmith@example.com",
+        "password": "password789"
     }
 ]
-  
