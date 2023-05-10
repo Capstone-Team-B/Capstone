@@ -6,10 +6,11 @@ import {
   Image,
   Pressable,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Feather from "react-native-vector-icons/Feather";
-import { getDatabase, ref, child, get } from 'firebase/database';
+import { getDatabase, ref, child, get } from "firebase/database";
 import SignOutBtn from "./SignOutBtn";
+import { useNavigation } from "@react-navigation/native";
 
 const dummyUser = {
   firstName: "John",
@@ -20,35 +21,69 @@ const dummyUser = {
   location: "New York, NY, USA",
 };
 
-const MyAccount = () => {
+const MyAccountScreen = ({ route }) => {
   const [user, setUser] = useState(dummyUser);
 
-  const dbRef = ref(getDatabase());
-  
+  // const {uid} = route.params
 
+  // useEffect(() => {
+  //   const dbRef = ref(getDatabase());
+  //   get(child(dbRef, `users/${uid}`))
+  //     .then((snapshot) => {
+  //       if (snapshot.exists()) {
+  //         console.log("this is the data from the database -->", snapshot.val());
+  //         setUser(snapshot.val());
+  //       } else {
+  //         console.log("No data available");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, []);
+
+  // console.log("userId -->", uid);
+  // console.log("user -->", user);
+  const navigation = useNavigation();
+
+  const handlePressCreateEvent = () => {
+    navigation.navigate("CreateEvent");
+  };
+
+  const handlePressEditAccount = () => {
+    navigation.navigate("EditAccountScreen");
+  };
+
+  const handlePressEditPrefs = () => {
+    navigation.navigate("EditPrefsScreen");
+  };
+
+  const handlePressViewArchive = () => {
+    navigation.navigate("ViewArchiveScreen");
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.createEvent}>
-        <Pressable style={styles.createEvent}>
+        <Pressable style={styles.createEvent} onPress={handlePressCreateEvent}>
           <Feather name="star" size={60} />
           <Text style={styles.createEventTitle}>Create an event</Text>
         </Pressable>
       </View>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Account details</Text>
-        <Pressable>
+        <Pressable onPress={handlePressEditAccount}>
           <Feather name="edit" size={20} />
         </Pressable>
       </View>
       <View style={styles.section}>
         <View>
-          <Text>First name: {user.firstName}</Text>
-          <Text>Last name: {user.lastName}</Text>
-          <Text>Password: {user.password}</Text>
-          <Text>Phone: {user.phoneNumber}</Text>
-          <Text>Email: {user.email}</Text>
-          <Text>Location: {user.location}</Text>
+          <Text>First name: {user.firstName ? user.firstName : "no data"}</Text>
+          <Text>Last name: {user.lastName ? user.lastName : "no data"}</Text>
+          <Text>Password: {user.password ? user.password : "no data"}</Text>
+          <Text>Phone: {user.phoneNumber ? user.phoneNumber : "no data"}</Text>
+          <Text>Email: {user.email ? user.email : "no data"}</Text>
+          <Text>Location: {user.location ? user.location : "no data"}</Text>
         </View>
         <View>
           <Image
@@ -60,8 +95,8 @@ const MyAccount = () => {
         </View>
       </View>
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Guest Profile</Text>
-        <Pressable>
+        <Text style={styles.sectionTitle}>Guest Preferences</Text>
+        <Pressable onPress={handlePressEditPrefs}>
           <Feather name="edit" size={20} />
         </Pressable>
       </View>
@@ -73,7 +108,7 @@ const MyAccount = () => {
       </View>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Archive</Text>
-        <Pressable>
+        <Pressable onPress={handlePressViewArchive}>
           <Feather name="rewind" size={20} />
         </Pressable>
       </View>
@@ -87,7 +122,7 @@ const MyAccount = () => {
   );
 };
 
-export default MyAccount;
+export default MyAccountScreen;
 
 const styles = StyleSheet.create({
   container: {
