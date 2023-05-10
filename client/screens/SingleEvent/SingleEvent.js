@@ -13,7 +13,8 @@ const SingleEvent = (params) => {
   return (
     <View style={styles.container}>
       <Text> {event.name}</Text>
-      <Text> {event.date}</Text>
+      <Text> {event.description}</Text>
+      <Text>{new Date(event.date).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</Text>
       <Text> {event.location}</Text>
       <Text>
         {' '}
@@ -43,7 +44,16 @@ const SingleEvent = (params) => {
           navigation.navigate('GuestProfileScreen', { eventId: event.id })
         }
       >
+
         <Text>My Guest Profile</Text>
+      </TouchableOpacity>
+      {/* need to add logic to only show if user is host */}
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('Edit Event', { event: event })
+        }
+        >
+        <Text>Edit Event</Text>
       </TouchableOpacity>
     </View>
   );
