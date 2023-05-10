@@ -9,6 +9,9 @@ import GuestScreen from "./client/screens/SingleEvent/GuestScreen";
 import GuestProfileScreen from "./client/screens/SingleEvent/GuestProfileScreen";
 import SingleEvent from "./client/screens/SingleEvent/SingleEvent";
 import TabNavigator from "./client/navigation/TabNavigator";
+import MapEventScreen from "./client/screens/Maps/MapsandEvents";
+//import MessageboardScreen from "./client/screens/MessageBoardScreen";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -17,8 +20,15 @@ export default function App() {
   // need to add if statement that checks if logged in; if true, nav to homepage on open; else, nav to login
   return (
     <NavigationContainer>
-      <TabNavigator />
-      {/* <Stack.Navigator initialRouteName="Create Event">
+      <Stack.Navigator initialRouteName="tabs">
+        <Stack.Screen name="tabs" component={TabNavigator} />
+        <Stack.Screen name="Single event" component={SingleEvent} />
+        <Stack.Screen name="Guest" component={GuestScreen} />
+        <Stack.Screen name="GuestProfile" component={GuestProfileScreen} />
+        <Stack.Screen name="Maps" component={MapEventScreen}/>
+        {/* <Stack.Screen name="Message" component={MessageboardScreen}/> */}
+      </Stack.Navigator>
+      {/*       
         <Stack.Screen
           options={{ headerShown: false }}
           name="Login"
@@ -29,7 +39,7 @@ export default function App() {
         <Stack.Screen name="GuestProfile" component={GuestProfileScreen} />
         <Stack.Screen name="Create Event" component={CreateEventForm} />
         <Stack.Screen name="Single event" component={SingleEvent} />
-      </Stack.Navigator> */}
+      </Stack.Navigator>  */}
     </NavigationContainer>
   );
 }

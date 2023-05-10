@@ -10,7 +10,9 @@ import Feather from "react-native-vector-icons/Feather";
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
+
   return (
+    <>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, size, color }) => {
@@ -38,7 +40,9 @@ const TabNavigator = () => {
         <Tab.Screen name="My Account" component={MyAccount} />
         <Tab.Screen name="Events List" component={EventList} />
         <Tab.Screen name="Notifications" component={Notifications} />
+
       </Tab.Navigator>
+      </>
   );
 };
 

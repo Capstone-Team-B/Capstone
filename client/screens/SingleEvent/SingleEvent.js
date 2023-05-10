@@ -15,14 +15,23 @@ const SingleEvent = (params) => {
       <Text> {event.name}</Text>
       <Text> {event.date}</Text>
       <Text> {event.location}</Text>  
-      <Text> {event.starttime} & {event.endtime}</Text> 
+      <Text> {event.starttime} till {event.endtime}</Text> 
       <Text> {event.description}</Text>     
       <TouchableOpacity
-        onPress={() => navigation.navigate("Guest", { eventId: event.id })}
-      >
-        <Text>Get all guest</Text>
+        onPress={() => navigation.navigate("Guest", { eventId: event.id })}>
+        <Text>Guest List</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Maps", { eventId: event.id })}>
+        <Text>Maps and Events</Text>
+      </TouchableOpacity>
+{/*       <TouchableOpacity
+        onPress={() => navigation.navigate("Message", { eventId: event.id })}>
+        <Text>Messages Board</Text>
+      </TouchableOpacity> */}
     </View>
+    
   );
 };
 
