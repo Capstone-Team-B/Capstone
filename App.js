@@ -1,12 +1,13 @@
-import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { auth } from "./firebase";
-import LoginScreen from "./client/screens/LoginScreen";
-import TabNavigator from "./client/navigation/TabNavigator";
-import SplashDown from "./client/screens/Splash/SplashDown";
+import { StatusBar } from 'expo-status-bar';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { auth } from './firebase';
+import LoginScreen from './client/screens/LoginScreen';
+import TabNavigator from './client/navigation/TabNavigator';
+import SplashDown from './client/screens/Splash/SplashDown';
+import MessageboardScreen from './client/screens/SingleEvent/MessageBoardScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -49,8 +50,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
