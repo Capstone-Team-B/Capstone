@@ -31,6 +31,7 @@ const SingleEvent = (params) => {
         onPress={() =>
           navigation.navigate('MessageboardScreen', {
             eventId: event.id,
+            //DOUBLE CHECK THIS IS STILL THERE
             name: event.name,
           })
         }

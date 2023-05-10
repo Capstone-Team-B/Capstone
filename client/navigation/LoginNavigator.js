@@ -13,7 +13,11 @@ const LoginNavigator = ({ user }) => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="EventList" component={EventListScreen} user={user} />
+        <Stack.Screen
+          name="EventList"
+          component={EventListScreen}
+          user={user}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
