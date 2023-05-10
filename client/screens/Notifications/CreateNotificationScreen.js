@@ -1,14 +1,13 @@
 import React, { useState, useCallback } from 'react';
 import { KeyboardAvoidingView, Alert, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { getDatabase, ref, child, push, set } from 'firebase/database';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { TimePickerModal } from 'react-native-paper-dates';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-const CreateNotification = (props) => {
-    const route = useRoute();
-    const { eventId } = route.params;
+const CreateNotification = (params) => {
+    const [event, setEvent] = useState(params.route.params.event);
 
     const [notification, setNotification] = useState([]);
     const [open, setOpen] = useState(false);
@@ -26,7 +25,7 @@ const CreateNotification = (props) => {
 
     const handleDeleteNotification = () => {
         setNotification({});
-        navigation.navigate("Home");
+        navigation.navigate("All Notifications", { event: event });
     };
 
     const handleUpdateNotification = (field, value) => {
@@ -54,7 +53,7 @@ const CreateNotification = (props) => {
             body: notificationBody, 
             scheduled_date: notificationDate,
             scheduled_time: notificationTime,
-            event_id: eventId
+            event_id: event.id
         }
 
         // Create a new tag with the subevent name
@@ -71,7 +70,7 @@ const CreateNotification = (props) => {
         const newNotificationRef = push(notificationRef);
         await set(newNotificationRef, newNotificationWithTagData);
 
-        navigation.navigate("Home", { eventId: eventId });
+        navigation.navigate("All Notifications", { event: event });
     };
       
     return (

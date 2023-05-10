@@ -1,11 +1,10 @@
 import React, { useState, useCallback } from 'react'
 import { KeyboardAvoidingView, Alert, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native'
-import { useNavigation, useRoute } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import { getDatabase, ref, child, get, set, push } from 'firebase/database'
 
-const CreateGuestList = (props) => {
-    const route = useRoute();
-    const { eventId } = route.params;
+const CreateGuestList = (params) => {
+    const [event, setEvent] = useState(params.route.params.event);
 
     const [guestList, setGuestList] = useState([]);
 
@@ -48,7 +47,7 @@ const CreateGuestList = (props) => {
                 firstname: guestFirstname, 
                 lastname: guestLastname,
                 role: "Guest",
-                event_id: eventId
+                event_id: event.id
             }
 
             const newGuestListRef = push(guestListRef);
@@ -110,7 +109,7 @@ const CreateGuestList = (props) => {
             </View>
             <View>
                 <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-                    <Text style={styles.submitButtonText}>Create Guest List</Text>
+                    <Text style={styles.submitButtonText}>Save Updates</Text>
                 </TouchableOpacity>
             </View>
         </ScrollView>

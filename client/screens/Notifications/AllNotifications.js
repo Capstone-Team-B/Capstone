@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { KeyboardAvoidingView, Alert, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { getDatabase, ref, child, get } from 'firebase/database';
 
 const AllNotifications = (params) => {
-    const route = useRoute();
-    const { eventId } = route.params;
+    const [event, setEvent] = useState(params.route.params.event);
     const [notifications, setNotifications] = useState([]);
     const navigation = useNavigation();
     const dbRef = ref(getDatabase());
@@ -19,49 +18,120 @@ const AllNotifications = (params) => {
         const data = notificationsSnapshot;
         const notificationList = Object.keys(data).map((key) => ({ id: key, ...data[key] }));
         const filteredNotifications = notificationList.filter((notification) =>
-          notification.event_id === eventId
+          notification.event_id === event.id
         );
         setNotifications(filteredNotifications);
       }   
     }, [])
 
     return (
-      <View style={styles.container}>
-        {notifications.length > 0 
-        ? (notifications.map((notification) => (
-            <View key={notification.id} style={styles.item}>
-              <Text style={styles.text}>Title: {notification.title}</Text>
-              <Text style={styles.text}>Body: {notification.body}</Text>
-              <Text style={styles.text}>Scheduled Date: {notification.scheduled_date}</Text>
-              <Text style={styles.text}>Scheduled Time: {new Date(notification.scheduled_time).toLocaleTimeString()}</Text>
-            </View>
-          ))) 
-        : ( <Text>No notifications found</Text>)}
-        <View>
-          <Text style={{ fontSize: 12, textAlign: 'center', marginTop: 10 }}>
-              <Text style={{ color: 'darkblue', fontWeight: 'bold' }} onPress={() => navigation.navigate("Create Notification")}>
-                  Create New Notification
-              </Text>
-          </Text>
+      <KeyboardAvoidingView
+      style={styles.container}
+      behavior='padding'
+      > 
+      <ScrollView style={styles.container}>
+        <View style={styles.section}>
+          {notifications.length > 0 
+          ? (notifications.map((notification) => (
+              <View key={notification.id} style={styles.item}>
+                <Text style={styles.input}>Title: {notification.title}</Text>
+                <Text style={styles.input}>Body: {notification.body}</Text>
+                <Text style={styles.input}>Scheduled Date: {notification.scheduled_date}</Text>
+                <Text style={styles.input}>Scheduled Time: {new Date(notification.scheduled_time).toLocaleTimeString()}</Text>
+              </View>
+            ))) 
+          : ( <Text>No notifications found</Text>)}
+          <View>
+            <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={() =>
+                    navigation.navigate('Create Notification', { event: event })
+                  }
+                >
+                <Text style={styles.addButtonText}>Create New Notification</Text>
+              </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </ScrollView>
+      </KeyboardAvoidingView>
   ); 
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+      flex: 1,
+      padding: 20,
   },
-  item: {
-    marginVertical: 8,
-    marginHorizontal: 16,
+  section: {
+      marginBottom: 20,
   },
-  text: {
-    fontSize: 16,
-    fontWeight: 'bold',
+  sectionTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 10,
+  },
+  input: {
+      borderWidth: 1,
+      borderColor: '#ccc',
+      borderRadius: 5,
+      padding: 10,
+      marginBottom: 10,
+  },
+  addButton: {
+      backgroundColor: '#007bff',
+      borderRadius: 5,
+      padding: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 10,
+  },
+  addButtonText: {
+      color: '#fff',
+      fontSize: 16,
+      fontWeight: 'bold',
+  },
+  deleteButton: {
+      backgroundColor: 'white',
+      borderColor: '#dc3545',
+      borderWidth: 2,
+      borderRadius: 5,
+      padding: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 10,
+  },
+  deleteButtonText: {
+      color: '#dc3545',
+      fontSize: 14,
+      fontWeight: 'bold',
+  },
+  outlineButton: {
+      backgroundColor: 'white',
+      borderColor: '#007bff',
+      borderWidth: 2,
+      borderRadius: 5,
+      padding: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 10,
+  },
+  outlineButtonText: {
+      color: '#007bff',
+      fontSize: 14,
+      fontWeight: 'bold',
+  },
+  submitButton: {
+      backgroundColor: '#2E8B57',
+      borderRadius: 5,
+      padding: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 10,
+  },
+  submitButtonText: {
+      color: '#fff',
+      fontSize: 16,
+      fontWeight: 'bold',
   },
 });
 

@@ -13,9 +13,9 @@ const CreateEventNavigator = () => {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Create Event" component={CreateEventForm} />
-        <Stack.Screen name="Create Sub Event" component={CreateSubEvent} />
-        <Stack.Screen name="Create Notifications" component={CreateNotification} />
-        <Stack.Screen name="Create Guest List" component={CreateGuestList} />
+        {/* <Stack.Screen name="Create SubEvent" component={CreateSubEvent} />
+        <Stack.Screen name="Create Notification" component={CreateNotification} />
+        <Stack.Screen name="Create Guest List" component={CreateGuestList} /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

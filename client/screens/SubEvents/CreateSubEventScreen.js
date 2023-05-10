@@ -1,14 +1,13 @@
 import React, { useState, useCallback } from 'react';
 import { KeyboardAvoidingView, Alert, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { getDatabase, ref, child, push, set } from 'firebase/database';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { TimePickerModal } from 'react-native-paper-dates';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-const CreateSubEvent = (props) => {
-    const route = useRoute();
-    const { eventId } = route.params;
+const CreateSubEvent = (params) => {
+    const [event, setEvent] = useState(params.route.params.event);
 
     const [subEvent, setSubEvent] = useState({ name: '', location: '', date: null, startTime: null, endTime: null });
     const [selectedEventType, setSelectedEventType] = useState(null);
@@ -44,7 +43,7 @@ const CreateSubEvent = (props) => {
          
     const handleDeleteSubEvent = () => {
         setSubEvent({});
-        navigation.navigate("Home");
+        navigation.navigate("All Sub Events", { event: event });
     };
 
     const handleUpdateSubEvent = (field, value) => {
@@ -72,7 +71,7 @@ const CreateSubEvent = (props) => {
                 date: subeventDate, 
                 startTime: subeventtartTime, 
                 endTime: subeventEndTime,
-                event_id: eventId 
+                event_id: event.id 
             };
 
             // Create a new tag with the subevent name
@@ -89,7 +88,7 @@ const CreateSubEvent = (props) => {
             const newSubEventRef = push(subeventRef);
             await set(newSubEventRef, newSubEventWithTagData);
         
-        navigation.navigate("Home", { eventId: eventId });
+        navigation.navigate("All Sub Events", { event: event });
     }
 
     return (

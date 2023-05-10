@@ -1,10 +1,17 @@
-import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import SingleEvent from "../screens/SingleEvent/SingleEvent";
-import GuestProfileScreen from "../screens/SingleEvent/GuestProfileScreen";
-import GuestScreen from "../screens/SingleEvent/GuestScreen";
-import EventListScreen from "../screens/EventList/EventListScreen";
-
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import SingleEvent from '../screens/SingleEvent/SingleEvent';
+import GuestProfileScreen from '../screens/SingleEvent/GuestProfileScreen';
+import GuestScreen from '../screens/SingleEvent/GuestScreen';
+import EventListScreen from '../screens/EventList/EventListScreen';
+import MessageboardScreen from '../screens/SingleEvent/MessageBoardScreen';
+import EditEvent from '../screens/NewEvent/EditEventScreen';
+import CreateEventForm from '../screens/NewEvent/CreateEventScreen';
+import CreateSubEvent from '../screens/SubEvents/CreateSubEventScreen';
+import CreateNotification from '../screens/Notifications/CreateNotificationScreen';
+import CreateGuestList from '../screens/GuestList/CreateGuestListScreen';
+import AllNotifications from '../screens/Notifications/AllNotifications';
+import AllSubEvents from '../screens/SubEvents/AllSubEvents';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,6 +49,17 @@ const EventNavigator = (props) => {
         component={MessageboardScreen}
         options={{ title: 'Messageboard' }}
       />
+      <Stack.Screen 
+        name="Edit Event" 
+        component={EditEvent}
+        options={{ title: 'Edit Event' }}
+        />
+        <Stack.Screen name="Create Event" component={CreateEventForm} />
+        <Stack.Screen name="Create Sub Event" component={CreateSubEvent} />
+        <Stack.Screen name="Create Notification" component={CreateNotification} />
+        <Stack.Screen name="Create Guest List" component={CreateGuestList} />
+        <Stack.Screen name="All Notifications" component={AllNotifications} />
+        <Stack.Screen name="All Sub Events" component={AllSubEvents} />
     </Stack.Navigator>
   );
 };

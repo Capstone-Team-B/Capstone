@@ -42,7 +42,16 @@ const SingleEvent = (params) => {
           navigation.navigate('GuestProfileScreen', { eventId: event.id })
         }
       >
+
         <Text>My Guest Profile</Text>
+      </TouchableOpacity>
+      {/* need to add logic to only show if user is host */}
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('Edit Event', { event: event })
+        }
+        >
+        <Text>Edit Event</Text>
       </TouchableOpacity>
     </View>
   );
