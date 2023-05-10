@@ -19,13 +19,12 @@ import {
 } from 'firebase/database';
 import { auth } from '../../../firebase';
 
-const event_name = 'test';
 const MessageboardScreen = (params) => {
   const [eventId, setEventId] = useState(params.route.params.eventId);
   const dbRef = ref(getDatabase());
   const db = getDatabase();
   const [newMessage, setNewMessage] = useState('');
-
+  const [eventName, setEventName] = useState('');
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -44,6 +43,7 @@ const MessageboardScreen = (params) => {
             ...data[key],
           }));
           setMessages(messageList);
+          setEventName(params.route.params.name);
         } else {
           console.log('No data available');
         }
@@ -100,7 +100,7 @@ const MessageboardScreen = (params) => {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <Text style={styles.eventLabel}>Messages for {event_name}</Text>
+      <Text style={styles.eventLabel}>Messages for {eventName}</Text>
       <View style={styles.inputContainer}>
         {messages.map((message) => (
           <View key={message.id} style={styles.item}>

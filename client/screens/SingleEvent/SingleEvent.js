@@ -29,7 +29,10 @@ const SingleEvent = (params) => {
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate('MessageboardScreen', { eventId: event.id })
+          navigation.navigate('MessageboardScreen', {
+            eventId: event.id,
+            name: event.name,
+          })
         }
       >
         <Text>Event Messageboard</Text>
