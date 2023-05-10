@@ -10,7 +10,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 const CreateEventForm = () => {
     const [weddingName, setWeddingName] = useState('');
     const [location, setLocation] = useState('');
-    const [date, setDate] = useState({ startDate: undefined, endDate: undefined });
+    const [date, setDate] = useState(undefined);
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
     const [selectedEventType, setSelectedEventType] = useState('');
@@ -21,14 +21,15 @@ const CreateEventForm = () => {
       setVisible(false)
     }, [setVisible])
 
-    const onDismissRange = useCallback(() => {
+    const onDismissSingle = useCallback((params) => {
         setOpen(false);
+        setDate(params.date)
     }, [setOpen]);
 
-    const onConfirmRange = useCallback(
-        ({ startDate, endDate }) => {
+    const onConfirmSingle = useCallback(
+        (params) => {
             setOpen(false);
-            setDate({ startDate, endDate });
+            setDate(params.date);
         },
         [setOpen, setDate]
     );
@@ -73,9 +74,9 @@ const CreateEventForm = () => {
                 host_id: currentUserId,
             };
             await set(newEventRef, newEvent);
-            const eventId = newEventRef.key;
+            const event = newEventRef;
 
-            navigation.navigate("Create Sub Events", { eventId: eventId });
+            navigation.navigate("SingleEvent", { event: event });
           
         } catch (error) {
             console.log(error);
@@ -108,26 +109,21 @@ const CreateEventForm = () => {
                 <TouchableOpacity onPress={() => setOpen(true)}>
                 <TouchableOpacity onPress={() => setOpen(true)}>
                     <Text style={styles.outlineButtonText}>
-                        {date && date.startDate && date.endDate
-                            ? `${date.startDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })} - ${date.endDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}`
-                            : 'Select Date(s)'}
+                        {date 
+                            ? `${date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}`
+                            : 'Select Date'}
                     </Text>
                 </TouchableOpacity>
                 </TouchableOpacity>
                     <SafeAreaProvider>
                         <DatePickerModal
-                            mode="range"
+                            mode="single"
                             locale="en"
                             visible={open}
-                            onDismiss={onDismissRange}
-                            startDate={date.startDate}
-                            endDate={date.endDate}
-                            onConfirm={onConfirmRange}
+                            onDismiss={onDismissSingle}
+                            date={date}
+                            onConfirm={onConfirmSingle}
                             saveLabel="Save" 
-                            label="Select period" 
-                            startLabel="From" 
-                            endLabel="To" 
-                            animationType="slide" 
                         />
                     </SafeAreaProvider>
                 </TouchableOpacity>
