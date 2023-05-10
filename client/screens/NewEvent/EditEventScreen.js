@@ -1,19 +1,21 @@
 import React, { useState, useCallback } from 'react';
 import { KeyboardAvoidingView, Alert, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
-import { auth } from '../../../firebase';
 import { useNavigation } from '@react-navigation/native';
-import { getDatabase, ref, child, set, push } from 'firebase/database';
+import { getDatabase, ref, child, update } from 'firebase/database';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { TimePickerModal } from 'react-native-paper-dates';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-const CreateEventForm = () => {
-    const [weddingName, setWeddingName] = useState('');
-    const [location, setLocation] = useState('');
-    const [description, setDescription] = useState('');
-    const [date, setDate] = useState(undefined);
-    const [startTime, setStartTime] = useState('');
-    const [endTime, setEndTime] = useState('');
+const EditEvent = (params) => {
+    const [event, setEvent] = useState(params.route.params.event);
+    console.log("date", event.date);
+  
+    const [weddingName, setWeddingName] = useState(event.name || '');
+    const [location, setLocation] = useState(event.location || '');
+    const [date, setDate] = useState(event.date || '');
+    const [description, setDescription] = useState(event.description || '');
+    const [startTime, setStartTime] = useState(event.startTime || '');
+    const [endTime, setEndTime] = useState(event.endTime || '');
     const [selectedEventType, setSelectedEventType] = useState('');
     const [open, setOpen] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -51,39 +53,31 @@ const CreateEventForm = () => {
     };
 
     const handleSubmit = async () => {
-        if (!weddingName || !location || !date || !startTime || !endTime) {
-          Alert.alert('Please fill in all fields');
-          return;
-        }
-        try {
-            const dbRef = ref(getDatabase());
-            const currentUser = auth.currentUser;
-            if (!currentUser) {
-                navigation.navigate("Login");
-                return;
-            }
-            const currentUserId = currentUser.uid;
-            const eventRef = child(dbRef, "events");
-        
-            const newEventRef = push(eventRef);
-            const newEvent = {
-                name: weddingName,
-                description, description,
-                location: location,
-                date: date,
-                startTime: startTime,
-                endTime: endTime,
-                host_id: currentUserId,
-            };
-            await set(newEventRef, newEvent);
-            const event = newEventRef;
-
-            navigation.navigate("SingleEvent", { event: event });
-          
-        } catch (error) {
-            console.log(error);
-        }
+      if (!weddingName || !location || !date || !startTime || !endTime) {
+        Alert.alert('Please fill in all fields');
+        return;
+      }
+      try {
+        const dbRef = ref(getDatabase());
+        const eventId = event.id;
+        const eventRef = child(dbRef, `events/${eventId}`);
+        const updatedEvent = {
+          name: weddingName,
+          description: description,
+          location: location,
+          date: date,
+          startTime: startTime,
+          endTime: endTime,
+        };
+    
+        await update(eventRef, updatedEvent); 
+    
+        navigation.navigate("SingleEvent", { event: updatedEvent });
+      } catch (error) {
+        console.log(error);
+      }
     };
+    
        
     return (
         <KeyboardAvoidingView
@@ -119,7 +113,7 @@ const CreateEventForm = () => {
                 <TouchableOpacity onPress={() => setOpen(true)}>
                     <Text style={styles.outlineButtonText}>
                         {date 
-                            ? `${date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}`
+                            ? `${new Date(event.date).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}`
                             : 'Select Date'}
                     </Text>
                 </TouchableOpacity>
@@ -156,14 +150,40 @@ const CreateEventForm = () => {
             </View>
             <View>
                 <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} required={true}>
-                    <Text style={styles.submitButtonText}>Create Event</Text>
+                    <Text style={styles.submitButtonText}>Update Event</Text>
                 </TouchableOpacity>
             </View>
-        </ScrollView>
-        </KeyboardAvoidingView>
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() =>
+                navigation.navigate('All Sub Events', { event: event })
+              }
+            >
+              <Text style={styles.addButtonText}>View Sub Events</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() =>
+                navigation.navigate('All Notifications', { event: event })
+              }
+            >
+              <Text style={styles.addButtonText}>View Notifications</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() =>
+                navigation.navigate('Create Guest List', { event: event })
+              }
+            >
+              <Text style={styles.addButtonText}>Edit Guests</Text>
+            </TouchableOpacity>
+            </ScrollView>
+            </KeyboardAvoidingView>
     );
 };
-    
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -242,4 +262,4 @@ const styles = StyleSheet.create({
     },
 });
     
-export default CreateEventForm;
+export default EditEvent;
