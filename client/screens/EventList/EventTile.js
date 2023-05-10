@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Pressable } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/core";
 
-const EventTile = ({ event }) => {
+const EventTile = ({ event, uid }) => {
   // add logic that determines if logged in user id matches host ID; if so, add different styling or add indicator
 
   // convert ISO date to more legible format
@@ -42,7 +42,7 @@ const EventTile = ({ event }) => {
         navigation.navigate('SingleEvent', {event})
       }
     >
-      <View key={event.id} style={styles.item}>
+      <View key={event.id} style={uid === event.host_id? styles.itemHost : styles.itemGuest}>
         <Text style={styles.eventHeader}>{event.name}</Text>
         {/* <Text style={styles.eventSubHeader}>{formatDate(event.date)}</Text> */}
         <Text style={styles.eventSubHeader}>{event.location}</Text>
@@ -55,10 +55,17 @@ const EventTile = ({ event }) => {
 export default EventTile;
 
 const styles = StyleSheet.create({
-  item: {
+  itemGuest: {
     margin: 10,
     borderWidth: 2,
     borderColor: "dodgerblue",
+    padding: 10,
+  },
+  itemHost: {
+    margin: 10,
+    borderWidth: 2,
+    borderColor: "orchid",
+    backgroundColor: "plum",
     padding: 10,
   },
   eventHeader: {

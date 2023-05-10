@@ -12,38 +12,28 @@ import { getDatabase, ref, child, get } from "firebase/database";
 import SignOutBtn from "./SignOutBtn";
 import { useNavigation } from "@react-navigation/native";
 
-const dummyUser = {
-  firstName: "John",
-  lastName: "Doe",
-  password: "password123",
-  phoneNumber: "555-555-1234",
-  email: "johndoe@user.com",
-  location: "New York, NY, USA",
-};
+const MyAccountScreen = (props) => {
+  const [user, setUser] = useState({});
+  const { uid } = props.route.params;
 
-const MyAccountScreen = ({ route }) => {
-  const [user, setUser] = useState(dummyUser);
+  useEffect(() => {
+    const dbRef = ref(getDatabase());
+    get(child(dbRef, `users/${uid}`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log("this is the data from the database -->", snapshot.val());
+          setUser(snapshot.val());
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
-  // const {uid} = route.params
-
-  // useEffect(() => {
-  //   const dbRef = ref(getDatabase());
-  //   get(child(dbRef, `users/${uid}`))
-  //     .then((snapshot) => {
-  //       if (snapshot.exists()) {
-  //         console.log("this is the data from the database -->", snapshot.val());
-  //         setUser(snapshot.val());
-  //       } else {
-  //         console.log("No data available");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, []);
-
-  // console.log("userId -->", uid);
-  // console.log("user -->", user);
+  console.log("uid in MyAccountScreen -->", uid);
+  console.log("user on MyAccountScreen -->", user);
   const navigation = useNavigation();
 
   const handlePressCreateEvent = () => {
