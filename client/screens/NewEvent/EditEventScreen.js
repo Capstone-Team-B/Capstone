@@ -31,8 +31,12 @@ const EditEvent = (params) => {
 
     const onConfirmSingle = useCallback(
         (params) => {
-            setOpen(false);
-            setDate(params.date);
+          setOpen(false);
+          setDate(params.date);
+          setEvent((prevEvent) => ({
+            ...prevEvent,
+            date: params.date,
+          }));
         },
         [setOpen, setDate]
     );
@@ -53,29 +57,36 @@ const EditEvent = (params) => {
     };
 
     const handleSubmit = async () => {
-      if (!weddingName || !location || !date || !startTime || !endTime) {
-        Alert.alert('Please fill in all fields');
-        return;
-      }
-      try {
-        const dbRef = ref(getDatabase());
-        const eventId = event.id;
-        const eventRef = child(dbRef, `events/${eventId}`);
-        const updatedEvent = {
-          name: weddingName,
-          description: description,
-          location: location,
-          date: date,
-          startTime: startTime,
-          endTime: endTime,
-        };
-    
-        await update(eventRef, updatedEvent); 
-    
-        navigation.navigate("SingleEvent", { event: updatedEvent });
-      } catch (error) {
-        console.log(error);
-      }
+        console.log("event", event)
+        if (!weddingName || !location || !date || !startTime || !endTime) {
+          Alert.alert('Please fill in all fields');
+          return;
+        }
+        try {
+          const dbRef = ref(getDatabase());
+          const eventId = event.id;
+          const eventRef = child(dbRef, `events/${eventId}`);
+      
+          const eventSnapshot = await get(eventRef);
+          if (!eventSnapshot.exists()) {
+            throw new Error(`Event with ID ${eventId} does not exist`);
+          }
+      
+          const updatedEvent = {
+            name: weddingName,
+            description: description,
+            location: location,
+            date: date,
+            startTime: startTime,
+            endTime: endTime,
+          };
+      
+          await update(eventRef, updatedEvent);
+      
+          navigation.navigate("SingleEvent", { event: updatedEvent });
+        } catch (error) {
+          console.log(error);
+        }
     };
     
        

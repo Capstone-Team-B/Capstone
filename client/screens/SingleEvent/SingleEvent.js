@@ -8,6 +8,10 @@ const SingleEvent = (params) => {
   const [event, setEvent] = useState(params.route.params.event);
   console.log(event);
 
+  useEffect(() => {
+    setEvent(params.route.params.event);
+  }, [params.route.params.event]);
+
   const navigation = useNavigation();
 
   return (
@@ -18,7 +22,7 @@ const SingleEvent = (params) => {
       <Text> {event.location}</Text>
       <Text>
         {' '}
-        {event.starttime} & {event.endtime}
+        {event.startTime} & {event.endTime}
       </Text>
       <Text> {event.description}</Text>
       <TouchableOpacity
