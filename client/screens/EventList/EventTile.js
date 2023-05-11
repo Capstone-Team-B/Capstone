@@ -4,7 +4,7 @@ import React from "react";
 import { useNavigation } from "@react-navigation/core";
 
 const EventTile = ({ event, uid }) => {
-  // console.log("uid in EventTile -->", uid);
+
   const navigation = useNavigation();
 
   return (

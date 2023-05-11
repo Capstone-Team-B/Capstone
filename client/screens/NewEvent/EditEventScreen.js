@@ -1,13 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import { KeyboardAvoidingView, Alert, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { getDatabase, ref, child, update, get } from 'firebase/database';
+import { getDatabase, ref, child, update } from 'firebase/database';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { TimePickerModal } from 'react-native-paper-dates';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const EditEvent = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
+    console.log("date", event.date);
   
     const [weddingName, setWeddingName] = useState(event.name || '');
     const [location, setLocation] = useState(event.location || '');
@@ -30,13 +31,10 @@ const EditEvent = (params) => {
 
     const onConfirmSingle = useCallback(
         (params) => {
-          setOpen(false);
-          setEvent((prevEvent) => ({
-            ...prevEvent,
-            date: params.date,
-          }));
+            setOpen(false);
+            setDate(params.date);
         },
-        [setOpen, setEvent]
+        [setOpen, setDate]
     );
 
     const navigation = useNavigation();
@@ -55,38 +53,30 @@ const EditEvent = (params) => {
     };
 
     const handleSubmit = async () => {
-        console.log("date", date)
-        if (!weddingName || !location || !date || !startTime || !endTime) {
-          Alert.alert('Please fill in all fields');
-          return;
-        }
-        try {
-          const dbRef = ref(getDatabase());
-          const eventId = event.id;
-          const eventRef = child(dbRef, `events/${eventId}`);
-      
-          const eventSnapshot = await get(eventRef);
-          if (!eventSnapshot.exists()) {
-            throw new Error(`Event with ID ${eventId} does not exist`);
-          }
-      
-          const updatedEvent = {
-            name: weddingName,
-            description: description,
-            location: location,
-            date: date,
-            startTime: startTime,
-            endTime: endTime,
-          };
-      
-          await update(eventRef, updatedEvent);
-      
-          navigation.navigate("SingleEvent", { event: updatedEvent });
-        } catch (error) {
-          console.log(error);
-        }
+      if (!weddingName || !location || !date || !startTime || !endTime) {
+        Alert.alert('Please fill in all fields');
+        return;
+      }
+      try {
+        const dbRef = ref(getDatabase());
+        const eventId = event.id;
+        const eventRef = child(dbRef, `events/${eventId}`);
+        const updatedEvent = {
+          name: weddingName,
+          description: description,
+          location: location,
+          date: date,
+          startTime: startTime,
+          endTime: endTime,
+        };
+    
+        await update(eventRef, updatedEvent); 
+    
+        navigation.navigate("SingleEvent", { event: updatedEvent });
+      } catch (error) {
+        console.log(error);
+      }
     };
-      
     
        
     return (
@@ -118,7 +108,8 @@ const EditEvent = (params) => {
                     onChangeText={setLocation}
                     required={true}
                 />
-                <TouchableOpacity style={styles.outlineButton}>
+                <TouchableOpacity style={styles.outlineButton} onPress={() => setOpen(true)}>
+                <TouchableOpacity onPress={() => setOpen(true)}>
                 <TouchableOpacity onPress={() => setOpen(true)}>
                     <Text style={styles.outlineButtonText}>
                         {date 
@@ -126,13 +117,14 @@ const EditEvent = (params) => {
                             : 'Select Date'}
                     </Text>
                 </TouchableOpacity>
+                </TouchableOpacity>
                     <SafeAreaProvider>
                         <DatePickerModal
                             mode="single"
                             locale="en"
-                            value={date}
                             visible={open}
                             onDismiss={onDismissSingle}
+                            date={date}
                             onConfirm={onConfirmSingle}
                             saveLabel="Save" 
                             label="Select date" 
