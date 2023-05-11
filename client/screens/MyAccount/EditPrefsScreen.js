@@ -12,77 +12,55 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, update, set } from "firebase/database";
 
-const EditPrefsScreen = ({ route }) => {
-    const [user, setUser] = useState(route.params.user);
+const EditPreferencesScreen = (props) => {
+    const [user, setUser] = useState(props.route.params);
     console.log(user);
-    const [accessibility, setAccessibility] = useState("");
-    const [allergies, setAllergies] = useState("");
-    const [dietRestrictions, setDietRestrictions] = useState("");
-    const [otherInfo, setOtherInfo] = useState("");
+    const [accessibility, setAccessibility] = useState(
+        user.accessibility || ""
+    );
+    const [dietary, setDietary] = useState("");
+    // OTHER INFO AND ALLERGIES MAY ADD BACK IN///
+    // const [otherInfo, setOtherInfo] = useState("");
+    // <TextInput
+    //     style={styles.input}
+    //     placeholder="Other Information"
+    //     value={otherInfo}
+    //     onChangeText={setOtherInfo}
+    // />;
+    // const [allergies, setAllergies] = useState("");
+    // <TextInput
+    //     style={styles.input}
+    //     placeholder="Allergies"
+    //     value={allergies}
+    //     onChangeText={setAllergies}
+    // />;
 
     useEffect(() => {
-        console.log("useEffect active");
-        console.log("params are the user object", params);
-        // move to prefs page.
-        setAccessibility(params.accessibility);
-        setAllergies(params.allergies);
-        setDietRestrictions(params.dietRestrictions);
-        setOtherInfo(params.otherInfo);
-    }, [params]);
+        setUser(props.route.params);
+    }, [props]);
 
     const navigation = useNavigation();
 
-    const dbRef = ref(getDatabase());
-    const db = getDatabase();
-    const handleSubmit = async () => {
-        const currentTime = new Date().toISOString();
-        console.log("currentTime", currentTime);
-        console.log(allergies);
-        // set(ref(db), `users/${params.id}`, {
-        //     firstName: firstName,
-        // })
-        //     .then(() => {
-        //         console.log("updated");
-        //     })
-        //     .catch((error) => {
-        //         console.log("whoops", error);
-        //     });
-    };
+    const handleSubmit = async () => {};
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="height">
             <ScrollView style={styles.container}>
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Prefs Details</Text>
+                    <Text style={styles.sectionTitle}>Preferences</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Allergies"
-                        value={allergies}
-                        onChangeText={setAllergies}
+                        placeholder="Dietary"
+                        value={dietary}
+                        onChangeText={setDietary}
                         // required={true}
                     />
 
                     <TextInput
                         style={styles.input}
-                        placeholder="Diet Restrictions"
-                        value={dietRestrictions}
-                        onChangeText={setDietRestrictions}
-                        // required={true}
-                    />
-
-                    <TextInput
-                        style={styles.input}
-                        placeholder="accessibility"
+                        placeholder="Accessibility"
                         value={accessibility}
                         onChangeText={setAccessibility}
-                        // required={true}
-                    />
-
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Other Information"
-                        value={otherInfo}
-                        onChangeText={setOtherInfo}
                         // required={true}
                     />
                 </View>
@@ -93,7 +71,7 @@ const EditPrefsScreen = ({ route }) => {
                         required={true}
                     >
                         <Text style={styles.submitButtonText}>
-                            Update Prefs
+                            Update Preferences
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -180,4 +158,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default EditPrefsScreen;
+export default EditPreferencesScreen;

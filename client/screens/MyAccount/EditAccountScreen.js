@@ -7,6 +7,7 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
+    Alert,
 } from "react-native";
 // import { auth } from "../../../firebase";
 import { useNavigation } from "@react-navigation/native";
@@ -18,39 +19,45 @@ const EditAccountScreen = (props) => {
     const [lastName, setLastName] = useState(user.lastName || "");
     const [email, setEmail] = useState(user.email || "");
     const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || "");
-    const [location, setLocation] = useState(user.location || "");
+    const [homeCity, setHomeCity] = useState(user.homeCity || "");
+    const [profilePic, setProfilePic] = useState(user.profilePic || "");
 
     useEffect(() => {
-        console.log("useEffect active");
         setUser(props.route.params);
     }, [props]);
 
     const navigation = useNavigation();
     const handleSubmit = async () => {
         console.log("user updates", user);
-        if (!firstName || !lastName || !email) {
+        if (firstName === "" || lastName === "" || email === "") {
             Alert.alert("Please provide your name and email");
             return;
         }
         try {
-            const dbRef = ref(getDatabase());
-            const userId = user.id;
-            const userRef = child(dbRef, `users/${userId}`);
-            const userSnapshot = await get(userRef);
-            if (!userSnapshot.exists()) {
-                throw new Error(`Event with ID ${userId} does not exist`);
-            }
+            //TODO COMMENT BACK IN //
+
+            // const dbRef = ref(getDatabase());
+            // const userId = user.id;
+            // const userRef = child(dbRef, `users/${userId}`);
+            // const userSnapshot = await get(userRef);
+            // if (!userSnapshot.exists()) {
+            //     throw new Error(`Event with ID ${userId} does not exist`);
+            // }
             const updatedUser = {
                 firstName: firstName,
                 lastName: lastName,
                 email: email,
                 phoneNumber: phoneNumber,
+                homeCity: homeCity,
+                profilePic: profilePic,
             };
+            //TODO COMMENT BACK IN //
+            // await update(userRef, updatedUser)
+            navigation.navigate("MyAccountScreen", { user: updatedUser });
             console.log("updates to user", updatedUser);
         } catch (error) {}
-        const currentTime = new Date().toISOString();
-        console.log("currentTime", currentTime);
-        console.log(firstName);
+        // const currentTime = new Date().toISOString();
+        // console.log("currentTime", currentTime);
         // update(ref(db), `users/${params.id}`, {
         //     firstName: firstName,
         // })
@@ -100,9 +107,17 @@ const EditAccountScreen = (props) => {
                     />
                     <TextInput
                         style={styles.input}
-                        placeholder="Location"
-                        value={location}
-                        onChangeText={setLocation}
+                        placeholder="homeCity"
+                        value={homeCity}
+                        onChangeText={setHomeCity}
+                        // required={true}
+                    />
+                    {/* need to change this to profile pic upload */}
+                    <TextInput
+                        style={styles.input}
+                        placeholder="profilePic"
+                        value={profilePic}
+                        onChangeText={setProfilePic}
                         // required={true}
                     />
                 </View>
