@@ -9,16 +9,16 @@ import CreateGuestList from "../screens/GuestList/CreateGuestListScreen";
 const Stack = createNativeStackNavigator();
 
 const CreateEventNavigator = () => {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Create Event" component={CreateEventForm} />
-        {/* <Stack.Screen name="Create SubEvent" component={CreateSubEvent} />
+    return (
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen name="Create Event" component={CreateEventForm} />
+                {/* <Stack.Screen name="Create SubEvent" component={CreateSubEvent} />
         <Stack.Screen name="Create Notification" component={CreateNotification} />
         <Stack.Screen name="Create Guest List" component={CreateGuestList} /> */}
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
 };
 
 export default CreateEventNavigator;

@@ -4,23 +4,19 @@ import { StyleSheet, Text, Pressable, View, Button } from "react-native";
 import { auth } from "../../../firebase";
 
 const SignOutBtn = () => {
-  const navigation = useNavigation();
+    const navigation = useNavigation();
 
-  const handleSignOut = () => {
-    auth
-      .signOut()
-      .then(() => {
-        navigation.replace("LoginScreen");
-      })
-      .catch((error) => alert(error.message));
-  };
+    const handleSignOut = () => {
+        auth.signOut()
+            .then(() => {
+                navigation.replace("LoginScreen");
+            })
+            .catch((error) => alert(error.message));
+    };
 
-  return (
-    <Button onPress={handleSignOut} title="Sign out" />
-  );
+    return <Button onPress={handleSignOut} title="Sign out" />;
 };
 
 export default SignOutBtn;
 
-const styles = StyleSheet.create({
-});
+const styles = StyleSheet.create({});
