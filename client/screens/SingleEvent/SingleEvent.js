@@ -30,7 +30,7 @@ const SingleEvent = (params) => {
           navigation.navigate('GuestScreen', { eventId: event.id })
         }
       >
-        <Text>Get all guest</Text>
+        <Text>View All Guests</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() =>
@@ -40,7 +40,7 @@ const SingleEvent = (params) => {
           })
         }
       >
-        <Text>Event Messageboard</Text>
+        <Text>Event MessageBoard</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() =>
