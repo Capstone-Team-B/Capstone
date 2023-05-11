@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  SafeAreaView
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { auth } from "../../firebase";
@@ -130,7 +131,7 @@ const LoginScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
+    <KeyboardAvoidingView style={styles.container} behavior="height">
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Email"

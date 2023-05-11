@@ -27,7 +27,7 @@ const AllSubEvents = (params) => {
     return (
       <KeyboardAvoidingView
       style={styles.container}
-      behavior='padding'
+      behavior="height"
       > 
         <ScrollView style={styles.container}>
             <View style={styles.section}>
