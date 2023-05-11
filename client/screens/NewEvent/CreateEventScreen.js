@@ -52,8 +52,8 @@ const CreateEventForm = () => {
 
     const handleSubmit = async () => {
         if (!weddingName || !location || !date || !startTime || !endTime) {
-          Alert.alert('Please fill in all fields');
-          return;
+            Alert.alert('Please fill in all fields');
+            return;
         }
         try {
             const dbRef = ref(getDatabase());
@@ -64,11 +64,13 @@ const CreateEventForm = () => {
             }
             const currentUserId = currentUser.uid;
             const eventRef = child(dbRef, "events");
-        
             const newEventRef = push(eventRef);
+            const newEventId = newEventRef.key; 
+            console.log("id", newEventId)
             const newEvent = {
+                id: newEventId,
                 name: weddingName,
-                description, description,
+                description: description,
                 location: location,
                 date: date,
                 startTime: startTime,
@@ -76,14 +78,13 @@ const CreateEventForm = () => {
                 host_id: currentUserId,
             };
             await set(newEventRef, newEvent);
-            const event = newEventRef;
-
-            navigation.navigate("SingleEvent", { event: event });
-          
+            navigation.navigate("SingleEvent", { event: newEvent });
         } catch (error) {
             console.log(error);
         }
     };
+    
+    
        
     return (
         <KeyboardAvoidingView
