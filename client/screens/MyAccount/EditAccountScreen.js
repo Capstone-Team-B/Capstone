@@ -111,6 +111,10 @@ const EditAccountScreen = (props) => {
                         onChangeText={setProfilePic}
                         // required={true}
                     />
+                    <SafeAreaView>
+      
+      <Button title="Upload Profile Picture" onPress={navigation.navigate('UploadProfilePicScreen')}/>
+    </SafeAreaView>
                 </View>
                 <View>
                     <TouchableOpacity
