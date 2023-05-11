@@ -1,4 +1,3 @@
-//Nataly was here
 import { StyleSheet, View, Text, SafeAreaView, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
 import EventTile from "./EventTile";
@@ -76,10 +75,10 @@ const EventListScreen = (props) => {
 export default EventListScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
+    container: {
+        flex: 1,
+        backgroundColor: "#fff",
+    },
 });
 
 snapshot = [

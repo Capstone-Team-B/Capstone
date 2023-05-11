@@ -10,60 +10,60 @@ import EventNavigator from "./EventNavigator";
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
-  const route = useRoute();
-  const { uid } = route.params;
-  // console.log("uid in tabnav -->", uid);
-  return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color }) => {
-          let iconName;
-          if (route.name === "MyAccountNavigator") {
-            iconName = "user";
-            color = focused ? "dodgerblue" : "gray";
-          } else if (route.name === "EventNavigator") {
-            iconName = "home";
-            color = focused ? "dodgerblue" : "gray";
-          } else if (route.name === "NotificationsScreen") {
-            iconName = "bell";
-            color = focused ? "dodgerblue" : "gray";
-          }
-          return (
-            <Feather
-              name={iconName}
-              size={28}
-              color={focused ? "dodgerblue" : "gray"}
+    const route = useRoute();
+    const { uid } = route.params;
+    // console.log("uid in tabnav -->", uid);
+    return (
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                tabBarIcon: ({ focused, color }) => {
+                    let iconName;
+                    if (route.name === "MyAccountNavigator") {
+                        iconName = "user";
+                        color = focused ? "dodgerblue" : "gray";
+                    } else if (route.name === "EventNavigator") {
+                        iconName = "home";
+                        color = focused ? "dodgerblue" : "gray";
+                    } else if (route.name === "NotificationsScreen") {
+                        iconName = "bell";
+                        color = focused ? "dodgerblue" : "gray";
+                    }
+                    return (
+                        <Feather
+                            name={iconName}
+                            size={28}
+                            color={focused ? "dodgerblue" : "gray"}
+                        />
+                    );
+                },
+            })}
+        >
+            <Tab.Screen
+                name="MyAccountNavigator"
+                component={MyAccountNavigator}
+                initialParams={{ uid: uid }}
+                options={{
+                    headerShown: false,
+                    tabBarLabel: "My Account",
+                }}
             />
-          );
-        },
-      })}
-    >
-      <Tab.Screen
-        name="MyAccountNavigator"
-        component={MyAccountNavigator}
-        initialParams={{ uid: uid }}
-        options={{
-          headerShown: false,
-          tabBarLabel: "My Account"
-        }}
-      />
-      <Tab.Screen
-        name="EventNavigator"
-        component={EventNavigator}
-        initialParams={{ uid: uid }}
-        options={{
-          headerShown: false,
-          tabBarLabel: "Events",
-        }}
-      />
-      <Tab.Screen
-        name="NotificationsScreen"
-        component={Notifications}
-        initialParams={{ uid: uid }}
-        options={{ title: "Notifications" }}
-      />
-    </Tab.Navigator>
-  );
+            <Tab.Screen
+                name="EventNavigator"
+                component={EventNavigator}
+                initialParams={{ uid: uid }}
+                options={{
+                    headerShown: false,
+                    tabBarLabel: "Events",
+                }}
+            />
+            <Tab.Screen
+                name="NotificationsScreen"
+                component={Notifications}
+                initialParams={{ uid: uid }}
+                options={{ title: "Notifications" }}
+            />
+        </Tab.Navigator>
+    );
 };
 
 export default TabNavigator;

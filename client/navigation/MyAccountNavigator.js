@@ -10,37 +10,41 @@ import { useRoute } from "@react-navigation/native";
 const Stack = createNativeStackNavigator();
 
 const MyAccountNavigator = (props) => {
-  const { uid } = props.route.params;
-  // console.log("uid in MyAccountNav -->", uid);
-  return (
-    <Stack.Navigator initialRouteName="MyAccountScreen">
-      <Stack.Screen
-        name="MyAccountScreen"
-        component={MyAccountScreen}
-        initialParams={{ uid: uid }}
-        options={{ title: "My Account" }}
-      />
-      <Stack.Screen name="CreateEvent" component={CreateEventForm} initialParams={{ uid: uid }}/>
-      <Stack.Screen
-        name="EditAccountScreen"
-        component={EditAccountScreen}
-        initialParams={{ uid: uid }}
-        options={{ title: "Edit Account" }}
-      />
-      <Stack.Screen
-        name="EditPrefsScreen"
-        component={EditPrefsScreen}
-        initialParams={{ uid: uid }}
-        options={{ title: "Edit Guest Preferences" }}
-      />
-      <Stack.Screen
-        name="ViewArchiveScreen"
-        component={ViewArchiveScreen}
-        initialParams={{ uid: uid }}
-        options={{ title: "Event Archive" }}
-      />
-    </Stack.Navigator>
-  );
+    const { uid } = props.route.params;
+    // console.log("uid in MyAccountNav -->", uid);
+    return (
+        <Stack.Navigator initialRouteName="MyAccountScreen">
+            <Stack.Screen
+                name="MyAccountScreen"
+                component={MyAccountScreen}
+                initialParams={{ uid: uid }}
+                options={{ title: "My Account" }}
+            />
+            <Stack.Screen
+                name="CreateEvent"
+                component={CreateEventForm}
+                initialParams={{ uid: uid }}
+            />
+            <Stack.Screen
+                name="EditAccountScreen"
+                component={EditAccountScreen}
+                initialParams={{ uid: uid }}
+                options={{ title: "Edit Account" }}
+            />
+            <Stack.Screen
+                name="EditPrefsScreen"
+                component={EditPrefsScreen}
+                initialParams={{ uid: uid }}
+                options={{ title: "Edit Guest Preferences" }}
+            />
+            <Stack.Screen
+                name="ViewArchiveScreen"
+                component={ViewArchiveScreen}
+                initialParams={{ uid: uid }}
+                options={{ title: "Event Archive" }}
+            />
+        </Stack.Navigator>
+    );
 };
 
 export default MyAccountNavigator;
