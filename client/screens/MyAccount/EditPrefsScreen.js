@@ -50,7 +50,7 @@ const EditPreferencesScreen = (props) => {
             // const userRef = child(dbRef, `users/${userId}`);
             // const userSnapshot = await get(userRef);
             // if (!userSnapshot.exists()) {
-            //     throw new Error(`Event with ID ${userId} does not exist`);
+            //     throw new Error(`User with ID ${userId} does not exist`);
             // }
             const updatedPrefs = {
                 dietary: dietary,
