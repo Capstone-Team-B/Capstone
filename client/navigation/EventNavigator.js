@@ -12,6 +12,7 @@ import CreateNotification from '../screens/Notifications/CreateNotificationScree
 import CreateGuestList from '../screens/GuestList/CreateGuestListScreen';
 import AllNotifications from '../screens/Notifications/AllNotifications';
 import AllSubEvents from '../screens/SubEvents/AllSubEvents';
+import MapEventScreen from '../screens/Maps/MapsandEvents';
 
 const Stack = createNativeStackNavigator();
 

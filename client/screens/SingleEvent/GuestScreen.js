@@ -1,4 +1,3 @@
-//Nataly was here
 import { useNavigation } from "@react-navigation/core";
 import {
   //KeyboardAvoidingView,
@@ -21,42 +20,68 @@ import {
   query,
   orderByChild,
   equalTo,
-  orderByValue
+  orderByValue,
 } from "firebase/database";
 
 const GuestScreen = (params) => {
   const [guestUsers, setguestUsers] = useState([]);
   const dbRef = ref(getDatabase());
-  console.log(params.route.params.eventId)
-  
+  console.log(params.route.params.eventId);
+
   const navigation = useNavigation();
 
-useEffect(()=>{
-  get(query(child(dbRef, 'guestlist'), orderByChild("event_id"), equalTo(params.route.params.eventId)))
-  .then((snapshot) => {
-    if (snapshot.exists()) {
-      const data = snapshot.val();
-      console.log(data)
-      setguestUsers(data);
-    } else {
-      console.log("No data available");
+  useEffect(() => {
+    if (params.route.params.eventId) {
+      //setguestUsers([]);
+
+      get(
+        query(
+          child(dbRef, "events"),
+          orderByChild("id"),
+          equalTo(params.route.params.eventId)
+        )
+      )
+        .then(async (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            const event = Object.keys(data).map((key) => ({ ...data[key] }))[0];
+
+            const _guestUser = [];
+            event.guests?.map(async (guest) => {
+              await get(child(dbRef, `users/${guest}`)).then((userSnapshot) => {
+                if (userSnapshot.exists()) {
+                  let user = userSnapshot.val();
+                  _guestUser.push(user);
+                  console.log(_guestUser);
+                  //setguestUsers([...guestUsers, user]);
+                }
+              });
+            });
+
+            setTimeout(() => {
+              setguestUsers(_guestUser);
+            }, 2000);
+          } else {
+            console.log("No data available");
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }
-  })
-  .catch((error) => {
-    console.error(error);
-  });
-}, [params.route.params.eventId])
-//
+  }, [params.route.params.eventId]);
+  //
   return (
     <View style={styles.container}>
-        <Text> Guest list</Text>
-        {
-          guestUsers.map((user, index)=>
-      <TouchableOpacity key={index} onPress={() => navigation.navigate("GuestProfile", {user})}>
-      Guest Profile {user.guest_id}
-      </TouchableOpacity>
-      )
-        }
+      <Text> Guest list</Text>
+      {guestUsers.map((user, index) => (
+        <TouchableOpacity
+          key={index}
+          onPress={() => navigation.navigate("GuestProfile", { user })}
+        >
+          <Text>Guest Profile {user.firstName}</Text>
+        </TouchableOpacity>
+      ))}
     </View>
   );
 };

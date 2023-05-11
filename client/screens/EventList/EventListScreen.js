@@ -19,55 +19,91 @@ const EventListScreen = (props) => {
   const [guestList, setGuestList] = useState(null);
   const [eventIds, setEventIds] = useState([]);
   const [eventList, setEventList] = useState([]);
-
+  const dbRef = ref(getDatabase());
   useEffect(() => {
-    const dbRef = ref(getDatabase());
-    get(query(child(dbRef, "guestlist"), orderByChild("guest_id"), equalTo(uid)))
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          const events = Object.values(snapshot.val()).map(
-            (event) => event.event_id
-          );
-          setGuestList(snapshot.val());
-          setEventIds(events);
-        } else {
-          console.log("No data available");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
 
-    if (eventIds.length) {
-      let events = [];
-      for (let i = 0; i < eventIds.length; i++) {
-        get(query(child(dbRef, `events/${eventIds[i]}`))).then((snapshot) => {
-          if (snapshot.exists()) {
-            events.push(snapshot.val());
+    const eventQuery = query(
+      child(dbRef, `events`),
+      orderByChild('id')
+    );
+  
+    get(eventQuery).then((eventSnapshot) => {
+      if (eventSnapshot.exists()) {
+        // console.log(eventSnapshot.val());
+        const data = eventSnapshot.val();
+        const eventList = Object.keys(data).map((key) => ({...data[key] }));
+        let events = [];
+        eventList.map((event)=>{
+          if(event.host_id == uid || event.guests?.some(e=> e == uid)){
+            console.log("Is a host/guest from event "+ event.description)
+            events.push(event);
           }
         });
+        setEventList(events);
       }
-      setEventList(events);
-    }
-    console.log("guestlist -->", guestList)
+    })
+    //TODO: Delete all this
+    // const dbRef = ref(getDatabase());
+    // get(
+    //   query(child(dbRef, "guestlist"), orderByChild("guest_id"), equalTo(uid))
+    // )
+    //   .then((snapshot) => {
+    //     if (snapshot.exists()) {
+    //       const events = Object.values(snapshot.val()).map(
+    //         (event) => event.event_id
+    //       );
+    //       setGuestList(snapshot.val());
+    //       setEventIds(events);
+    //     } else {
+    //       console.log("No data available");
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+
+    // if (eventIds.length) {
+    //   let events = [];
+    //   for (let i = 0; i < eventIds.length; i++) {
+    //     get(query(child(dbRef, `events/${eventIds[i]}`))).then((snapshot) => {
+    //       if (snapshot.exists()) {
+    //         events.push(snapshot.val());
+    //       }
+    //     });
+    //   }
+    //   setEventList(events);
+    // }
+    // console.log("guestlist -->", guestList);
+
+    
   }, []);
 
-  const navigation = useNavigation();
+  
 
+  const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
       {eventList.length > 0 ? (
         <FlatList
           data={eventList}
           renderItem={(itemData) => {
-            return <EventTile event={itemData.item} navigation={navigation} uid={uid}/>;
+            return (
+              <EventTile
+                event={itemData.item}
+                navigation={navigation}
+                uid={uid}
+              />
+            );
           }}
           keyExtractor={(item, index) => {
             return item.id;
           }}
         />
       ) : (
-        <><Text>No events coming up</Text><Text>Plan something!</Text></>
+        <>
+          <Text>No events coming up</Text>
+          <Text>Plan something!</Text>
+        </>
       )}
     </SafeAreaView>
   );
