@@ -41,7 +41,29 @@ const EditPreferencesScreen = (props) => {
 
     const navigation = useNavigation();
 
-    const handleSubmit = async () => {};
+    const handleSubmit = async () => {
+        try {
+            //TODO COMMENT BACK IN //
+
+            // const dbRef = ref(getDatabase());
+            // const userId = user.id;
+            // const userRef = child(dbRef, `users/${userId}`);
+            // const userSnapshot = await get(userRef);
+            // if (!userSnapshot.exists()) {
+            //     throw new Error(`Event with ID ${userId} does not exist`);
+            // }
+            const updatedPrefs = {
+                dietary: dietary,
+                accessibility: accessibility,
+            };
+            //TODO COMMENT BACK IN //
+            // await update(userRef, updatedPrefs)
+            navigation.navigate("MyAccountScreen");
+            console.log("updates to user", updatedPrefs);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="height">

@@ -55,18 +55,9 @@ const EditAccountScreen = (props) => {
             // await update(userRef, updatedUser)
             navigation.navigate("MyAccountScreen", { user: updatedUser });
             console.log("updates to user", updatedUser);
-        } catch (error) {}
-        // const currentTime = new Date().toISOString();
-        // console.log("currentTime", currentTime);
-        // update(ref(db), `users/${params.id}`, {
-        //     firstName: firstName,
-        // })
-        //     .then(() => {
-        //         console.log("updated");
-        //     })
-        //     .catch((error) => {
-        //         console.log("whoops", error);
-        //     });
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -107,7 +98,7 @@ const EditAccountScreen = (props) => {
                     />
                     <TextInput
                         style={styles.input}
-                        placeholder="homeCity"
+                        placeholder="Home City"
                         value={homeCity}
                         onChangeText={setHomeCity}
                         // required={true}

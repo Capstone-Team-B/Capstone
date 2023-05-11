@@ -107,8 +107,14 @@ const MyAccountScreen = (props) => {
             </View>
             <View style={styles.section}>
                 <View>
-                    <Text>Accessibility</Text>
-                    <Text>Dietary restrictions</Text>
+                    <Text>
+                        Accessibility:{" "}
+                        {user.accessibility ? user.accessibility : "no data"}
+                    </Text>
+                    <Text>
+                        Dietary restrictions:{" "}
+                        {user.dietary ? user.dietary : "no data"}{" "}
+                    </Text>
                 </View>
             </View>
             <View style={styles.sectionHeader}>
