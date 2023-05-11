@@ -22,63 +22,50 @@ import {
 } from "firebase/database";
 
 const GuestProfileScreen = (params) => {
-    const [user, setUser] = useState(params.route.params.user);
-    //const dbRef = ref(getDatabase());
-    // console.log(user);
+  const [user, setUser] = useState(params.route.params.user);
+  console.log(params.route.params.user, "Naty");
 
-    return (
-        <ScrollView>
-            <Text>Guest Profile</Text>
-            {/* <Text>Guest Profile {user.guest_id}</Text> */}
-        </ScrollView>
-    );
+  //const dbRef = ref(getDatabase());
+  console.log(user);
+
+  return (
+    <ScrollView>
+      <Text style={styles.title}>Guest Profile</Text>
+      <View style={styles.container}>
+        <Text>
+          <Text style={styles.label}>Name:</Text>
+          <Text>{user?.firstName}</Text>
+        </Text>
+        <Text>
+          <Text style={styles.label}>Email:</Text>
+          <Text>{user?.email}</Text>
+        </Text>
+      </View>
+    </ScrollView>
+  );
 };
 
 export default GuestProfileScreen;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    inputContainer: {
-        width: "80%",
-    },
-    input: {
-        backgroundColor: "white",
-        paddingHorizontal: 15,
-        paddingVertical: 10,
-        borderRadius: 10,
-        marginTop: 5,
-    },
-    buttonContainer: {
-        width: "60%",
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 40,
-    },
-    button: {
-        backgroundColor: "#0782F9",
-        width: "100%",
-        padding: 15,
-        borderRadius: 10,
-        alignItems: "center",
-    },
-    buttonOutline: {
-        backgroundColor: "white",
-        marginTop: 5,
-        borderColor: "#0782F9",
-        borderWidth: 2,
-    },
-    buttonText: {
-        color: "white",
-        fontWeight: "700",
-        fontSize: 16,
-    },
-    buttonOutlineText: {
-        color: "#0782F9",
-        fontWeight: "700",
-        fontSize: 16,
-    },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  container: {
+    width: "90%",
+    borderRadius: 8,
+    border: 1,
+    borderWidth: 1,
+    borderColor: "gray",
+    padding: 12,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    alignItems: 'center',
+    marginTop: 8
+  },
+  label:{
+    fontWeight: "bold"
+  }
 });

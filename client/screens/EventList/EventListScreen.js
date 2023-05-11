@@ -35,7 +35,7 @@ const EventListScreen = (props) => {
         let events = [];
         eventList.map((event)=>{
           if(event.host_id == uid || event.guests?.some(e=> e == uid)){
-            // console.log("Is a host/guest from event "+ event.description)
+            console.log("Is a host/guest from event "+ event.description)
             events.push(event);
           }
         });
