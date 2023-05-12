@@ -27,53 +27,63 @@ const MapEventScreen = (params) => {
     });
     const dbRef = ref(getDatabase());
 
-    useEffect(() => {
-        get(
-            query(
-                child(dbRef, "subevents"),
-                orderByChild("event_id"),
-                equalTo(params.route.params.eventId)
-            )
-        )
-            .then((snapshot) => {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    console.log(data);
-                    setSubEvents(removeEmpty(data));
-                } else {
-                    console.log("No data available");
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }, [params.route.params.eventId]);
-    return (
-        <View style={styles.container}>
-            {subevents.length > 0 && (
-                <MapView
-                    style={{ alignSelf: "stretch", height: "100%" }}
-                    region={{
-                        latitude: subevents[0].latitude,
-                        longitude: subevents[0].longitude,
-                    }}
-                >
-                    {subevents.map((marker, index) => (
-                        <Marker
-                            title={marker.location}
-                            description={marker.nameLocation}
-                            key={index}
-                            coordinate={{
-                                latitude: marker.latitude,
-                                longitude: marker.longitude,
-                            }}
-                        />
-                    ))}
-                </MapView>
-            )}
-            <Text> Maps and Events {eventId}</Text>
-        </View>
-    );
+  useEffect(() => {
+    get(
+      query(
+        child(dbRef, "subevents"),
+        orderByChild("event_id"),
+        equalTo(params.route.params.eventId)
+      )
+    )
+      .then(async(snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const dataFiltered = removeEmpty(data)
+          for (let index = 0; index < dataFiltered.length; index++) {
+            const element = dataFiltered[index];
+            const latlon = await fetch(`https://geocode.maps.co/search?q={${element.location}}`).then(async data=>data.json())
+            console.log('each',latlon)
+            element.latitude = latlon[0].lat
+            element.longitude = latlon[0].lon
+          }
+          console.log('filtered', dataFiltered)
+          setSubEvents(dataFiltered);
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [params.route.params.eventId]);
+  return (
+    <View style={styles.container}>
+      {subevents.length > 0 ? (
+        <MapView
+          style={{ alignSelf: "stretch", height: "100%" }}
+          region={{
+            latitude: subevents[0].latitude,
+            longitude: subevents[0].longitude,
+          }}
+        >
+          {subevents.map((marker, index) => (
+            <Marker
+              key={index}
+              title={marker.location}
+              description={marker.nameLocation}
+              coordinate={{
+                latitude: marker.latitude,
+                longitude: marker.longitude,
+              }}
+            />
+          ))}
+        </MapView>
+      ) : (
+        <Text>Not events</Text>
+      )}
+      <Text> Maps and Events {eventId}</Text>
+    </View>
+  );
 };
 
 export default MapEventScreen;
