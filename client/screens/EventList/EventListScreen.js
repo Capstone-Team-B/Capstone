@@ -1,4 +1,3 @@
-//Nataly was here
 import { StyleSheet, View, Text, SafeAreaView, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
 import EventTile from "./EventTile";
@@ -12,10 +11,11 @@ import {
   equalTo,
 } from "firebase/database";
 import { useNavigation } from "@react-navigation/native";
+import globalStyles from "../../utils/globalStyles";
 
 const EventListScreen = (props) => {
   const { uid } = props.route.params;
-  // console.log("uid in EventListScreen -->", uid);
+  console.log("uid in EventListScreen -->", uid);
   const [guestList, setGuestList] = useState(null);
   const [eventIds, setEventIds] = useState([]);
   const [eventList, setEventList] = useState([]);
@@ -82,8 +82,10 @@ const EventListScreen = (props) => {
 
   const navigation = useNavigation();
   return (
-    <SafeAreaView style={styles.container}>
-      {eventList.length > 0 ? (
+    <SafeAreaView style={globalStyles.container}>
+      {loading ? (
+        <Text>Loading your events...</Text>
+      ) : eventList.length ? (
         <FlatList
           data={eventList}
           renderItem={(itemData) => {
@@ -117,8 +119,3 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
 });
-
-snapshot = [
-  { event_id: 1, guest_id: 2, role: "Host", tag_id: 1 },
-  { event_id: 2, guest_id: 2, role: "Host", tag_id: 2 },
-];
