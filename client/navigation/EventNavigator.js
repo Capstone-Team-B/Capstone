@@ -13,6 +13,7 @@ import CreateGuestList from "../screens/GuestList/CreateGuestListScreen";
 import AllNotifications from "../screens/Notifications/AllNotifications";
 import AllSubEvents from "../screens/SubEvents/AllSubEvents";
 import MapEventScreen from "../screens/Maps/MapsandEvents";
+import ImportContacts from "../screens/GuestList/ImportGuests";
 
 const Stack = createNativeStackNavigator();
 
@@ -74,6 +75,7 @@ const EventNavigator = (props) => {
         <Stack.Screen name="GuestProfile" component={GuestProfileScreen} /> 
         <Stack.Screen name="Single event" component={SingleEvent} />*/}
             <Stack.Screen name="Maps" component={MapEventScreen} />
+            <Stack.Screen name="Import Contacts" component={ImportContacts} />
         </Stack.Navigator>
     );
 };

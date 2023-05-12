@@ -24,7 +24,7 @@ import {
 const GuestProfileScreen = (params) => {
     const [user, setUser] = useState(params.route.params.user);
     //const dbRef = ref(getDatabase());
-    console.log(user);
+    // console.log(user);
 
     return (
         <ScrollView>

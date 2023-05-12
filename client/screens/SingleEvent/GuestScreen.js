@@ -22,27 +22,41 @@ import {
     orderByChild,
     equalTo,
     orderByValue,
+    startAt,
+    endAt,
 } from "firebase/database";
 
 const GuestScreen = (params) => {
     const [guestUsers, setguestUsers] = useState([]);
+    const [event, setEvent] = useState(params.route.params.event);
     const dbRef = ref(getDatabase());
-    console.log(params.route.params.eventId);
+    // console.log(params.route.params.eventId);
 
     const navigation = useNavigation();
 
+    const currentUser = auth.currentUser;
+
+    // if (currentUser) {
+    //   const userId = currentUser.uid;
+    //   const hostId = event.hostId (update to event : event)
+    //   if (userId === hostId) ==> show options
+    // }
+    
     useEffect(() => {
+        const eventId = event.id
         get(
             query(
                 child(dbRef, "guestlist"),
                 orderByChild("event_id"),
-                equalTo(params.route.params.eventId)
+                startAt(params.route.params.eventId),
+                endAt(params.route.params.eventId + "\uf8ff")
             )
         )
             .then((snapshot) => {
+                console.log(snapshot.exists())
                 if (snapshot.exists()) {
                     const data = snapshot.val();
-                    console.log(data);
+                    // console.log(data);
                     setguestUsers(data);
                 } else {
                     console.log("No data available");
@@ -56,16 +70,24 @@ const GuestScreen = (params) => {
     return (
         <View style={styles.container}>
             <Text> Guest list</Text>
-            {guestUsers.map((user, index) => (
-                <TouchableOpacity
-                    key={index}
+            {guestUsers
+            ? Object.keys(guestUsers).map((key) => {
+                const guest = guestUsers[key];
+                return (
+                  <TouchableOpacity
+                    key={key}
                     onPress={() =>
-                        navigation.navigate("GuestProfile", { user })
+                      navigation.navigate("GuestProfile", { guest })
                     }
-                >
-                    Guest Profile {user.guest_id}
-                </TouchableOpacity>
-            ))}
+                  >
+                    <Text>
+                      {guest.firstname} {guest.lastname}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })
+            : <Text>No guests at this time!</Text>
+            }
         </View>
     );
 };

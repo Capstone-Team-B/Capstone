@@ -57,9 +57,7 @@ const CreateNotification = (params) => {
 
         const dbRef = ref(getDatabase());
         const notificationRef = child(dbRef, "notifications");
-        const tagRef = child(dbRef, "tags");
 
-        // Create a new subevent and associate it with a tag
         const {
             title: notificationTitle,
             body: notificationBody,
@@ -74,19 +72,9 @@ const CreateNotification = (params) => {
             event_id: event.id,
         };
 
-        // Create a new tag with the subevent name
-        const newTagData = { name: notificationTitle };
-        const newTagRef = push(tagRef);
-        const newTagKey = newTagRef.key;
-        await set(newTagRef, newTagData);
-
-        // Create a new subevent and associate it with the new tag
-        const newNotificationWithTagData = {
-            tag_id: newTagKey,
-            ...newNotificationData,
-        };
+    
         const newNotificationRef = push(notificationRef);
-        await set(newNotificationRef, newNotificationWithTagData);
+        await set(newNotificationRef, newNotificationData);
 
         navigation.navigate("All Notifications", { event: event });
     };

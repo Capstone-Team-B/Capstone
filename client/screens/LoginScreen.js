@@ -33,7 +33,10 @@ const LoginScreen = () => {
 
     const handleSignUp = () => {
         const dbRef = ref(getDatabase());
-        const db = getDatabase();
+        if (!email || !password) {
+            alert("Please enter both email and password.");
+            return;
+        }
         // Check if the email entered during registration already exists in the database
         get(child(dbRef, `users`))
             .then((snapshot) => {
@@ -43,90 +46,19 @@ const LoginScreen = () => {
                         (key) => data[key].email === email
                     );
                     if (!existingUser) {
-                        // Create a new record for the new user in the database
-                        auth.createUserWithEmailAndPassword(email, password)
-                            .then((userCredentials) => {
-                                const user = userCredentials.user;
-                                console.log("Registered with: ", user.email);
-                                const uid = user.uid;
-                                const currentTime = new Date().toISOString();
-                                // Store the user data in the Realtime Database with the UID as the key
-                                set(ref(db, `users/${uid}`), {
-                                    id: uid,
-                                    email: email,
-                                    firstName: "",
-                                    lastName: "",
-                                    phoneNumber: "",
-                                    createdAt: currentTime,
-                                    updatedAt: currentTime,
-                                })
-                                    .then(() => {
-                                        console.log(uid, email, password);
-                                        console.log(
-                                            "New user created successfully"
-                                        );
-                                    })
-                                    .catch((error) => {
-                                        console.error(error);
-                                    });
-                            })
-                            .catch((error) => alert(error.message));
+                        navigation.navigate("EditAccountScreen")
                     } else {
                         auth.signInWithEmailAndPassword(email, password)
-                            .then(() => {
-                                console.log("Logged in with: ", email);
-                            })
-                            .catch(() => {
-                                auth.createUserWithEmailAndPassword(
-                                    email,
-                                    password
-                                )
-                                    .then((userCredentials) => {
-                                        const user = userCredentials.user;
-                                        console.log(
-                                            "Registered with: ",
-                                            user.email
-                                        );
-                                    })
-                                    .catch((error) => alert(error.message));
-                            });
-                    }
-                } else {
-                    // Create a new record for the new user in the database
-                    auth.createUserWithEmailAndPassword(email, password)
                         .then((userCredentials) => {
                             const user = userCredentials.user;
-                            console.log("Registered with: ", user.email);
-                            const uid = user.uid;
-                            const currentTime = new Date().toISOString();
-                            // Store the user data in the Realtime Database with the UID as the key
-                            set(ref(dbRef, `users/${uid}`), {
-                                id: uid,
-                                email: email,
-                                // we should remove password as this makes it unsecure and easy to find.
-                                // password: password,
-                                firstName: "",
-                                lastName: "",
-                                phoneNumber: "",
-                                createdAt: currentTime,
-                                updatedAt: currentTime,
-                            })
-                                .then(() => {
-                                    console.log(
-                                        "New user created successfully"
-                                    );
-                                })
-                                .catch((error) => {
-                                    console.error(error);
-                                });
+                            console.log("Logged in with: ", user.email);
                         })
                         .catch((error) => alert(error.message));
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    };
+                    }
+                } else {
+                    navigation.navigate("EditAccountScreen")
+                }})
+    }
 
     const handleLogin = () => {
         auth.signInWithEmailAndPassword(email, password)

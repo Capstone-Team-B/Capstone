@@ -85,9 +85,7 @@ const CreateSubEvent = (params) => {
 
         const dbRef = ref(getDatabase());
         const subeventRef = child(dbRef, "subevent");
-        const tagRef = child(dbRef, "tags");
 
-        // Create a new subevent and associate it with a tag
         const {
             name: subeventName,
             location: subeventLocation,
@@ -104,19 +102,8 @@ const CreateSubEvent = (params) => {
             event_id: event.id,
         };
 
-        // Create a new tag with the subevent name
-        const newTagData = { name: subeventName };
-        const newTagRef = push(tagRef);
-        const newTagKey = newTagRef.key;
-        await set(newTagRef, newTagData);
-
-        // Create a new subevent and associate it with the new tag
-        const newSubEventWithTagData = {
-            tag_id: newTagKey,
-            ...newSubEventData,
-        };
         const newSubEventRef = push(subeventRef);
-        await set(newSubEventRef, newSubEventWithTagData);
+        await set(newSubEventRef, newSubEventData);
 
         navigation.navigate("All Sub Events", { event: event });
     };

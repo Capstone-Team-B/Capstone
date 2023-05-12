@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
     KeyboardAvoidingView,
-    StatusBar,
     Alert,
     ScrollView,
     View,
@@ -12,13 +11,10 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, child, set, push } from "firebase/database";
-import * as Contacts from "expo-contacts";
 
 const CreateGuestList = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
     const [guestList, setGuestList] = useState([]);
-    const [error, setError] = useState(undefined);
-    const [contacts, setContacts] = useState(undefined);
 
     const navigation = useNavigation();
 
@@ -40,35 +36,6 @@ const CreateGuestList = (params) => {
         setGuestList(newGuestList);
     };
 
-    useEffect(() => {
-        (async () => {
-            try {
-                const { status } = await Contacts.requestPermissionsAsync();
-                if (status === "granted") {
-                    const { data } = await Contacts.getContactsAsync({
-                        fields: [
-                            Contacts.Fields.Emails,
-                            Contacts.Fields.FirstName,
-                            Contacts.Fields.LastName,
-                            Contacts.Fields.PhoneNumbers,
-                        ],
-                    });
-
-                    if (data.length > 0) {
-                        setContacts(data);
-                    } else {
-                        setError("No contacts found");
-                    }
-                } else {
-                    setError("Permission to access contacts denied.");
-                }
-            } catch (error) {
-                console.error(error);
-                setError("An error occurred while fetching contacts.");
-            }
-        })();
-    }, []);
-
     const handleSubmit = async () => {
         for (const guest of guestList) {
             if (!guest.email || !guest.firstname || !guest.lastname) {
@@ -80,7 +47,6 @@ const CreateGuestList = (params) => {
         const dbRef = ref(getDatabase());
         const guestListRef = child(dbRef, "guestlist");
 
-        // Create a new subevent and associate it with a tag
         for (const guest of guestList) {
             const {
                 email: guestEmail,
@@ -100,55 +66,6 @@ const CreateGuestList = (params) => {
         }
         navigation.navigate("SingleEvent", { event: event });
     };
-
-    const getContactData = (data, property, label) => {
-        if (data) {
-            return data.map((data, index) => {
-                return (
-                    <View key={index}>
-                        <Text>
-                            {label}: {data[property]}
-                        </Text>
-                    </View>
-                );
-            });
-        }
-    };
-
-    const getContactRows = () => {
-        if (contacts !== undefined) {
-            console.log(contacts[0].firstName);
-            return contacts.map((contact, index) => {
-                return (
-                    <View key={index}>
-                        <Text>
-                            Name: {contact.firstName} {contact.lastName}
-                        </Text>
-                        {getContactData(
-                            contact.phoneNumbers,
-                            "number",
-                            "Phone Number"
-                        )}
-                        {getContactData(contact.emails, "email", "Email")}
-                    </View>
-                );
-            });
-        } else {
-            return <Text>Loading contacts...</Text>;
-        }
-    };
-
-    // const getPhoneNumbers = (contact) => {
-    //     if (contact.phoneNumbers) {
-    //         return contact.phoneNumbers.map((phoneNumber, index) => {
-    //             return (
-    //                 <View key={index}>
-    //                     <Text>{phoneNumber.label}: {phoneNumber.number}</Text>
-    //                 </View>
-    //             )
-    //         })
-    //     }
-    // }
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="height">
@@ -204,16 +121,18 @@ const CreateGuestList = (params) => {
                             </View>
                         ))}
                     </View>
-                    <TouchableOpacity style={styles.outlineButton}>
+                    <TouchableOpacity
+                        style={styles.outlineButton}
+                        onPress={() =>
+                            navigation.navigate("Import Contacts", {
+                                event: event,
+                            })
+                        }
+                    >
                         <Text style={styles.outlineButtonText}>
-                            Upload from Contacts
+                            Import from Contacts
                         </Text>
                     </TouchableOpacity>
-                    <View>
-                        <Text>{error}</Text>
-                        {getContactRows()}
-                        <StatusBar style="auto" />
-                    </View>
                     <TouchableOpacity
                         style={styles.addButton}
                         onPress={handleAddGuest}
