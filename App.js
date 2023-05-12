@@ -19,6 +19,9 @@ import { Video } from "expo-av";
 
 //import MessageboardScreen from "./client/screens/MessageBoardScreen";
 
+
+// adding for test
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
