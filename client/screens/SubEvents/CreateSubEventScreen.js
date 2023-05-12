@@ -84,19 +84,25 @@ const CreateSubEvent = (params) => {
         }
 
         const dbRef = ref(getDatabase());
-        const subeventRef = child(dbRef, 'subevents');
-        const tagRef = child(dbRef, 'tags');
-      
+        const subeventRef = child(dbRef, "subevents");
+        const tagRef = child(dbRef, "tags");
+
         // Create a new subevent and associate it with a tag
-        const { name: subeventName, location: subeventLocation, date: subeventDate, startTime: subeventtartTime, endTime: subeventEndTime } = subEvent;
-            const newSubEventData = { 
-                name: subeventName, 
-                location: subeventLocation, 
-                date: subeventDate, 
-                startTime: subeventtartTime, 
-                endTime: subeventEndTime,
-                event_id: event.id 
-            };
+        const {
+            name: subeventName,
+            location: subeventLocation,
+            date: subeventDate,
+            startTime: subeventtartTime,
+            endTime: subeventEndTime,
+        } = subEvent;
+        const newSubEventData = {
+            name: subeventName,
+            location: subeventLocation,
+            date: subeventDate,
+            startTime: subeventtartTime,
+            endTime: subeventEndTime,
+            event_id: event.id,
+        };
 
         const {
             name: subeventName,

@@ -72,7 +72,6 @@ const CreateNotification = (params) => {
             event_id: event.id,
         };
 
-    
         const newNotificationRef = push(notificationRef);
         await set(newNotificationRef, newNotificationData);
 

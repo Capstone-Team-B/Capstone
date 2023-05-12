@@ -15,9 +15,13 @@ const SignOutBtn = () => {
             .catch((error) => alert(error.message));
     };
 
-  return (
-    <Button style={globalStyles.button} onPress={handleSignOut} title="Sign out" />
-  );
+    return (
+        <Button
+            style={globalStyles.button}
+            onPress={handleSignOut}
+            title="Sign out"
+        />
+    );
 };
 
 export default SignOutBtn;

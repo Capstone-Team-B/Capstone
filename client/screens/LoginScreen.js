@@ -1,11 +1,11 @@
 import {
-  KeyboardAvoidingView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Image,
+    KeyboardAvoidingView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+    Image,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { auth } from "../../firebase";
@@ -40,27 +40,27 @@ const LoginScreen = () => {
             return;
         }
         // Check if the email entered during registration already exists in the database
-        get(child(dbRef, `users`))
-            .then((snapshot) => {
-                if (snapshot.exists) {
-                    const data = snapshot.val();
-                    const existingUser = Object.keys(data).find(
-                        (key) => data[key].email === email
-                    );
-                    if (!existingUser) {
-                        navigation.navigate("EditAccountScreen")
-                    } else {
-                        auth.signInWithEmailAndPassword(email, password)
+        get(child(dbRef, `users`)).then((snapshot) => {
+            if (snapshot.exists) {
+                const data = snapshot.val();
+                const existingUser = Object.keys(data).find(
+                    (key) => data[key].email === email
+                );
+                if (!existingUser) {
+                    navigation.navigate("EditAccountScreen");
+                } else {
+                    auth.signInWithEmailAndPassword(email, password)
                         .then((userCredentials) => {
                             const user = userCredentials.user;
                             console.log("Logged in with: ", user.email);
                         })
                         .catch((error) => alert(error.message));
-                    }
-                } else {
-                    navigation.navigate("EditAccountScreen")
-                }})
-    }
+                }
+            } else {
+                navigation.navigate("EditAccountScreen");
+            }
+        });
+    };
 
     const handleLogin = () => {
         auth.signInWithEmailAndPassword(email, password)
@@ -71,29 +71,29 @@ const LoginScreen = () => {
             .catch((error) => alert(error.message));
     };
 
-  return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <View style={styles.inputContainer}>
-        <View style={{ justifyContent: "center" }}>
-          <Image
-            source={BeThereLogoExpanded}
-            style={{ height: 250, width: 250 }}
-          />
-        </View>
-        <TextInput
-          placeholder="Email"
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-          style={styles.input}
-        />
-        <TextInput
-          placeholder="Password"
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-          style={styles.input}
-          secureTextEntry
-        />
-      </View>
+    return (
+        <KeyboardAvoidingView style={styles.container} behavior="padding">
+            <View style={styles.inputContainer}>
+                <View style={{ justifyContent: "center" }}>
+                    <Image
+                        source={BeThereLogoExpanded}
+                        style={{ height: 250, width: 250 }}
+                    />
+                </View>
+                <TextInput
+                    placeholder="Email"
+                    value={email}
+                    onChangeText={(text) => setEmail(text)}
+                    style={styles.input}
+                />
+                <TextInput
+                    placeholder="Password"
+                    value={password}
+                    onChangeText={(text) => setPassword(text)}
+                    style={styles.input}
+                    secureTextEntry
+                />
+            </View>
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={handleLogin} style={styles.button}>
