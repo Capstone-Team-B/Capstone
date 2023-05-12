@@ -80,6 +80,8 @@ const EventListScreen = (props) => {
     }, []);
 
     const navigation = useNavigation();
+    //EH Added to get things working
+    let loading = false;
     return (
         <SafeAreaView style={globalStyles.container}>
             {loading ? (
