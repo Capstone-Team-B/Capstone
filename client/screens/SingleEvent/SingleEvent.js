@@ -80,6 +80,14 @@ const SingleEvent = (params) => {
         >
           <Text>Maps and Events</Text>
         </TouchableOpacity>
+
+{/* KIT!!! */}
+        <TouchableOpacity
+          style={styles.tile}
+          onPress={() => navigation.navigate("UploadEventImagesScreen", { eventId: event.id })}
+        >
+          <Text>Upload Images</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

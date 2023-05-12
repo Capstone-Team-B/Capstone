@@ -17,24 +17,30 @@ const UploadProfilePicScreen = () => {
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1, 1],
       quality: 1,
     });
     console.log(result);
     if (!result.canceled) {
-      setImage(result.uri);
+      setImage(result.assets[0].uri);
     }
     if (hasGalleryPermission === false) {
       return <Text>No access to images</Text>;
     }
   };
+  
   return (
     <SafeAreaView style={globalStyles.container}>
       <Text>PhotoUploadScreen</Text>
-      <Button title="Select Image" onPress={() => pickImage()}/>
-      {image && <Image source={{uri: image}}/>}
+      <Button title="Select Image" onPress={() => pickImage()} />
+      {image && (
+        <Image
+          source={{ uri: image }}
+          style={{ height: 100, width: 100, borderRadius: 100 }}
+        />
+      )}
     </SafeAreaView>
   );
 };

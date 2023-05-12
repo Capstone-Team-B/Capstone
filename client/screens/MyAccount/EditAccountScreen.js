@@ -112,8 +112,7 @@ const EditAccountScreen = (props) => {
                         // required={true}
                     />
                     <SafeAreaView>
-      
-      <Button title="Upload Profile Picture" onPress={navigation.navigate('UploadProfilePicScreen')}/>
+      <Button title="Upload Profile Picture" onPress={navigation.navigate('UploadEventImagesScreen')}/>
     </SafeAreaView>
                 </View>
                 <View>
