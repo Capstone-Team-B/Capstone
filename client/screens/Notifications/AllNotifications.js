@@ -10,30 +10,39 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getDatabase, ref, child, get } from "firebase/database";
+import { getDatabase, ref, child, get, query } from "firebase/database";
 
 const AllNotifications = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
     const [notifications, setNotifications] = useState([]);
+    const notificationIds = event.notifications;
     const navigation = useNavigation();
     const dbRef = ref(getDatabase());
 
+    console.log("event.notifications -->", event.notifications);
     useEffect(() => {
-        const notificationsSnapshot = get(child(dbRef, `notifications`));
-        console.log(notificationsSnapshot);
-        if (!notificationsSnapshot) {
-            console.log("no notifications found");
-        } else {
-            const data = notificationsSnapshot;
-            const notificationList = Object.keys(data).map((key) => ({
-                id: key,
-                ...data[key],
-            }));
-            const filteredNotifications = notificationList.filter(
-                (notification) => notification.event_id === event.id
-            );
-            setNotifications(filteredNotifications);
-        }
+        const getNotifications = async () => {
+            let notificationData = [];
+            for (let i = 0; i < notificationIds.length; i++) {
+                const notificationQuery = query(
+                    child(dbRef, `notifications/${notificationIds[i]}`)
+                );
+                try {
+                    await get(notificationQuery).then((snapshot) => {
+                        if (snapshot.exists()) {
+                            const data = snapshot.val();
+                            notificationData = [...notificationData, data];
+                        } else {
+                            console.log("No data available");
+                        }
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            setNotifications(notificationData);
+        };
+        getNotifications()
     }, []);
 
     return (
@@ -42,7 +51,7 @@ const AllNotifications = (params) => {
                 <View style={styles.section}>
                     {notifications.length > 0 ? (
                         notifications.map((notification) => (
-                            <View key={notification.id} style={styles.item}>
+                            <View key={notification} style={styles.item}>
                                 <Text style={styles.input}>
                                     Title: {notification.title}
                                 </Text>

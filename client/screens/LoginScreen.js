@@ -14,8 +14,8 @@ import { getDatabase, ref, child, get, set } from "firebase/database";
 const BeThereLogoExpanded = require("../../assets/BeThereExpanded.png");
 
 const LoginScreen = () => {
-    const [email, setEmail] = useState("elizabeth.house88@gmail.com");
-    const [password, setPassword] = useState("123456");
+    const [email, setEmail] = useState("kit@kit.com"); // logging in as kit, who is the host of an event
+    const [password, setPassword] = useState("pwpwpw");
 
     const navigation = useNavigation();
 
@@ -52,7 +52,7 @@ const LoginScreen = () => {
                     auth.signInWithEmailAndPassword(email, password)
                         .then((userCredentials) => {
                             const user = userCredentials.user;
-                            console.log("Logged in with: ", user.email);
+                            // console.log("Logged in with: ", user.email);
                         })
                         .catch((error) => alert(error.message));
                 }

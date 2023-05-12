@@ -66,7 +66,7 @@ const MyAccountScreen = (props) => {
                     onPress={handlePressCreateEvent}
                 >
                     <Image
-                        source={require("../../../assets/BeThereConcise.png")}
+                        source={BeThereLogo}
                         style={{ height: 200, width: 200 }}
                     />
                     <Text style={globalStyles.heading1}>Create an event</Text>
@@ -88,23 +88,20 @@ const MyAccountScreen = (props) => {
                         Last name: {user.lastName ? user.lastName : "no data"}
                     </Text>
                     <Text style={globalStyles.paragraph}>
-                        Password: {user.password ? user.password : "no data"}
-                    </Text>
-                    <Text style={globalStyles.paragraph}>
                         Phone: {user.phoneNumber ? user.phoneNumber : "no data"}
                     </Text>
                     <Text style={globalStyles.paragraph}>
                         Email: {user.email ? user.email : "no data"}
                     </Text>
                     <Text style={globalStyles.paragraph}>
-                        Location: {user.location ? user.location : "no data"}
+                        Location: {user.homeCity ? user.homeCity : "no data"}
                     </Text>
                 </View>
                 <View>
                     <Image
                         style={styles.profilePic}
                         source={{
-                            uri: "https://hips.hearstapps.com/hmg-prod/images/gettyimages-3091504.jpg",
+                            uri: user.profilePic,
                         }}
                     />
                 </View>
