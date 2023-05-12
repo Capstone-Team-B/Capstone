@@ -6,7 +6,7 @@ import { getDatabase, ref, child, get } from "firebase/database";
 
 const SingleEvent = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
-    console.log(event);
+    // console.log(event);
 
     useEffect(() => {
         setEvent(params.route.params.event);
@@ -35,7 +35,7 @@ const SingleEvent = (params) => {
             <Text> {event.description}</Text>
             <TouchableOpacity
                 onPress={() =>
-                    navigation.navigate("GuestScreen", { eventId: event.id })
+                    navigation.navigate("GuestScreen", { event: event })
                 }
             >
                 <Text>View All Guests</Text>
