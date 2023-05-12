@@ -27,10 +27,10 @@ const ImportContacts = (params) => {
 
         if (!toggleCheckBox) {
             setSelectedContacts([...contacts]);
-            setChecks(contacts.map(() => true)); // select all checkboxes
+            setChecks(contacts.map(() => true)); 
         } else {
             setSelectedContacts([]);
-            setChecks(contacts.map(() => false)); // deselect all checkboxes
+            setChecks(contacts.map(() => false)); 
         }
     }, [toggleCheckBox, contacts, setSelectedContacts, setChecks]);
 
@@ -191,9 +191,7 @@ const ImportContacts = (params) => {
                         onPress={handleSelectAll}
                     >
                         <Text style={styles.outlineButtonText}>
-                            {checks.every(Boolean)
-                                ? "Deselect All"
-                                : "Select All"}
+                        {toggleCheckBox ? 'Deselect All' : 'Select All'}
                         </Text>
                     </TouchableOpacity>
                     <View style={styles.section}>
