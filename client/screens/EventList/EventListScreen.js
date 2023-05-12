@@ -78,8 +78,6 @@ const EventListScreen = (props) => {
     
   }, []);
 
-  
-
   const navigation = useNavigation();
   return (
     <SafeAreaView style={globalStyles.container}>

@@ -44,10 +44,7 @@ const SingleEvent = (params) => {
         onPress={() =>
           navigation.navigate("MessageboardScreen", {
             eventId: event.id,
-            name: event.name,
-          })
-        }
-      >
+            name: event.name,})}>
         <Text>Event Messageboard</Text>
       </TouchableOpacity>
       <View style={styles.tileContainer}>
