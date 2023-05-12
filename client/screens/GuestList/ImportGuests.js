@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     KeyboardAvoidingView,
     StatusBar,
-    Alert,
     ScrollView,
     View,
     StyleSheet,
@@ -21,6 +20,20 @@ const ImportContacts = (params) => {
     const [contacts, setContacts] = useState(undefined);
     const [selectedContacts, setSelectedContacts] = useState([]);
     const [toggleCheckBox, setToggleCheckBox] = useState(false);
+    const [checks, setChecks] = useState([]);
+
+    const onCheck = useCallback(
+        (index) => {
+            let previous = [...checks];
+            previous[index] = !previous[index];
+            setChecks(previous);
+        },
+        [checks, setChecks]
+    );
+
+    const handleSelectAll = useCallback(() => {
+        setChecks((previous) => previous.map((check) => !check));
+    }, [setChecks]);
 
     const navigation = useNavigation();
 
@@ -40,6 +53,9 @@ const ImportContacts = (params) => {
 
                     if (data.length > 0) {
                         setContacts(data);
+                        setChecks(
+                            Array.from({ length: data.length }, () => false)
+                        );
                     } else {
                         setError("No contacts found");
                     }
@@ -104,20 +120,29 @@ const ImportContacts = (params) => {
                             }}
                         >
                             <BouncyCheckbox
+                                isChecked={checks[index]}
                                 disabled={false}
                                 value={toggleCheckBox}
                                 onValueChange={(newValue) =>
                                     setToggleCheckBox(newValue)
                                 }
+                                onPress={() => onCheck(index)}
+                                disableBuiltInState={true}
                             />
                             <Text style={{ flexWrap: "wrap" }}>
-                                Name: {contact.firstName} {contact.lastName}{'\n'}
-                            {getContactData(
-                                contact.phoneNumbers,
-                                "number",
-                                "Phone Number"
-                            )}{'\n'}
-                            {getContactData(contact.emails, "email", "Email")}
+                                Name: {contact.firstName} {contact.lastName}
+                                {"\n"}
+                                {getContactData(
+                                    contact.phoneNumbers,
+                                    "number",
+                                    "Phone Number"
+                                )}
+                                {"\n"}
+                                {getContactData(
+                                    contact.emails,
+                                    "email",
+                                    "Email"
+                                )}
                             </Text>
                         </View>
                     </View>
@@ -133,6 +158,16 @@ const ImportContacts = (params) => {
             <ScrollView style={styles.container}>
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Imported Contacts</Text>
+                    <TouchableOpacity
+                        style={styles.outlineButton}
+                        onPress={handleSelectAll}
+                    >
+                        <Text style={styles.outlineButtonText}>
+                            {checks.every(Boolean)
+                                ? "Deselect All"
+                                : "Select All"}
+                        </Text>
+                    </TouchableOpacity>
                     <View style={styles.section}>
                         <Text>{error}</Text>
                         {getContactRows()}
