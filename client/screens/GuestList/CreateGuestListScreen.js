@@ -13,12 +13,15 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, child, set, push } from "firebase/database";
 import * as Contacts from "expo-contacts";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 const CreateGuestList = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
     const [guestList, setGuestList] = useState([]);
     const [error, setError] = useState(undefined);
     const [contacts, setContacts] = useState(undefined);
+    const [selectedContacts, setSelectedContacts] = useState([]);
+    const [toggleCheckBox, setToggleCheckBox] = useState(false);
 
     const navigation = useNavigation();
 
@@ -80,7 +83,6 @@ const CreateGuestList = (params) => {
         const dbRef = ref(getDatabase());
         const guestListRef = child(dbRef, "guestlist");
 
-        // Create a new subevent and associate it with a tag
         for (const guest of guestList) {
             const {
                 email: guestEmail,
@@ -117,19 +119,33 @@ const CreateGuestList = (params) => {
 
     const getContactRows = () => {
         if (contacts !== undefined) {
-            console.log(contacts[0].firstName);
             return contacts.map((contact, index) => {
                 return (
                     <View key={index}>
-                        <Text>
-                            Name: {contact.firstName} {contact.lastName}
-                        </Text>
-                        {getContactData(
-                            contact.phoneNumbers,
-                            "number",
-                            "Phone Number"
-                        )}
-                        {getContactData(contact.emails, "email", "Email")}
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                marginBottom: 5,
+                            }}
+                        >
+                            <BouncyCheckbox
+                                disabled={false}
+                                value={toggleCheckBox}
+                                onValueChange={(newValue) =>
+                                    setToggleCheckBox(newValue)
+                                }
+                            />
+                            <Text style={{ flexWrap: "wrap" }}>
+                                Name: {contact.firstName} {contact.lastName}{'\n'}
+                            {getContactData(
+                                contact.phoneNumbers,
+                                "number",
+                                "Phone Number"
+                            )}{'\n'}
+                            {getContactData(contact.emails, "email", "Email")}
+                            </Text>
+                        </View>
                     </View>
                 );
             });
@@ -137,18 +153,6 @@ const CreateGuestList = (params) => {
             return <Text>Loading contacts...</Text>;
         }
     };
-
-    // const getPhoneNumbers = (contact) => {
-    //     if (contact.phoneNumbers) {
-    //         return contact.phoneNumbers.map((phoneNumber, index) => {
-    //             return (
-    //                 <View key={index}>
-    //                     <Text>{phoneNumber.label}: {phoneNumber.number}</Text>
-    //                 </View>
-    //             )
-    //         })
-    //     }
-    // }
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="height">
