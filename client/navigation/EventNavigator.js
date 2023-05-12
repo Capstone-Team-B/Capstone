@@ -2,7 +2,7 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SingleEvent from "../screens/SingleEvent/SingleEvent";
 import GuestProfileScreen from "../screens/SingleEvent/GuestProfileScreen";
-import GuestScreen from "../screens/SingleEvent/GuestScreen";
+import GuestListScreen from "../screens/SingleEvent/GuestListScreen";
 import EventListScreen from "../screens/EventList/EventListScreen";
 import MessageboardScreen from "../screens/SingleEvent/MessageBoardScreen";
 import EditEvent from "../screens/NewEvent/EditEventScreen";
@@ -20,7 +20,7 @@ const Stack = createNativeStackNavigator();
 
 const EventNavigator = (props) => {
     const { uid } = props.route.params;
-    // console.log("uid in EventNav -->", uid);
+
     return (
         <Stack.Navigator initialRouteName="EventListScreen">
             <Stack.Screen
@@ -42,8 +42,8 @@ const EventNavigator = (props) => {
                 options={{ title: "My Guest Profile" }}
             />
             <Stack.Screen
-                name="GuestScreen"
-                component={GuestScreen}
+                name="GuestListScreen"
+                component={GuestListScreen}
                 initialParams={{ uid: uid }}
                 options={{ title: "Guest List" }}
             />
@@ -72,12 +72,7 @@ const EventNavigator = (props) => {
                 component={AllNotifications}
             />
             <Stack.Screen name="All Sub Events" component={AllSubEvents} />
-            {/* <Stack.Screen name="Guest" component={GuestScreen} />
-        <Stack.Screen name="GuestProfile" component={GuestProfileScreen} /> 
-        <Stack.Screen name="Single event" component={SingleEvent} />*/}
-
             <Stack.Screen name="Import Contacts" component={ImportContacts} />
-
             <Stack.Screen name="Maps" component={MapEventScreen} />
             <Stack.Screen
                 name="UploadEventImagesScreen"

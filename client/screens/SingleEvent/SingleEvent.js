@@ -7,14 +7,13 @@ import globalStyles from "../../utils/globalStyles";
 
 const SingleEvent = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
-    // console.log(event);
 
     useEffect(() => {
         setEvent(params.route.params.event);
     }, [params.route.params.event]);
 
     const navigation = useNavigation();
-
+    console.log("event.id -->", event)
     return (
         <View style={globalStyles.container}>
             <Text style={globalStyles.heading1}> {event.name}</Text>
@@ -30,26 +29,9 @@ const SingleEvent = (params) => {
             <Text style={globalStyles.heading2}> {event.location}</Text>
             <Text style={globalStyles.paragraph}>
                 {" "}
-                {event.starttime} & {event.endtime}
+                {event.startTime} & {event.endTime}
             </Text>
             <Text style={globalStyles.paragraph}> {event.description}</Text>
-            <TouchableOpacity
-                onPress={() =>
-                    navigation.navigate("GuestScreen", { eventId: event.id })
-                }
-            >
-                <Text>Get all guest</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                onPress={() =>
-                    navigation.navigate("MessageboardScreen", {
-                        eventId: event.id,
-                        name: event.name,
-                    })
-                }
-            >
-                <Text>Event Messageboard</Text>
-            </TouchableOpacity>
             <View style={styles.tileContainer}>
                 <TouchableOpacity
                     style={styles.tile}
@@ -74,7 +56,7 @@ const SingleEvent = (params) => {
                 <TouchableOpacity
                     style={styles.tile}
                     onPress={() =>
-                        navigation.navigate("Guest", { eventId: event.id })
+                        navigation.navigate("GuestListScreen", { event: event })
                     }
                 >
                     <Text>Guest List</Text>
@@ -88,8 +70,6 @@ const SingleEvent = (params) => {
                 >
                     <Text>Maps and Events</Text>
                 </TouchableOpacity>
-
-                {/* KIT!!! */}
                 <TouchableOpacity
                     style={styles.tile}
                     onPress={() =>
@@ -99,6 +79,17 @@ const SingleEvent = (params) => {
                     }
                 >
                     <Text>Upload Images</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.tile}
+                    onPress={() =>
+                        navigation.navigate("MessageboardScreen", {
+                            eventId: event.id,
+                            name: event.name,
+                        })
+                    }
+                >
+                    <Text>Message Board</Text>
                 </TouchableOpacity>
             </View>
         </View>

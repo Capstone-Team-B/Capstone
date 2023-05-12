@@ -14,84 +14,63 @@ import { useNavigation } from "@react-navigation/native";
 import globalStyles from "../../utils/globalStyles";
 
 const EventListScreen = (props) => {
-  const { uid } = props.route.params;
-  console.log("uid in EventListScreen -->", uid);
-  const [guestList, setGuestList] = useState(null);
-  const [eventIds, setEventIds] = useState([]);
-  const [eventList, setEventList] = useState([]);
-  const [loading, setLoading] = useState(true);
-  
-  const dbRef = ref(getDatabase());
-  useEffect(() => {
+    const { uid } = props.route.params;
+    const [eventList, setEventList] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-        get(eventQuery).then((eventSnapshot) => { 
-            if (eventSnapshot.exists()) {
-                // console.log(eventSnapshot.val());
-                const data = eventSnapshot.val();
-                const eventList = Object.keys(data).map((key) => ({
-                    ...data[key],
-                }));
-                let events = [];
-                eventList.map((event) => {
-                    if (
-                        event.host_id == uid ||
-                        event.guests?.some((e) => e == uid)
-                    ) {
-                        console.log(
-                            "Is a host/guest from event " + event.description
-                        );
-                        events.push(event);
+    const dbRef = ref(getDatabase());
+
+    const getEvents = async (eventIdArray) => {
+        let events = [];
+        for (let i = 0; i < eventIdArray.length; i++) {
+            try {
+                const eventsQuery = query(
+                    child(dbRef, `events/${eventIdArray[i]}`)
+                )
+                await get(eventsQuery).then((eventSnapshot) => {
+                    if (eventSnapshot.exists()) {
+                        const data = eventSnapshot.val();
+                        events = [...events, data];
+                    } else {
+                        console.log("no event data");
                     }
                 });
-                setEventList(events);
+            } catch (error) {
+                console.log(error);
             }
-        });
+        }
         setEventList(events);
-        setLoading(false)
-      }
-    })
-    //TODO: Delete all this
-    // const dbRef = ref(getDatabase());
-    // get(
-    //   query(child(dbRef, "guestlist"), orderByChild("guest_id"), equalTo(uid))
-    // )
-    //   .then((snapshot) => {
-    //     if (snapshot.exists()) {
-    //       const events = Object.values(snapshot.val()).map(
-    //         (event) => event.event_id
-    //       );
-    //       setGuestList(snapshot.val());
-    //       setEventIds(events);
-    //     } else {
-    //       console.log("No data available");
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+        setLoading(false);
+    }
 
-        // if (eventIds.length) {
-        //   let events = [];
-        //   for (let i = 0; i < eventIds.length; i++) {
-        //     get(query(child(dbRef, `events/${eventIds[i]}`))).then((snapshot) => {
-        //       if (snapshot.exists()) {
-        //         events.push(snapshot.val());
-        //       }
-        //     });
-        //   }
-        //   setEventList(events);
-        // }
-        // console.log("guestlist -->", guestList);
+    useEffect(() => {
+        const eventIdsQuery = query(
+            child(dbRef, `users/${uid}`),
+            orderByChild("userEvents")
+        );
+        try {
+            get(eventIdsQuery).then((eventSnapshot) => {
+                if (eventSnapshot.exists()) {
+                    const data = eventSnapshot.val();
+                    const userEventIds = data.userEvents;
+                    getEvents(userEventIds)
+                } else {
+                    console.log("no event data");
+                }
+            });
+        } catch (error) {
+            console.log(error);
+        }
+        setLoading(false);
     }, []);
-
+        
     const navigation = useNavigation();
-    //EH Added to get things working
-    let loading = false;
+    
     return (
         <SafeAreaView style={globalStyles.container}>
             {loading ? (
                 <Text>Loading your events...</Text>
-            ) : eventList.length ? (
+            ) : eventList.length > 0 ? (
                 <FlatList
                     data={eventList}
                     renderItem={(itemData) => {
