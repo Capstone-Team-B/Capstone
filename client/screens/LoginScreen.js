@@ -12,8 +12,8 @@ import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, child, get, set } from "firebase/database";
 
 const LoginScreen = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("elizabeth.house88@gmail.com");
+    const [password, setPassword] = useState("123456");
 
     const navigation = useNavigation();
 
@@ -54,7 +54,6 @@ const LoginScreen = () => {
                                 set(ref(db, `users/${uid}`), {
                                     id: uid,
                                     email: email,
-                                    password: password,
                                     firstName: "",
                                     lastName: "",
                                     phoneNumber: "",
@@ -104,7 +103,8 @@ const LoginScreen = () => {
                             set(ref(dbRef, `users/${uid}`), {
                                 id: uid,
                                 email: email,
-                                password: password,
+                                // we should remove password as this makes it unsecure and easy to find.
+                                // password: password,
                                 firstName: "",
                                 lastName: "",
                                 phoneNumber: "",

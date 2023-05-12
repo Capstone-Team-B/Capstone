@@ -44,11 +44,11 @@ const MyAccountScreen = (props) => {
     };
 
     const handlePressEditAccount = () => {
-        navigation.navigate("EditAccountScreen");
+        navigation.navigate("EditAccountScreen", user);
     };
 
     const handlePressEditPrefs = () => {
-        navigation.navigate("EditPrefsScreen");
+        navigation.navigate("EditPrefsScreen", user);
     };
 
     const handlePressViewArchive = () => {
@@ -81,9 +81,7 @@ const MyAccountScreen = (props) => {
                     <Text>
                         Last name: {user.lastName ? user.lastName : "no data"}
                     </Text>
-                    <Text>
-                        Password: {user.password ? user.password : "no data"}
-                    </Text>
+                    {/* REMOVED Password */}
                     <Text>
                         Phone: {user.phoneNumber ? user.phoneNumber : "no data"}
                     </Text>
@@ -109,8 +107,14 @@ const MyAccountScreen = (props) => {
             </View>
             <View style={styles.section}>
                 <View>
-                    <Text>Accessibility</Text>
-                    <Text>Dietary restrictions</Text>
+                    <Text>
+                        Accessibility:{" "}
+                        {user.accessibility ? user.accessibility : "no data"}
+                    </Text>
+                    <Text>
+                        Dietary restrictions:{" "}
+                        {user.dietary ? user.dietary : "no data"}{" "}
+                    </Text>
                 </View>
             </View>
             <View style={styles.sectionHeader}>
