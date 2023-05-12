@@ -5,6 +5,7 @@ import {
     SafeAreaView,
     Image,
     TouchableOpacity,
+    Pressable,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Feather from "react-native-vector-icons/Feather";

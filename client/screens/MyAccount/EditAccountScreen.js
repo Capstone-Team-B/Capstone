@@ -8,6 +8,8 @@ import {
     TextInput,
     TouchableOpacity,
     Alert,
+    SafeAreaView,
+    Button,
 } from "react-native";
 // import { auth } from "../../../firebase";
 import { useNavigation } from "@react-navigation/native";
