@@ -22,64 +22,70 @@ import { Video } from "expo-av";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [showSplash, setShowSplash] = useState(true);
+    const [showSplash, setShowSplash] = useState(true);
 
-  function handleVideoEnd() {
-    setShowSplash(false);
-  }
+    function handleVideoEnd() {
+        setShowSplash(false);
+    }
 
-  if (showSplash) {
+    if (showSplash) {
+        return (
+            <View style={styles.container}>
+                <StatusBar />
+                <Video
+                    source={require("./assets/BeThereAnimation.mp4")}
+                    style={styles.video}
+                    shouldPlay
+                    isLooping={false}
+                    resizeMode="cover"
+                    onPlaybackStatusUpdate={(status) => {
+                        if (!status.isPlaying && status.didJustFinish) {
+                            handleVideoEnd();
+                        }
+                    }}
+                />
+            </View>
+        );
+    }
+
     return (
-      <View style={styles.container}>
-        <StatusBar />
-        <Video
-          source={require("./assets/BeThereAnimation.mp4")}
-          style={styles.video}
-          shouldPlay
-          isLooping={false}
-          resizeMode="cover"
-          onPlaybackStatusUpdate={(status) => {
-            if (!status.isPlaying && status.didJustFinish) {
-              handleVideoEnd();
-            }
-          }}
-        />
-      </View>
+        <View style={styles.container}>
+            <StatusBar />
+            <NavigationContainer>
+                <Stack.Navigator initialRouteName="LoginScreen">
+                    <Stack.Screen
+                        name="LoginScreen"
+                        component={LoginScreen}
+                        options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                        name="TabNav"
+                        component={TabNavigator}
+                        options={{ headerShown: false }}
+                    />
+                    <Stack.Screen name="Home" component={HomeScreen} />
+                    <Stack.Screen name="Guest" component={GuestScreen} />
+                    <Stack.Screen
+                        name="GuestProfile"
+                        component={GuestProfileScreen}
+                    />
+                    <Stack.Screen
+                        name="Create Event"
+                        component={CreateEventForm}
+                    />
+                    <Stack.Screen name="Single event" component={SingleEvent} />
+                </Stack.Navigator>
+            </NavigationContainer>
+        </View>
     );
-  }
-
-  return (
-    <View style={styles.container}>
-      <StatusBar />
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="LoginScreen">
-          <Stack.Screen
-            name="LoginScreen"
-            component={LoginScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="TabNav"
-            component={TabNavigator}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Guest" component={GuestScreen} />
-          <Stack.Screen name="GuestProfile" component={GuestProfileScreen} />
-          <Stack.Screen name="Create Event" component={CreateEventForm} />
-          <Stack.Screen name="Single event" component={SingleEvent} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </View>
-  );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  video: {
-    flex: 1,
-  },
+    container: {
+        flex: 1,
+        backgroundColor: "#fff",
+    },
+    video: {
+        flex: 1,
+    },
 });

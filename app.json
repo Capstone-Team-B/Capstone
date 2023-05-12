@@ -1,38 +1,36 @@
 {
-  "expo": {
-    "name": "FirebaseAuth",
-    "slug": "FirebaseAuth",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/BeThereConcise.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "video": "./assets/BeThereAnimation.mp4",
-      "resizeMode": "cover",
-      "backgroundColor": "#ffffff"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/BeThereConcise.png",
-        "backgroundColor": "#ffffff"
-      }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "plugins": [
-      [
-        "expo-contacts",
-        {
-          "contactsPermission": "Allow beThere to access your contacts."
-        }
-      ]
-    ]
-  }
+    "expo": {
+        "name": "FirebaseAuth",
+        "slug": "FirebaseAuth",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/BeThereConcise.png",
+        "userInterfaceStyle": "light",
+        "splash": {
+            "video": "./assets/BeThereAnimation.mp4",
+            "resizeMode": "cover",
+            "backgroundColor": "#ffffff"
+        },
+        "assetBundlePatterns": ["**/*"],
+        "ios": {
+            "supportsTablet": true
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/BeThereConcise.png",
+                "backgroundColor": "#ffffff"
+            }
+        },
+        "web": {
+            "favicon": "./assets/favicon.png"
+        },
+        "plugins": [
+            [
+                "expo-contacts",
+                {
+                    "contactsPermission": "Allow beThere to access your contacts."
+                }
+            ]
+        ]
+    }
 }
