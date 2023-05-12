@@ -22,18 +22,46 @@ const ImportContacts = (params) => {
     const [toggleCheckBox, setToggleCheckBox] = useState(false);
     const [checks, setChecks] = useState([]);
 
+    const handleSelectAll = useCallback(() => {
+        setToggleCheckBox((previous) => !previous);
+
+        if (!toggleCheckBox) {
+            setSelectedContacts([...contacts]);
+            setChecks(contacts.map(() => true)); // select all checkboxes
+        } else {
+            setSelectedContacts([]);
+            setChecks(contacts.map(() => false)); // deselect all checkboxes
+        }
+    }, [toggleCheckBox, contacts, setSelectedContacts, setChecks]);
+
+    useEffect(() => {
+        if (!contacts) {
+            return;
+        }
+        if (toggleCheckBox) {
+            setSelectedContacts(contacts);
+            setChecks(contacts.map(() => true));
+        } else {
+            setChecks(contacts.map(() => false));
+        }
+    }, [toggleCheckBox, contacts, setSelectedContacts, setChecks]);
+
     const onCheck = useCallback(
         (index) => {
             let previous = [...checks];
             previous[index] = !previous[index];
             setChecks(previous);
-        },
-        [checks, setChecks]
-    );
 
-    const handleSelectAll = useCallback(() => {
-        setChecks((previous) => previous.map((check) => !check));
-    }, [setChecks]);
+            let newSelectedContacts = [];
+            for (let i = 0; i < previous.length; i++) {
+                if (previous[i]) {
+                    newSelectedContacts.push(contacts[i]);
+                }
+            }
+            setSelectedContacts(newSelectedContacts);
+        },
+        [checks, contacts, setSelectedContacts, setChecks]
+    );
 
     const navigation = useNavigation();
 
