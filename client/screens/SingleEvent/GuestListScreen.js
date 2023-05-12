@@ -25,6 +25,7 @@ import {
     startAt,
     endAt,
 } from "firebase/database";
+import { FlatList } from "react-native-web";
 
 const GuestListScreen = (params) => {
     const [guestUsers, setGuestUsers] = useState([]);
@@ -33,13 +34,12 @@ const GuestListScreen = (params) => {
     const host_id = event.host_id;
     const guestList = event.guestList;
     const guestIds = Object.keys(guestList);
-
+    console.log("guestList -->", guestList)
     const dbRef = ref(getDatabase());
 
     const navigation = useNavigation();
 
     useEffect(() => {
-        // for loop that loops thru guestList and queries users by the uid's in the guest list, then pushes user/guest to an array that is held on state (guestUsers)
         const getGuests = async () => {
             let guests = [];
             for (let i = 0; i < guestIds.length; i++) {
@@ -96,6 +96,7 @@ const GuestListScreen = (params) => {
             <Text> Guest list</Text>
             <Text>Host: {host.firstName} {host.lastName}</Text>
             {guestUsers ? (
+                // NEED TO MAKE INTO <FlatList />
                 Object.keys(guestUsers).map((key) => {
                     const guest = guestUsers[key];
                     return (
