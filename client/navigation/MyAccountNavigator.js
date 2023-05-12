@@ -38,18 +38,7 @@ const MyAccountNavigator = (props) => {
                 initialParams={{ uid: uid }}
                 options={{ title: "Edit Guest Preferences" }}
             />
-            <Stack.Screen
-                name="UploadProfilePicScreen"
-                component={UploadProfilePicScreen}
-                initialParams={{ uid: uid }}
-                options={{ title: "Upload Profile Picture" }}
-            />
-            <Stack.Screen
-                name="EditPrefsScreen"
-                component={EditPrefsScreen}
-                initialParams={{ uid: uid }}
-                options={{ title: "Edit Guest Preferences" }}
-            />
+            {/* EH Removed doupled up edit pref update Profile screen */}
             <Stack.Screen
                 name="UploadProfilePicScreen"
                 component={UploadProfilePicScreen}
