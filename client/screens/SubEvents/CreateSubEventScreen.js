@@ -60,7 +60,7 @@ const CreateSubEvent = (params) => {
         }
 
         const dbRef = ref(getDatabase());
-        const subeventRef = child(dbRef, 'subevent');
+        const subeventRef = child(dbRef, 'subevents');
         const tagRef = child(dbRef, 'tags');
       
         // Create a new subevent and associate it with a tag

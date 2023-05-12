@@ -35,11 +35,19 @@ const MapEventScreen = (params) => {
         equalTo(params.route.params.eventId)
       )
     )
-      .then((snapshot) => {
+      .then(async(snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.val();
-          console.log(data);
-          setSubEvents(removeEmpty(data));
+          const dataFiltered = removeEmpty(data)
+          for (let index = 0; index < dataFiltered.length; index++) {
+            const element = dataFiltered[index];
+            const latlon = await fetch(`https://geocode.maps.co/search?q={${element.location}}`).then(async data=>data.json())
+            console.log('each',latlon)
+            element.latitude = latlon[0].lat
+            element.longitude = latlon[0].lon
+          }
+          console.log('filtered', dataFiltered)
+          setSubEvents(dataFiltered);
         } else {
           console.log("No data available");
         }
@@ -50,16 +58,19 @@ const MapEventScreen = (params) => {
   }, [params.route.params.eventId]);
   return (
     <View style={styles.container}>
-      {subevents.length > 0 && (
+      {subevents.length > 0 ? (
         <MapView
           style={{ alignSelf: "stretch", height: "100%" }}
-          region={{latitude: subevents[0].latitude, longitude: subevents[0].longitude}}
+          region={{
+            latitude: subevents[0].latitude,
+            longitude: subevents[0].longitude,
+          }}
         >
           {subevents.map((marker, index) => (
             <Marker
-            title={marker.location}
-            description={marker.nameLocation}
               key={index}
+              title={marker.location}
+              description={marker.nameLocation}
               coordinate={{
                 latitude: marker.latitude,
                 longitude: marker.longitude,
@@ -67,6 +78,8 @@ const MapEventScreen = (params) => {
             />
           ))}
         </MapView>
+      ) : (
+        <Text>Not events</Text>
       )}
       <Text> Maps and Events {eventId}</Text>
     </View>

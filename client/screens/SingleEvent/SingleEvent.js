@@ -17,7 +17,6 @@ const SingleEvent = (params) => {
       <Text>{new Date(event.date).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}</Text>
       <Text> {event.location}</Text>
       <Text>
-        {' '}
         {event.starttime} & {event.endtime}
       </Text>
       <Text> {event.description}</Text>
@@ -32,41 +31,26 @@ const SingleEvent = (params) => {
         onPress={() =>
           navigation.navigate('MessageboardScreen', {
             eventId: event.id,
-            name: event.name,
-          })
-        }
-      >
+            name: event.name,})}>
         <Text>Event Messageboard</Text>
       </TouchableOpacity>
+      {/*<TouchableOpacity
+        onPress={() =>
+          navigation.navigate('GuestProfileScreen', { eventId: event.id })}>
+       <Text>My Guest Profile</Text>
+      </TouchableOpacity>*/}
+        {/*need to add logic to only show if user is host */}
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate('GuestProfileScreen', { eventId: event.id })
-        }
-      >
-
-        <Text>My Guest Profile</Text>
-      </TouchableOpacity>
-      {/* need to add logic to only show if user is host */}
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('Edit Event', { event: event })
-        }
-        >
+          navigation.navigate('Edit Event', { event: event })}>
         <Text>Edit Event</Text>
-      </TouchableOpacity>
-   
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Guest", { eventId: event.id })}>
-        <Text>Guest List</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={() => navigation.navigate("Maps", { eventId: event.id })}>
         <Text>Maps and Events</Text>
       </TouchableOpacity>
-
     </View>
-    
   );
 };
 
