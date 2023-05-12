@@ -14,16 +14,17 @@ import { useNavigation } from "@react-navigation/native";
 import globalStyles from "../../utils/globalStyles";
 
 const EventListScreen = (props) => {
-    const { uid } = props.route.params;
-    console.log("uid in EventListScreen -->", uid);
-    const [guestList, setGuestList] = useState(null);
-    const [eventIds, setEventIds] = useState([]);
-    const [eventList, setEventList] = useState([]);
-    const dbRef = ref(getDatabase());
-    useEffect(() => {
-        const eventQuery = query(child(dbRef, `events`), orderByChild("id"));
+  const { uid } = props.route.params;
+  console.log("uid in EventListScreen -->", uid);
+  const [guestList, setGuestList] = useState(null);
+  const [eventIds, setEventIds] = useState([]);
+  const [eventList, setEventList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  const dbRef = ref(getDatabase());
+  useEffect(() => {
 
-        get(eventQuery).then((eventSnapshot) => {
+        get(eventQuery).then((eventSnapshot) => { 
             if (eventSnapshot.exists()) {
                 // console.log(eventSnapshot.val());
                 const data = eventSnapshot.val();
@@ -45,25 +46,29 @@ const EventListScreen = (props) => {
                 setEventList(events);
             }
         });
-        //TODO: Delete all this
-        // const dbRef = ref(getDatabase());
-        // get(
-        //   query(child(dbRef, "guestlist"), orderByChild("guest_id"), equalTo(uid))
-        // )
-        //   .then((snapshot) => {
-        //     if (snapshot.exists()) {
-        //       const events = Object.values(snapshot.val()).map(
-        //         (event) => event.event_id
-        //       );
-        //       setGuestList(snapshot.val());
-        //       setEventIds(events);
-        //     } else {
-        //       console.log("No data available");
-        //     }
-        //   })
-        //   .catch((error) => {
-        //     console.log(error);
-        //   });
+        setEventList(events);
+        setLoading(false)
+      }
+    })
+    //TODO: Delete all this
+    // const dbRef = ref(getDatabase());
+    // get(
+    //   query(child(dbRef, "guestlist"), orderByChild("guest_id"), equalTo(uid))
+    // )
+    //   .then((snapshot) => {
+    //     if (snapshot.exists()) {
+    //       const events = Object.values(snapshot.val()).map(
+    //         (event) => event.event_id
+    //       );
+    //       setGuestList(snapshot.val());
+    //       setEventIds(events);
+    //     } else {
+    //       console.log("No data available");
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
 
         // if (eventIds.length) {
         //   let events = [];

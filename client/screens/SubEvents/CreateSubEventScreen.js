@@ -104,13 +104,13 @@ const CreateSubEvent = (params) => {
         //     event_id: event.id,
         // };
 
-        const {
-            name: subeventName,
-            location: subeventLocation,
-            date: subeventDate,
-            startTime: subeventtartTime,
-            endTime: subeventEndTime,
-        } = subEvent;
+        // const {
+        //     name: subeventName,
+        //     location: subeventLocation,
+        //     date: subeventDate,
+        //     startTime: subeventtartTime,
+        //     endTime: subeventEndTime,
+        // } = subEvent;
         const newSubEventData = {
             name: subeventName,
             location: subeventLocation,
