@@ -12,6 +12,7 @@ import { getDatabase, ref, child, get } from "firebase/database";
 import SignOutBtn from "./SignOutBtn";
 import { useNavigation } from "@react-navigation/native";
 import globalStyles from "../../utils/globalStyles";
+const BeThereLogo = require("../../../assets/BeThereConcise.png");
 
 const MyAccountScreen = (props) => {
     const [user, setUser] = useState({});
@@ -59,10 +60,16 @@ const MyAccountScreen = (props) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.createEvent}>
-        <Pressable style={styles.createEvent} onPress={handlePressCreateEvent}>
-          <Feather name="star" size={60} />
-          <Text style={styles.createEventTitle}>Create an event</Text>
-        </Pressable>
+        <TouchableOpacity
+          style={styles.createEvent}
+          onPress={handlePressCreateEvent}
+        >
+          <Image
+            source={require("../../../assets/BeThereConcise.png")}
+            style={{ height: 200, width: 200 }}
+          />
+          <Text style={globalStyles.heading1}>Create an event</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Account details</Text>
@@ -72,12 +79,24 @@ const MyAccountScreen = (props) => {
       </View>
       <View style={styles.section}>
         <View>
-          <Text>First name: {user.firstName ? user.firstName : "no data"}</Text>
-          <Text>Last name: {user.lastName ? user.lastName : "no data"}</Text>
-          <Text>Password: {user.password ? user.password : "no data"}</Text>
-          <Text>Phone: {user.phoneNumber ? user.phoneNumber : "no data"}</Text>
-          <Text>Email: {user.email ? user.email : "no data"}</Text>
-          <Text>Location: {user.location ? user.location : "no data"}</Text>
+          <Text style={globalStyles.paragraph}>
+            First name: {user.firstName ? user.firstName : "no data"}
+          </Text>
+          <Text style={globalStyles.paragraph}>
+            Last name: {user.lastName ? user.lastName : "no data"}
+          </Text>
+          <Text style={globalStyles.paragraph}>
+            Password: {user.password ? user.password : "no data"}
+          </Text>
+          <Text style={globalStyles.paragraph}>
+            Phone: {user.phoneNumber ? user.phoneNumber : "no data"}
+          </Text>
+          <Text style={globalStyles.paragraph}>
+            Email: {user.email ? user.email : "no data"}
+          </Text>
+          <Text style={globalStyles.paragraph}>
+            Location: {user.location ? user.location : "no data"}
+          </Text>
         </View>
         <View>
           <Image
@@ -114,7 +133,9 @@ const MyAccountScreen = (props) => {
       </View>
       <View style={styles.section}>
         <View>
-          <Text>Past event's I've attended/hosted</Text>
+          <Text style={globalStyles.paragraph}>
+            Past event's I've attended/hosted
+          </Text>
         </View>
       </View>
       <SignOutBtn />

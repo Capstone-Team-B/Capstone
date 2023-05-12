@@ -1,4 +1,11 @@
-import { StyleSheet, Text, SafeAreaView, Button, Image, FlatList } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  SafeAreaView,
+  Button,
+  Image,
+  FlatList,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import globalStyles from "../../utils/globalStyles";
@@ -26,16 +33,10 @@ const UploadEventImagesScreen = () => {
 
       if (!result.canceled && result.assets) {
         let imageArray = [];
-        // console.log(result.assets);
-        // Here, you can loop through the `assets` array and do something with each selected image object
-        // For example:
         result.assets.forEach((image) => {
-          //   console.log(image.uri);
-          // do something with `image` object
           imageArray.push(image.uri);
         });
         setImages(imageArray);
-        console.log(imageArray);
       }
 
       if (hasGalleryPermission === false) {
@@ -53,7 +54,7 @@ const UploadEventImagesScreen = () => {
       {images && (
         <FlatList
           data={images}
-          renderItem={({item}) => {
+          renderItem={({ item }) => {
             return (
               <Image
                 source={{ uri: item }}
@@ -66,6 +67,7 @@ const UploadEventImagesScreen = () => {
           }}
         />
       )}
+      {images && <Button title="Upload selected images"/>}
     </SafeAreaView>
   );
 };

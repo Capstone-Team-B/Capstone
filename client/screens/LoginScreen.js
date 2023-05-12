@@ -1,15 +1,17 @@
 import {
-    KeyboardAvoidingView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Image,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { auth } from "../../firebase";
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, child, get, set } from "firebase/database";
+const BeThereLogoExpanded = require("../../assets/BeThereExpanded.png");
 
 const LoginScreen = () => {
     const [email, setEmail] = useState("elizabeth.house88@gmail.com");
@@ -69,23 +71,29 @@ const LoginScreen = () => {
             .catch((error) => alert(error.message));
     };
 
-    return (
-        <KeyboardAvoidingView style={styles.container} behavior="height">
-            <View style={styles.inputContainer}>
-                <TextInput
-                    placeholder="Email"
-                    value={email}
-                    onChangeText={(text) => setEmail(text)}
-                    style={styles.input}
-                />
-                <TextInput
-                    placeholder="Password"
-                    value={password}
-                    onChangeText={(text) => setPassword(text)}
-                    style={styles.input}
-                    secureTextEntry
-                />
-            </View>
+  return (
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <View style={styles.inputContainer}>
+        <View style={{ justifyContent: "center" }}>
+          <Image
+            source={BeThereLogoExpanded}
+            style={{ height: 250, width: 250 }}
+          />
+        </View>
+        <TextInput
+          placeholder="Email"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+          style={styles.input}
+        />
+        <TextInput
+          placeholder="Password"
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+          style={styles.input}
+          secureTextEntry
+        />
+      </View>
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={handleLogin} style={styles.button}>
