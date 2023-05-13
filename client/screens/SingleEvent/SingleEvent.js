@@ -7,14 +7,14 @@ import globalStyles from "../../utils/globalStyles";
 
 const SingleEvent = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
-    console.log("single event params passed in ", params.route.params.uid);
+    console.log("users unique id --> ", params.route.params.uid);
 
     useEffect(() => {
         setEvent(params.route.params.event);
     }, [params.route.params.event]);
 
     const navigation = useNavigation();
-    console.log("event.id -->", event);
+    console.log("event full object  -->", event);
     return (
         <View style={globalStyles.container}>
             <Text style={globalStyles.heading1}> {event.name}</Text>
@@ -85,9 +85,10 @@ const SingleEvent = (params) => {
                     style={styles.tile}
                     onPress={() =>
                         navigation.navigate("MessageboardScreen", {
-                            eventId: event.id,
+                            event_id: event.event_id,
                             eventMessages: event.messages,
                             name: event.name,
+                            user_id: params.route.params.uid,
                         })
                     }
                 >

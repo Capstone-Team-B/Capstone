@@ -21,15 +21,19 @@ import { auth } from "../../../firebase";
 
 const MessageboardScreen = (params) => {
     console.log("params", params.route.params);
-    // LOG  params {"event_id": undefined, "name": "kit's wedding"}
-    // const [event_id, setEvent_id] = useState(params.route.params.event_id);
-    const [event_id, setEvent_id] = useState(params.route.params.event || "");
+    // LOG  params {"eventMessages": [0], "event_id": "0", "name": "kit's wedding", "user_id": "NLxGphpLhkM6F8Gln8xuHC4hVxB2"}
+    const [event_id, setEvent_id] = useState(
+        params.route.params.event_id || ""
+    );
 
     console.log("event_id", event_id);
+
     const dbRef = ref(getDatabase());
     const db = getDatabase();
     const [newMessage, setNewMessage] = useState("");
     const [eventName, setEventName] = useState(params.route.params.name || "");
+    const [user_id, setUser_id] = useState(params.route.params.user_id || "");
+    console.log("user_id -->", user_id);
     const [messages, setMessages] = useState([]);
 
     useEffect(() => {
@@ -48,6 +52,7 @@ const MessageboardScreen = (params) => {
                         ...data[key],
                     }));
                     setMessages(messageList);
+                    console.log("messageList", messageList);
                     setEventName(params.route.params.name);
                 } else {
                     console.log("No data available");
@@ -59,17 +64,16 @@ const MessageboardScreen = (params) => {
     }, [event_id]);
     const handleSubmitMessage = () => {
         // this makes the unique ID for the message
-        console.log(auth);
-        console.log(auth.currentUser);
+        // console.log("auth.current user -->", auth.currentUser.uid);
 
         let message_id = Date.now();
         const currentTime = new Date().toISOString();
         if (newMessage !== "") {
-            set(ref(db, `messages/${uid}`), {
+            set(ref(db, `messages/${message_id}`), {
                 content: newMessage,
                 dateTimeStamp: currentTime,
                 event_id: event_id,
-                sender_id: auth.currentUser.uid,
+                sender_id: user_id,
                 senderName:
                     `${auth.currentUser.firstName} ${auth.currentUser.lastName}` ||
                     "Unknown",
@@ -83,7 +87,7 @@ const MessageboardScreen = (params) => {
                 });
             get(
                 query(
-                    child(dbRef, "messageboard"),
+                    child(dbRef, "messages"),
                     orderByChild("event_id"),
                     equalTo(event_id)
                 )
