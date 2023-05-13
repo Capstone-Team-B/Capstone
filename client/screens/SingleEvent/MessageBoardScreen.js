@@ -20,11 +20,16 @@ import {
 import { auth } from "../../../firebase";
 
 const MessageboardScreen = (params) => {
-    const [eventId, setEventId] = useState(params.route.params.eventId);
+    console.log("params", params.route.params);
+    // LOG  params {"eventId": undefined, "name": "kit's wedding"}
+    // const [eventId, setEventId] = useState(params.route.params.eventId);
+    const [eventId, setEventId] = useState("temp");
+
+    console.log("eventID", eventId);
     const dbRef = ref(getDatabase());
     const db = getDatabase();
     const [newMessage, setNewMessage] = useState("");
-    const [eventName, setEventName] = useState("");
+    const [eventName, setEventName] = useState(params.route.params.name || "");
     const [messages, setMessages] = useState([]);
 
     useEffect(() => {
@@ -156,16 +161,16 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginTop: 5,
     },
-    nameText: {
-        color: "blue",
-        fontWeight: "400",
-        fontSize: "12",
-    },
-    eventLabel: {
-        color: "purple",
-        fontWeight: "700",
-        fontSize: "24",
-    },
+    // nameText: {
+    //     color: "blue",
+    //     fontWeight: "400",
+    //     fontSize: "12",
+    // },
+    // eventLabel: {
+    //     color: "purple",
+    //     fontWeight: "700",
+    //     fontSize: "24",
+    // },
     item: {
         padding: 20,
         marginVertical: 8,

@@ -13,7 +13,7 @@ const SingleEvent = (params) => {
     }, [params.route.params.event]);
 
     const navigation = useNavigation();
-    console.log("event.id -->", event)
+    console.log("event.id -->", event);
     return (
         <View style={globalStyles.container}>
             <Text style={globalStyles.heading1}> {event.name}</Text>
@@ -84,7 +84,8 @@ const SingleEvent = (params) => {
                     style={styles.tile}
                     onPress={() =>
                         navigation.navigate("MessageboardScreen", {
-                            eventId: event.id,
+                            eventId: event,
+                            eventMessages: event.messages,
                             name: event.name,
                         })
                     }
