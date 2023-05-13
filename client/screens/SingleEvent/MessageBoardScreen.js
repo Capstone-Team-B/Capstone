@@ -59,18 +59,18 @@ const MessageboardScreen = (params) => {
     }, [eventId]);
     const handleSubmitMessage = () => {
         // this makes the unique ID for the message
-        let uid = Date.now();
+        let message_id = Date.now();
         const currentTime = new Date().toISOString();
         if (newMessage !== "") {
-            set(ref(db, `messageboard/${uid}`), {
-                created_at: currentTime,
+            set(ref(db, `messages/${uid}`), {
+                content: newMessage,
+                dateTimeStamp: currentTime,
                 event_id: eventId,
-                id: uid,
-                user_id: auth.currentUser.uid,
-                user_name:
+                sender_id: auth.currentUser.uid,
+                SenderName:
                     `${auth.currentUser.firstName} ${auth.currentUser.lastName}` ||
                     "Unknown",
-                message: newMessage,
+                message_id: message_id,
             })
                 .then(() => {
                     setNewMessage("");

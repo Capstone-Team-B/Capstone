@@ -7,6 +7,7 @@ import globalStyles from "../../utils/globalStyles";
 
 const SingleEvent = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
+    console.log("single event params passed in ", params.route.params.uid);
 
     useEffect(() => {
         setEvent(params.route.params.event);
