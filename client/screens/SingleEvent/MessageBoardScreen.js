@@ -1,3 +1,6 @@
+//TO DO get userprofile name to pass down from single event?
+//get messages to render on screen.
+
 import React, { useState, useEffect } from "react";
 import {
     KeyboardAvoidingView,
@@ -53,6 +56,8 @@ const MessageboardScreen = (params) => {
                     }));
                     setMessages(messageList);
                     console.log("messageList", messageList);
+                    console.log("messages updated", messages);
+
                     setEventName(params.route.params.name);
                 } else {
                     console.log("No data available");
@@ -99,6 +104,10 @@ const MessageboardScreen = (params) => {
                             id: key,
                             ...data[key],
                         }));
+                        console.log(
+                            "messageList after submit -->",
+                            messageList
+                        );
                         setMessages(messageList);
                     } else {
                         console.log("No data available");
@@ -116,8 +125,10 @@ const MessageboardScreen = (params) => {
             <View style={styles.inputContainer}>
                 {messages.map((message) => (
                     <View key={message.id} style={styles.item}>
-                        <Text style={styles.firstName}>{message.message}</Text>
-                        <Text style={styles.nameText}>{message.user_name}</Text>
+                        <Text style={styles.firstName}>{message.content}</Text>
+                        <Text style={styles.nameText}>
+                            {message.senderName}
+                        </Text>
                     </View>
                 ))}
                 <TextInput
