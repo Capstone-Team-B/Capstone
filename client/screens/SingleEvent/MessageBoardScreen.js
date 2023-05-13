@@ -23,9 +23,9 @@ const MessageboardScreen = (params) => {
     console.log("params", params.route.params);
     // LOG  params {"event_id": undefined, "name": "kit's wedding"}
     // const [event_id, setEvent_id] = useState(params.route.params.event_id);
-    const [event_id, setEvent_id] = useState("temp");
+    const [event_id, setEvent_id] = useState(params.route.params.event || "");
 
-    console.log("event_iD", event_id);
+    console.log("event_id", event_id);
     const dbRef = ref(getDatabase());
     const db = getDatabase();
     const [newMessage, setNewMessage] = useState("");

@@ -85,7 +85,7 @@ const SingleEvent = (params) => {
                     style={styles.tile}
                     onPress={() =>
                         navigation.navigate("MessageboardScreen", {
-                            eventId: event,
+                            eventId: event.id,
                             eventMessages: event.messages,
                             name: event.name,
                         })
