@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     itemHost: {
         margin: 10,
         borderWidth: 2,
-        borderColor: "orchid",
+        borderColor: "#cb6ce6",
         backgroundColor: "plum",
         padding: 10,
         borderRadius: 10,

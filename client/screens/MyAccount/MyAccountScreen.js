@@ -73,64 +73,67 @@ const MyAccountScreen = (props) => {
                 </TouchableOpacity>
             </View>
             <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Account details</Text>
+                <Text style={globalStyles.heading2}>Account details</Text>
                 <Pressable onPress={handlePressEditAccount}>
-                    <Feather name="edit" size={20} />
+                    <Feather name="edit" size={25} />
                 </Pressable>
             </View>
-            <View style={styles.section}>
-                <View>
-                    <Text style={globalStyles.paragraph}>
-                        First name:{" "}
-                        {user.firstName ? user.firstName : "no data"}
-                    </Text>
-                    <Text style={globalStyles.paragraph}>
-                        Last name: {user.lastName ? user.lastName : "no data"}
-                    </Text>
-                    <Text style={globalStyles.paragraph}>
-                        Phone: {user.phoneNumber ? user.phoneNumber : "no data"}
-                    </Text>
-                    <Text style={globalStyles.paragraph}>
-                        Email: {user.email ? user.email : "no data"}
-                    </Text>
-                    <Text style={globalStyles.paragraph}>
-                        Location: {user.homeCity ? user.homeCity : "no data"}
-                    </Text>
+            <View style={globalStyles.tile}>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                    }}
+                >
+                    <View>
+                        <Text style={globalStyles.paragraph}>
+                            First name:{" "}
+                            {user.firstName ? user.firstName : "no data"}
+                        </Text>
+                        <Text style={globalStyles.paragraph}>
+                            Last name:{" "}
+                            {user.lastName ? user.lastName : "no data"}
+                        </Text>
+                        <Text style={globalStyles.paragraph}>
+                            Phone:{" "}
+                            {user.phoneNumber ? user.phoneNumber : "no data"}
+                        </Text>
+                        <Text style={globalStyles.paragraph}>
+                            Email: {user.email ? user.email : "no data"}
+                        </Text>
+                        <Text style={globalStyles.paragraph}>
+                            Location:{" "}
+                            {user.homeCity ? user.homeCity : "no data"}
+                        </Text>
+                    </View>
+                    <View>
+                        <Image
+                            style={styles.profilePic}
+                            source={{
+                                uri: user.profilePic,
+                            }}
+                        />
+                    </View>
                 </View>
-                <View>
-                    <Image
-                        style={styles.profilePic}
-                        source={{
-                            uri: user.profilePic,
-                        }}
-                    />
-                </View>
+                <Text>{" "}</Text>
+                <Text style={{fontSize: 15, fontWeight: "bold", marginBottom: 5}}>Guest Preferences</Text>
+
+                <Text>
+                    Accessibility:{" "}
+                    {user.accessibility ? user.accessibility : "no data"}
+                </Text>
+                <Text>
+                    Dietary restrictions:{" "}
+                    {user.dietary ? user.dietary : "no data"}{" "}
+                </Text>
             </View>
             <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Guest Preferences</Text>
-                <Pressable onPress={handlePressEditPrefs}>
-                    <Feather name="edit" size={20} />
-                </Pressable>
-            </View>
-            <View style={styles.section}>
-                <View>
-                    <Text>
-                        Accessibility:{" "}
-                        {user.accessibility ? user.accessibility : "no data"}
-                    </Text>
-                    <Text>
-                        Dietary restrictions:{" "}
-                        {user.dietary ? user.dietary : "no data"}{" "}
-                    </Text>
-                </View>
-            </View>
-            <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Archive</Text>
+                <Text style={globalStyles.heading2}>Archive</Text>
                 <Pressable onPress={handlePressViewArchive}>
-                    <Feather name="rewind" size={20} />
+                    <Feather name="rewind" size={25} />
                 </Pressable>
             </View>
-            <View style={styles.section}>
+            <View style={globalStyles.tile}>
                 <View>
                     <Text style={globalStyles.paragraph}>
                         Past event's I've attended/hosted
@@ -154,12 +157,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        // borderWidth: 5,
-        // borderStyle: "dotted",
-        // borderRadius: 250,
-        // width: 250,
-        // height: 250,
-        // margin: 20
     },
     createEventTitle: {
         fontSize: 24,
@@ -167,7 +164,7 @@ const styles = StyleSheet.create({
     section: {
         margin: 10,
         borderWidth: 2,
-        borderColor: "dodgerblue",
+        borderColor: "#38b6ff",
         padding: 10,
         flexDirection: "row",
         justifyContent: "space-between",
@@ -178,13 +175,9 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
     },
-    // sectionTitle: {
-    //   fontSize: 18,
-    //   fontWeight: "bold",
-    // },
     profilePic: {
-        width: 90,
-        height: 90,
+        width: 100,
+        height: 100,
         borderRadius: 50,
         resizeMode: "cover",
     },

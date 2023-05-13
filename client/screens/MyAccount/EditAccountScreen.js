@@ -106,18 +106,18 @@ const EditAccountScreen = (props) => {
                         // required={true}
                     />
                     {/* need to change this to profile pic upload */}
-                    <TextInput
+                    {/* <TextInput
                         style={styles.input}
                         placeholder="profilePic"
                         value={profilePic}
                         onChangeText={setProfilePic}
                         // required={true}
-                    />
+                    /> */}
                     <SafeAreaView>
                         <Button
                             title="Upload Profile Picture"
                             onPress={navigation.navigate(
-                                "UploadEventImagesScreen"
+                                "UploadProfilePicScreen"
                             )}
                         />
                     </SafeAreaView>
