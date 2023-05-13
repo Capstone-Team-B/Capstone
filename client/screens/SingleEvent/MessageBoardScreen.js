@@ -21,11 +21,11 @@ import { auth } from "../../../firebase";
 
 const MessageboardScreen = (params) => {
     console.log("params", params.route.params);
-    // LOG  params {"eventId": undefined, "name": "kit's wedding"}
-    // const [eventId, setEventId] = useState(params.route.params.eventId);
-    const [eventId, setEventId] = useState("temp");
+    // LOG  params {"event_id": undefined, "name": "kit's wedding"}
+    // const [event_id, setEvent_id] = useState(params.route.params.event_id);
+    const [event_id, setEvent_id] = useState("temp");
 
-    console.log("eventID", eventId);
+    console.log("event_iD", event_id);
     const dbRef = ref(getDatabase());
     const db = getDatabase();
     const [newMessage, setNewMessage] = useState("");
@@ -35,9 +35,9 @@ const MessageboardScreen = (params) => {
     useEffect(() => {
         get(
             query(
-                child(dbRef, "messageboard"),
+                child(dbRef, "messages"),
                 orderByChild("event_id"),
-                equalTo(eventId)
+                equalTo(event_id)
             )
         )
             .then((snapshot) => {
@@ -56,18 +56,21 @@ const MessageboardScreen = (params) => {
             .catch((error) => {
                 console.error(error);
             });
-    }, [eventId]);
+    }, [event_id]);
     const handleSubmitMessage = () => {
         // this makes the unique ID for the message
+        console.log(auth);
+        console.log(auth.currentUser);
+
         let message_id = Date.now();
         const currentTime = new Date().toISOString();
         if (newMessage !== "") {
             set(ref(db, `messages/${uid}`), {
                 content: newMessage,
                 dateTimeStamp: currentTime,
-                event_id: eventId,
+                event_id: event_id,
                 sender_id: auth.currentUser.uid,
-                SenderName:
+                senderName:
                     `${auth.currentUser.firstName} ${auth.currentUser.lastName}` ||
                     "Unknown",
                 message_id: message_id,
@@ -82,7 +85,7 @@ const MessageboardScreen = (params) => {
                 query(
                     child(dbRef, "messageboard"),
                     orderByChild("event_id"),
-                    equalTo(eventId)
+                    equalTo(event_id)
                 )
             )
                 .then((snapshot) => {
