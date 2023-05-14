@@ -15,9 +15,9 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 const ImportContacts = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
-    const eventGuestList = Object.keys(event.guestList);
+    // const eventGuestList = Object.keys(event.guestList);
     const eventId = event.event_id;
-    const [uploadedGuests, setUploadedGuests] = useState([...eventGuestList]);
+    // const [uploadedGuests, setUploadedGuests] = useState([...eventGuestList]);
     const [error, setError] = useState(undefined);
     const [contacts, setContacts] = useState(undefined);
     const [selectedContacts, setSelectedContacts] = useState([]);
@@ -100,7 +100,6 @@ const ImportContacts = (params) => {
     }, []);
 
     const handleSubmit = async () => {
-        setUploadedGuests([...eventGuestList, ...selectedContacts]);
         const dbRef = ref(getDatabase());
         const usersRef = child(dbRef, `users`);
         const guestListRef = child(dbRef, `events/${eventId}/guestList`);
@@ -161,7 +160,7 @@ const ImportContacts = (params) => {
             await set(newEventGuestsRef, newGuestListKey);
         }
         
-        // navigation.navigate("SingleEvent", { event: event });
+        navigation.navigate("SingleEvent", { event: event });
     };
 
     const getPhoneNumberData = (data, property) => {
