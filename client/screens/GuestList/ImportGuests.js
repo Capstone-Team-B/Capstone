@@ -7,6 +7,7 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity,
+    Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, child, set, push } from "firebase/database";
@@ -15,7 +16,9 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 const ImportContacts = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
-    const [guestList, setGuestList] = useState([]);
+    // const eventGuestList = Object.keys(event.guestList);
+    const eventId = event.event_id;
+    // const [uploadedGuests, setUploadedGuests] = useState([...eventGuestList]);
     const [error, setError] = useState(undefined);
     const [contacts, setContacts] = useState(undefined);
     const [selectedContacts, setSelectedContacts] = useState([]);
@@ -99,29 +102,103 @@ const ImportContacts = (params) => {
 
     const handleSubmit = async () => {
         const dbRef = ref(getDatabase());
-        const guestListRef = child(dbRef, "guestlist");
+        const usersRef = child(dbRef, `users`);
+        const guestListRef = child(dbRef, `events/${eventId}/guestList`);
 
-        for (const guest of guestList) {
+        for (const guest of selectedContacts) {
+            // console.log("guest info -->", guest)
             const {
                 email: guestEmail,
-                firstname: guestFirstname,
-                lastname: guestLastname,
+                firstName: guestFirstname,
+                lastName: guestLastname,
+                phoneNumbers: guestPhone,
             } = guest;
+
             const newGuestListData = {
-                email: guestEmail,
-                firstname: guestFirstname,
-                lastname: guestLastname,
-                role: "Guest",
-                event_id: event.id,
+                userEvents: {
+                    [event.event_id]: event.event_id,
+                },
+                firstName: guestFirstname,
             };
 
-            const newGuestListRef = push(guestListRef);
+            if (guestLastname) {
+                newGuestListData.lastName = guestLastname;
+            }
+
+            if (guestEmail) {
+                newGuestListData.email = guestEmail;
+            }
+
+            let phoneNumber;
+
+            if (guestPhone) {
+                const mobileNumber = guestPhone.find(
+                    (item) => item.label === "mobile"
+                );
+                if (mobileNumber) {
+                    phoneNumber = mobileNumber.number;
+                } else {
+                    const homeNumber = guestPhone.find(
+                        (item) => item.label === "home"
+                    );
+                    if (homeNumber) {
+                        phoneNumber = homeNumber.number;
+                    } else {
+                        const workNumber = guestPhone.find(
+                            (item) => item.label === "work"
+                        );
+                        if (workNumber) {
+                            phoneNumber = workNumber.number;
+                        }
+                    }
+                }
+            }
+
+            if (phoneNumber) {
+                const formattedPhone = phoneNumber.replace(/\D/g, "");
+                if (formattedPhone.length !== 10) {
+                    Alert.alert(
+                        `Invalid phone number for ${guest.firstName} ${guest.lastName}`
+                    );
+                }
+                newGuestListData.phoneNumber = formattedPhone.replace(
+                    /(\d{3})(\d{3})(\d{4})/,
+                    "($1) $2-$3"
+                );
+            }
+
+            // console.log("data", newGuestListData)
+            const newGuestListRef = push(usersRef);
             await set(newGuestListRef, newGuestListData);
+
+            const newGuestListKey = newGuestListRef.key;
+            const newEventGuestsRef = push(guestListRef);
+            await set(newEventGuestsRef, newGuestListKey);
         }
+
         navigation.navigate("SingleEvent", { event: event });
     };
 
-    const getContactData = (data, property, label) => {
+    const getPhoneNumberData = (data, property) => {
+        if (data) {
+            let phoneNumber = data.find((item) => item.label === "mobile");
+            if (!phoneNumber) {
+                phoneNumber = data.find((item) => item.label === "home");
+            }
+            if (!phoneNumber) {
+                phoneNumber = data[0];
+            }
+            return (
+                <View>
+                    <Text>
+                        {phoneNumber.label}: {phoneNumber[property]}
+                    </Text>
+                </View>
+            );
+        }
+    };
+
+    const getEmailData = (data, property, label) => {
         if (data) {
             return data.map((data, index) => {
                 return (
@@ -158,19 +235,15 @@ const ImportContacts = (params) => {
                                 disableBuiltInState={true}
                             />
                             <Text style={{ flexWrap: "wrap" }}>
-                                Name: {contact.firstName} {contact.lastName}
+                                name: {contact.firstName} {contact.lastName}
                                 {"\n"}
-                                {getContactData(
+                                {getPhoneNumberData(
                                     contact.phoneNumbers,
                                     "number",
-                                    "Phone Number"
+                                    "phone"
                                 )}
                                 {"\n"}
-                                {getContactData(
-                                    contact.emails,
-                                    "email",
-                                    "Email"
-                                )}
+                                {getEmailData(contact.emails, "email", "email")}
                             </Text>
                         </View>
                     </View>

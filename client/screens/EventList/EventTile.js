@@ -5,7 +5,6 @@ import { useNavigation } from "@react-navigation/core";
 import globalStyles from "../../utils/globalStyles";
 
 const EventTile = ({ event, uid }) => {
-    // console.log("uid in EventTile -->", uid);
     const navigation = useNavigation();
 
     return (
@@ -19,7 +18,23 @@ const EventTile = ({ event, uid }) => {
                 }
             >
                 <Text style={globalStyles.heading2}>{event.name}</Text>
-                <Text style={globalStyles.paragraph}>{event.date}</Text>
+                <Text style={globalStyles.paragraph}>{new Date(event.date.startDate).toLocaleDateString(
+                                              "en-US",
+                                              {
+                                                  weekday: "short",
+                                                  month: "short",
+                                                  day: "numeric",
+                                                  year: "numeric",
+                                              }
+                                          )} - {new Date(event.date.endDate).toLocaleDateString(
+                                              "en-US",
+                                              {
+                                                  weekday: "short",
+                                                  month: "short",
+                                                  day: "numeric",
+                                                  year: "numeric",
+                                              }
+                                          )}</Text>
                 <Text style={globalStyles.paragraph}>{event.location}</Text>
                 <Text style={globalStyles.paragraph}>{event.description}</Text>
             </View>
