@@ -18,7 +18,7 @@ const EditPreferencesScreen = (props) => {
     const [accessibility, setAccessibility] = useState(
         user.accessibility || ""
     );
-    const [dietary, setDietary] = useState("");
+    const [dietary, setDietary] = useState(user.dietary || "");
     // OTHER INFO AND ALLERGIES MAY ADD BACK IN///
     // const [otherInfo, setOtherInfo] = useState("");
     // <TextInput

@@ -29,6 +29,7 @@ const EditAccountScreen = (props) => {
     }, [props]);
 
     const navigation = useNavigation();
+
     const handleSubmit = async () => {
         console.log("user updates", user);
         if (firstName === "" || lastName === "" || email === "") {
@@ -106,13 +107,13 @@ const EditAccountScreen = (props) => {
                         // required={true}
                     />
                     {/* need to change this to profile pic upload */}
-                    <TextInput
+                    {/* <TextInput
                         style={styles.input}
                         placeholder="profilePic"
                         value={profilePic}
                         onChangeText={setProfilePic}
                         // required={true}
-                    />
+                    /> */}
                     <SafeAreaView>
                         <Button
                             title="Upload Profile Picture"
