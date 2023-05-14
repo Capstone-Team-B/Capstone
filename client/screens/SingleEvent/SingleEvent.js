@@ -7,6 +7,7 @@ import globalStyles from "../../utils/globalStyles";
 
 const SingleEvent = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
+    console.log("users unique id --> ", params.route.params.uid);
 
     useEffect(() => {
         setEvent(params.route.params.event);
@@ -91,8 +92,10 @@ const SingleEvent = (params) => {
                     style={styles.tile}
                     onPress={() =>
                         navigation.navigate("MessageboardScreen", {
-                            eventId: event.id,
+                            event_id: event.event_id,
+                            eventMessages: event.messages,
                             name: event.name,
+                            user_id: params.route.params.uid,
                         })
                     }
                 >

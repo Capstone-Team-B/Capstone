@@ -1,3 +1,6 @@
+//TO DO get userprofile name to pass down from single event?
+//get messages to render on screen.
+
 import React, { useState, useEffect } from "react";
 import {
     KeyboardAvoidingView,
@@ -20,19 +23,28 @@ import {
 import { auth } from "../../../firebase";
 
 const MessageboardScreen = (params) => {
-    const [eventId, setEventId] = useState(params.route.params.eventId);
+    console.log("params", params.route.params);
+    // LOG  params {"eventMessages": [0], "event_id": "0", "name": "kit's wedding", "user_id": "NLxGphpLhkM6F8Gln8xuHC4hVxB2"}
+    const [event_id, setEvent_id] = useState(
+        params.route.params.event_id || ""
+    );
+
+    console.log("event_id", event_id);
+
     const dbRef = ref(getDatabase());
     const db = getDatabase();
     const [newMessage, setNewMessage] = useState("");
-    const [eventName, setEventName] = useState("");
+    const [eventName, setEventName] = useState(params.route.params.name || "");
+    const [user_id, setUser_id] = useState(params.route.params.user_id || "");
+    console.log("user_id -->", user_id);
     const [messages, setMessages] = useState([]);
 
     useEffect(() => {
         get(
             query(
-                child(dbRef, "messageboard"),
+                child(dbRef, "messages"),
                 orderByChild("event_id"),
-                equalTo(eventId)
+                equalTo(event_id)
             )
         )
             .then((snapshot) => {
@@ -43,6 +55,9 @@ const MessageboardScreen = (params) => {
                         ...data[key],
                     }));
                     setMessages(messageList);
+                    console.log("messageList", messageList);
+                    console.log("messages updated", messages);
+
                     setEventName(params.route.params.name);
                 } else {
                     console.log("No data available");
@@ -51,21 +66,23 @@ const MessageboardScreen = (params) => {
             .catch((error) => {
                 console.error(error);
             });
-    }, [eventId]);
+    }, [event_id]);
     const handleSubmitMessage = () => {
         // this makes the unique ID for the message
-        let uid = Date.now();
+        // console.log("auth.current user -->", auth.currentUser.uid);
+
+        let message_id = Date.now();
         const currentTime = new Date().toISOString();
         if (newMessage !== "") {
-            set(ref(db, `messageboard/${uid}`), {
-                created_at: currentTime,
-                event_id: eventId,
-                id: uid,
-                user_id: auth.currentUser.uid,
-                user_name:
+            set(ref(db, `messages/${message_id}`), {
+                content: newMessage,
+                dateTimeStamp: currentTime,
+                event_id: event_id,
+                sender_id: user_id,
+                senderName:
                     `${auth.currentUser.firstName} ${auth.currentUser.lastName}` ||
                     "Unknown",
-                message: newMessage,
+                message_id: message_id,
             })
                 .then(() => {
                     setNewMessage("");
@@ -75,9 +92,9 @@ const MessageboardScreen = (params) => {
                 });
             get(
                 query(
-                    child(dbRef, "messageboard"),
+                    child(dbRef, "messages"),
                     orderByChild("event_id"),
-                    equalTo(eventId)
+                    equalTo(event_id)
                 )
             )
                 .then((snapshot) => {
@@ -87,6 +104,10 @@ const MessageboardScreen = (params) => {
                             id: key,
                             ...data[key],
                         }));
+                        console.log(
+                            "messageList after submit -->",
+                            messageList
+                        );
                         setMessages(messageList);
                     } else {
                         console.log("No data available");
@@ -104,8 +125,10 @@ const MessageboardScreen = (params) => {
             <View style={styles.inputContainer}>
                 {messages.map((message) => (
                     <View key={message.id} style={styles.item}>
-                        <Text style={styles.firstName}>{message.message}</Text>
-                        <Text style={styles.nameText}>{message.user_name}</Text>
+                        <Text style={styles.firstName}>{message.content}</Text>
+                        <Text style={styles.nameText}>
+                            {message.senderName}
+                        </Text>
                     </View>
                 ))}
                 <TextInput
@@ -156,16 +179,16 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginTop: 5,
     },
-    nameText: {
-        color: "blue",
-        fontWeight: "400",
-        fontSize: "12",
-    },
-    eventLabel: {
-        color: "purple",
-        fontWeight: "700",
-        fontSize: "24",
-    },
+    // nameText: {
+    //     color: "blue",
+    //     fontWeight: "400",
+    //     fontSize: "12",
+    // },
+    // eventLabel: {
+    //     color: "purple",
+    //     fontWeight: "700",
+    //     fontSize: "24",
+    // },
     item: {
         padding: 20,
         marginVertical: 8,
