@@ -19,8 +19,9 @@ const EditEvent = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
 
     const [weddingName, setWeddingName] = useState(event.name || "");
-    const [location, setLocation] = useState(event.location || "");
-    const [date, setDate] = useState(event.date || "");
+    // const [location, setLocation] = useState(event.location || "");
+    const [date, setDate] = useState( event.date || "" );
+    // const [date, setDate] = useState(event.date || "");
     const [description, setDescription] = useState(event.description || "");
     const [startTime, setStartTime] = useState(event.startTime || "");
     const [endTime, setEndTime] = useState(event.endTime || "");
@@ -32,21 +33,24 @@ const EditEvent = (params) => {
         setVisible(false);
     }, [setVisible]);
 
-    const onDismissSingle = useCallback(
-        (params) => {
-            setOpen(false);
-            setDate(params.date);
-        },
-        [setOpen]
-    );
+    const onDismissRange = useCallback(() => {
+        // const onDismissSingle = useCallback(
+        //     (params) => {
+        setOpen(false);
+        // setDate(params.date);
+    }, [setOpen]);
 
-    const onConfirmSingle = useCallback(
-        (params) => {
+    const onConfirmRange = useCallback(
+        ({ startDate, endDate }) => {
+            // const onConfirmSingle = useCallback(
+            //     (params) => {
             setOpen(false);
-            setDate(params.date);
+            setDate({ startDate, endDate });
+            // setDate(params.date);
             setEvent((prevEvent) => ({
                 ...prevEvent,
-                date: params.date,
+                startDate: startDate,
+                endDate: endDate,
             }));
         },
         [setOpen, setDate]
@@ -71,8 +75,8 @@ const EditEvent = (params) => {
     };
 
     const handleSubmit = async () => {
-        console.log("event", event);
-        if (!weddingName || !location || !date || !startTime || !endTime) {
+        // console.log("event", event);
+        if (!weddingName || !date || !startTime || !endTime) {
             Alert.alert("Please fill in all fields");
             return;
         }
@@ -89,7 +93,7 @@ const EditEvent = (params) => {
             const updatedEvent = {
                 name: weddingName,
                 description: description,
-                location: location,
+                // location: location,
                 date: date,
                 startTime: startTime,
                 endTime: endTime,
@@ -122,17 +126,36 @@ const EditEvent = (params) => {
                         onChangeText={setDescription}
                         required={true}
                     />
-                    <TextInput
+                    {/* <TextInput
                         style={styles.input}
                         placeholder="Location"
                         value={location}
                         onChangeText={setLocation}
                         required={true}
-                    />
+                    /> */}
                     <TouchableOpacity style={styles.outlineButton}>
                         <TouchableOpacity onPress={() => setOpen(true)}>
                             <Text style={styles.outlineButtonText}>
-                                {date
+                                {date.startDate && date.endDate
+                                    ? `${new Date(date.startDate).toLocaleDateString(
+                                          "en-US",
+                                          {
+                                              weekday: "short",
+                                              month: "short",
+                                              day: "numeric",
+                                              year: "numeric",
+                                          }
+                                      )} - ${new Date(date.endDate).toLocaleDateString(
+                                          "en-US",
+                                          {
+                                              weekday: "short",
+                                              month: "short",
+                                              day: "numeric",
+                                              year: "numeric",
+                                          }
+                                      )}`
+                                    : "Select Date(s)"}
+                                {/* {date
                                     ? `${new Date(event.date).toLocaleString(
                                           "en-US",
                                           {
@@ -142,19 +165,28 @@ const EditEvent = (params) => {
                                               day: "numeric",
                                           }
                                       )}`
-                                    : "Select Date"}
+                                    : "Select Date"} */}
                             </Text>
                         </TouchableOpacity>
                         <SafeAreaProvider>
                             <DatePickerModal
-                                mode="single"
+                                mode="range"
+                                // mode="single"
                                 locale="en"
-                                value={date}
+                                // value={date}
                                 visible={open}
-                                onDismiss={onDismissSingle}
-                                onConfirm={onConfirmSingle}
+                                onDismiss={onDismissRange}
+                                startDate={date.startDate}
+                                endDate={date.endDate}
+                                onConfirm={onConfirmRange}
+                                // onDismiss={onDismissSingle}
+                                // onConfirm={onConfirmSingle}
                                 saveLabel="Save"
-                                label="Select date"
+                                // label="Select date"
+                                label="Select Date Range"
+                                startLabel="From"
+                                endLabel="To"
+                                animationType="slide"
                             />
                         </SafeAreaProvider>
                     </TouchableOpacity>
@@ -202,14 +234,14 @@ const EditEvent = (params) => {
                         </Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={styles.addButton}
                     onPress={() =>
                         navigation.navigate("All Sub Events", { event: event })
                     }
                 >
                     <Text style={styles.addButtonText}>View Sub Events</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 <TouchableOpacity
                     style={styles.addButton}
@@ -232,6 +264,18 @@ const EditEvent = (params) => {
                 >
                     <Text style={styles.addButtonText}>Edit Guests</Text>
                 </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.addButton}
+                    onPress={() =>
+                        navigation.navigate("Maps", {
+                            event: event,
+                        })
+                    }
+                >
+                    <Text style={styles.addButtonText}>View Locations</Text>
+                </TouchableOpacity>
+
             </ScrollView>
         </KeyboardAvoidingView>
     );
