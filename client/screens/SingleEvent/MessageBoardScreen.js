@@ -19,27 +19,26 @@ import {
     query,
     orderByChild,
     equalTo,
+    orderByKey,
 } from "firebase/database";
-import { auth } from "../../../firebase";
 
 const MessageboardScreen = (params) => {
-    console.log("params", params.route.params);
+    // console.log("params", params.route.params);
     // LOG  params {"eventMessages": [0], "event_id": "0", "name": "kit's wedding", "user_id": "NLxGphpLhkM6F8Gln8xuHC4hVxB2"}
     const [event_id, setEvent_id] = useState(
         params.route.params.event_id || ""
     );
-
-    console.log("event_id", event_id);
+    const [userName, setUserName] = useState("");
 
     const dbRef = ref(getDatabase());
     const db = getDatabase();
     const [newMessage, setNewMessage] = useState("");
     const [eventName, setEventName] = useState(params.route.params.name || "");
     const [user_id, setUser_id] = useState(params.route.params.user_id || "");
-    console.log("user_id -->", user_id);
     const [messages, setMessages] = useState([]);
 
     useEffect(() => {
+        // querys database for messages
         get(
             query(
                 child(dbRef, "messages"),
@@ -55,9 +54,6 @@ const MessageboardScreen = (params) => {
                         ...data[key],
                     }));
                     setMessages(messageList);
-                    console.log("messageList", messageList);
-                    console.log("messages updated", messages);
-
                     setEventName(params.route.params.name);
                 } else {
                     console.log("No data available");
@@ -67,10 +63,32 @@ const MessageboardScreen = (params) => {
                 console.error(error);
             });
     }, [event_id]);
+
+    useEffect(() => {
+        // querys database for user
+        get(query(child(dbRef, "users"), orderByKey(), equalTo(user_id)))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const userInfo = Object.keys(data).map((key) => ({
+                        id: key,
+                        ...data[key],
+                    }));
+                    setUserName(
+                        ` ${userInfo[0].firstName} ${userInfo[0].lastName}`
+                    );
+                    // console.log("user name", userName);
+                } else {
+                    console.log("No data available");
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, [user_id]);
+
     const handleSubmitMessage = () => {
         // this makes the unique ID for the message
-        // console.log("auth.current user -->", auth.currentUser.uid);
-
         let message_id = Date.now();
         const currentTime = new Date().toISOString();
         if (newMessage !== "") {
@@ -79,9 +97,7 @@ const MessageboardScreen = (params) => {
                 dateTimeStamp: currentTime,
                 event_id: event_id,
                 sender_id: user_id,
-                senderName:
-                    `${auth.currentUser.firstName} ${auth.currentUser.lastName}` ||
-                    "Unknown",
+                senderName: userName || "Unknown",
                 message_id: message_id,
             })
                 .then(() => {
@@ -104,10 +120,10 @@ const MessageboardScreen = (params) => {
                             id: key,
                             ...data[key],
                         }));
-                        console.log(
-                            "messageList after submit -->",
-                            messageList
-                        );
+                        // console.log(
+                        //     "messageList after submit -->",
+                        //     messageList
+                        // );
                         setMessages(messageList);
                     } else {
                         console.log("No data available");
