@@ -1,7 +1,3 @@
-//ENH was here formating autosaved
-// I keep getting an error message when I it directs to the upcoming events that the list needs a key passed in.
-//// ERROR  Warning: Each child in a list should have a unique "key" prop.
-//// Check the render method of `VirtualizedList`. See https://reactjs.org/link/warning-keys for more information.
 import { StyleSheet, View, Text, SafeAreaView, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
 import EventTile from "./EventTile";
