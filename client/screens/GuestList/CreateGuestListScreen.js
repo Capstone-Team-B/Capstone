@@ -22,7 +22,7 @@ const CreateGuestList = (params) => {
 
     const handleAddGuest = () => {
         const newGuestList = [...guestList];
-        newGuestList.push({ phone: "", firstname: "", lastname: "" });
+        newGuestList.push({ phone: "", firstName: "", lastName: "" });
         setGuestList(newGuestList);
     };
 
@@ -40,7 +40,7 @@ const CreateGuestList = (params) => {
 
     const handleSubmit = async () => {
         for (const guest of guestList) {
-            if (!guest.phone || !guest.firstname || !guest.lastname) {
+            if (!guest.phone || !guest.firstName || !guest.lastName) {
                 Alert.alert("Please fill in all fields");
                 return;
             }
@@ -53,17 +53,20 @@ const CreateGuestList = (params) => {
         for (const guest of guestList) {
             const {
                 phone: guestPhone,
-                firstname: guestFirstname,
-                lastname: guestLastname,
+                firstName: guestFirstname,
+                lastName: guestLastname,
             } = guest;
-        
-            const formattedPhone = guestPhone.replace(/\D/g, ''); 
+
+            const formattedPhone = guestPhone.replace(/\D/g, "");
             if (formattedPhone.length !== 10) {
-                Alert.alert('Invalid phone number');
+                Alert.alert("Invalid phone number");
                 return;
             }
             const newGuestListData = {
-                phone: formattedPhone.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3'),
+                phone: formattedPhone.replace(
+                    /(\d{3})(\d{3})(\d{4})/,
+                    "($1) $2-$3"
+                ),
                 firstName: guestFirstname,
                 lastName: guestLastname,
                 userEvents: {
@@ -72,14 +75,14 @@ const CreateGuestList = (params) => {
             };
             const newGuestListRef = push(usersRef);
             await set(newGuestListRef, newGuestListData);
-    
+
             const newGuestListKey = newGuestListRef.key;
             const newEventGuestsRef = push(guestListRef);
             await set(newEventGuestsRef, newGuestListKey);
         }
         navigation.navigate("SingleEvent", { event: event });
-    }
-    
+    };
+
     return (
         <KeyboardAvoidingView style={styles.container} behavior="height">
             <ScrollView style={styles.container}>
@@ -91,11 +94,11 @@ const CreateGuestList = (params) => {
                                 <TextInput
                                     style={styles.input}
                                     placeholder="First Name"
-                                    value={guest.firstname}
+                                    value={guest.firstName}
                                     onChangeText={(value) =>
                                         handleUpdateGuest(
                                             index,
-                                            "firstname",
+                                            "firstName",
                                             value
                                         )
                                     }
@@ -104,11 +107,11 @@ const CreateGuestList = (params) => {
                                 <TextInput
                                     style={styles.input}
                                     placeholder="Last Name"
-                                    value={guest.lastname}
+                                    value={guest.lastName}
                                     onChangeText={(value) =>
                                         handleUpdateGuest(
                                             index,
-                                            "lastname",
+                                            "lastName",
                                             value
                                         )
                                     }
@@ -168,8 +171,7 @@ const CreateGuestList = (params) => {
             </ScrollView>
         </KeyboardAvoidingView>
     );
-}
-
+};
 
 const styles = StyleSheet.create({
     container: {

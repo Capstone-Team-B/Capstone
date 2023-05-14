@@ -7,6 +7,7 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity,
+    Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, child, set, push } from "firebase/database";
@@ -112,45 +113,60 @@ const ImportContacts = (params) => {
                 lastName: guestLastname,
                 phoneNumbers: guestPhone,
             } = guest;
-        
+
             const newGuestListData = {
                 userEvents: {
                     [event.event_id]: event.event_id,
-                  },
-                firstName: guestFirstname
+                },
+                firstName: guestFirstname,
             };
-            
+
             if (guestLastname) {
                 newGuestListData.lastName = guestLastname;
-            } 
+            }
 
             if (guestEmail) {
                 newGuestListData.email = guestEmail;
             }
-        
+
             let phoneNumber;
-        
+
             if (guestPhone) {
-                const mobileNumber = guestPhone.find((item) => item.label === "mobile");
+                const mobileNumber = guestPhone.find(
+                    (item) => item.label === "mobile"
+                );
                 if (mobileNumber) {
                     phoneNumber = mobileNumber.number;
                 } else {
-                    const homeNumber = guestPhone.find((item) => item.label === "home");
+                    const homeNumber = guestPhone.find(
+                        (item) => item.label === "home"
+                    );
                     if (homeNumber) {
                         phoneNumber = homeNumber.number;
                     } else {
-                        const workNumber = guestPhone.find((item) => item.label === "work");
+                        const workNumber = guestPhone.find(
+                            (item) => item.label === "work"
+                        );
                         if (workNumber) {
                             phoneNumber = workNumber.number;
                         }
                     }
                 }
             }
-        
+
             if (phoneNumber) {
-                newGuestListData.phoneNumber = phoneNumber;
+                const formattedPhone = phoneNumber.replace(/\D/g, "");
+                if (formattedPhone.length !== 10) {
+                    Alert.alert(
+                        `Invalid phone number for ${guest.firstName} ${guest.lastName}`
+                    );
+                }
+                newGuestListData.phoneNumber = formattedPhone.replace(
+                    /(\d{3})(\d{3})(\d{4})/,
+                    "($1) $2-$3"
+                );
             }
-        
+
             // console.log("data", newGuestListData)
             const newGuestListRef = push(usersRef);
             await set(newGuestListRef, newGuestListData);
@@ -159,27 +175,28 @@ const ImportContacts = (params) => {
             const newEventGuestsRef = push(guestListRef);
             await set(newEventGuestsRef, newGuestListKey);
         }
-        
+
         navigation.navigate("SingleEvent", { event: event });
     };
 
     const getPhoneNumberData = (data, property) => {
         if (data) {
-          let phoneNumber = data.find((item) => item.label === "mobile");
-          if (!phoneNumber) {
-            phoneNumber = data.find((item) => item.label === "home");
-          }
-          if (!phoneNumber) {
-            phoneNumber = data[0];
-          }
-          return (
-            <View>
-              <Text>{phoneNumber.label}: {phoneNumber[property]}</Text>
-            </View>
-          );
+            let phoneNumber = data.find((item) => item.label === "mobile");
+            if (!phoneNumber) {
+                phoneNumber = data.find((item) => item.label === "home");
+            }
+            if (!phoneNumber) {
+                phoneNumber = data[0];
+            }
+            return (
+                <View>
+                    <Text>
+                        {phoneNumber.label}: {phoneNumber[property]}
+                    </Text>
+                </View>
+            );
         }
     };
-      
 
     const getEmailData = (data, property, label) => {
         if (data) {
@@ -197,50 +214,46 @@ const ImportContacts = (params) => {
 
     const getContactRows = () => {
         if (contacts !== undefined) {
-          return contacts.map((contact, index) => {
-            return (
-              <View key={index}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: 5,
-                  }}
-                >
-                  <BouncyCheckbox
-                    isChecked={checks[index]}
-                    disabled={false}
-                    value={toggleCheckBox}
-                    onValueChange={(newValue) =>
-                      setToggleCheckBox(newValue)
-                    }
-                    onPress={() => onCheck(index)}
-                    disableBuiltInState={true}
-                  />
-                  <Text style={{ flexWrap: "wrap" }}>
-                    name: {contact.firstName} {contact.lastName}
-                    {"\n"}
-                    {getPhoneNumberData(
-                      contact.phoneNumbers,
-                      "number",
-                      "phone"
-                    )}
-                    {"\n"}
-                    {getEmailData(
-                      contact.emails,
-                      "email",
-                      "email"
-                    )}
-                  </Text>
-                </View>
-              </View>
-            );
-          });
+            return contacts.map((contact, index) => {
+                return (
+                    <View key={index}>
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                marginBottom: 5,
+                            }}
+                        >
+                            <BouncyCheckbox
+                                isChecked={checks[index]}
+                                disabled={false}
+                                value={toggleCheckBox}
+                                onValueChange={(newValue) =>
+                                    setToggleCheckBox(newValue)
+                                }
+                                onPress={() => onCheck(index)}
+                                disableBuiltInState={true}
+                            />
+                            <Text style={{ flexWrap: "wrap" }}>
+                                name: {contact.firstName} {contact.lastName}
+                                {"\n"}
+                                {getPhoneNumberData(
+                                    contact.phoneNumbers,
+                                    "number",
+                                    "phone"
+                                )}
+                                {"\n"}
+                                {getEmailData(contact.emails, "email", "email")}
+                            </Text>
+                        </View>
+                    </View>
+                );
+            });
         } else {
-          return <Text>Loading contacts...</Text>;
+            return <Text>Loading contacts...</Text>;
         }
     };
-      
+
     return (
         <KeyboardAvoidingView style={styles.container} behavior="height">
             <ScrollView style={styles.container}>
