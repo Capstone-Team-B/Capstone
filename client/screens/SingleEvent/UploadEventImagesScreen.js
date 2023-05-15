@@ -106,8 +106,10 @@ const UploadEventImagesScreen = (params) => {
                     storage,
                     `event_${images[i].event_id}/${filename}_${uid}`
                 );
+
                 const response = await fetch(images[i].uri);
                 const blob = await response.blob();
+
                 // const customMetadata = {
                 //     metadata: {
                 //         uploadDate: images[i].uploadDate,
@@ -115,11 +117,11 @@ const UploadEventImagesScreen = (params) => {
                 //         event_id: images[i].event_id,
                 //     },
                 // };
-                await uploadBytes(
-                    imageRef,
-                    blob,
-                    // customMetadata
-                );
+                try {
+                    await uploadBytes(imageRef, blob);
+                } catch (error) {
+                    console.log(error);
+                }
             }
             setUploading(false);
             Alert.alert(
