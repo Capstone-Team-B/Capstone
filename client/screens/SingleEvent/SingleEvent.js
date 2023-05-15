@@ -77,7 +77,7 @@ const SingleEvent = (params) => {
                 <TouchableOpacity
                     style={styles.tile}
                     onPress={() =>
-                        navigation.navigate("Maps", { eventId: event.id })
+                        navigation.navigate("Maps", { eventId: event.event_id || "0" })
                     }
                 >
                     <Text>Maps and Events</Text>
