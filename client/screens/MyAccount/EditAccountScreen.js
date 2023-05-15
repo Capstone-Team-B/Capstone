@@ -118,7 +118,7 @@ const EditAccountScreen = (props) => {
                         <Button
                             title="Upload Profile Picture"
                             onPress={navigation.navigate(
-                                "UploadEventImagesScreen"
+                                "UploadProfilePicScreen"
                             )}
                         />
                     </SafeAreaView>

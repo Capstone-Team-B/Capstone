@@ -20,22 +20,30 @@ const TabNavigator = () => {
                     let iconName;
                     if (route.name === "MyAccountNavigator") {
                         iconName = "user";
-                        color = focused ? "dodgerblue" : "gray";
+                        color = focused ? "#38b6ff" : "gray";
                     } else if (route.name === "EventNavigator") {
                         iconName = "home";
-                        color = focused ? "dodgerblue" : "gray";
+                        color = focused ? "#38b6ff" : "gray";
                     } else if (route.name === "NotificationsScreen") {
                         iconName = "bell";
-                        color = focused ? "dodgerblue" : "gray";
+                        color = focused ? "#38b6ff" : "gray";
                     }
                     return (
                         <Feather
                             name={iconName}
                             size={28}
-                            color={focused ? "dodgerblue" : "gray"}
+                            color={focused ? "#38b6ff" : "gray"}
                         />
                     );
                 },
+                tabBarActiveTintColor: "#38b6ff",
+                tabBarInactiveTintColor: "gray",
+                tabBarStyle: [
+                    {
+                        display: "flex",
+                    },
+                    null,
+                ],
             })}
         >
             <Tab.Screen
