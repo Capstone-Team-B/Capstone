@@ -76,6 +76,14 @@ const AllNotifications = (params) => {
                                     Scheduled Time:{" "}
                                     {notification.scheduled_time}
                                 </Text>
+                                <TouchableOpacity
+                                    style={styles.outlineButton}
+                                    onPress={() => navigation.navigate("Edit Notification", { notification: notification, event : event })}
+                                >
+                                    <Text style={styles.outlineButtonText}>
+                                        Edit Notification
+                                    </Text>
+                                </TouchableOpacity>
                             </View>
                         ))
                     ) : (

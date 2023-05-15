@@ -11,11 +11,12 @@ import CreateSubEvent from "../screens/SubEvents/CreateSubEventScreen";
 import CreateNotification from "../screens/Notifications/CreateNotificationScreen";
 import CreateGuestList from "../screens/GuestList/CreateGuestListScreen";
 import AllNotifications from "../screens/Notifications/AllNotifications";
-import AllSubEvents from "../screens/SubEvents/AllSubEvents";
+// import AllSubEvents from "../screens/SubEvents/AllSubEvents";
 import MapLocationScreen from "../screens/Maps/MapLocationScreen";
 import ImportContacts from "../screens/GuestList/ImportGuests";
 import UploadEventImagesScreen from "../screens/SingleEvent/UploadEventImagesScreen";
 import EventGallery from "../screens/SingleEvent/EventGallery";
+import EditNotification from "../screens/Notifications/EditNotification";
 
 const Stack = createNativeStackNavigator();
 
@@ -72,9 +73,10 @@ const EventNavigator = (props) => {
                 name="All Notifications"
                 component={AllNotifications}
             />
-            <Stack.Screen name="All Sub Events" component={AllSubEvents} />
+            {/* <Stack.Screen name="All Sub Events" component={AllSubEvents} /> */}
             <Stack.Screen name="Import Contacts" component={ImportContacts} />
             <Stack.Screen name="Maps" component={MapLocationScreen} />
+            <Stack.Screen name="Edit Notification" component={EditNotification} />
             <Stack.Screen
                 name="UploadEventImagesScreen"
                 component={UploadEventImagesScreen}
