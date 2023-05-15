@@ -12,12 +12,14 @@ import {
 } from "firebase/database";
 import { useNavigation } from "@react-navigation/native";
 import globalStyles from "../../utils/globalStyles";
+import { useIsFocused } from "@react-navigation/native";
 
 const EventListScreen = (props) => {
     const { uid } = props.route.params;
     const [eventList, setEventList] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const isFocused = useIsFocused();
+    
     const dbRef = ref(getDatabase());
 
     const getEvents = async (eventIdArray) => {
@@ -52,7 +54,7 @@ const EventListScreen = (props) => {
             get(eventIdsQuery).then((eventSnapshot) => {
                 if (eventSnapshot.exists()) {
                     const data = eventSnapshot.val();
-                    const userEventIds = data.userEvents;
+                    const userEventIds = Object.values(data.userEvents);
                     getEvents(userEventIds);
                 } else {
                     console.log("no event data");
@@ -62,7 +64,7 @@ const EventListScreen = (props) => {
             console.log(error);
         }
         setLoading(false);
-    }, []);
+    }, [isFocused]);
 
     const navigation = useNavigation();
 

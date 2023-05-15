@@ -23,6 +23,10 @@ const EditAccountScreen = (props) => {
     const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || "");
     const [homeCity, setHomeCity] = useState(user.homeCity || "");
     const [profilePic, setProfilePic] = useState(user.profilePic || "");
+    const [accessibility, setAccessibility] = useState(
+        user.accessibility || ""
+    );
+    const [dietary, setDietary] = useState(user.dietary || "");
 
     useEffect(() => {
         setUser(props.route.params);
@@ -37,8 +41,6 @@ const EditAccountScreen = (props) => {
             return;
         }
         try {
-            //TODO COMMENT BACK IN //
-
             const dbRef = ref(getDatabase());
             const userId = user.uid;
             const userRef = child(dbRef, `users/${userId}`);
@@ -53,8 +55,9 @@ const EditAccountScreen = (props) => {
                 phoneNumber: phoneNumber,
                 homeCity: homeCity,
                 profilePic: profilePic,
+                dietary: dietary,
+                accessibility: accessibility,
             };
-            //TODO COMMENT BACK IN //
             await update(userRef, updatedUser);
             navigation.navigate("MyAccountScreen", { user: updatedUser });
             console.log("updates to user", updatedUser);
@@ -73,53 +76,54 @@ const EditAccountScreen = (props) => {
                         placeholder={"First Name"}
                         value={firstName}
                         onChangeText={setFirstName}
-                        // required={true}
                     />
-
                     <TextInput
                         style={styles.input}
                         placeholder="Last Name"
                         value={lastName}
                         onChangeText={setLastName}
-                        // required={true}
                     />
-
                     <TextInput
                         style={styles.input}
                         placeholder="Email"
                         value={email}
                         onChangeText={setEmail}
-                        // required={true}
                     />
-
                     <TextInput
                         style={styles.input}
                         placeholder="Phone Number"
                         value={phoneNumber}
                         onChangeText={setPhoneNumber}
-                        // required={true}
                     />
                     <TextInput
                         style={styles.input}
                         placeholder="Home City"
                         value={homeCity}
                         onChangeText={setHomeCity}
-                        // required={true}
                     />
-                    {/* need to change this to profile pic upload */}
-                    {/* <TextInput
-                        style={styles.input}
-                        placeholder="profilePic"
-                        value={profilePic}
-                        onChangeText={setProfilePic}
-                        // required={true}
-                    /> */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>
+                            Edit Guest Preferences
+                        </Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Dietary"
+                            value={dietary}
+                            onChangeText={setDietary}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Accessibility"
+                            value={accessibility}
+                            onChangeText={setAccessibility}
+                        />
+                    </View>
                     <SafeAreaView>
                         <Button
                             title="Upload Profile Picture"
-                            onPress={navigation.navigate(
-                                "UploadProfilePicScreen"
-                            )}
+                            onPress={() =>
+                                navigation.navigate("UploadProfilePicScreen")
+                            }
                         />
                     </SafeAreaView>
                 </View>

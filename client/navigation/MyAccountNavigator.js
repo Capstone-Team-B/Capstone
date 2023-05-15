@@ -2,7 +2,6 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import CreateEventForm from "../screens/NewEvent/CreateEventScreen";
 import EditAccountScreen from "../screens/MyAccount/EditAccountScreen";
-import EditPrefsScreen from "../screens/MyAccount/EditPrefsScreen";
 import MyAccountScreen from "../screens/MyAccount/MyAccountScreen";
 import ViewArchiveScreen from "../screens/MyAccount/ViewArchiveScreen";
 import { useRoute } from "@react-navigation/native";
@@ -32,13 +31,6 @@ const MyAccountNavigator = (props) => {
                 initialParams={{ uid: uid }}
                 options={{ title: "Edit Account" }}
             />
-            <Stack.Screen
-                name="EditPrefsScreen"
-                component={EditPrefsScreen}
-                initialParams={{ uid: uid }}
-                options={{ title: "Edit Guest Preferences" }}
-            />
-            {/* EH Removed doupled up edit pref update Profile screen */}
             <Stack.Screen
                 name="UploadProfilePicScreen"
                 component={UploadProfilePicScreen}
