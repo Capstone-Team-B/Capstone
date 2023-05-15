@@ -10,14 +10,14 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getDatabase, ref, child, push, set } from "firebase/database";
+import { getDatabase, ref, child, push, set, update } from "firebase/database";
 import { DatePickerModal } from "react-native-paper-dates";
 import { TimePickerModal } from "react-native-paper-dates";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const CreateNotification = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
-
+    const eventId = event.event_id;
     const [notification, setNotification] = useState([]);
     const [open, setOpen] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -57,6 +57,13 @@ const CreateNotification = (params) => {
 
         const dbRef = ref(getDatabase());
         const notificationRef = child(dbRef, "notifications");
+        const eventNotificationRef = child(
+            dbRef,
+            `events/${eventId}/notifications`
+        );
+
+        const newNotificationRef = push(notificationRef);
+        const newNotificationKey = newNotificationRef.key;
 
         const {
             title: notificationTitle,
@@ -69,11 +76,18 @@ const CreateNotification = (params) => {
             body: notificationBody,
             scheduled_date: notificationDate,
             scheduled_time: notificationTime,
-            event_id: event.id,
+            event_id: eventId,
+            notification_id: newNotificationKey,
         };
-
-        const newNotificationRef = push(notificationRef);
         await set(newNotificationRef, newNotificationData);
+
+        const newEventNotificationRef = child(
+            eventNotificationRef,
+            newNotificationKey
+        );
+        await update(newEventNotificationRef, {
+            [newNotificationKey]: newNotificationKey,
+        });
 
         navigation.navigate("All Notifications", { event: event });
     };
@@ -131,7 +145,7 @@ const CreateNotification = (params) => {
                                         onConfirm={(selectedDate) => {
                                             handleUpdateNotification(
                                                 "scheduled_date",
-                                                selectedDate.date
+                                                selectedDate.date.toISOString()
                                             );
                                             setOpen(false);
                                         }}
@@ -146,17 +160,7 @@ const CreateNotification = (params) => {
                             >
                                 <Text style={styles.outlineButtonText}>
                                     {notification.scheduled_time
-                                        ? `${
-                                              notification.scheduled_time
-                                                  .hours % 12 || 12
-                                          }:${notification.scheduled_time.minutes
-                                              .toString()
-                                              .padStart(2, "0")} ${
-                                              notification.scheduled_time
-                                                  .hours >= 12
-                                                  ? "PM"
-                                                  : "AM"
-                                          }`
+                                        ? `${notification.scheduled_time}`
                                         : "Select Notification Time"}
                                 </Text>
                             </TouchableOpacity>
@@ -166,9 +170,16 @@ const CreateNotification = (params) => {
                                     mode="time"
                                     time={notification.scheduled_time}
                                     onConfirm={(selectedTime) => {
+                                        const date = new Date();
+                                        date.setHours(selectedTime.hours);
+                                        date.setMinutes(selectedTime.minutes);
+                                        const formattedTime = date.toLocaleTimeString([], {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                        });
                                         handleUpdateNotification(
                                             "scheduled_time",
-                                            selectedTime
+                                            formattedTime
                                         );
                                         setVisible(false);
                                     }}
