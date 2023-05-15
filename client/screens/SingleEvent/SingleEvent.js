@@ -3,6 +3,7 @@ import { useNavigation } from "@react-navigation/core";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { getDatabase, ref, child, get } from "firebase/database";
+import Feather from "react-native-vector-icons/Feather";
 import globalStyles from "../../utils/globalStyles";
 
 const SingleEvent = (params) => {
@@ -21,14 +22,14 @@ const SingleEvent = (params) => {
             <Text style={globalStyles.heading1}> {event.name}</Text>
             <Text style={globalStyles.heading2}> {event.description}</Text>
             <Text style={globalStyles.heading2}>
-                {new Date(event.date.startDate).toLocaleDateString("en-US", {
+                {new Date(event.startDate).toLocaleDateString("en-US", {
                     weekday: "short",
                     month: "short",
                     day: "numeric",
                     year: "numeric",
                 })}{" "}
                 -{" "}
-                {new Date(event.date.endDate).toLocaleDateString("en-US", {
+                {new Date(event.endDate).toLocaleDateString("en-US", {
                     weekday: "short",
                     month: "short",
                     day: "numeric",
@@ -41,6 +42,16 @@ const SingleEvent = (params) => {
                 {event.startTime} & {event.endTime}
             </Text>
             <Text style={globalStyles.paragraph}> {event.description}</Text>
+            {uid === event.host_id ? (
+                <TouchableOpacity
+                    onPress={() =>
+                        navigation.navigate("Edit Event", { event: event })
+                    }
+                >
+                    <Text styles={globalStyles.heading2}>Edit Your Event</Text>
+                    <Feather name="edit" size={25} />
+                </TouchableOpacity>
+            ) : null}
             <View style={styles.tileContainer}>
                 <TouchableOpacity
                     style={styles.tile}
@@ -53,14 +64,6 @@ const SingleEvent = (params) => {
                     <Text>My Guest Profile</Text>
                 </TouchableOpacity>
                 {/* need to add logic to only show if user is host */}
-                <TouchableOpacity
-                    style={styles.tile}
-                    onPress={() =>
-                        navigation.navigate("Edit Event", { event: event })
-                    }
-                >
-                    <Text>Edit Event</Text>
-                </TouchableOpacity>
 
                 <TouchableOpacity
                     style={styles.tile}
@@ -82,7 +85,10 @@ const SingleEvent = (params) => {
                 <TouchableOpacity
                     style={styles.tile}
                     onPress={() =>
-                        navigation.navigate("EventGallery", { event: event, uid: uid })
+                        navigation.navigate("EventGallery", {
+                            event: event,
+                            uid: uid,
+                        })
                     }
                 >
                     <Text>Gallery</Text>

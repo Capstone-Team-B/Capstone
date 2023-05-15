@@ -51,10 +51,6 @@ const MyAccountScreen = (props) => {
         navigation.navigate("EditAccountScreen", user);
     };
 
-    const handlePressEditPrefs = () => {
-        navigation.navigate("EditPrefsScreen", user);
-    };
-
     const handlePressViewArchive = () => {
         navigation.navigate("ViewArchiveScreen");
     };

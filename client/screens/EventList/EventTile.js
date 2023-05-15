@@ -76,7 +76,7 @@ const EventTile = ({ event, uid }) => {
                 }
             >
                 <Text style={globalStyles.heading2}>{event.name}</Text>
-                <Text style={globalStyles.paragraph}>{new Date(event.date.startDate).toLocaleDateString(
+                <Text style={globalStyles.paragraph}>{new Date(event.startDate).toLocaleDateString(
                                               "en-US",
                                               {
                                                   weekday: "short",
@@ -84,7 +84,7 @@ const EventTile = ({ event, uid }) => {
                                                   day: "numeric",
                                                   year: "numeric",
                                               }
-                                          )} - {new Date(event.date.endDate).toLocaleDateString(
+                                          )} - {new Date(event.endDate).toLocaleDateString(
                                               "en-US",
                                               {
                                                   weekday: "short",
