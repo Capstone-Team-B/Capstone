@@ -18,6 +18,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 const CreateNotification = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
     const eventId = event.event_id;
+    const eventName = event.name;
     const [notification, setNotification] = useState([]);
     const [open, setOpen] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -77,6 +78,7 @@ const CreateNotification = (params) => {
             scheduled_date: notificationDate,
             scheduled_time: notificationTime,
             event_id: eventId,
+            event_name: eventName,
             notification_id: newNotificationKey,
         };
         await set(newNotificationRef, newNotificationData);

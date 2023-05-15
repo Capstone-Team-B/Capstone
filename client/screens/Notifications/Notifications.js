@@ -107,6 +107,9 @@ const NotificationsScreen = () => {
                             return (
                                 <View key={notification} style={styles.item}>
                                     <Text style={styles.input}>
+                                        {notification.event_name}
+                                    </Text>
+                                    <Text style={styles.input}>
                                         {notification.title}:
                                     </Text>
                                     <Text style={styles.input}>
