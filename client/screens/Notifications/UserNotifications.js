@@ -4,6 +4,9 @@ import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import * as storage from "@react-native-async-storage/async-storage";
 
+// need to incorporate into create/edit 
+// maybe not allow edit? search
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
