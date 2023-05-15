@@ -12,7 +12,7 @@ import CreateNotification from "../screens/Notifications/CreateNotificationScree
 import CreateGuestList from "../screens/GuestList/CreateGuestListScreen";
 import AllNotifications from "../screens/Notifications/AllNotifications";
 import AllSubEvents from "../screens/SubEvents/AllSubEvents";
-import MapEventScreen from "../screens/Maps/MapsandEvents";
+import MapLocationScreen from "../screens/Maps/MapLocationScreen";
 import ImportContacts from "../screens/GuestList/ImportGuests";
 import UploadEventImagesScreen from "../screens/SingleEvent/UploadEventImagesScreen";
 
@@ -73,7 +73,7 @@ const EventNavigator = (props) => {
             />
             <Stack.Screen name="All Sub Events" component={AllSubEvents} />
             <Stack.Screen name="Import Contacts" component={ImportContacts} />
-            <Stack.Screen name="Maps" component={MapEventScreen} />
+            <Stack.Screen name="Maps" component={MapLocationScreen} />
             <Stack.Screen
                 name="UploadEventImagesScreen"
                 component={UploadEventImagesScreen}
@@ -84,3 +84,6 @@ const EventNavigator = (props) => {
 };
 
 export default EventNavigator;
+
+
+//https://maps.co/help/

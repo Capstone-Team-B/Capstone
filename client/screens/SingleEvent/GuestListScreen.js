@@ -1,40 +1,26 @@
-//Nataly was here
 import { useNavigation } from "@react-navigation/core";
-import {
-    //KeyboardAvoidingView,
-    //ScrollView,
-    StyleSheet,
-    Text,
-    //TextInput,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { auth } from "../../../firebase";
-//import { useNavigation } from "@react-navigation/native";
 import {
     getDatabase,
     ref,
     child,
     get,
-    set,
     query,
-    orderByChild,
-    equalTo,
-    orderByValue,
-    startAt,
-    endAt,
 } from "firebase/database";
 import { FlatList } from "react-native-web";
+import Checkbox from "expo-checkbox";
 
 const GuestListScreen = (params) => {
     const [guestUsers, setGuestUsers] = useState([]);
+    const [isChecked, setChecked] = useState(false);
     const [host, setHost] = useState({});
     const event = params.route.params.event;
     const host_id = event.host_id;
     const guestList = event.guestList;
-    const guestIds = Object.keys(guestList);
-    console.log("guestList -->", guestList)
+    const guestIds = Object.values(guestList);
+    console.log("guestIDs -->", guestIds)
     const dbRef = ref(getDatabase());
 
     const navigation = useNavigation();
@@ -72,7 +58,6 @@ const GuestListScreen = (params) => {
                     .then((snapshot) => {
                         if (snapshot.exists()) {
                             const data = snapshot.val();
-                            console.log(data);
                             setHost(data);
                         } else {
                             console.log("No data available");
@@ -85,31 +70,61 @@ const GuestListScreen = (params) => {
                 console.log(error);
             }
         };
-
         getGuests();
         getHost();
-        console.log("guestUsers -->", guestUsers);
     }, []);
-
+    
     return (
         <View style={styles.container}>
             <Text> Guest list</Text>
-            <Text>Host: {host.firstName} {host.lastName}</Text>
+            <Text>
+                Host: {host.firstName} {host.lastName}
+            </Text>
             {guestUsers ? (
                 // NEED TO MAKE INTO <FlatList />
                 Object.keys(guestUsers).map((key) => {
                     const guest = guestUsers[key];
                     return (
-                        <TouchableOpacity
-                            key={key}
-                            onPress={() =>
-                                navigation.navigate("GuestProfileScreen", { user: guest })
-                            }
+                        <View
+                            style={{
+                                flexDirection: "column",
+                                alignItems: "center",
+                            }}
                         >
-                            <Text>
-                                {guest.firstName} {guest.lastName}
-                            </Text>
-                        </TouchableOpacity>
+                            <TouchableOpacity
+                                key={key}
+                                onPress={() =>
+                                    navigation.navigate("GuestProfileScreen", {
+                                        user: guest,
+                                    })
+                                }
+                            >
+                                <Text>
+                                    {guest.firstName} {guest.lastName}
+                                </Text>
+                            </TouchableOpacity>
+                            {/* <View style={styles.checkboxContainer}>
+                                {[
+                                    "Cohost",
+                                    "Friends",
+                                    "Family",
+                                    "Bridal Party",
+                                    "Collegues",
+                                ].map((tag, index) => {
+                                    return (
+                                        <>
+                                            <Checkbox
+                                                value={isChecked}
+                                                onValueChange={() =>
+                                                    setChecked1(!isChecked)
+                                                }
+                                            />
+                                            <Text>{tag}</Text>
+                                        </>
+                                    );
+                                })}
+                            </View> */}
+                        </View>
                     );
                 })
             ) : (
@@ -137,8 +152,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginTop: 5,
     },
-    buttonContainer: {
-        width: "60%",
+    checkboxContainer: {
         justifyContent: "center",
         alignItems: "center",
         marginTop: 40,
@@ -167,3 +181,4 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 });
+
