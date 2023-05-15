@@ -11,7 +11,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/core";
 import { getDatabase, ref, child, get, query } from "firebase/database";
-import Feather from "react-native-vector-icons/Feather";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const EventGallery = (params) => {
     const event = params.route.params.event;
@@ -55,7 +55,7 @@ const EventGallery = (params) => {
 
     const navigation = useNavigation();
     const screenWidth = Dimensions.get("window").width;
-    const imageWidth = screenWidth / 2;
+
     return (
         <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
             {/* <View style={{margin: 10}}> */}
@@ -71,7 +71,7 @@ const EventGallery = (params) => {
                         style={{ flexDirection: "row" }}
                     >
                         <Text>Upload Images</Text>
-                        <Feather name="plus-circle" size={25} />
+                        <Ionicons name="add-circle-outline" size={25} />
                     </TouchableOpacity>
                     <FlatList
                         data={eventImages}
@@ -120,7 +120,7 @@ const EventGallery = (params) => {
                         style={{ flexDirection: "row" }}
                     >
                         <Text>Upload Images</Text>
-                        <Feather name="plus-circle" size={25} />
+                        <Ionicons name="add-circle-outline" size={25} />
                     </TouchableOpacity>
                 </>
             )}

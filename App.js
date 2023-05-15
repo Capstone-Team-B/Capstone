@@ -7,6 +7,7 @@ import { auth } from "./firebase";
 import LoginScreen from "./client/screens/LoginScreen";
 import TabNavigator from "./client/navigation/TabNavigator";
 import { Video } from "expo-av";
+import { useFonts } from "expo-font";
 
 //import MessageboardScreen from "./client/screens/MessageBoardScreen";
 
@@ -14,6 +15,9 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
     const [showSplash, setShowSplash] = useState(true);
+    const [fontsLoaded] = useFonts({
+        "Bukhari Script": require("./assets/fonts/BukhariScript.ttf"),
+    });
 
     function handleVideoEnd() {
         setShowSplash(false);
