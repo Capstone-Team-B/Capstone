@@ -26,7 +26,7 @@ const EventListScreen = (props) => {
             try {
                 const eventsQuery = query(
                     child(dbRef, `events/${eventIdArray[i]}`)
-                )
+                );
                 await get(eventsQuery).then((eventSnapshot) => {
                     if (eventSnapshot.exists()) {
                         const data = eventSnapshot.val();
@@ -41,7 +41,7 @@ const EventListScreen = (props) => {
         }
         setEventList(events);
         setLoading(false);
-    }
+    };
 
     useEffect(() => {
         const eventIdsQuery = query(
@@ -53,7 +53,7 @@ const EventListScreen = (props) => {
                 if (eventSnapshot.exists()) {
                     const data = eventSnapshot.val();
                     const userEventIds = data.userEvents;
-                    getEvents(userEventIds)
+                    getEvents(userEventIds);
                 } else {
                     console.log("no event data");
                 }
@@ -63,9 +63,9 @@ const EventListScreen = (props) => {
         }
         setLoading(false);
     }, []);
-        
+
     const navigation = useNavigation();
-    
+
     return (
         <SafeAreaView style={globalStyles.container}>
             {loading ? (

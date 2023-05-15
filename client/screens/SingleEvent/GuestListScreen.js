@@ -10,20 +10,13 @@ import {
     View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { auth } from "../../../firebase";
 //import { useNavigation } from "@react-navigation/native";
 import {
     getDatabase,
     ref,
     child,
     get,
-    set,
     query,
-    orderByChild,
-    equalTo,
-    orderByValue,
-    startAt,
-    endAt,
 } from "firebase/database";
 import { FlatList } from "react-native-web";
 
@@ -33,8 +26,8 @@ const GuestListScreen = (params) => {
     const event = params.route.params.event;
     const host_id = event.host_id;
     const guestList = event.guestList;
-    const guestIds = Object.keys(guestList);
-    console.log("guestList -->", guestList)
+    const guestIds = Object.values(guestList);
+    console.log("guestIDs -->", guestIds)
     const dbRef = ref(getDatabase());
 
     const navigation = useNavigation();
@@ -49,7 +42,7 @@ const GuestListScreen = (params) => {
                         .then((snapshot) => {
                             if (snapshot.exists()) {
                                 const data = snapshot.val();
-                                console.log(data);
+                                // console.log(data);
                                 guests = [...guests, data];
                             } else {
                                 console.log("No data available");
@@ -72,7 +65,7 @@ const GuestListScreen = (params) => {
                     .then((snapshot) => {
                         if (snapshot.exists()) {
                             const data = snapshot.val();
-                            console.log(data);
+                            // console.log(data);
                             setHost(data);
                         } else {
                             console.log("No data available");
@@ -88,7 +81,7 @@ const GuestListScreen = (params) => {
 
         getGuests();
         getHost();
-        console.log("guestUsers -->", guestUsers);
+        // console.log("guestUsers -->", guestUsers);
     }, []);
 
     return (

@@ -20,7 +20,11 @@ const CreateEventForm = () => {
     const [weddingName, setWeddingName] = useState("");
     const [location, setLocation] = useState("");
     const [description, setDescription] = useState("");
-    const [date, setDate] = useState(undefined);
+    const [date, setDate] = useState({
+        startDate: undefined,
+        endDate: undefined,
+    });
+    // const [date, setDate] = useState(undefined);
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
     const [selectedEventType, setSelectedEventType] = useState("");
@@ -31,18 +35,20 @@ const CreateEventForm = () => {
         setVisible(false);
     }, [setVisible]);
 
-    const onDismissSingle = useCallback(
-        (params) => {
-            setOpen(false);
-            setDate(params.date);
-        },
-        [setOpen]
-    );
+    const onDismissRange = useCallback(() => {
+        // const onDismissSingle = useCallback(
+        //     (params) => {
+        setOpen(false);
+        // setDate(params.date);
+    }, [setOpen]);
 
-    const onConfirmSingle = useCallback(
-        (params) => {
+    const onConfirmRange = useCallback(
+        ({ startDate, endDate }) => {
+            // const onConfirmSingle = useCallback(
+            //     (params) => {
             setOpen(false);
-            setDate(params.date);
+            setDate({ startDate, endDate });
+            // setDate(params.date);
         },
         [setOpen, setDate]
     );
@@ -86,7 +92,7 @@ const CreateEventForm = () => {
                 id: newEventId,
                 name: weddingName,
                 description: description,
-                location: location,
+                locations: {0: location},
                 date: date,
                 startTime: startTime,
                 endTime: endTime,
@@ -132,27 +138,55 @@ const CreateEventForm = () => {
                         <TouchableOpacity onPress={() => setOpen(true)}>
                             <TouchableOpacity onPress={() => setOpen(true)}>
                                 <Text style={styles.outlineButtonText}>
-                                    {date
+                                    {date && date.startDate && date.endDate
+                                        ? `${date.startDate.toLocaleDateString(
+                                              "en-US",
+                                              {
+                                                  weekday: "short",
+                                                  month: "short",
+                                                  day: "numeric",
+                                                  year: "numeric",
+                                              }
+                                          )} - ${date.endDate.toLocaleDateString(
+                                              "en-US",
+                                              {
+                                                  weekday: "short",
+                                                  month: "short",
+                                                  day: "numeric",
+                                                  year: "numeric",
+                                              }
+                                          )}`
+                                        : "Select Date(s)"}
+                                    {/* {date
                                         ? `${date.toLocaleDateString("en-US", {
                                               weekday: "short",
                                               month: "short",
                                               day: "numeric",
                                               year: "numeric",
                                           })}`
-                                        : "Select Date"}
+                                        : "Select Date"} */}
                                 </Text>
                             </TouchableOpacity>
                         </TouchableOpacity>
                         <SafeAreaProvider>
                             <DatePickerModal
-                                mode="single"
+                                mode="range"
+                                // mode="single"
                                 locale="en"
                                 visible={open}
-                                onDismiss={onDismissSingle}
-                                date={date}
-                                onConfirm={onConfirmSingle}
+                                onDismiss={onDismissRange}
+                                startDate={date.startDate}
+                                endDate={date.endDate}
+                                onConfirm={onConfirmRange}
+                                // onDismiss={onDismissSingle}
+                                // date={date}
+                                // onConfirm={onConfirmSingle}
                                 saveLabel="Save"
-                                label="Select date"
+                                // label="Select date"
+                                label="Select Date Range"
+                                startLabel="From"
+                                endLabel="To"
+                                animationType="slide"
                             />
                         </SafeAreaProvider>
                     </TouchableOpacity>

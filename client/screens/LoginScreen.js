@@ -6,12 +6,14 @@ import {
     TouchableOpacity,
     View,
     Image,
+    ImageBackground,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { auth } from "../../firebase";
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, child, get, set } from "firebase/database";
 const BeThereLogoExpanded = require("../../assets/BeThereExpanded.png");
+const Background = require("../../assets/Background.png");
 
 const LoginScreen = () => {
     const [email, setEmail] = useState("kit@kit.com"); // logging in as kit, who is the host of an event
@@ -47,7 +49,11 @@ const LoginScreen = () => {
                     (key) => data[key].email === email
                 );
                 if (!existingUser) {
-                    navigation.navigate("EditAccountScreen");
+                    navigation.navigate("EditAccountScreen", {
+                        // carries the email and password forward to log in screen if it exists.
+                        email: email,
+                        password: password,
+                    });
                 } else {
                     auth.signInWithEmailAndPassword(email, password)
                         .then((userCredentials) => {
@@ -73,39 +79,52 @@ const LoginScreen = () => {
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">
-            <View style={styles.inputContainer}>
-                <View style={{ justifyContent: "center" }}>
+            <ImageBackground
+                source={Background}
+                resizeMode="cover"
+                style={{
+                    flex: 1,
+                    width: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
+                <View style={styles.inputContainer}>
                     <Image
                         source={BeThereLogoExpanded}
-                        style={{ height: 250, width: 250 }}
+                        style={{ height: 250, width: 250, alignSelf: "center" }}
+                    />
+                    <View style={{ justifyContent: "center" }}></View>
+                    <TextInput
+                        placeholder="Email"
+                        value={email}
+                        onChangeText={(text) => setEmail(text)}
+                        style={styles.input}
+                    />
+                    <TextInput
+                        placeholder="Password"
+                        value={password}
+                        onChangeText={(text) => setPassword(text)}
+                        style={styles.input}
+                        secureTextEntry
                     />
                 </View>
-                <TextInput
-                    placeholder="Email"
-                    value={email}
-                    onChangeText={(text) => setEmail(text)}
-                    style={styles.input}
-                />
-                <TextInput
-                    placeholder="Password"
-                    value={password}
-                    onChangeText={(text) => setPassword(text)}
-                    style={styles.input}
-                    secureTextEntry
-                />
-            </View>
 
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={handleLogin} style={styles.button}>
-                    <Text style={styles.buttonText}>Login</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={handleSignUp}
-                    style={[styles.button, styles.buttonOutline]}
-                >
-                    <Text style={styles.buttonOutlineText}>Register</Text>
-                </TouchableOpacity>
-            </View>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                        onPress={handleLogin}
+                        style={styles.button}
+                    >
+                        <Text style={styles.buttonText}>Login</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={handleSignUp}
+                        style={[styles.button, styles.buttonOutline]}
+                    >
+                        <Text style={styles.buttonOutlineText}>Register</Text>
+                    </TouchableOpacity>
+                </View>
+            </ImageBackground>
         </KeyboardAvoidingView>
     );
 };
@@ -115,8 +134,8 @@ export default LoginScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
+        // justifyContent: "center",
+        // alignItems: "center",
     },
     inputContainer: {
         width: "80%",
@@ -135,16 +154,17 @@ const styles = StyleSheet.create({
         marginTop: 40,
     },
     button: {
-        backgroundColor: "#0782F9",
+        backgroundColor: "#cb6ce6",
         width: "100%",
         padding: 15,
+        margin: 10,
         borderRadius: 10,
         alignItems: "center",
     },
     buttonOutline: {
-        backgroundColor: "white",
+        backgroundColor: "transparent",
         marginTop: 5,
-        borderColor: "#0782F9",
+        borderColor: "white",
         borderWidth: 2,
     },
     buttonText: {
@@ -153,7 +173,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     buttonOutlineText: {
-        color: "#0782F9",
+        color: "white",
         fontWeight: "700",
         fontSize: 16,
     },
