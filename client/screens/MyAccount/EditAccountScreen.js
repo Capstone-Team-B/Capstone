@@ -13,7 +13,7 @@ import {
 } from "react-native";
 // import { auth } from "../../../firebase";
 import { useNavigation } from "@react-navigation/native";
-// import { getDatabase, ref, update, set } from "firebase/database";
+import { getDatabase, ref, update, set, child, get } from "firebase/database";
 
 const EditAccountScreen = (props) => {
     const [user, setUser] = useState(props.route.params);
@@ -39,13 +39,13 @@ const EditAccountScreen = (props) => {
         try {
             //TODO COMMENT BACK IN //
 
-            // const dbRef = ref(getDatabase());
-            // const userId = user.id;
-            // const userRef = child(dbRef, `users/${userId}`);
-            // const userSnapshot = await get(userRef);
-            // if (!userSnapshot.exists()) {
-            //     throw new Error(`User with ID ${userId} does not exist`);
-            // }
+            const dbRef = ref(getDatabase());
+            const userId = user.uid;
+            const userRef = child(dbRef, `users/${userId}`);
+            const userSnapshot = await get(userRef);
+            if (!userSnapshot.exists()) {
+                throw new Error(`User with ID ${userId} does not exist`);
+            }
             const updatedUser = {
                 firstName: firstName,
                 lastName: lastName,
@@ -55,7 +55,7 @@ const EditAccountScreen = (props) => {
                 profilePic: profilePic,
             };
             //TODO COMMENT BACK IN //
-            // await update(userRef, updatedUser)
+            await update(userRef, updatedUser);
             navigation.navigate("MyAccountScreen", { user: updatedUser });
             console.log("updates to user", updatedUser);
         } catch (error) {
