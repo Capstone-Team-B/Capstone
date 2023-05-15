@@ -83,7 +83,7 @@ const EventListScreen = (props) => {
                         );
                     }}
                     keyExtractor={(item, index) => {
-                        return item.id;
+                        return index.toString();
                     }}
                 />
             ) : (

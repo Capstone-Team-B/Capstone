@@ -15,6 +15,7 @@ import AllSubEvents from "../screens/SubEvents/AllSubEvents";
 import MapEventScreen from "../screens/Maps/MapsandEvents";
 import ImportContacts from "../screens/GuestList/ImportGuests";
 import UploadEventImagesScreen from "../screens/SingleEvent/UploadEventImagesScreen";
+import EventGallery from "../screens/SingleEvent/EventGallery";
 
 const Stack = createNativeStackNavigator();
 
@@ -77,7 +78,14 @@ const EventNavigator = (props) => {
             <Stack.Screen
                 name="UploadEventImagesScreen"
                 component={UploadEventImagesScreen}
+                initialParams={{ uid: uid }}
                 options={{ title: "UploadEventImagesScreen" }}
+            />
+            <Stack.Screen
+                name="EventGallery"
+                component={EventGallery}
+
+                options={{ title: "Event Gallery" }}
             />
         </Stack.Navigator>
     );

@@ -7,6 +7,7 @@ import globalStyles from "../../utils/globalStyles";
 
 const SingleEvent = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
+    const uid = params.route.params.uid;
     console.log("users unique id --> ", params.route.params.uid);
 
     useEffect(() => {
@@ -14,7 +15,7 @@ const SingleEvent = (params) => {
     }, [params.route.params.event]);
 
     const navigation = useNavigation();
-    console.log("event.id -->", event);
+    // console.log("event.id -->", event)
     return (
         <View style={globalStyles.container}>
             <Text style={globalStyles.heading1}> {event.name}</Text>
@@ -81,12 +82,10 @@ const SingleEvent = (params) => {
                 <TouchableOpacity
                     style={styles.tile}
                     onPress={() =>
-                        navigation.navigate("UploadEventImagesScreen", {
-                            eventId: event.id,
-                        })
+                        navigation.navigate("EventGallery", { event: event, uid: uid })
                     }
                 >
-                    <Text>Upload Images</Text>
+                    <Text>Gallery</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.tile}

@@ -16,18 +16,22 @@ const UploadProfilePicScreen = () => {
     }, []);
 
     const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
-        });
-        console.log(result);
-        if (!result.canceled) {
-            setImage(result.assets[0].uri);
-        }
-        if (hasGalleryPermission === false) {
-            return <Text>No access to images</Text>;
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 1,
+            });
+            console.log(result);
+            if (!result.canceled) {
+                setImage(result.assets[0].uri);
+            }
+            if (hasGalleryPermission === false) {
+                return <Text>No access to images</Text>;
+            }
+        } catch (error) {
+            console.log(error);
         }
     };
 
