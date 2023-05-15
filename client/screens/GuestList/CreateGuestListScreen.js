@@ -13,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, child, set, push } from "firebase/database";
 
 const CreateGuestList = (params) => {
-    const [event, setEvent] = useState(params.route.params.event);
+    const event = params.route.params.event;
     const [guestList, setGuestList] = useState([]);
 
     const eventId = event.event_id;
@@ -165,6 +165,16 @@ const CreateGuestList = (params) => {
                     >
                         <Text style={styles.submitButtonText}>
                             Save Updates
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+                <View>
+                <TouchableOpacity
+                        style={styles.addButton}
+                        onPress={() => {navigation.navigate("GuestListScreen", { event: event })}}
+                    >
+                        <Text style={styles.addButtonText}>
+                            View All Guests
                         </Text>
                     </TouchableOpacity>
                 </View>
