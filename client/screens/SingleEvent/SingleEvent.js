@@ -63,7 +63,6 @@ const SingleEvent = (params) => {
                 >
                     <Text>My Guest Profile</Text>
                 </TouchableOpacity>
-                {/* need to add logic to only show if user is host */}
 
                 <TouchableOpacity
                     style={styles.tile}

@@ -1,16 +1,11 @@
-//Nataly was here
 import { useNavigation } from "@react-navigation/core";
 import {
-    //KeyboardAvoidingView,
-    //ScrollView,
     StyleSheet,
     Text,
-    //TextInput,
     TouchableOpacity,
     View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-//import { useNavigation } from "@react-navigation/native";
 import {
     getDatabase,
     ref,
@@ -18,6 +13,7 @@ import {
     get,
     query,
 } from "firebase/database";
+import { useIsFocused } from "@react-navigation/native";
 import { FlatList } from "react-native-web";
 
 const GuestListScreen = (params) => {
@@ -27,7 +23,7 @@ const GuestListScreen = (params) => {
     const host_id = event.host_id;
     const guestList = event.guestList;
     const guestIds = Object.values(guestList);
-    console.log("guestIDs -->", guestIds)
+    const isFocused = useIsFocused();
     const dbRef = ref(getDatabase());
 
     const navigation = useNavigation();
@@ -42,7 +38,6 @@ const GuestListScreen = (params) => {
                         .then((snapshot) => {
                             if (snapshot.exists()) {
                                 const data = snapshot.val();
-                                // console.log(data);
                                 guests = [...guests, data];
                             } else {
                                 console.log("No data available");
@@ -65,7 +60,6 @@ const GuestListScreen = (params) => {
                     .then((snapshot) => {
                         if (snapshot.exists()) {
                             const data = snapshot.val();
-                            // console.log(data);
                             setHost(data);
                         } else {
                             console.log("No data available");
@@ -81,8 +75,7 @@ const GuestListScreen = (params) => {
 
         getGuests();
         getHost();
-        // console.log("guestUsers -->", guestUsers);
-    }, []);
+    }, [isFocused]);
 
     return (
         <View style={styles.container}>
