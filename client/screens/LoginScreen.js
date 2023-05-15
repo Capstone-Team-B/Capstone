@@ -79,14 +79,22 @@ const LoginScreen = () => {
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">
-            <ImageBackground source={Background} resizeMode="cover" style={{flex: 1, width: "100%", justifyContent: "center", alignItems: "center"}}>
+            <ImageBackground
+                source={Background}
+                resizeMode="cover"
+                style={{
+                    flex: 1,
+                    width: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
                 <View style={styles.inputContainer}>
-                        <Image
-                            source={BeThereLogoExpanded}
-                            style={{ height: 250, width: 250, alignSelf: "center" }}
-                        />
-                    <View style={{ justifyContent: "center" }}>
-                    </View>
+                    <Image
+                        source={BeThereLogoExpanded}
+                        style={{ height: 250, width: 250, alignSelf: "center" }}
+                    />
+                    <View style={{ justifyContent: "center" }}></View>
                     <TextInput
                         placeholder="Email"
                         value={email}
