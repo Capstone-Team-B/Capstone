@@ -10,7 +10,7 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getDatabase, ref, child, push, set, update } from "firebase/database";
+import { getDatabase, ref, child, remove, update } from "firebase/database";
 import { DatePickerModal } from "react-native-paper-dates";
 import { TimePickerModal } from "react-native-paper-dates";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -18,6 +18,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 const EditNotification = (params) => {
     const notification = params.route.params.notification;
     const event = params.route.params.event;
+    const eventId = event.event_id;
     const notificationId = notification.notification_id;
     const [title, setTitle] = useState(notification.title || "");
     const [body, setBody] = useState(notification.body || "");
@@ -38,9 +39,21 @@ const EditNotification = (params) => {
         setOpen(false);
     }, [setOpen]);
 
-    const handleDeleteNotification = () => {
-        setNotification({});
-        navigation.navigate("All Notifications", { event: event });
+    const handleDeleteNotification = async () => {
+        try {
+            const dbRef = ref(getDatabase());
+            const notificationRef = child(dbRef, `notifications/${notificationId}`);
+    
+            await remove(notificationRef);
+
+            const eventRef = child(dbRef, `events/${eventId}/notifications`);
+            const eventNotificationRef = child(eventRef, notificationId)
+            await remove(eventNotificationRef);
+    
+            navigation.navigate("All Notifications", { event: event });
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const handleSubmit = async () => {
@@ -164,7 +177,7 @@ const EditNotification = (params) => {
                                 onPress={() => handleDeleteNotification()}
                             >
                                 <Text style={styles.deleteButtonText}>
-                                    Clear Form
+                                    Delete Notification
                                 </Text>
                             </TouchableOpacity>
                         </View>

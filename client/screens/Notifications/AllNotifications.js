@@ -54,7 +54,7 @@ const AllNotifications = (params) => {
                 <View style={styles.section}>
                     {notifications.length > 0 ? (
                         notifications.map((notification) => (
-                            <View key={notification} style={styles.item}>
+                            <View key={notification.notification_id} style={styles.item}>
                                 <Text style={styles.input}>
                                     Title: {notification.title}
                                 </Text>
