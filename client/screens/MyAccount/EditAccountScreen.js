@@ -29,6 +29,7 @@ const EditAccountScreen = (props) => {
     }, [props]);
 
     const navigation = useNavigation();
+
     const handleSubmit = async () => {
         console.log("user updates", user);
         if (firstName === "" || lastName === "" || email === "") {

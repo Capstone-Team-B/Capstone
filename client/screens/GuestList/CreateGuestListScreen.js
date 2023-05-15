@@ -16,11 +16,13 @@ const CreateGuestList = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
     const [guestList, setGuestList] = useState([]);
 
+    const eventId = event.event_id;
+
     const navigation = useNavigation();
 
     const handleAddGuest = () => {
         const newGuestList = [...guestList];
-        newGuestList.push({ email: "", name: "" });
+        newGuestList.push({ phone: "", firstName: "", lastName: "" });
         setGuestList(newGuestList);
     };
 
@@ -38,31 +40,45 @@ const CreateGuestList = (params) => {
 
     const handleSubmit = async () => {
         for (const guest of guestList) {
-            if (!guest.email || !guest.firstname || !guest.lastname) {
+            if (!guest.phone || !guest.firstName || !guest.lastName) {
                 Alert.alert("Please fill in all fields");
                 return;
             }
         }
 
         const dbRef = ref(getDatabase());
-        const guestListRef = child(dbRef, "guestlist");
+        const usersRef = child(dbRef, `users`);
+        const guestListRef = child(dbRef, `events/${eventId}/guestList`);
 
         for (const guest of guestList) {
             const {
-                email: guestEmail,
-                firstname: guestFirstname,
-                lastname: guestLastname,
+                phone: guestPhone,
+                firstName: guestFirstname,
+                lastName: guestLastname,
             } = guest;
-            const newGuestListData = {
-                email: guestEmail,
-                firstname: guestFirstname,
-                lastname: guestLastname,
-                role: "Guest",
-                event_id: event.id,
-            };
 
-            const newGuestListRef = push(guestListRef);
+            const formattedPhone = guestPhone.replace(/\D/g, "");
+            if (formattedPhone.length !== 10) {
+                Alert.alert("Invalid phone number");
+                return;
+            }
+            const newGuestListData = {
+                phone: formattedPhone.replace(
+                    /(\d{3})(\d{3})(\d{4})/,
+                    "($1) $2-$3"
+                ),
+                firstName: guestFirstname,
+                lastName: guestLastname,
+                userEvents: {
+                    [event.event_id]: event.event_id,
+                },
+            };
+            const newGuestListRef = push(usersRef);
             await set(newGuestListRef, newGuestListData);
+
+            const newGuestListKey = newGuestListRef.key;
+            const newEventGuestsRef = push(guestListRef);
+            await set(newEventGuestsRef, newGuestListKey);
         }
         navigation.navigate("SingleEvent", { event: event });
     };
@@ -78,11 +94,11 @@ const CreateGuestList = (params) => {
                                 <TextInput
                                     style={styles.input}
                                     placeholder="First Name"
-                                    value={guest.firstname}
+                                    value={guest.firstName}
                                     onChangeText={(value) =>
                                         handleUpdateGuest(
                                             index,
-                                            "firstname",
+                                            "firstName",
                                             value
                                         )
                                     }
@@ -91,11 +107,11 @@ const CreateGuestList = (params) => {
                                 <TextInput
                                     style={styles.input}
                                     placeholder="Last Name"
-                                    value={guest.lastname}
+                                    value={guest.lastName}
                                     onChangeText={(value) =>
                                         handleUpdateGuest(
                                             index,
-                                            "lastname",
+                                            "lastName",
                                             value
                                         )
                                     }
@@ -103,10 +119,10 @@ const CreateGuestList = (params) => {
                                 />
                                 <TextInput
                                     style={styles.input}
-                                    placeholder="Email address"
-                                    value={guest.email}
+                                    placeholder="Phone Number"
+                                    value={guest.phone}
                                     onChangeText={(value) =>
-                                        handleUpdateGuest(index, "email", value)
+                                        handleUpdateGuest(index, "phone", value)
                                     }
                                     required={true}
                                 />

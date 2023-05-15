@@ -49,7 +49,11 @@ const LoginScreen = () => {
                     (key) => data[key].email === email
                 );
                 if (!existingUser) {
-                    navigation.navigate("EditAccountScreen");
+                    navigation.navigate("EditAccountScreen", {
+                        // carries the email and password forward to log in screen if it exists.
+                        email: email,
+                        password: password,
+                    });
                 } else {
                     auth.signInWithEmailAndPassword(email, password)
                         .then((userCredentials) => {

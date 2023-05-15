@@ -47,6 +47,7 @@ const MyAccountScreen = (props) => {
     };
 
     const handlePressEditAccount = () => {
+        // {/* Not sure why but this directs to edit event photo screen */}
         navigation.navigate("EditAccountScreen", user);
     };
 
@@ -74,6 +75,7 @@ const MyAccountScreen = (props) => {
             </View>
             <View style={styles.sectionHeader}>
                 <Text style={globalStyles.heading2}>Account details</Text>
+                {/* Not sure why but this directs to edit event photo screen */}
                 <Pressable onPress={handlePressEditAccount}>
                     <Feather name="edit" size={25} />
                 </Pressable>
