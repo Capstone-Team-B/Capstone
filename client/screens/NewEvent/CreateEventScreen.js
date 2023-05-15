@@ -80,7 +80,6 @@ const CreateEventForm = (props) => {
             const eventRef = child(dbRef, "events");
             const newEventRef = push(eventRef);
             const newEventId = newEventRef.key;
-            console.log("id", newEventId);
             const newEvent = {
                 event_id: newEventId,
                 name: weddingName,
