@@ -13,19 +13,35 @@ import { useIsFocused } from "@react-navigation/native";
 
 const AllNotifications = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
-    const [notifications, setNotifications] = useState(event.notifications);
+    const eventId = event.event_id;
+    const [notifications, setNotifications] = useState([]);
     const navigation = useNavigation();
     const dbRef = ref(getDatabase());
     const isFocused = useIsFocused();
 
     useEffect(() => {
         const getNotifications = async () => {
-            setNotifications(event.notifications);
+            const eventQuery = query(
+                child(dbRef, `events/${eventId}`)
+            );
+            try {
+                await get(eventQuery).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        setEvent(data);
+                        console.log("data", data)
+                    } else {
+                        console.log("No data available");
+                    }
+                });
+            } catch (error) {
+                console.log(error);
+            }
             let notificationData = [];
             let notificationIds = [];
-            if (notifications) {
-                notificationIds = Object.keys(event.notifications);
-            }
+            notificationIds = Object.keys(event.notifications);
+            console.log("events", event);
+            console.log("notificationIds", notificationIds);
             for (let i = 0; i < notificationIds.length; i++) {
                 const notificationQuery = query(
                     child(dbRef, `notifications/${notificationIds[i]}`)
