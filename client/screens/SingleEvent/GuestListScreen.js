@@ -21,8 +21,8 @@ const GuestListScreen = (params) => {
     const [host, setHost] = useState({});
     const event = params.route.params.event;
     const host_id = event.host_id;
-    const guestList = event.guestList;
-    const guestIds = Object.values(guestList);
+    const eventId = event.event_id;
+   
     const isFocused = useIsFocused();
     const dbRef = ref(getDatabase());
 
@@ -30,7 +30,21 @@ const GuestListScreen = (params) => {
 
     useEffect(() => {
         const getGuests = async () => {
+            let guestIds = [];
             let guests = [];
+            try{
+                const guestsQuery = query(child(dbRef, `events/${eventId}/guestList`));
+                await get(guestsQuery).then((guestsSnapshot) => {
+                    if (guestsSnapshot.exists()) {
+                        const data = guestsSnapshot.val();
+                        guestIds = Object.values(data);
+                    } else {
+                        console.log("no guest data found");
+                    }
+                });
+            } catch (error) {
+                    console.log(error);
+            }
             for (let i = 0; i < guestIds.length; i++) {
                 const guestQuery = query(child(dbRef, `users/${guestIds[i]}`));
                 try {
@@ -75,13 +89,14 @@ const GuestListScreen = (params) => {
 
         getGuests();
         getHost();
+
     }, [isFocused]);
 
     return (
         <View style={styles.container}>
             <Text> Guest list</Text>
             <Text>Host: {host.firstName} {host.lastName}</Text>
-            {guestUsers ? (
+            {guestUsers.length > 0 ? (
                 // NEED TO MAKE INTO <FlatList />
                 Object.keys(guestUsers).map((key) => {
                     const guest = guestUsers[key];
