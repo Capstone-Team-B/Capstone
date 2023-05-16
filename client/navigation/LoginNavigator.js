@@ -20,6 +20,10 @@ const LoginNavigator = ({ user }) => {
                     component={EventListScreen}
                     user={user}
                 />
+                <Stack.Screen
+                    name="Check User"
+                    component={CheckAccountScreen}
+                />
             </Stack.Navigator>
         </NavigationContainer>
     );
