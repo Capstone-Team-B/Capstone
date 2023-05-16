@@ -11,12 +11,13 @@ import {
     SafeAreaView,
     Button,
 } from "react-native";
-// import { auth } from "../../../firebase";
+import { auth } from "../../../firebase";
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, update, set, child, get } from "firebase/database";
 
 const CreateAccountScreen = (props) => {
     const [user, setUser] = useState(props.route.params);
+    const [password, setPassword] = useState("");
     const [firstName, setFirstName] = useState(user.firstName || "");
     const [lastName, setLastName] = useState(user.lastName || "");
     const [email, setEmail] = useState(user.email || "");
@@ -35,32 +36,40 @@ const CreateAccountScreen = (props) => {
     const navigation = useNavigation();
 
     const handleSubmit = async () => {
-        console.log("user updates", user);
+        console.log("user creation", user);
+        // Store the user data in the Realtime Database with the UID as the key
+        const newUser = {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phoneNumber: phoneNumber,
+            homeCity: homeCity,
+            profilePic: profilePic,
+            dietary: dietary,
+            accessibility: accessibility,
+        };
         if (firstName === "" || lastName === "" || email === "") {
             Alert.alert("Please provide your name and email");
             return;
         }
         try {
+            const userSnapshot = await get(userRef);
             const dbRef = ref(getDatabase());
             const userId = user.uid;
             const userRef = child(dbRef, `users/${userId}`);
-            const userSnapshot = await get(userRef);
             if (!userSnapshot.exists()) {
-                throw new Error(`User with ID ${userId} does not exist`);
+                auth.createUserWithEmailAndPassword(email, password).then(
+                    (userCredentials) => {
+                        const user = userCredentials.user;
+                        console.log("Registered with: ", user.email);
+                        const userId = user.uid;
+                    }
+                );
+                await set(userRef, newUser);
             }
-            const updatedUser = {
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                phoneNumber: phoneNumber,
-                homeCity: homeCity,
-                profilePic: profilePic,
-                dietary: dietary,
-                accessibility: accessibility,
-            };
-            await update(userRef, updatedUser);
-            navigation.navigate("MyAccountScreen", { user: updatedUser });
-            console.log("updates to user", updatedUser);
+            await update(userRef, newUser);
+            navigation.navigate("MyAccountScreen", { user: newUser });
+            console.log("updates to user", newUser);
         } catch (error) {
             console.log(error);
         }
@@ -71,6 +80,13 @@ const CreateAccountScreen = (props) => {
             <ScrollView style={styles.container}>
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Account Details</Text>
+                    <TextInput
+                        placeholder="Password"
+                        value={password}
+                        onChangeText={(text) => setPassword(text)}
+                        style={styles.input}
+                        secureTextEntry
+                    />
                     <TextInput
                         style={styles.input}
                         placeholder={"First Name"}
@@ -134,7 +150,7 @@ const CreateAccountScreen = (props) => {
                         required={true}
                     >
                         <Text style={styles.submitButtonText}>
-                            Update Account
+                            Create Account
                         </Text>
                     </TouchableOpacity>
                 </View>
