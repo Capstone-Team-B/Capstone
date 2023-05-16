@@ -5,6 +5,8 @@ import {
     Text,
     TextInput,
     KeyboardAvoidingView,
+    Button,
+    Keyboard,
 } from "react-native";
 import {
     getDatabase,
@@ -16,32 +18,47 @@ import {
     orderByChild,
     equalTo,
     orderByValue,
+    push,
 } from "firebase/database";
-import MapView, { Marker } from "react-native-maps";
-import { removeEmpty } from "../../utils/ArrayUtils";
-
-let gListData = [];
+import MapView, { Callout, Marker } from "react-native-maps";
+import { useAtom } from "jotai";
+import { user as userStore } from "../../store/user";
 
 const MapLocationScreen = (params) => {
-    const _eventID = "0"; // params.route.params.eventId
-    const [eventId, setEventId] = useState(_eventID);
-    const [locations, setLocations] = useState([]);
-    // const [mapRegion, setmapRegion] = useState({
-    //     latitude: 37.78825,
-    //     longitude: -122.4324,
-    //     latitudeDelta: 0.0922,
-    //     longitudeDelta: 0.0421,
-    // });
+    const eventHost = params.route.params.eventHost;
+    const [storeUser, setStoreUser] = useAtom(userStore);
 
-    //
+    const [eventId, setEventId] = useState();
+    const [locations, setLocations] = useState([]);
 
     const [dataInfo, setDataInfo] = useState({
         address: "",
     });
 
     const [mapRegion, setmapRegion] = useState(null);
-    console.log("_eventID", _eventID);
+
+    const colors = [
+        "red",
+        "tomato",
+        "green",
+        "blue",
+        "aqua",
+        "teal",
+        "violet",
+        "purple",
+        "indigo",
+        "turquoise",
+        "navy",
+        "plum",
+    ];
+
     const dbRef = ref(getDatabase());
+
+    useEffect(() => {
+        if (params.route.params.eventId) {
+            setEventId(params.route.params.eventId);
+        }
+    }, [params.route.params]);
 
     useEffect(() => {
         if (locations.length > 0) {
@@ -54,49 +71,22 @@ const MapLocationScreen = (params) => {
         }
     }, [locations]);
 
-    const onFilterList = (dInfo) => {
-        let dataFiltered = gListData;
-
-        let address = dInfo?.address ?? "";
-
-        console.log("gListdata = ", gListData);
-
-        if (address !== "") {
-            dataFiltered = gListData.filter((dataItem) => {
-                return dataItem.address
-                    ?.toLowerCase()
-                    .includes(address.toLowerCase());
-            });
-        }
-
-        // for (let index = 0; index < dataFiltered.length; index++) {
-        //     const element = dataFiltered[index];
-        //     const latlon = await fetch(
-        //         `https://geocode.maps.co/search?q={${element.location}}`
-        //     ).then(async (data) => data.json());
-        //     console.log("each", latlon);
-        //     element.latitude = latlon[0].lat;
-        //     element.longitude = latlon[0].lon;
-        // }
-        console.log("filtered", dataFiltered, "len" + dataFiltered.length);
-        setLocations([...dataFiltered]);
-    };
-
     const onLoadData = () => {
         get(
             query(
                 child(dbRef, "locations"),
                 orderByChild("event_id"),
-                equalTo(_eventID)
+                equalTo(eventId)
             )
         )
             .then(async (snapshot) => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
                     console.log("shanpshot data", data);
-                    //const dataFiltered = removeEmpty(data);
-                    gListData = data;
-                    onFilterList(dataInfo.address);
+                    const _data = Object.keys(data).map((key) => ({
+                        ...data[key],
+                    }));
+                    setLocations([..._data]);
                 } else {
                     console.log("No data available");
                 }
@@ -107,51 +97,135 @@ const MapLocationScreen = (params) => {
     };
 
     useEffect(() => {
-        onLoadData();
-    }, [_eventID]);
+        if (eventId) {
+            onLoadData();
+        }
+    }, [eventId]);
+
+    const handleSave = async () => {
+        var requestOptions = {
+            method: "GET",
+            redirect: "follow",
+        };
+        console.log("helloooo", dataInfo.address);
+        fetch(
+            `https://geocode.maps.co/search?q=${dataInfo.address}`,
+            requestOptions
+        )
+            .then((response) => response.json())
+            .then((result) => {
+                const latitude = result[0].lat;
+                const longitude = result[0].lon;
+                const newLocation = {
+                    address: dataInfo.address,
+                    label: dataInfo.label,
+                    latitude,
+                    longitude,
+                    name: dataInfo.name,
+                    event_id: eventId,
+                };
+                const locationRef = child(dbRef, "locations");
+                const newLocationRef = push(locationRef);
+                const newEventId = newLocationRef.key;
+                console.log("hlllllllll", eventId);
+                set(newLocationRef, newLocation).then(() => {
+                    setDataInfo({});
+                    console.log(locations);
+                    onLoadData();
+                    Keyboard.dismiss();
+                });
+            })
+            .catch((error) => console.log("error", error));
+    };
     return (
         <KeyboardAvoidingView style={styles.container}>
-            <View style={{ paddingVertical: 10, paddingHorizontal: 10 }}>
-                <Text>Addres ddd</Text>
-                <TextInput
-                    style={[styles.addressInput]}
-                    value={dataInfo.address}
-                    onChangeText={(val) => {
-                        let tempDataInfo = {
-                            ...dataInfo,
-                            address: val,
-                        };
+            {eventHost === storeUser.uid && (
+                <View>
+                    <View
+                        style={{ paddingVertical: 10, paddingHorizontal: 10 }}
+                    >
+                        <Text>Name</Text>
+                        <TextInput
+                            style={[styles.addressInput]}
+                            value={dataInfo.name}
+                            onChangeText={(val) => {
+                                let tempDataInfo = {
+                                    ...dataInfo,
+                                    name: val,
+                                };
+                                setDataInfo(tempDataInfo);
+                            }}
+                        ></TextInput>
+                    </View>
+                    <View
+                        style={{ paddingVertical: 10, paddingHorizontal: 10 }}
+                    >
+                        <Text>Address</Text>
+                        <TextInput
+                            style={[styles.addressInput]}
+                            value={dataInfo.address}
+                            onChangeText={(val) => {
+                                let tempDataInfo = {
+                                    ...dataInfo,
+                                    address: val,
+                                };
 
-                        onFilterList(tempDataInfo);
+                                setDataInfo(tempDataInfo);
+                            }}
+                        ></TextInput>
+                    </View>
+                    <View
+                        style={{ paddingVertical: 10, paddingHorizontal: 10 }}
+                    >
+                        <Text>Label</Text>
+                        <TextInput
+                            style={[styles.addressInput]}
+                            value={dataInfo.label}
+                            onChangeText={(val) => {
+                                let tempDataInfo = {
+                                    ...dataInfo,
+                                    label: val,
+                                };
 
-                        setDataInfo(tempDataInfo);
-                    }}
-                ></TextInput>
-            </View>
+                                setDataInfo(tempDataInfo);
+                            }}
+                        ></TextInput>
+                    </View>
+
+                    <View
+                        style={{ paddingVertical: 10, paddingHorizontal: 10 }}
+                    >
+                        <Button title="Save" onPress={handleSave}></Button>
+                    </View>
+                </View>
+            )}
+
             <View style={{ flex: 1 }}>
                 {locations.length > 0 ? (
                     <MapView
                         provider="google"
                         style={{ height: "100%", width: "100%" }}
-                        // style={{ alignSelf: "stretch", height: "100%" }}
-                        // region={{
-                        //     latitude: locations[0].latitude,
-                        //     longitude: locations[0].longitude,
-                        //     latitudeDelta: 0.4,
-                        //     longitudeDelta: 0.5
-                        // }}
                         initialRegion={mapRegion}
                     >
                         {locations.map((marker, index) => (
                             <Marker
                                 key={index}
-                                title={marker.location}
-                                description={marker.nameLocation}
+                                title={"test"}
+                                description={marker.where}
                                 coordinate={{
-                                    latitude: marker.latitude, //marker.latitude,40.715000,
-                                    longitude: marker.longitude, //marker.longitude,-74.015800
+                                    latitude: marker.latitude,
+                                    longitude: marker.longitude,
                                 }}
-                            />
+                                pinColor={colors[index] || "red"}
+                            >
+                                <Callout>
+                                    <View>
+                                        <Text>{marker.name}</Text>
+                                        <Text>{marker.where}</Text>
+                                        <Text>{marker.label}</Text>
+                                    </View>
+                                </Callout>
+                            </Marker>
                         ))}
                     </MapView>
                 ) : (
@@ -198,6 +272,9 @@ const styles = StyleSheet.create({
         backgroundColor: "transparent",
     },
     addressInput: {
-        backgroundColor: "#00FFFF",
+        borderWidth: 1,
+        borderColor: "gray",
+        height: 40,
+        borderRadius: 8,
     },
 });
