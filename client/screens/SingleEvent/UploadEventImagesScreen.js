@@ -49,8 +49,9 @@ const UploadEventImagesScreen = (params) => {
             if (!result.canceled && result.assets) {
                 let imageArray = [];
                 result.assets.forEach((image) => {
-                    imageArray.push(image.uri);
+                    imageArray.push(image);
                 });
+                console.log(imageArray)
                 setImages(imageArray);
             }
 
@@ -98,16 +99,14 @@ const UploadEventImagesScreen = (params) => {
         const uploadPromises = [];
     
         for (let i = 0; i < images.length; i++) {
-            const filename = images[i].substring(
-                images[i].lastIndexOf("/") + 1
-            );
+            const filename = images[i].fileName;
             const imageRef = ref(
                 storage,
                 `event_${event.event_id}/${filename}_${uid}`
             );
-            const response = await fetch(images[i]);
-            const blob = await response.blob();    
-            const uploadPromise = uploadBytes(imageRef, blob);
+            const img = await fetch(images[i].uri);
+            const blob = await img.blob();
+            const uploadPromise = uploadBytesResumable(imageRef, blob);
             uploadPromises.push(uploadPromise);
         }
     
@@ -143,7 +142,7 @@ const UploadEventImagesScreen = (params) => {
                     renderItem={({ item }) => {
                         return (
                             <Image
-                                source={{ uri: item }}
+                                source={{ uri: item.uri }}
                                 style={{ height: 200, width: 200 }}
                             />
                         );

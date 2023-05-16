@@ -3,8 +3,9 @@
 # ***************************************
 # FIREBASE RESOURCES
 # ***************************************
-
-
+// "firebase": "^9.21.0",
+# firebase storage - image upload
+* https://www.youtube.com/watch?v=H-yXO46WDak
 
 
 # ***************************************
