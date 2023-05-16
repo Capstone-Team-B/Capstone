@@ -24,7 +24,6 @@ import {
 
 const MessageboardScreen = (params) => {
     // console.log("params", params.route.params);
-    // LOG  params {"eventMessages": [0], "event_id": "0", "name": "kit's wedding", "user_id": "NLxGphpLhkM6F8Gln8xuHC4hVxB2"}
     const [event_id, setEvent_id] = useState(
         params.route.params.event_id || ""
     );

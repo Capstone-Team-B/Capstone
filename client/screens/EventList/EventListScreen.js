@@ -19,7 +19,7 @@ const EventListScreen = (props) => {
     const [eventList, setEventList] = useState([]);
     const [loading, setLoading] = useState(true);
     const isFocused = useIsFocused();
-    
+
     const dbRef = ref(getDatabase());
 
     const getEvents = async (eventIdArray) => {
