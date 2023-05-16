@@ -5,7 +5,8 @@ import {
     SafeAreaView,
     Image,
     TouchableOpacity,
-    Pressable, ImageBackground
+    Pressable,
+    ImageBackground,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -27,10 +28,6 @@ const MyAccountScreen = (props) => {
         get(child(dbRef, `users/${uid}`))
             .then((snapshot) => {
                 if (snapshot.exists()) {
-                    // console.log(
-                    //     "this is the data from the database -->",
-                    //     snapshot.val()
-                    // );
                     setUser(snapshot.val());
                 } else {
                     console.log("No data available");
@@ -40,9 +37,6 @@ const MyAccountScreen = (props) => {
                 console.log(error);
             });
     }, [isFocused]);
-
-    // console.log("uid in MyAccountScreen -->", uid);
-    // console.log("user on MyAccountScreen -->", user);
     const navigation = useNavigation();
 
     const handlePressCreateEvent = () => {
@@ -50,7 +44,6 @@ const MyAccountScreen = (props) => {
     };
 
     const handlePressEditAccount = () => {
-        // {/* Not sure why but this directs to edit event photo screen */}
         navigation.navigate("EditAccountScreen", user);
     };
 
@@ -66,8 +59,6 @@ const MyAccountScreen = (props) => {
                 style={{
                     flex: 1,
                     width: "100%",
-                    // justifyContent: "center",
-                    // alignItems: "center",
                 }}
             >
                 <View style={styles.createEvent}>
@@ -86,7 +77,6 @@ const MyAccountScreen = (props) => {
                 </View>
                 <View style={styles.sectionHeader}>
                     <Text style={globalStyles.heading2}>Account details</Text>
-                    {/* Not sure why but this directs to edit event photo screen */}
                     <Pressable onPress={handlePressEditAccount}>
                         <Ionicons name="create-outline" size={25} />
                     </Pressable>

@@ -26,7 +26,7 @@ const EventTile = ({ event, uid }) => {
                             resizeMode="cover"
                             style={{
                                 flex: 1,
-                                padding: 20
+                                padding: 20,
                             }}
                         >
                             <View key={event.id}>
@@ -125,7 +125,6 @@ const styles = StyleSheet.create({
     },
     imageContainer: {
         flex: 1,
-        // padding: 20,
         marginTop: 12,
         marginRight: 12,
         marginLeft: 12,

@@ -12,7 +12,6 @@ const Tab = createBottomTabNavigator();
 const TabNavigator = () => {
     const route = useRoute();
     const { uid } = route.params;
-    // console.log("uid in tabnav -->", uid);
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -41,7 +40,7 @@ const TabNavigator = () => {
                 tabBarStyle: [
                     {
                         display: "flex",
-                        padding: 12
+                        padding: 12,
                     },
                     null,
                 ],

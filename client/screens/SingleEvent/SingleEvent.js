@@ -46,6 +46,7 @@ const SingleEvent = (params) => {
                     style={{
                         fontFamily: "Bukhari Script",
                         fontSize: 30,
+                        padding: 5,
                         marginTop: 12,
                         marginLeft: 12,
                         marginRight: 12,
@@ -202,11 +203,7 @@ const SingleEvent = (params) => {
                                 marginRight: 12,
                             }}
                         >
-                            <Text
-                                style={{
-                                    fontSize: 15,
-                                }}
-                            >
+                            <Text style={{ fontSize: 15 }} >
                                 Edit Your Event{" "}
                             </Text>
                             <Ionicons name="create-outline" size={25} />

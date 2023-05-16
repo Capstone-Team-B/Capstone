@@ -19,9 +19,26 @@ const EventGallery = (params) => {
     const photos = params.route.params.event.photos;
 
     const [eventImages, setEventImages] = useState([]);
+    const [userName, setUserName] = useState({});
     const [loading, setLoading] = useState(true);
 
     const dbRef = ref(getDatabase());
+
+    // useEffect to get all logged-in user info to pass along with image upload
+    useEffect(() => {
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, `users/${uid}`))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    setUserName(`${snapshot.val().firstName} ${snapshot.val().lastName}`);
+                } else {
+                    console.log("No data available");
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, []);
 
     const getPhotos = async () => {
         let photoArray = [];
@@ -58,7 +75,6 @@ const EventGallery = (params) => {
 
     return (
         <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
-            {/* <View style={{margin: 10}}> */}
             {eventImages.length > 0 ? (
                 <>
                     <TouchableOpacity
@@ -66,6 +82,7 @@ const EventGallery = (params) => {
                             navigation.navigate("UploadEventImagesScreen", {
                                 event: event,
                                 uid: uid,
+                                uploaderName: userName
                             })
                         }
                         style={{ flexDirection: "row" }}
