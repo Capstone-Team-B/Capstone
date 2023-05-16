@@ -79,6 +79,7 @@ const CreateNotification = (params) => {
             scheduled_time: notificationTime,
             event_id: eventId,
             event_name: eventName,
+            recipients: { allGuests: true },
             notification_id: newNotificationKey,
         };
         await set(newNotificationRef, newNotificationData);

@@ -21,8 +21,8 @@ const NotificationsScreen = () => {
     const uid = auth.currentUser.uid;
     const [eventNotificationIds, setEventNotificationIds] = useState([]);
     const [notificationData, setNotificationData] = useState([]);
-    const dbRef = ref(getDatabase());
     const [loading, setLoading] = useState(true);
+    const dbRef = ref(getDatabase());
     const isFocused = useIsFocused();
 
     const getEventNotifications = async (eventIdArray) => {
@@ -35,7 +35,8 @@ const NotificationsScreen = () => {
                 await get(eventsQuery).then((eventSnapshot) => {
                     if (eventSnapshot.exists()) {
                         const data = eventSnapshot.val();
-                        eventNotifications = [...eventNotifications, data];
+                        const eventIds = Object.keys(data);
+                        eventNotifications = [...eventNotifications, eventIds];
                     } else {
                         console.log("no event data");
                     }
@@ -44,8 +45,8 @@ const NotificationsScreen = () => {
                 console.log(error);
             }
         }
-        setEventNotificationIds(Object.keys(eventNotifications));
-    };
+        setEventNotificationIds(eventNotifications);
+    };    
 
     const getNotificationData = async (arr) => {
         let notificationData = [];
@@ -67,10 +68,10 @@ const NotificationsScreen = () => {
             }
         }
         setNotificationData(notificationData);
-        setLoading(false);
     };
 
     useEffect(() => {
+        setLoading(true);
         const eventIdsQuery = query(
             child(dbRef, `users/${uid}`),
             orderByChild("userEvents")
@@ -82,6 +83,7 @@ const NotificationsScreen = () => {
                     const userEventIds = Object.values(data.userEvents);
                     getEventNotifications(userEventIds);
                     getNotificationData(eventNotificationIds);
+                    setLoading(false);
                 } else {
                     console.log("no notification data");
                 }
@@ -89,14 +91,15 @@ const NotificationsScreen = () => {
         } catch (error) {
             console.log(error);
         }
-        setLoading(false);
     }, [isFocused]);
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="height">
             <ScrollView style={styles.container}>
                 <View style={styles.section}>
-                    {notificationData ? (
+                    {loading ? (
+                        <Text>...Loading your notifications</Text>
+                    ) : notificationData.length > 0 ? (
                         notificationData.map((notification) => {
                             const scheduledDate = new Date(
                                 notification.scheduled_date
@@ -105,7 +108,7 @@ const NotificationsScreen = () => {
                             const isPastDate = scheduledDate < currentDate;
 
                             return (
-                                <View key={notification} style={styles.item}>
+                                <View key={notification.notification_id} style={styles.item}>
                                     <Text style={styles.input}>
                                         {notification.event_name}
                                     </Text>
