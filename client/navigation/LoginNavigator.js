@@ -21,7 +21,7 @@ const LoginNavigator = ({ user }) => {
                     user={user}
                 />
                 <Stack.Screen
-                    name="Check User"
+                    name="CheckAccountScreen"
                     component={CheckAccountScreen}
                 />
             </Stack.Navigator>

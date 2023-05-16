@@ -14,9 +14,7 @@ import { getDatabase, ref, child, get } from "firebase/database";
 import SignOutBtn from "./SignOutBtn";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import globalStyles from "../../utils/globalStyles";
-
 const BeThereLogo = require("../../../assets/BeThereConcise.png");
-import { useIsFocused } from "@react-navigation/native";
 const Background = require("../../../assets/Background.png");
 
 const MyAccountScreen = (props) => {
@@ -39,8 +37,6 @@ const MyAccountScreen = (props) => {
             });
     }, [isFocused]);
 
-    // console.log("uid in MyAccountScreen -->", uid);
-    // console.log("user on MyAccountScreen -->", user);
     const navigation = useNavigation();
 
     const handlePressCreateEvent = () => {

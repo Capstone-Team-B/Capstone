@@ -152,23 +152,18 @@ const SingleEvent = (params) => {
                         })
                     }
                 >
-                    <Text>Guest List</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={{ ...styles.tile, borderColor: "#8291F3" }}
-                    onPress={() =>
-                        navigation.navigate("Maps", { eventId: event.event_id || "0", eventHost: event.host_id })
-                    }
-                >
                     <View style={{ alignItems: "center" }}>
-                        <Ionicons name="map-outline" size={25} />
-                        <Text>Maps and Events</Text>
+                        <Ionicons name="people-outline" size={25} />
+                        <Text>Guest List</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={{ ...styles.tile, borderColor: "#8291F3" }}
                     onPress={() =>
-                        navigation.navigate("Maps", { eventId: event.event_id || "0", eventHost: event.host_id }) 
+                        navigation.navigate("Maps", {
+                            eventId: event.event_id || "0",
+                            eventHost: event.host_id,
+                        })
                     }
                 >
                     <View style={{ alignItems: "center" }}>
@@ -198,7 +193,7 @@ const SingleEvent = (params) => {
                         navigation.navigate("EventGallery", {
                             event: event,
                             uid: uid,
-                            userName: userName
+                            userName: userName,
                         })
                     }
                 >

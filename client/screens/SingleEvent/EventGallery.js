@@ -40,7 +40,7 @@ const EventGallery = (params) => {
     const userName = params.route.params.userName;
     // const photos = params.route.params.event.photos;
 
-    const [eventImages, setEventImages] = useState([]);
+    const [eventImages, setEventImages] = useState(dummyPhotos);
     const [loading, setLoading] = useState(true);
     const isFocused = useIsFocused();
 
@@ -69,7 +69,6 @@ const EventGallery = (params) => {
         setTimeout(() => {
             setLoading(false);
         }, 5000);
-        console.log(eventImages);
     }, []);
 
     const navigation = useNavigation();

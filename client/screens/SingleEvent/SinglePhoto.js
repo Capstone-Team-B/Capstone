@@ -7,7 +7,6 @@ const screenHeight = Dimensions.get("window").height;
 
 const SinglePhoto = (params) => {
     const photo = params.route.params.photo;
-    console.log(photo)
 
     return (
         <SafeAreaView style={globalStyles.container}>

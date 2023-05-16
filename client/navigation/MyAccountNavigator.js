@@ -12,7 +12,7 @@ const Stack = createNativeStackNavigator();
 
 const MyAccountNavigator = (props) => {
     const { uid } = props.route.params;
-    // console.log("uid in MyAccountNav -->", uid);
+
     return (
         <Stack.Navigator initialRouteName="MyAccountScreen">
             <Stack.Screen

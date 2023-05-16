@@ -104,7 +104,6 @@ const ImportContacts = (params) => {
         const guestListRef = child(dbRef, `events/${eventId}/guestList`);
 
         for (const guest of selectedContacts) {
-            // console.log("guest info -->", guest)
             const {
                 email: guestEmail,
                 firstName: guestFirstname,
@@ -169,7 +168,6 @@ const ImportContacts = (params) => {
                 );
             }
 
-            // console.log("data", newGuestListData)
             await set(newGuestListRef, newGuestListData);
 
             const newEventGuestsRef = child(guestListRef, newGuestListKey);

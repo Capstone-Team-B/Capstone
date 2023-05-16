@@ -107,7 +107,6 @@ const MapLocationScreen = (params) => {
             method: "GET",
             redirect: "follow",
         };
-        console.log("helloooo", dataInfo.address);
         fetch(
             `https://geocode.maps.co/search?q=${dataInfo.address}`,
             requestOptions
@@ -127,7 +126,6 @@ const MapLocationScreen = (params) => {
                 const locationRef = child(dbRef, "locations");
                 const newLocationRef = push(locationRef);
                 const newEventId = newLocationRef.key;
-                console.log("hlllllllll", eventId);
                 set(newLocationRef, newLocation).then(() => {
                     setDataInfo({});
                     console.log(locations);
