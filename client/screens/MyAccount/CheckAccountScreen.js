@@ -62,7 +62,6 @@ const CheckAccountScreen = (props) => {
         else {
             console.log("Checking for this", phoneNumber);
             try {
-                // const dbRef = ref(getDatabase());
                 const userPhoneRef = await get(
                     query(
                         child(dbRef, "users"),
@@ -85,6 +84,7 @@ const CheckAccountScreen = (props) => {
                         navigation.navigate("CreateAccountScreen", {
                             screen: "CreateAccountScreen",
                             email: email,
+                            phoneNumber: phoneNumber,
                         });
                     }
 
