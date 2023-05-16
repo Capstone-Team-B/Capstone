@@ -19,6 +19,7 @@ import {
     metadata,
     ref,
 } from "firebase/storage";
+import { useNavigation } from "@react-navigation/core";
 
 const UploadEventImagesScreen = (params) => {
     const uid = params.route.params.uid;
@@ -27,6 +28,7 @@ const UploadEventImagesScreen = (params) => {
     const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
     const [images, setImages] = useState([]);
     const [uploading, setUploading] = useState(false);
+    const navigation = useNavigation();
 
     // useEffect to get logged-in user approval to access media library
     useEffect(() => {
@@ -63,96 +65,70 @@ const UploadEventImagesScreen = (params) => {
         }
     };
 
-    // BELOW CODE WORKS FOR UPLOADING A SINGLE IMAGE
-    // const uploadImages = async () => {
-    //     setUploading(true);
-
-    //     const storage = getStorage();
-    //     const filename = images[0].substring(
-    //         images[0].lastIndexOf("/") + 1
-    //     );
-    //     const imageRef = ref(
-    //         storage,
-    //         `event_${event.event_id}/${filename}_${uid}`
-    //     );
-    //     const response = await fetch(images[0]);
-    //     const blob = await response.blob();
-
-    //     console.log("images -->", images);
-    //     console.log("imageRef -->", imageRef);
-    //     console.log("response -->", response);
-
-    //     try {
-    //         await uploadBytes(imageRef, blob, metadata);
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-
-    //     setUploading(false);
-    //     setImages([]);
-    // };
-
+    
     const uploadImages = async () => {
-        setUploading(true);
-    
-        const storage = getStorage();
-        const uploadPromises = [];
-    
-        for (let i = 0; i < images.length; i++) {
-            const filename = images[i].fileName;
-            const imageRef = ref(
-                storage,
-                `event_${event.event_id}/${filename}_${uid}`
-            );
-            const img = await fetch(images[i].uri);
-            const blob = await img.blob();
-            const uploadPromise = uploadBytesResumable(imageRef, blob);
-            uploadPromises.push(uploadPromise);
-        }
-    
-        try {
-            await Promise.all(uploadPromises);
-            console.log("All images uploaded successfully");
-        } catch (error) {
-            console.log(error);
-        }
-    
-        setUploading(false);
-        setImages([]);
-    };
-
-
-    return (
-        <SafeAreaView style={globalStyles.container}>
+        // COMMENT BACK IN ONCE STORAGE USAGE RESOLVED
+        // setUploading(true);
+        
+        // const storage = getStorage();
+        // const uploadPromises = [];
+        
+        // for (let i = 0; i < images.length; i++) {
+        //     const filename = images[i].fileName;
+        //     const imageRef = ref(
+        //         storage,
+        //         `event_${event.event_id}/${filename}_${uid}`
+        //         );
+        //         const img = await fetch(images[i].uri);
+        //         const blob = await img.blob();
+        //         const uploadPromise = uploadBytesResumable(imageRef, blob);
+        //         uploadPromises.push(uploadPromise);
+        //     }
+            
+        //     try {
+        //         await Promise.all(uploadPromises);
+        //         console.log("All images uploaded successfully");
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+            
+        //     setUploading(false);
+            setImages([]);
+            navigation.navigate("EventGallery")
+        };
+        
+        
+        return (
+            <SafeAreaView style={globalStyles.container}>
             {images.length > 0 ? (
                 <Button
-                    title="Upload selected photos"
-                    onPress={() => uploadImages()}
+                title="Upload selected photos"
+                onPress={() => uploadImages()}
                 />
-            ) : (
-                <Button
+                ) : (
+                    <Button
                     title="Select photos to add to event album"
                     onPress={() => pickImage()}
-                />
-            )}
+                    />
+                    )}
 
             {images.length > 0 ? (
                 <FlatList
-                    data={images}
-                    renderItem={({ item }) => {
-                        return (
-                            <Image
-                                source={{ uri: item.uri }}
-                                style={{ height: 200, width: 200 }}
-                            />
+                data={images}
+                renderItem={({ item }) => {
+                    return (
+                        <Image
+                        source={{ uri: item.uri }}
+                        style={{ height: 200, width: 200 }}
+                        />
                         );
                     }}
                     keyExtractor={(item, index) => {
                         return index.toString();
                     }}
-                />
-            ) : (
-                <View>
+                    />
+                    ) : (
+                        <View>
                     <Text>Share your pohtos from {event.name}!</Text>
                 </View>
             )}
@@ -163,3 +139,28 @@ const UploadEventImagesScreen = (params) => {
 export default UploadEventImagesScreen;
 
 const styles = StyleSheet.create({});
+
+// BELOW CODE WORKS FOR UPLOADING A SINGLE IMAGE
+// const uploadImages = async () => {
+//     setUploading(true);
+
+//     const storage = getStorage();
+//     const filename = images[0].substring(
+//         images[0].lastIndexOf("/") + 1
+//     );
+//     const imageRef = ref(
+//         storage,
+//         `event_${event.event_id}/${filename}_${uid}`
+//     );
+//     const response = await fetch(images[0]);
+//     const blob = await response.blob();
+
+//     try {
+//         await uploadBytes(imageRef, blob, metadata);
+//     } catch (error) {
+//         console.log(error);
+//     }
+
+//     setUploading(false);
+//     setImages([]);
+// };

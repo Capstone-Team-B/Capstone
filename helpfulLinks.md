@@ -3,14 +3,19 @@
 # ***************************************
 # FIREBASE RESOURCES
 # ***************************************
-// "firebase": "^9.21.0",
+
 # firebase storage - image upload
 * https://www.youtube.com/watch?v=H-yXO46WDak
 
+# firebase storage - download
+* https://www.youtube.com/watch?v=c_ig_EwSRhQ
 
 # ***************************************
 # REACT NATIVE RESOURCES
 # ***************************************
+
+# ionicons
+* https://ionic.io/ionicons
 
 # expo-image-picker
 * https://www.youtube.com/watch?v=v9J7c1uyLow

@@ -20,11 +20,32 @@ import Banner from "../../../assets/Banner.png";
 const SingleEvent = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
     const uid = params.route.params.uid;
-    console.log("users unique id --> ", params.route.params.uid);
+    const [userName, setUserName] = useState({});
+
+    // console.log("users unique id --> ", params.route.params.uid);
     console.log(event);
+
     useEffect(() => {
         setEvent(params.route.params.event);
     }, [params.route.params.event]);
+
+    // useEffect to get all logged-in user info to pass along with image upload
+    useEffect(() => {
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, `users/${uid}`))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    setUserName(
+                        `${snapshot.val().firstName} ${snapshot.val().lastName}`
+                    );
+                } else {
+                    console.log("No data available");
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, []);
 
     const navigation = useNavigation();
 
@@ -177,6 +198,7 @@ const SingleEvent = (params) => {
                         navigation.navigate("EventGallery", {
                             event: event,
                             uid: uid,
+                            userName: userName
                         })
                     }
                 >
@@ -203,7 +225,7 @@ const SingleEvent = (params) => {
                                 marginRight: 12,
                             }}
                         >
-                            <Text style={{ fontSize: 15 }} >
+                            <Text style={{ fontSize: 15 }}>
                                 Edit Your Event{" "}
                             </Text>
                             <Ionicons name="create-outline" size={25} />

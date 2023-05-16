@@ -10,84 +10,83 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/core";
-import { getDatabase, ref, child, get, query } from "firebase/database";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import {
+    getStorage,
+    uploadBytes,
+    uploadBytesResumable,
+    getDownloadURL,
+    metadata,
+    ref,
+    listAll,
+} from "firebase/storage";
+import globalStyles from "../../utils/globalStyles";
+import { useIsFocused } from "@react-navigation/native";
+
+const dummyPhotos = [
+    "https://fastly.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U",
+    "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68",
+    "https://fastly.picsum.photos/id/106/2592/1728.jpg?hmac=E1-3Hac5ffuCVwYwexdHImxbMFRsv83exZ2EhlYxkgY",
+    "https://fastly.picsum.photos/id/155/3264/2176.jpg?hmac=Zgf_oGMJeg18XoKBFmJgp2DgHMRYuorXlDx5wLII9nU",
+    "https://fastly.picsum.photos/id/257/5000/3333.jpg?hmac=B0TMVZJOXC_cBK0gZj5EzCBnCwoBMEyvt9t8AbJDkdA",
+    "https://fastly.picsum.photos/id/254/200/300.jpg?hmac=VoOUXxjWvbLuWPBSHy_pbMAoLSYCaO-3drnOhwvA2yY",
+];
 
 const EventGallery = (params) => {
     const event = params.route.params.event;
     const uid = params.route.params.uid;
-    const photos = params.route.params.event.photos;
+    const userName = params.route.params.userName;
+    // const photos = params.route.params.event.photos;
 
-    const [eventImages, setEventImages] = useState([]);
-    const [userName, setUserName] = useState({});
+    const [eventImages, setEventImages] = useState(dummyPhotos);
     const [loading, setLoading] = useState(true);
+    const isFocused = useIsFocused();
 
-    const dbRef = ref(getDatabase());
+    // COMMENT BACK IN ONCE STORAGE USAGE RESOLVED
+    // const storage = getStorage();
+    // const getPhotos = async () => {
+    //     let imageURLs = [];
+    //     const listRef = ref(storage, `event_${event.event_id}`);
+    //     listAll(listRef)
+    //         .then((res) => {
+    //             res.items.forEach((itemRef) => {
+    //                 getDownloadURL(itemRef).then((url) => {
+    //                     imageURLs = [...imageURLs, url];
+    //                     setEventImages(imageURLs);
+    //                 });
+    //             });
+    //         })
+    //         .catch((error) => {
+    //             console.log(error);
+    //         });
+    //     setLoading(false);
+    // };
 
-    // useEffect to get all logged-in user info to pass along with image upload
     useEffect(() => {
-        const dbRef = ref(getDatabase());
-        get(child(dbRef, `users/${uid}`))
-            .then((snapshot) => {
-                if (snapshot.exists()) {
-                    setUserName(`${snapshot.val().firstName} ${snapshot.val().lastName}`);
-                } else {
-                    console.log("No data available");
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        // getPhotos();
+        if(eventImages.length > 0) setLoading(false)
+        console.log(eventImages);
     }, []);
-
-    const getPhotos = async () => {
-        let photoArray = [];
-        for (let i = 0; i < photos.length; i++) {
-            try {
-                const photosQuery = query(child(dbRef, `photos/${photos[i]}`));
-                await get(photosQuery)
-                    .then((snapshot) => {
-                        if (snapshot.exists()) {
-                            const data = snapshot.val();
-                            console.log(data);
-                            photoArray = [...photoArray, data];
-                        } else {
-                            console.log("No data available");
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        setEventImages(photoArray);
-    };
-
-    useEffect(() => {
-        getPhotos();
-    }, [photos]);
-    console.log("event images -->", eventImages);
 
     const navigation = useNavigation();
     const screenWidth = Dimensions.get("window").width;
 
     return (
-        <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
-            {eventImages.length > 0 ? (
+        <SafeAreaView style={globalStyles.container}>
+            {loading ? (
+                <Text>Loading images from {event.name}...</Text>
+            ) : eventImages.length > 0 ? (
                 <>
                     <TouchableOpacity
                         onPress={() =>
                             navigation.navigate("UploadEventImagesScreen", {
                                 event: event,
                                 uid: uid,
-                                uploaderName: userName
+                                uploaderName: userName,
                             })
                         }
-                        style={{ flexDirection: "row" }}
                     >
-                        <Text>Upload Images</Text>
+                        <Text style={globalStyles.heading3}>Upload Images</Text>
                         <Ionicons name="add-circle-outline" size={25} />
                     </TouchableOpacity>
                     <FlatList
@@ -100,20 +99,19 @@ const EventGallery = (params) => {
                         renderItem={({ item }) => (
                             <TouchableOpacity
                                 onPress={() =>
-                                    navigation.navigate("SinglePhoto", {
-                                        photo: item,
+                                    navigation.navigate("SwipeGallery", {
+                                        currentPhoto: item,
+                                        photoIndex: eventImages.indexOf(item),
+                                        allPhotos: eventImages,
                                     })
                                 }
                             >
                                 <Image
-                                    source={{ uri: item.uri }}
+                                    source={{ uri: item }}
                                     style={{
-                                        height: screenWidth / 2.2,
-                                        width: screenWidth / 2.2,
-                                        margin:
-                                            (screenWidth -
-                                                (screenWidth / 2.2) * 2) /
-                                            4,
+                                        height: screenWidth / 2 - 12,
+                                        width: screenWidth / 2 - 12,
+                                        margin: 6,
                                         borderRadius: 10,
                                     }}
                                 />

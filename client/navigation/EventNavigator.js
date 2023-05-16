@@ -16,8 +16,10 @@ import MapLocationScreen from "../screens/Maps/MapLocationScreen";
 import ImportContacts from "../screens/GuestList/ImportGuests";
 import UploadEventImagesScreen from "../screens/SingleEvent/UploadEventImagesScreen";
 import EventGallery from "../screens/SingleEvent/EventGallery";
+import SinglePhoto from "../screens/SingleEvent/SinglePhoto";
 import globalStyles from "../utils/globalStyles";
 import EditNotification from "../screens/Notifications/EditNotification"; 
+import SwipeGallery from "../screens/SingleEvent/SwipeGallery"; 
 
 const Stack = createNativeStackNavigator();
 
@@ -132,6 +134,16 @@ const EventNavigator = (props) => {
                 name="EventGallery"
                 component={EventGallery}
                 options={{ title: "Event Gallery", headerTitleStyle: globalStyles.screenHeader }}
+            />
+            <Stack.Screen
+                name="SinglePhoto"
+                component={SinglePhoto}
+                options={{ title: "" }}
+            />
+            <Stack.Screen
+                name="SwipeGallery"
+                component={SwipeGallery}
+                options={{ title: "" }}
             />
         </Stack.Navigator>
     );
