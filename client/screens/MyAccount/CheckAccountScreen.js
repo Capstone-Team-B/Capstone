@@ -51,9 +51,7 @@ const CheckAccountScreen = (props) => {
     const handleSubmit = async () => {
         //Make sure phone or email is entered
         if (phoneNumber === "" && email === "") {
-            Alert.alert(
-                "Please provide an email or phone number so we can look you up in the database"
-            );
+            Alert.alert(`Please provide an email or phone number`);
             return;
         }
         // check for userprofile
@@ -110,7 +108,7 @@ const CheckAccountScreen = (props) => {
                         required={true}
                     >
                         <Text style={styles.submitButtonText}>
-                            Update Account
+                            Check for Account
                         </Text>
                     </TouchableOpacity>
                 </View>
