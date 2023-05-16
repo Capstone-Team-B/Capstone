@@ -15,11 +15,8 @@ import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, child, get, set } from "firebase/database";
 import { useAtom } from "jotai";
 import { user as userStore } from "../store/user";
-
 const BeThereLogoExpanded = require("../../assets/BeThereExpanded.png");
 const Background = require("../../assets/Background.png");
-import { useAtom } from "jotai";
-import { user as userStore } from "../store/user";
 
 const LoginScreen = () => {
     const [email, setEmail] = useState("kit@kit.com"); // logging in as kit, who is the host of an event
@@ -43,7 +40,7 @@ const LoginScreen = () => {
                     // need to go to the check for user
                     onPress: () =>
                         navigation.navigate("LoginNavigator", {
-                            screen: "Check User",
+                            screen: "CheckAccountScreen",
                         }),
                     //navigation()
                 },
@@ -58,7 +55,6 @@ const LoginScreen = () => {
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
             if (user) {
-                // console.log("uid on loginscreen -->", user.uid)
                 navigation.navigate("TabNav", {
                     screen: "EventNavigator",
                     uid: user.uid,
@@ -83,7 +79,6 @@ const LoginScreen = () => {
                 if (!existingUser) {
                     console.log("no existing user", email);
                     navigation.navigate("CheckAccountScreen", {
-                        screen: "EventNavigator",
                         email: email,
                     });
                 } else {

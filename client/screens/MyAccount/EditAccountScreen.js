@@ -35,7 +35,6 @@ const EditAccountScreen = (props) => {
     const navigation = useNavigation();
 
     const handleSubmit = async () => {
-        console.log("user updates", user);
         if (firstName === "" || lastName === "" || email === "") {
             Alert.alert("Please provide your name and email");
             return;
@@ -60,7 +59,6 @@ const EditAccountScreen = (props) => {
             };
             await update(userRef, updatedUser);
             navigation.navigate("MyAccountScreen", { user: updatedUser });
-            console.log("updates to user", updatedUser);
         } catch (error) {
             console.log(error);
         }

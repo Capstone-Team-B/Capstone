@@ -53,7 +53,6 @@ const UploadEventImagesScreen = (params) => {
                 result.assets.forEach((image) => {
                     imageArray.push(image);
                 });
-                console.log(imageArray);
                 setImages(imageArray);
             }
 

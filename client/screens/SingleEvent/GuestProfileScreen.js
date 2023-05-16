@@ -23,7 +23,6 @@ import {
 
 const GuestProfileScreen = (params) => {
     const [user, setUser] = useState(params.route.params.user);
-    console.log(params.route.params.user, "Naty");
 
     //const dbRef = ref(getDatabase());
     console.log(user);
