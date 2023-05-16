@@ -24,32 +24,28 @@ const LoginScreen = () => {
     const [storeUser, setStoreUser] = useAtom(userStore);
     const navigation = useNavigation();
 
-    // It's hard to tell without seeing the rest of the code and how the navigation variable is defined. However, assuming that navigation is correctly defined and imported from the react-navigation library, there could be a few reasons why the component is not navigating to the "Create User" page:
-
-    // The component may not be rendered within a navigator: In order for the navigation prop to be passed down to the component, it must be rendered within a navigator component (e.g. StackNavigator, DrawerNavigator, etc.). Make sure that the component that contains the showAlert function is rendered within a navigator.
-
-    // The screen name "Create User" may not match the actual screen name: The navigation.navigate function takes the name of the destination screen as an argument. Make sure that the name "Create User" matches the actual screen name defined in the navigator.
-    // const showAlert = () => {
-    //     return Alert.alert(
-    //         "User Not Found",
-    //         "Would you like to create a BeThere account?",
-    //         [
-    //             {
-    //                 text: "Yes Please",
-    //                 // need to go to the check for user
-    //                 onPress: () =>
-    //                     navigation.navigate("LoginNavigator", {
-    //                         screen: "CheckAccountScreen",
-    //                     }),
-    //                 //navigation()
-    //             },
-    //             {
-    //                 text: "No Thank you",
-    //                 onPress: () => Alert.alert("no Pressed"),
-    //             },
-    //         ]
-    //     );
-    // };
+    const showAlert = () => {
+        return Alert.alert(
+            "User Not Found",
+            "Would you like to create a BeThere account?",
+            [
+                {
+                    text: "Yes Please",
+                    // need to go to the check for user
+                    onPress: () =>
+                        navigation.navigate("CheckAccountScreen", {
+                            screen: "CheckAccountScreen",
+                            email: email,
+                        }),
+                    //navigation()
+                },
+                {
+                    text: "No Thank you",
+                    onPress: () => Alert.alert("no Pressed"),
+                },
+            ]
+        );
+    };
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -67,8 +63,12 @@ const LoginScreen = () => {
     const handleSignUp = () => {
         console.log("sign up pressed");
         console.log("check account screen activated", email);
-        navigation.navigate("CheckAccountScreen", {
-            screen: "CheckAccountScreen",
+        // navigation.navigate("CheckAccountScreen", {
+        //     screen: "CheckAccountScreen",
+        //     email: email,
+        // });
+        navigation.navigate("CreateAccountScreen", {
+            screen: "CreateAccountScreen",
             email: email,
         });
         const dbRef = ref(getDatabase());
