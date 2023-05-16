@@ -7,6 +7,7 @@ import {
     Image,
     TouchableOpacity,
     Dimensions,
+    ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/core";
@@ -22,6 +23,7 @@ import {
 } from "firebase/storage";
 import globalStyles from "../../utils/globalStyles";
 import { useIsFocused } from "@react-navigation/native";
+import { Video } from "expo-av";
 
 const dummyPhotos = [
     "https://fastly.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U",
@@ -38,7 +40,7 @@ const EventGallery = (params) => {
     const userName = params.route.params.userName;
     // const photos = params.route.params.event.photos;
 
-    const [eventImages, setEventImages] = useState(dummyPhotos);
+    const [eventImages, setEventImages] = useState([]);
     const [loading, setLoading] = useState(true);
     const isFocused = useIsFocused();
 
@@ -64,7 +66,9 @@ const EventGallery = (params) => {
 
     useEffect(() => {
         // getPhotos();
-        if(eventImages.length > 0) setLoading(false)
+        setTimeout(() => {
+            setLoading(false);
+        }, 5000);
         console.log(eventImages);
     }, []);
 
@@ -74,10 +78,21 @@ const EventGallery = (params) => {
     return (
         <SafeAreaView style={globalStyles.container}>
             {loading ? (
-                <Text>Loading images from {event.name}...</Text>
-            ) : eventImages.length > 0 ? (
+                <Video
+                    source={require("../../../assets/LoadingScreen.mp4")}
+                    style={{ flex: 1 }}
+                    shouldPlay
+                    isLooping
+                    resizeMode="cover"
+                />
+            ) : eventImages.length && eventImages.length > 0 ? (
                 <>
                     <TouchableOpacity
+                        style={{
+                            margin: 12,
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
                         onPress={() =>
                             navigation.navigate("UploadEventImagesScreen", {
                                 event: event,
@@ -86,7 +101,9 @@ const EventGallery = (params) => {
                             })
                         }
                     >
-                        <Text style={globalStyles.heading3}>Upload Images</Text>
+                        <Text style={globalStyles.heading3}>
+                            Add your photos
+                        </Text>
                         <Ionicons name="add-circle-outline" size={25} />
                     </TouchableOpacity>
                     <FlatList
@@ -121,9 +138,20 @@ const EventGallery = (params) => {
                     />
                 </>
             ) : (
-                <>
-                    <Text>
-                        No pictures from {event.name} have been added... yet!
+                <View
+                    style={{
+                        ...globalStyles.container,
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <Text
+                        style={{
+                            ...globalStyles.heading2,
+                            textAlign: "center", margin: 12
+                        }}
+                    >
+                        No photos from{'\n'}{event.name}{'\n'}have been added yet
                     </Text>
                     <TouchableOpacity
                         onPress={() =>
@@ -132,12 +160,14 @@ const EventGallery = (params) => {
                                 uid: uid,
                             })
                         }
-                        style={{ flexDirection: "row" }}
                     >
-                        <Text>Upload Images</Text>
-                        <Ionicons name="add-circle-outline" size={25} />
+                        <Ionicons name="add-circle-outline" size={55} />
                     </TouchableOpacity>
-                </>
+                    <Text style={{
+                            ...globalStyles.heading3,
+                            textAlign: "center", margin: 12
+                        }}>Add your photos</Text>
+                </View>
             )}
             {/* </View> */}
         </SafeAreaView>

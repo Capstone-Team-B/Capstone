@@ -53,7 +53,7 @@ const UploadEventImagesScreen = (params) => {
                 result.assets.forEach((image) => {
                     imageArray.push(image);
                 });
-                console.log(imageArray)
+                console.log(imageArray);
                 setImages(imageArray);
             }
 
@@ -65,14 +65,13 @@ const UploadEventImagesScreen = (params) => {
         }
     };
 
-    
     const uploadImages = async () => {
         // COMMENT BACK IN ONCE STORAGE USAGE RESOLVED
         // setUploading(true);
-        
+
         // const storage = getStorage();
         // const uploadPromises = [];
-        
+
         // for (let i = 0; i < images.length; i++) {
         //     const filename = images[i].fileName;
         //     const imageRef = ref(
@@ -84,52 +83,61 @@ const UploadEventImagesScreen = (params) => {
         //         const uploadPromise = uploadBytesResumable(imageRef, blob);
         //         uploadPromises.push(uploadPromise);
         //     }
-            
+
         //     try {
         //         await Promise.all(uploadPromises);
         //         console.log("All images uploaded successfully");
         //     } catch (error) {
         //         console.log(error);
         //     }
-            
+
         //     setUploading(false);
-            setImages([]);
-            navigation.navigate("EventGallery")
-        };
-        
-        
-        return (
-            <SafeAreaView style={globalStyles.container}>
+        setImages([]);
+        navigation.navigate("EventGallery");
+    };
+
+    return (
+        <SafeAreaView
+            style={{ ...globalStyles.container, justifyContent: "center" }}
+        >
             {images.length > 0 ? (
                 <Button
-                title="Upload selected photos"
-                onPress={() => uploadImages()}
+                    title="Upload selected photos"
+                    onPress={() => uploadImages()}
                 />
-                ) : (
-                    <Button
+            ) : (
+                <Button
                     title="Select photos to add to event album"
                     onPress={() => pickImage()}
-                    />
-                    )}
+                />
+            )}
 
             {images.length > 0 ? (
                 <FlatList
-                data={images}
-                renderItem={({ item }) => {
-                    return (
-                        <Image
-                        source={{ uri: item.uri }}
-                        style={{ height: 200, width: 200 }}
-                        />
+                    data={images}
+                    renderItem={({ item }) => {
+                        return (
+                            <Image
+                                source={{ uri: item.uri }}
+                                style={{ height: 200, width: 200 }}
+                            />
                         );
                     }}
                     keyExtractor={(item, index) => {
                         return index.toString();
                     }}
-                    />
-                    ) : (
-                        <View>
-                    <Text>Share your pohtos from {event.name}!</Text>
+                />
+            ) : (
+                <View
+                    styles={{
+                        // alignContent: "center",
+                        // justifyContent: "center",
+                    }}
+                >
+                    <Text style={{...globalStyles.heading3, alignSelf: "center", textAlign: "center"}}>
+                        Share your photos from{"\n"}
+                        {event.name}
+                    </Text>
                 </View>
             )}
         </SafeAreaView>
