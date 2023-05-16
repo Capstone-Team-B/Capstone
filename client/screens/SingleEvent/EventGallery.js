@@ -88,9 +88,8 @@ const EventGallery = (params) => {
                 <>
                     <TouchableOpacity
                         style={{
-                            margin: 12,
-                            justifyContent: "center",
-                            alignItems: "center",
+                            ...globalStyles.button,
+                            backgroundColor: "#38b6ff",
                         }}
                         onPress={() =>
                             navigation.navigate("UploadEventImagesScreen", {
@@ -100,10 +99,16 @@ const EventGallery = (params) => {
                             })
                         }
                     >
-                        <Text style={globalStyles.heading3}>
+                        <Ionicons
+                            name="add-circle-outline"
+                            color={"white"}
+                            size={25}
+                        />
+                        <Text
+                            style={{ ...globalStyles.heading3, color: "white" }}
+                        >
                             Add your photos
                         </Text>
-                        <Ionicons name="add-circle-outline" size={25} />
                     </TouchableOpacity>
                     <FlatList
                         data={eventImages}
@@ -147,10 +152,13 @@ const EventGallery = (params) => {
                     <Text
                         style={{
                             ...globalStyles.heading2,
-                            textAlign: "center", margin: 12
+                            textAlign: "center",
+                            margin: 12,
                         }}
                     >
-                        No photos from{'\n'}{event.name}{'\n'}have been added yet
+                        No photos from{"\n"}
+                        {event.name}
+                        {"\n"}have been added yet
                     </Text>
                     <TouchableOpacity
                         onPress={() =>
@@ -162,10 +170,15 @@ const EventGallery = (params) => {
                     >
                         <Ionicons name="add-circle-outline" size={55} />
                     </TouchableOpacity>
-                    <Text style={{
+                    <Text
+                        style={{
                             ...globalStyles.heading3,
-                            textAlign: "center", margin: 12
-                        }}>Add your photos</Text>
+                            textAlign: "center",
+                            margin: 12,
+                        }}
+                    >
+                        Add your photos
+                    </Text>
                 </View>
             )}
             {/* </View> */}

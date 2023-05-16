@@ -13,6 +13,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { getDatabase, ref, child, get } from "firebase/database";
 import SignOutBtn from "./SignOutBtn";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
+import { auth } from "../../../firebase";
 import globalStyles from "../../utils/globalStyles";
 const BeThereLogo = require("../../../assets/BeThereConcise.png");
 const Background = require("../../../assets/Background.png");
@@ -51,6 +52,13 @@ const MyAccountScreen = (props) => {
         navigation.navigate("ViewArchiveScreen");
     };
 
+    const handleSignOut = () => {
+        auth.signOut()
+            .then(() => {
+                navigation.replace("LoginScreen");
+            })
+            .catch((error) => alert(error.message));
+    };
     return (
         <SafeAreaView style={styles.container}>
             <ImageBackground
@@ -70,7 +78,12 @@ const MyAccountScreen = (props) => {
                             source={BeThereLogo}
                             style={{ height: 200, width: 200 }}
                         />
-                        <Text style={globalStyles.heading1}>
+                        <Text
+                            style={{
+                                ...globalStyles.heading1,
+                                fontFamily: "Bukhari Script",
+                            }}
+                        >
                             Create an event
                         </Text>
                     </TouchableOpacity>
@@ -90,24 +103,18 @@ const MyAccountScreen = (props) => {
                     >
                         <View>
                             <Text style={globalStyles.paragraph}>
-                                First name:{" "}
-                                {user.firstName ? user.firstName : "no data"}
-                            </Text>
-                            <Text style={globalStyles.paragraph}>
-                                Last name:{" "}
+                                {user.firstName ? user.firstName : "no data"}{" "}
                                 {user.lastName ? user.lastName : "no data"}
                             </Text>
                             <Text style={globalStyles.paragraph}>
-                                Phone:{" "}
                                 {user.phoneNumber
                                     ? user.phoneNumber
                                     : "no data"}
                             </Text>
                             <Text style={globalStyles.paragraph}>
-                                Email: {user.email ? user.email : "no data"}
+                                {user.email ? user.email : "no data"}
                             </Text>
                             <Text style={globalStyles.paragraph}>
-                                Location:{" "}
                                 {user.homeCity ? user.homeCity : "no data"}
                             </Text>
                         </View>
@@ -120,7 +127,6 @@ const MyAccountScreen = (props) => {
                             />
                         </View>
                     </View>
-                    <Text> </Text>
                     <Text
                         style={{
                             fontSize: 15,
@@ -153,7 +159,9 @@ const MyAccountScreen = (props) => {
                         </Text>
                     </View>
                 </View>
-                <SignOutBtn />
+                <TouchableOpacity style={styles.button} onPress={handleSignOut}>
+                    <Text style={{...globalStyles.paragraph, color: "white", fontWeight: "bold"}}>Sign out</Text>
+                </TouchableOpacity>
             </ImageBackground>
         </SafeAreaView>
     );
@@ -194,5 +202,12 @@ const styles = StyleSheet.create({
         height: 100,
         borderRadius: 50,
         resizeMode: "cover",
+    },
+    button: {
+        backgroundColor: "#cb6ce6",
+        padding: 15,
+        margin: 10,
+        borderRadius: 10,
+        alignItems: "center",
     },
 });

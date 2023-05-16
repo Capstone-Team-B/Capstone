@@ -1,4 +1,12 @@
-import { StyleSheet, View, Text, SafeAreaView, FlatList } from "react-native";
+import {
+    StyleSheet,
+    View,
+    Text,
+    SafeAreaView,
+    Image,
+    FlatList,
+    TouchableOpacity,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import EventTile from "./EventTile";
 import {
@@ -13,6 +21,9 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import globalStyles from "../../utils/globalStyles";
 import { useIsFocused } from "@react-navigation/native";
+import { Video } from "expo-av";
+import Ionicons from "react-native-vector-icons/Ionicons";
+const BeThereConcise = require("../../../assets/BeThereConcise.png");
 
 const EventListScreen = (props) => {
     const { uid } = props.route.params;
@@ -63,7 +74,6 @@ const EventListScreen = (props) => {
         } catch (error) {
             console.log(error);
         }
-        setLoading(false);
     }, [isFocused]);
 
     const navigation = useNavigation();
@@ -71,7 +81,13 @@ const EventListScreen = (props) => {
     return (
         <SafeAreaView style={globalStyles.container}>
             {loading ? (
-                <Text>Loading your events...</Text>
+                <Video
+                    source={require("../../../assets/LoadingScreen.mp4")}
+                    style={{ flex: 1 }}
+                    shouldPlay
+                    isLooping
+                    resizeMode="cover"
+                />
             ) : eventList.length > 0 ? (
                 <FlatList
                     data={eventList}
@@ -89,20 +105,43 @@ const EventListScreen = (props) => {
                     }}
                 />
             ) : (
-                <>
-                    <Text>No events coming up</Text>
-                    <Text>Plan something!</Text>
-                </>
+                <View
+                    style={{
+                        ...globalStyles.container,
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <Text style={{ ...globalStyles.heading2, padding: 12 }}>
+                        No events coming up
+                    </Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.navigate("Create Event", { uid: uid });
+                        }}
+                    >
+                        <Image
+                            source={BeThereConcise}
+                            style={{
+                                height: 150,
+                                width: 150,
+                                alignSelf: "center",
+                            }}
+                        />
+                    </TouchableOpacity>
+                    <Text
+                        style={{
+                            ...globalStyles.heading1,
+                            fontFamily: "Bukhari Script",
+                            padding: 12,
+                        }}
+                    >
+                        Plan something!
+                    </Text>
+                </View>
             )}
         </SafeAreaView>
     );
 };
 
 export default EventListScreen;
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fff",
-    },
-});

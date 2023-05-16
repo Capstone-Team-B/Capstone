@@ -132,20 +132,30 @@ const SingleEvent = (params) => {
                     {event.description}
                 </Text>
                 <TouchableOpacity
-                    style={{ ...styles.tile, borderColor: "#38B6FF" }}
+                    style={{
+                        ...globalStyles.button,
+                        borderWidth: 2,
+                        marginBottom: 5,
+                        borderColor: "#38B6FF",
+                    }}
                     onPress={() =>
                         navigation.navigate("GuestProfileScreen", {
-                            eventId: event.id,
+                            eventId: event.id, uid: uid
                         })
                     }
                 >
                     <View style={{ alignItems: "center" }}>
                         <Ionicons name="happy-outline" size={25} />
-                        <Text>My Guest Profile</Text>
+                        <Text>My RSVP Status</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={{ ...styles.tile, borderColor: "#5DA4F9" }}
+                    style={{
+                        ...globalStyles.button,
+                        borderWidth: 2,
+                        marginBottom: 5,
+                        borderColor: "#5DA4F9",
+                    }}
                     onPress={() =>
                         navigation.navigate("GuestListScreen", {
                             event: event,
@@ -158,7 +168,12 @@ const SingleEvent = (params) => {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={{ ...styles.tile, borderColor: "#8291F3" }}
+                    style={{
+                        ...globalStyles.button,
+                        borderWidth: 2,
+                        marginBottom: 5,
+                        borderColor: "#8291F3",
+                    }}
                     onPress={() =>
                         navigation.navigate("Maps", {
                             eventId: event.event_id || "0",
@@ -172,7 +187,12 @@ const SingleEvent = (params) => {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={{ ...styles.tile, borderColor: "#A67FEC" }}
+                    style={{
+                        ...globalStyles.button,
+                        borderWidth: 2,
+                        marginBottom: 5,
+                        borderColor: "#A67FEC",
+                    }}
                     onPress={() =>
                         navigation.navigate("MessageboardScreen", {
                             event_id: event.event_id,
@@ -188,7 +208,12 @@ const SingleEvent = (params) => {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={{ ...styles.tile, borderColor: "#CB6CE6" }}
+                    style={{
+                        ...globalStyles.button,
+                        borderWidth: 2,
+                        marginBottom: 5,
+                        borderColor: "#CB6CE6",
+                    }}
                     onPress={() =>
                         navigation.navigate("EventGallery", {
                             event: event,
@@ -212,18 +237,23 @@ const SingleEvent = (params) => {
                     >
                         <View
                             style={{
-                                flexDirection: "row",
-                                justifyContent: "center",
-                                alignItems: "baseline",
-                                marginTop: 5,
-                                marginLeft: 12,
-                                marginRight: 12,
+                                ...globalStyles.button,
+                                backgroundColor: "#CB6CE6",
                             }}
                         >
-                            <Text style={{ fontSize: 15 }}>
+                            <Ionicons
+                                name="create-outline"
+                                size={25}
+                                color={"white"}
+                            />
+                            <Text
+                                style={{
+                                    ...globalStyles.paragraph,
+                                    color: "white",
+                                }}
+                            >
                                 Edit Your Event{" "}
                             </Text>
-                            <Ionicons name="create-outline" size={25} />
                         </View>
                     </TouchableOpacity>
                 ) : null}

@@ -32,5 +32,18 @@ export default StyleSheet.create({
         padding: 10,
         borderRadius: 10,
     },
-    button: {},
+    button: {
+        padding: 15,
+        margin: 10,
+        borderRadius: 10,
+        alignItems: "center",
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 10,
+        fontSize: 15,
+    },
 });

@@ -7,6 +7,8 @@ import {
     View,
     FlatList,
     Alert,
+    TouchableOpacity,
+    Dimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
@@ -20,6 +22,7 @@ import {
     ref,
 } from "firebase/storage";
 import { useNavigation } from "@react-navigation/core";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const UploadEventImagesScreen = (params) => {
     const uid = params.route.params.uid;
@@ -95,48 +98,105 @@ const UploadEventImagesScreen = (params) => {
         navigation.navigate("EventGallery");
     };
 
-    return (
-        <SafeAreaView
-            style={{ ...globalStyles.container, justifyContent: "center" }}
-        >
-            {images.length > 0 ? (
-                <Button
-                    title="Upload selected photos"
-                    onPress={() => uploadImages()}
-                />
-            ) : (
-                <Button
-                    title="Select photos to add to event album"
-                    onPress={() => pickImage()}
-                />
-            )}
+    const screenWidth = Dimensions.get("window").width;
 
+    return (
+        <SafeAreaView style={globalStyles.container}>
             {images.length > 0 ? (
-                <FlatList
-                    data={images}
-                    renderItem={({ item }) => {
-                        return (
-                            <Image
-                                source={{ uri: item.uri }}
-                                style={{ height: 200, width: 200 }}
-                            />
-                        );
-                    }}
-                    keyExtractor={(item, index) => {
-                        return index.toString();
-                    }}
-                />
+                <View>
+                    <TouchableOpacity
+                        style={{
+                            ...globalStyles.button,
+                            backgroundColor: "#cb6ce6",
+                        }}
+                    >
+                        <Ionicons
+                            name="cloud-upload-outline"
+                            color={"white"}
+                            size={25}
+                        />
+                        <Text
+                            style={{
+                                ...globalStyles.heading3,
+                                alignSelf: "center",
+                                textAlign: "center",
+                                color: "white",
+                            }}
+                        >
+                            Share your selected photos from {"\n"}
+                            {event.name}
+                        </Text>
+                    </TouchableOpacity>
+                    <FlatList
+                        data={images}
+                        numColumns={2}
+                        renderItem={({ item }) => {
+                            return (
+                                <Image
+                                    source={{ uri: item.uri }}
+                                    style={{
+                                        height: screenWidth / 2 - 12,
+                                        width: screenWidth / 2 - 12,
+                                        margin: 6,
+                                        borderRadius: 10,
+                                    }}
+                                />
+                            );
+                        }}
+                        keyExtractor={(item, index) => {
+                            return index.toString();
+                        }}
+                    />
+                    <TouchableOpacity
+                        style={{...globalStyles.button, backgroundColor: "#38b6ff",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            margin: 12,
+                        }}
+                        onPress={pickImage}
+                    >
+                        <Ionicons name="add-circle-outline" size={25} color={"white"}/>
+                        <Text
+                            style={{
+                                ...globalStyles.paragraph,
+                                fontWeight: "bold",
+                                color: "white",
+                                alignSelf: "center",
+                                textAlign: "center",
+                            }}
+                        >
+                            Edit your photo selection
+                        </Text>
+                    </TouchableOpacity>
+                </View>
             ) : (
                 <View
-                    styles={{
-                        // alignContent: "center",
-                        // justifyContent: "center",
+                    style={{
+                        ...globalStyles.container,
+                        justifyContent: "center",
                     }}
                 >
-                    <Text style={{...globalStyles.heading3, alignSelf: "center", textAlign: "center"}}>
-                        Share your photos from{"\n"}
-                        {event.name}
-                    </Text>
+                    <TouchableOpacity
+                        style={{
+                            ...globalStyles.button,
+                            backgroundColor: "#38b6ff",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                        onPress={pickImage}
+                    >
+                        <Ionicons name="add-circle-outline" size={55} color={"white"}/>
+                        <Text
+                            style={{
+                                ...globalStyles.heading3,
+                                alignSelf: "center",
+                                textAlign: "center",
+                                color: "white"
+                            }}
+                        >
+                            Add photos from your camera roll to the shared photo gallery
+                        </Text>
+                    </TouchableOpacity>
                 </View>
             )}
         </SafeAreaView>

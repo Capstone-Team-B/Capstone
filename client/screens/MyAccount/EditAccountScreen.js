@@ -10,10 +10,14 @@ import {
     Alert,
     SafeAreaView,
     Button,
+    Image,
 } from "react-native";
-// import { auth } from "../../../firebase";
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, update, set, child, get } from "firebase/database";
+import globalStyles from "../../utils/globalStyles";
+import * as ImagePicker from "expo-image-picker";
+
+// import { auth } from "../../../firebase";
 
 const EditAccountScreen = (props) => {
     const [user, setUser] = useState(props.route.params);
@@ -28,11 +32,11 @@ const EditAccountScreen = (props) => {
     );
     const [dietary, setDietary] = useState(user.dietary || "");
 
+    const navigation = useNavigation();
+        console.log("propic -->", profilePic)
     useEffect(() => {
         setUser(props.route.params);
     }, [props]);
-
-    const navigation = useNavigation();
 
     const handleSubmit = async () => {
         if (firstName === "" || lastName === "" || email === "") {
@@ -65,62 +69,128 @@ const EditAccountScreen = (props) => {
     };
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior="height">
-            <ScrollView style={styles.container}>
+        <KeyboardAvoidingView style={globalStyles.container} behavior="height">
+            <ScrollView style={globalStyles.container}>
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Account Details</Text>
+                    <Text
+                        style={{
+                            ...globalStyles.heading2,
+                            marginBottom: 20,
+                            textAlign: "center",
+                        }}
+                    >
+                        Account Details
+                    </Text>
+                    <Text
+                        style={{ ...globalStyles.paragraph, marginBottom: 12 }}
+                    >
+                        First name:
+                    </Text>
                     <TextInput
-                        style={styles.input}
+                        style={globalStyles.input}
                         placeholder={"First Name"}
                         value={firstName}
                         onChangeText={setFirstName}
                     />
+                    <Text
+                        style={{ ...globalStyles.paragraph, marginBottom: 12 }}
+                    >
+                        Last name:
+                    </Text>
                     <TextInput
-                        style={styles.input}
+                        style={globalStyles.input}
                         placeholder="Last Name"
                         value={lastName}
                         onChangeText={setLastName}
                     />
+                    <Text
+                        style={{ ...globalStyles.paragraph, marginBottom: 12 }}
+                    >
+                        Email:
+                    </Text>
                     <TextInput
-                        style={styles.input}
+                        style={globalStyles.input}
                         placeholder="Email"
                         value={email}
                         onChangeText={setEmail}
                     />
+                    <Text
+                        style={{ ...globalStyles.paragraph, marginBottom: 12 }}
+                    >
+                        Phone:
+                    </Text>
                     <TextInput
-                        style={styles.input}
+                        style={globalStyles.input}
                         placeholder="Phone Number"
                         value={phoneNumber}
                         onChangeText={setPhoneNumber}
                     />
+                    <Text
+                        style={{ ...globalStyles.paragraph, marginBottom: 12 }}
+                    >
+                        Address:
+                    </Text>
                     <TextInput
-                        style={styles.input}
+                        style={globalStyles.input}
                         placeholder="Home City"
                         value={homeCity}
                         onChangeText={setHomeCity}
                     />
                     <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>
-                            Edit Guest Preferences
+                        <Text
+                            style={{
+                                ...globalStyles.heading2,
+                                marginTop: 20,
+                                marginBottom: 20,
+                                textAlign: "center",
+                            }}
+                        >
+                            Edit Guest Profile
+                        </Text>
+                        <Text
+                            style={{
+                                ...globalStyles.paragraph,
+                                marginBottom: 12,
+                            }}
+                        >
+                            Dietary restrictions:
                         </Text>
                         <TextInput
-                            style={styles.input}
+                            style={globalStyles.input}
                             placeholder="Dietary"
                             value={dietary}
                             onChangeText={setDietary}
                         />
+                        <Text
+                            style={{
+                                ...globalStyles.paragraph,
+                                marginBottom: 12,
+                            }}
+                        >
+                            Accessibility notes:
+                        </Text>
                         <TextInput
-                            style={styles.input}
+                            style={globalStyles.input}
                             placeholder="Accessibility"
                             value={accessibility}
                             onChangeText={setAccessibility}
                         />
                     </View>
-                    <SafeAreaView>
+                    <SafeAreaView style={{ alignItems: "center" }}>
+                        {profilePic ? (
+                            <Image
+                                style={styles.profilePic}
+                                source={{
+                                    uri: profilePic,
+                                }}
+                            />
+                        ) : null}
                         <Button
-                            title="Upload Profile Picture"
+                            title="Change profile picture"
                             onPress={() =>
-                                navigation.navigate("UploadProfilePicScreen")
+                                navigation.navigate("UploadProfilePicScreen", {
+                                    uid: user.user_id,
+                                })
                             }
                         />
                     </SafeAreaView>
@@ -148,18 +218,6 @@ const styles = StyleSheet.create({
     },
     section: {
         marginBottom: 20,
-    },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: "bold",
-        marginBottom: 10,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 5,
-        padding: 10,
-        marginBottom: 10,
     },
     addButton: {
         backgroundColor: "#007bff",
@@ -216,6 +274,12 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontSize: 16,
         fontWeight: "bold",
+    },
+    profilePic: {
+        width: 200,
+        height: 200,
+        borderRadius: 100,
+        resizeMode: "cover",
     },
 });
 
