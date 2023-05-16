@@ -8,6 +8,7 @@ import TabNavigator from "./client/navigation/TabNavigator";
 import { Video } from "expo-av";
 import { useFonts } from "expo-font";
 import CheckAccountScreen from "./client/screens/MyAccount/CheckAccountScreen";
+import CreateAccountScreen from "./client/screens/MyAccount/CreateAccountScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -56,10 +57,14 @@ export default function App() {
                         component={TabNavigator}
                         options={{ headerShown: false }}
                     />
-                    {/* ENH added in checkaccount screen */}
+                    {/* ENH added in checkaccount and create account screen */}
                     <Stack.Screen
                         name="CheckAccountScreen"
                         component={CheckAccountScreen}
+                    />
+                    <Stack.Screen
+                        name="CreateAccountScreen"
+                        component={CreateAccountScreen}
                     />
                 </Stack.Navigator>
             </NavigationContainer>
