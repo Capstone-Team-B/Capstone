@@ -13,6 +13,9 @@ import React, { useEffect, useState } from "react";
 import { auth } from "../../firebase";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, child, get, set } from "firebase/database";
+import { useAtom } from "jotai";
+import { user as userStore } from "../store/user";
+
 const BeThereLogoExpanded = require("../../assets/BeThereExpanded.png");
 const Background = require("../../assets/Background.png");
 import { useAtom } from "jotai";
