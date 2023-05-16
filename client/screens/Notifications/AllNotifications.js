@@ -1,28 +1,47 @@
 import React, { useState, useEffect } from "react";
 import {
     KeyboardAvoidingView,
-    Alert,
     ScrollView,
     View,
     StyleSheet,
     Text,
-    TextInput,
     TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, child, get, query } from "firebase/database";
+import { useIsFocused } from "@react-navigation/native";
 
 const AllNotifications = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
+    const eventId = event.event_id;
     const [notifications, setNotifications] = useState([]);
-    const notificationIds = event.notifications;
     const navigation = useNavigation();
     const dbRef = ref(getDatabase());
+    const isFocused = useIsFocused();
 
-    console.log("event.notifications -->", event.notifications);
     useEffect(() => {
         const getNotifications = async () => {
+            const eventQuery = query(
+                child(dbRef, `events/${eventId}`)
+            );
+            try {
+                await get(eventQuery).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        setEvent(data);
+                        console.log("data", data)
+                    } else {
+                        console.log("No data available");
+                    }
+                });
+            } catch (error) {
+                console.log(error);
+            }
             let notificationData = [];
+            let notificationIds = [];
+            notificationIds = Object.keys(event.notifications);
+            console.log("events", event);
+            console.log("notificationIds", notificationIds);
             for (let i = 0; i < notificationIds.length; i++) {
                 const notificationQuery = query(
                     child(dbRef, `notifications/${notificationIds[i]}`)
@@ -42,8 +61,8 @@ const AllNotifications = (params) => {
             }
             setNotifications(notificationData);
         };
-        getNotifications()
-    }, []);
+        getNotifications();
+    }, [isFocused]);
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="height">
@@ -51,7 +70,7 @@ const AllNotifications = (params) => {
                 <View style={styles.section}>
                     {notifications.length > 0 ? (
                         notifications.map((notification) => (
-                            <View key={notification} style={styles.item}>
+                            <View key={notification.notification_id} style={styles.item}>
                                 <Text style={styles.input}>
                                     Title: {notification.title}
                                 </Text>
@@ -60,14 +79,27 @@ const AllNotifications = (params) => {
                                 </Text>
                                 <Text style={styles.input}>
                                     Scheduled Date:{" "}
-                                    {notification.scheduled_date}
+                                    {new Date(
+                                        notification.scheduled_date
+                                    ).toLocaleString("en-US", {
+                                        weekday: "long",
+                                        month: "long",
+                                        day: "numeric",
+                                        year: "numeric",
+                                    })}
                                 </Text>
                                 <Text style={styles.input}>
                                     Scheduled Time:{" "}
-                                    {new Date(
-                                        notification.scheduled_time
-                                    ).toLocaleTimeString()}
+                                    {notification.scheduled_time}
                                 </Text>
+                                <TouchableOpacity
+                                    style={styles.outlineButton}
+                                    onPress={() => navigation.navigate("Edit Notification", { notification: notification, event : event })}
+                                >
+                                    <Text style={styles.outlineButtonText}>
+                                        Edit Notification
+                                    </Text>
+                                </TouchableOpacity>
                             </View>
                         ))
                     ) : (
@@ -172,51 +204,3 @@ const styles = StyleSheet.create({
 });
 
 export default AllNotifications;
-
-// // useEffect(() => {
-// //   const fetchEventData = async () => {
-// //     const dbRef = ref(getDatabase());
-// //     const currentUser = auth.currentUser;
-// //     if (!currentUser) {
-// //       navigation.navigate('Login');
-// //       return;
-// //     }
-// //     const currentUserId = currentUser.uid;
-// //     console.log('user', currentUserId);
-
-// //     try {
-// //       const eventsSnapshot = await get(child(dbRef, `events`));
-// //       if (eventsSnapshot.exists()) {
-// //         const data = eventsSnapshot.val();
-// //         const eventsList = Object.keys(data).map((key) => ({ id: key, ...data[key] }));
-// //         const filteredEvents = eventsList.filter((event) => event.host_id === currentUserId);
-// //         const eventIdList = filteredEvents.map((event) => event.id);
-// //         console.log('eventIds', eventIdList);
-// //         setEventId(eventIdList);
-// //       } else {
-// //         console.log('No events available');
-// //       }
-// //     } catch (error) {
-// //       console.log('Error fetching events:', error);
-// //     }
-
-// //     try {
-// //       const notificationsSnapshot = await get(child(dbRef, `notifications`));
-// //       if (notificationsSnapshot.exists()) {
-// //         const data = notificationsSnapshot.val();
-// //         const notificationList = Object.keys(data).map((key) => ({ id: key, ...data[key] }));
-// //         const filteredNotifications = notificationList.filter((notification) =>
-// //           eventId.includes(notification.event_id)
-// //         );
-// //         console.log('notis', filteredNotifications);
-// //         setNotifications(filteredNotifications);
-// //       } else {
-// //         console.log('No notifications available');
-// //       }
-// //     } catch (error) {
-// //       console.log('Error fetching notifications:', error);
-// //     }
-// //   };
-
-// //   fetchEventData();
-// // }, []);

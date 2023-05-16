@@ -10,16 +10,22 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getDatabase, ref, child, push, set, update } from "firebase/database";
+import { getDatabase, ref, child, remove, update } from "firebase/database";
 import { DatePickerModal } from "react-native-paper-dates";
 import { TimePickerModal } from "react-native-paper-dates";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-const CreateNotification = (params) => {
-    const [event, setEvent] = useState(params.route.params.event);
+const EditNotification = (params) => {
+    const notification = params.route.params.notification;
+    const event = params.route.params.event;
     const eventId = event.event_id;
-    const eventName = event.name;
-    const [notification, setNotification] = useState([]);
+    const notificationId = notification.notification_id;
+    const [title, setTitle] = useState(notification.title || "");
+    const [body, setBody] = useState(notification.body || "");
+    const [date, setDate] = useState(
+        new Date(notification.scheduled_date) || ""
+    );
+    const [time, setTime] = useState(notification.scheduled_time || "");
     const [open, setOpen] = useState(false);
     const [visible, setVisible] = useState(false);
 
@@ -33,66 +39,44 @@ const CreateNotification = (params) => {
         setOpen(false);
     }, [setOpen]);
 
-    const handleDeleteNotification = () => {
-        setNotification({});
-        navigation.navigate("All Notifications", { event: event });
-    };
+    const handleDeleteNotification = async () => {
+        try {
+            const dbRef = ref(getDatabase());
+            const notificationRef = child(dbRef, `notifications/${notificationId}`);
+    
+            await remove(notificationRef);
 
-    const handleUpdateNotification = (field, value) => {
-        setNotification((prevState) => ({
-            ...prevState,
-            [field]: value,
-        }));
+            const eventRef = child(dbRef, `events/${eventId}/notifications`);
+            const eventNotificationRef = child(eventRef, notificationId)
+            await remove(eventNotificationRef);
+    
+            navigation.navigate("All Notifications", { event: event });
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const handleSubmit = async () => {
-        if (
-            !notification.title ||
-            !notification.body ||
-            !notification.scheduled_date ||
-            !notification.scheduled_time
-        ) {
+        if (!title || !body || !date || !time) {
             Alert.alert("Please fill in all fields");
             return;
         }
-
-        const dbRef = ref(getDatabase());
-        const notificationRef = child(dbRef, "notifications");
-        const eventNotificationRef = child(
-            dbRef,
-            `events/${eventId}/notifications`
-        );
-
-        const newNotificationRef = push(notificationRef);
-        const newNotificationKey = newNotificationRef.key;
-
-        const {
-            title: notificationTitle,
-            body: notificationBody,
-            scheduled_date: notificationDate,
-            scheduled_time: notificationTime,
-        } = notification;
-        const newNotificationData = {
-            title: notificationTitle,
-            body: notificationBody,
-            scheduled_date: notificationDate,
-            scheduled_time: notificationTime,
-            event_id: eventId,
-            event_name: eventName,
-            recipients: { allGuests: true },
-            notification_id: newNotificationKey,
-        };
-        await set(newNotificationRef, newNotificationData);
-
-        const newEventNotificationRef = child(
-            eventNotificationRef,
-            newNotificationKey
-        );
-        await update(newEventNotificationRef, {
-            [newNotificationKey]: newNotificationKey,
-        });
-
-        navigation.navigate("All Notifications", { event: event });
+        try {
+            const dbRef = ref(getDatabase());
+            const notificationRef = child(dbRef, `notifications/${notificationId}`);
+    
+            const updatedNotification = {
+                title: title,
+                body: body,
+                scheduled_date: date,
+                scheduled_time: time,
+            };
+            await update(notificationRef, updatedNotification);
+    
+            navigation.navigate("All Notifications", { event: event });
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -105,19 +89,19 @@ const CreateNotification = (params) => {
                             <TextInput
                                 style={styles.input}
                                 placeholder="RSVP deadline, Reminder to book flights, etc."
-                                value={notification.type}
-                                onChangeText={(value) =>
-                                    handleUpdateNotification("title", value)
-                                }
+                                value={title}
+                                onChangeText={(value) => {
+                                    setTitle(value);
+                                }}
                                 required={true}
                             />
                             <TextInput
                                 style={styles.input}
                                 placeholder="Enter notification text here..."
-                                value={notification.type}
-                                onChangeText={(value) =>
-                                    handleUpdateNotification("body", value)
-                                }
+                                value={body}
+                                onChangeText={(value) => {
+                                    setBody(value);
+                                }}
                                 required={true}
                             />
                             <TouchableOpacity
@@ -126,15 +110,16 @@ const CreateNotification = (params) => {
                             >
                                 <TouchableOpacity onPress={() => setOpen(true)}>
                                     <Text style={styles.outlineButtonText}>
-                                        {notification.scheduled_date
-                                            ? new Date(
-                                                  notification.scheduled_date
-                                              ).toLocaleDateString("en-US", {
-                                                  weekday: "short",
-                                                  month: "short",
-                                                  day: "numeric",
-                                                  year: "numeric",
-                                              })
+                                        {date
+                                            ? new Date(date).toLocaleDateString(
+                                                  "en-US",
+                                                  {
+                                                      weekday: "short",
+                                                      month: "short",
+                                                      day: "numeric",
+                                                      year: "numeric",
+                                                  }
+                                              )
                                             : "Select Notification Date"}
                                     </Text>
                                 </TouchableOpacity>
@@ -144,12 +129,9 @@ const CreateNotification = (params) => {
                                         mode="single"
                                         visible={open}
                                         onDismiss={onDismissSingle}
-                                        date={notification.scheduled_date}
+                                        date={date}
                                         onConfirm={(selectedDate) => {
-                                            handleUpdateNotification(
-                                                "scheduled_date",
-                                                selectedDate.date.toISOString()
-                                            );
+                                            setDate(selectedDate.date.toISOString());
                                             setOpen(false);
                                         }}
                                         saveLabel="Save"
@@ -162,8 +144,8 @@ const CreateNotification = (params) => {
                                 onPress={() => setVisible(true)}
                             >
                                 <Text style={styles.outlineButtonText}>
-                                    {notification.scheduled_time
-                                        ? `${notification.scheduled_time}`
+                                    {time
+                                        ? `${time}`
                                         : "Select Notification Time"}
                                 </Text>
                             </TouchableOpacity>
@@ -171,19 +153,17 @@ const CreateNotification = (params) => {
                                 <TimePickerModal
                                     visible={visible}
                                     mode="time"
-                                    time={notification.scheduled_time}
+                                    time={time}
                                     onConfirm={(selectedTime) => {
                                         const date = new Date();
                                         date.setHours(selectedTime.hours);
                                         date.setMinutes(selectedTime.minutes);
-                                        const formattedTime = date.toLocaleTimeString([], {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                        });
-                                        handleUpdateNotification(
-                                            "scheduled_time",
-                                            formattedTime
-                                        );
+                                        const formattedTime =
+                                            date.toLocaleTimeString([], {
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                            });
+                                        setTime(formattedTime);
                                         setVisible(false);
                                     }}
                                     onDismiss={onDismiss}
@@ -197,7 +177,7 @@ const CreateNotification = (params) => {
                                 onPress={() => handleDeleteNotification()}
                             >
                                 <Text style={styles.deleteButtonText}>
-                                    Clear Form
+                                    Delete Notification
                                 </Text>
                             </TouchableOpacity>
                         </View>
@@ -209,7 +189,7 @@ const CreateNotification = (params) => {
                         onPress={handleSubmit}
                     >
                         <Text style={styles.submitButtonText}>
-                            Create Notifications
+                            Save Updates
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -296,4 +276,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default CreateNotification;
+export default EditNotification;

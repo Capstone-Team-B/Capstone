@@ -10,14 +10,12 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getDatabase, ref, child, set, push } from "firebase/database";
+import { getDatabase, ref, child, set, push, update } from "firebase/database";
 
 const CreateGuestList = (params) => {
-    const [event, setEvent] = useState(params.route.params.event);
     const [guestList, setGuestList] = useState([]);
-
+    const event = params.route.params.event;
     const eventId = event.event_id;
-
     const navigation = useNavigation();
 
     const handleAddGuest = () => {
@@ -62,6 +60,10 @@ const CreateGuestList = (params) => {
                 Alert.alert("Invalid phone number");
                 return;
             }
+
+            const newGuestListRef = push(usersRef);
+            const newGuestListKey = newGuestListRef.key;
+            
             const newGuestListData = {
                 phone: formattedPhone.replace(
                     /(\d{3})(\d{3})(\d{4})/,
@@ -69,16 +71,15 @@ const CreateGuestList = (params) => {
                 ),
                 firstName: guestFirstname,
                 lastName: guestLastname,
+                user_id: newGuestListKey,
                 userEvents: {
                     [event.event_id]: event.event_id,
                 },
             };
-            const newGuestListRef = push(usersRef);
             await set(newGuestListRef, newGuestListData);
 
-            const newGuestListKey = newGuestListRef.key;
-            const newEventGuestsRef = push(guestListRef);
-            await set(newEventGuestsRef, newGuestListKey);
+            const newEventGuestsRef = child(guestListRef, newGuestListKey);
+            await update(newEventGuestsRef, { [newGuestListKey]: newGuestListKey });         
         }
         navigation.navigate("SingleEvent", { event: event });
     };
@@ -165,6 +166,16 @@ const CreateGuestList = (params) => {
                     >
                         <Text style={styles.submitButtonText}>
                             Save Updates
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+                <View>
+                <TouchableOpacity
+                        style={styles.addButton}
+                        onPress={() => {navigation.navigate("GuestListScreen", { event: event })}}
+                    >
+                        <Text style={styles.addButtonText}>
+                            View All Guests
                         </Text>
                     </TouchableOpacity>
                 </View>

@@ -40,10 +40,8 @@ const CreateEventForm = (props) => {
     const onConfirmRange = useCallback(
         ({ startDate, endDate }) => {
             setOpen(false);
-            setEventStartDate(startDate.toISOString().split("T")[0]);
-            setEventEndDate(endDate.toISOString().split("T")[0]);
-            console.log("startDate -->", startDate);
-            console.log("endDate -->", endDate);
+            setEventStartDate(startDate.toISOString());
+            setEventEndDate(endDate.toISOString());
         },
         [setOpen, setEventStartDate, setEventEndDate]
     );
@@ -82,7 +80,6 @@ const CreateEventForm = (props) => {
             const eventRef = child(dbRef, "events");
             const newEventRef = push(eventRef);
             const newEventId = newEventRef.key;
-            console.log("id", newEventId);
             const newEvent = {
                 event_id: newEventId,
                 name: weddingName,
@@ -141,8 +138,8 @@ const CreateEventForm = (props) => {
                             <TouchableOpacity onPress={() => setOpen(true)}>
                                 <Text style={styles.outlineButtonText}>
                                     {eventStartDate && eventEndDate
-                                        ? `${eventStartDate
-                                        } - ${eventEndDate}`
+                                        ? `${new Date(eventStartDate).toLocaleString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+                                        } - ${new Date(eventEndDate).toLocaleString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}`
                                         : "Select Date(s)"}
                                 </Text>
                             </TouchableOpacity>
