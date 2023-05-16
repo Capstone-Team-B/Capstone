@@ -5,33 +5,32 @@ export default StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#fff",
-        padding: 10,
+        padding: 12,
     },
-    screenHeader: {},
+    screenHeader: {
+        fontFamily: "Bukhari Script",
+        fontSize: 20,
+    },
     heading1: {
-        fontSize: 25,
+        fontSize: 35,
         fontWeight: "bold",
     },
     heading2: {
         fontSize: 20,
         fontWeight: "bold",
     },
+    heading3: {
+        fontSize: 17,
+        fontWeight: "bold",
+    },
     paragraph: {
         fontSize: 15,
     },
     tile: {
-        margin: 10,
-        borderWidth: 1,
-        borderLeftColor: "#38b6ff",
-        borderTopColor: "#38b6ff",
-        borderRightColor: "#cb6ce6",
-        borderBottomColor: "#cb6ce6",
+        margin: 12,
+        borderWidth: 2,
         padding: 10,
-        // flexDirection: "row",
-        // justifyContent: "space-between",
         borderRadius: 10,
     },
-    button: {
-        backgroundColor: "red",
-    },
+    button: {},
 });

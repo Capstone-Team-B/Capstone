@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import TabNavigator from "./TabNavigator";
 import LoginScreen from "../screens/LoginScreen";
 import EventListScreen from "../screens/EventList/EventListScreen";
+import globalStyles from "../utils/globalStyles";
 
 const Stack = createNativeStackNavigator();
 
@@ -14,9 +15,13 @@ const LoginNavigator = ({ user }) => {
             <Stack.Navigator initialRouteName="Login">
                 <Stack.Screen name="Login" component={LoginScreen} />
                 <Stack.Screen
-                    name="EventList"
+                    name="EventListScreen"
                     component={EventListScreen}
                     user={user}
+                    options={{
+                        title: "Upcoming Events",
+                        headerTitleStyle: globalStyles.screenHeader,
+                    }}
                 />
             </Stack.Navigator>
         </NavigationContainer>

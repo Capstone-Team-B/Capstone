@@ -3,7 +3,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useRoute } from "@react-navigation/native";
 import Notifications from "../screens/Notifications/Notifications";
-import Feather from "react-native-vector-icons/Feather";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import MyAccountNavigator from "./MyAccountNavigator";
 import EventNavigator from "./EventNavigator";
 
@@ -12,24 +12,23 @@ const Tab = createBottomTabNavigator();
 const TabNavigator = () => {
     const route = useRoute();
     const { uid } = route.params;
-    // console.log("uid in tabnav -->", uid);
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color }) => {
                     let iconName;
                     if (route.name === "MyAccountNavigator") {
-                        iconName = "user";
+                        iconName = "person-outline";
                         color = focused ? "#38b6ff" : "gray";
                     } else if (route.name === "EventNavigator") {
-                        iconName = "home";
+                        iconName = "home-outline";
                         color = focused ? "#38b6ff" : "gray";
                     } else if (route.name === "NotificationsScreen") {
-                        iconName = "bell";
+                        iconName = "notifications-outline";
                         color = focused ? "#38b6ff" : "gray";
                     }
                     return (
-                        <Feather
+                        <Ionicons
                             name={iconName}
                             size={28}
                             color={focused ? "#38b6ff" : "gray"}
@@ -41,6 +40,7 @@ const TabNavigator = () => {
                 tabBarStyle: [
                     {
                         display: "flex",
+                        padding: 12,
                     },
                     null,
                 ],

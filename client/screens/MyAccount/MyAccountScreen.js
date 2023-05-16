@@ -6,28 +6,28 @@ import {
     Image,
     TouchableOpacity,
     Pressable,
+    ImageBackground,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import Feather from "react-native-vector-icons/Feather";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import { getDatabase, ref, child, get } from "firebase/database";
 import SignOutBtn from "./SignOutBtn";
 import { useNavigation } from "@react-navigation/native";
 import globalStyles from "../../utils/globalStyles";
 const BeThereLogo = require("../../../assets/BeThereConcise.png");
+import { useIsFocused } from "@react-navigation/native";
+const Background = require("../../../assets/Background.png");
 
 const MyAccountScreen = (props) => {
     const [user, setUser] = useState({});
     const { uid } = props.route.params;
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         const dbRef = ref(getDatabase());
         get(child(dbRef, `users/${uid}`))
             .then((snapshot) => {
                 if (snapshot.exists()) {
-                    console.log(
-                        "this is the data from the database -->",
-                        snapshot.val()
-                    );
                     setUser(snapshot.val());
                 } else {
                     console.log("No data available");
@@ -36,10 +36,7 @@ const MyAccountScreen = (props) => {
             .catch((error) => {
                 console.log(error);
             });
-    }, []);
-
-    // console.log("uid in MyAccountScreen -->", uid);
-    // console.log("user on MyAccountScreen -->", user);
+    }, [isFocused]);
     const navigation = useNavigation();
 
     const handlePressCreateEvent = () => {
@@ -47,7 +44,6 @@ const MyAccountScreen = (props) => {
     };
 
     const handlePressEditAccount = () => {
-        // {/* Not sure why but this directs to edit event photo screen */}
         navigation.navigate("EditAccountScreen", user);
     };
 
@@ -57,88 +53,108 @@ const MyAccountScreen = (props) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.createEvent}>
-                <TouchableOpacity
-                    style={styles.createEvent}
-                    onPress={handlePressCreateEvent}
-                >
-                    <Image
-                        source={BeThereLogo}
-                        style={{ height: 200, width: 200 }}
-                    />
-                    <Text style={globalStyles.heading1}>Create an event</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={styles.sectionHeader}>
-                <Text style={globalStyles.heading2}>Account details</Text>
-                {/* Not sure why but this directs to edit event photo screen */}
-                <Pressable onPress={handlePressEditAccount}>
-                    <Feather name="edit" size={25} />
-                </Pressable>
-            </View>
-            <View style={globalStyles.tile}>
-                <View
-                    style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                    }}
-                >
-                    <View>
-                        <Text style={globalStyles.paragraph}>
-                            First name:{" "}
-                            {user.firstName ? user.firstName : "no data"}
-                        </Text>
-                        <Text style={globalStyles.paragraph}>
-                            Last name:{" "}
-                            {user.lastName ? user.lastName : "no data"}
-                        </Text>
-                        <Text style={globalStyles.paragraph}>
-                            Phone:{" "}
-                            {user.phoneNumber ? user.phoneNumber : "no data"}
-                        </Text>
-                        <Text style={globalStyles.paragraph}>
-                            Email: {user.email ? user.email : "no data"}
-                        </Text>
-                        <Text style={globalStyles.paragraph}>
-                            Location:{" "}
-                            {user.homeCity ? user.homeCity : "no data"}
-                        </Text>
-                    </View>
-                    <View>
+            <ImageBackground
+                source={Background}
+                resizeMode="cover"
+                style={{
+                    flex: 1,
+                    width: "100%",
+                }}
+            >
+                <View style={styles.createEvent}>
+                    <TouchableOpacity
+                        style={styles.createEvent}
+                        onPress={handlePressCreateEvent}
+                    >
                         <Image
-                            style={styles.profilePic}
-                            source={{
-                                uri: user.profilePic,
-                            }}
+                            source={BeThereLogo}
+                            style={{ height: 200, width: 200 }}
                         />
-                    </View>
+                        <Text style={globalStyles.heading1}>
+                            Create an event
+                        </Text>
+                    </TouchableOpacity>
                 </View>
-                <Text>{" "}</Text>
-                <Text style={{fontSize: 15, fontWeight: "bold", marginBottom: 5}}>Guest Preferences</Text>
+                <View style={styles.sectionHeader}>
+                    <Text style={globalStyles.heading2}>Account details</Text>
+                    <Pressable onPress={handlePressEditAccount}>
+                        <Ionicons name="create-outline" size={25} />
+                    </Pressable>
+                </View>
+                <View style={globalStyles.tile}>
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <View>
+                            <Text style={globalStyles.paragraph}>
+                                First name:{" "}
+                                {user.firstName ? user.firstName : "no data"}
+                            </Text>
+                            <Text style={globalStyles.paragraph}>
+                                Last name:{" "}
+                                {user.lastName ? user.lastName : "no data"}
+                            </Text>
+                            <Text style={globalStyles.paragraph}>
+                                Phone:{" "}
+                                {user.phoneNumber
+                                    ? user.phoneNumber
+                                    : "no data"}
+                            </Text>
+                            <Text style={globalStyles.paragraph}>
+                                Email: {user.email ? user.email : "no data"}
+                            </Text>
+                            <Text style={globalStyles.paragraph}>
+                                Location:{" "}
+                                {user.homeCity ? user.homeCity : "no data"}
+                            </Text>
+                        </View>
+                        <View>
+                            <Image
+                                style={styles.profilePic}
+                                source={{
+                                    uri: user.profilePic,
+                                }}
+                            />
+                        </View>
+                    </View>
+                    <Text> </Text>
+                    <Text
+                        style={{
+                            fontSize: 15,
+                            fontWeight: "bold",
+                            marginBottom: 5,
+                        }}
+                    >
+                        Guest Preferences
+                    </Text>
 
-                <Text>
-                    Accessibility:{" "}
-                    {user.accessibility ? user.accessibility : "no data"}
-                </Text>
-                <Text>
-                    Dietary restrictions:{" "}
-                    {user.dietary ? user.dietary : "no data"}{" "}
-                </Text>
-            </View>
-            <View style={styles.sectionHeader}>
-                <Text style={globalStyles.heading2}>Archive</Text>
-                <Pressable onPress={handlePressViewArchive}>
-                    <Feather name="rewind" size={25} />
-                </Pressable>
-            </View>
-            <View style={globalStyles.tile}>
-                <View>
-                    <Text style={globalStyles.paragraph}>
-                        Past event's I've attended/hosted
+                    <Text>
+                        Accessibility:{" "}
+                        {user.accessibility ? user.accessibility : "no data"}
+                    </Text>
+                    <Text>
+                        Dietary restrictions:{" "}
+                        {user.dietary ? user.dietary : "no data"}{" "}
                     </Text>
                 </View>
-            </View>
-            <SignOutBtn />
+                <View style={styles.sectionHeader}>
+                    <Text style={globalStyles.heading2}>Archive</Text>
+                    <Pressable onPress={handlePressViewArchive}>
+                        <Ionicons name="archive-outline" size={25} />
+                    </Pressable>
+                </View>
+                <View style={globalStyles.tile}>
+                    <View>
+                        <Text style={globalStyles.paragraph}>
+                            Past event's I've attended/hosted
+                        </Text>
+                    </View>
+                </View>
+                <SignOutBtn />
+            </ImageBackground>
         </SafeAreaView>
     );
 };
@@ -160,7 +176,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
     },
     section: {
-        margin: 10,
+        margin: 12,
         borderWidth: 2,
         borderColor: "#38b6ff",
         padding: 10,
@@ -168,8 +184,8 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     sectionHeader: {
-        marginLeft: 14,
-        marginRight: 14,
+        marginLeft: 18,
+        marginRight: 18,
         flexDirection: "row",
         justifyContent: "space-between",
     },

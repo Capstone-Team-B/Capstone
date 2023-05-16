@@ -16,7 +16,10 @@ import MapLocationScreen from "../screens/Maps/MapLocationScreen";
 import ImportContacts from "../screens/GuestList/ImportGuests";
 import UploadEventImagesScreen from "../screens/SingleEvent/UploadEventImagesScreen";
 import EventGallery from "../screens/SingleEvent/EventGallery";
-import EditNotification from "../screens/Notifications/EditNotification";
+import SinglePhoto from "../screens/SingleEvent/SinglePhoto";
+import globalStyles from "../utils/globalStyles";
+import EditNotification from "../screens/Notifications/EditNotification"; 
+import SwipeGallery from "../screens/SingleEvent/SwipeGallery"; 
 
 const Stack = createNativeStackNavigator();
 
@@ -29,49 +32,93 @@ const EventNavigator = (props) => {
                 name="EventListScreen"
                 component={EventListScreen}
                 initialParams={{ uid: uid }}
-                options={{ title: "Upcoming Events" }}
+                options={{
+                    title: "Upcoming Events",
+                    headerTitleStyle: globalStyles.screenHeader,
+                }}
             />
             <Stack.Screen
                 name="SingleEvent"
                 component={SingleEvent}
                 initialParams={{ uid: uid }}
-                options={{ title: "Event" }}
+                options={{
+                    title: "Event Details",
+                    headerTitleStyle: globalStyles.screenHeader,
+                }}
             />
             <Stack.Screen
                 name="GuestProfileScreen"
                 component={GuestProfileScreen}
                 initialParams={{ uid: uid }}
-                options={{ title: "My Guest Profile" }}
+                options={{
+                    title: "My Guest Profile",
+                    headerTitleStyle: globalStyles.screenHeader,
+                }}
             />
             <Stack.Screen
                 name="GuestListScreen"
                 component={GuestListScreen}
                 initialParams={{ uid: uid }}
-                options={{ title: "Guest List" }}
+                options={{
+                    title: "Guest List",
+                    headerTitleStyle: globalStyles.screenHeader,
+                }}
             />
             <Stack.Screen
                 name="MessageboardScreen"
                 component={MessageboardScreen}
-                options={{ title: "Messageboard" }}
+                options={{
+                    title: "Messageboard",
+                    headerTitleStyle: globalStyles.screenHeader,
+                }}
             />
             <Stack.Screen
                 name="Edit Event"
                 component={EditEvent}
-                options={{ title: "Edit Event" }}
+                options={{
+                    title: "Edit Event",
+                    headerTitleStyle: globalStyles.screenHeader,
+                }}
             />
-            <Stack.Screen name="Create Event" component={CreateEventForm} />
-            <Stack.Screen name="Create Sub Event" component={CreateSubEvent} />
+            <Stack.Screen
+                name="Create Event"
+                component={CreateEventForm}
+                options={{ headerTitleStyle: globalStyles.screenHeader }}
+            />
+            <Stack.Screen
+                name="Create Sub Event"
+                component={CreateSubEvent}
+                options={{ headerTitleStyle: globalStyles.screenHeader }}
+            />
             <Stack.Screen
                 name="Create Notification"
                 component={CreateNotification}
+                options={{ headerTitleStyle: globalStyles.screenHeader }}
             />
             <Stack.Screen
                 name="Create Guest List"
                 component={CreateGuestList}
+                options={{ headerTitleStyle: globalStyles.screenHeader }}
             />
             <Stack.Screen
                 name="All Notifications"
                 component={AllNotifications}
+                options={{ headerTitleStyle: globalStyles.screenHeader }}
+            />
+            <Stack.Screen
+                name="All Sub Events"
+                component={AllSubEvents}
+                options={{ headerTitleStyle: globalStyles.screenHeader }}
+            />
+            <Stack.Screen
+                name="Import Contacts"
+                component={ImportContacts}
+                options={{ headerTitleStyle: globalStyles.screenHeader }}
+            />
+            <Stack.Screen
+                name="Maps"
+                component={MapLocationScreen}
+                options={{ headerTitleStyle: globalStyles.screenHeader }}
             />
             {/* <Stack.Screen name="All Sub Events" component={AllSubEvents} /> */}
             <Stack.Screen name="Import Contacts" component={ImportContacts} />
@@ -81,13 +128,22 @@ const EventNavigator = (props) => {
                 name="UploadEventImagesScreen"
                 component={UploadEventImagesScreen}
                 initialParams={{ uid: uid }}
-                options={{ title: "UploadEventImagesScreen" }}
+                options={{ title: "Upload Event Images", headerTitleStyle: globalStyles.screenHeader }}
             />
             <Stack.Screen
                 name="EventGallery"
                 component={EventGallery}
-
-                options={{ title: "Event Gallery" }}
+                options={{ title: "Event Gallery", headerTitleStyle: globalStyles.screenHeader }}
+            />
+            <Stack.Screen
+                name="SinglePhoto"
+                component={SinglePhoto}
+                options={{ title: "" }}
+            />
+            <Stack.Screen
+                name="SwipeGallery"
+                component={SwipeGallery}
+                options={{ title: "" }}
             />
         </Stack.Navigator>
     );

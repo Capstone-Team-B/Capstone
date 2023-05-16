@@ -11,8 +11,6 @@ import {
 import React, { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import globalStyles from "../../utils/globalStyles";
-// import { getDatabase, child, get, query } from "firebase/database";
-// import { ref } from "firebase";
 import {
     getStorage,
     uploadBytes,
@@ -21,38 +19,18 @@ import {
     metadata,
     ref,
 } from "firebase/storage";
+import { useNavigation } from "@react-navigation/core";
 
 const UploadEventImagesScreen = (params) => {
     const uid = params.route.params.uid;
+    const userName = params.route.params.uploaderName;
     const event = params.route.params.event;
-    const [userName, setUserName] = useState({});
     const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
     const [images, setImages] = useState([]);
     const [uploading, setUploading] = useState(false);
+    const navigation = useNavigation();
 
-    // useEffect to get all logged-in user info to pass along with image upload
-    // useEffect(() => {
-    //     const dbRef = ref(getDatabase());
-    //     get(child(dbRef, `users/${uid}`))
-    //         .then((snapshot) => {
-    //             if (snapshot.exists()) {
-    //                 console.log(
-    //                     "this is the data from the database -->",
-    //                     snapshot.val()
-    //                 );
-    //                 setUserName(
-    //                     `${snapshot.val().firstName} ${snapshot.val().lastName}`
-    //                 );
-    //             } else {
-    //                 console.log("No data available");
-    //             }
-    //         })
-    //         .catch((error) => {
-    //             console.log(error);
-    //         });
-    // }, []);
-
-    // useEffect to get loggin-in user approval to access media library
+    // useEffect to get logged-in user approval to access media library
     useEffect(() => {
         (async () => {
             const galleryStatus =
@@ -73,16 +51,10 @@ const UploadEventImagesScreen = (params) => {
             if (!result.canceled && result.assets) {
                 let imageArray = [];
                 result.assets.forEach((image) => {
-                    const imageObject = {
-                        uri: image.uri,
-                        uploadDate: Date.now(),
-                        uploader_id: uid,
-                        event_id: event.event_id,
-                    };
-                    imageArray.push(imageObject);
+                    imageArray.push(image);
                 });
-                setImages(imageArray);
                 console.log(imageArray);
+                setImages(imageArray);
             }
 
             if (hasGalleryPermission === false) {
@@ -94,47 +66,40 @@ const UploadEventImagesScreen = (params) => {
     };
 
     const uploadImages = async () => {
-        setUploading(true);
+        // COMMENT BACK IN ONCE STORAGE USAGE RESOLVED
+        // setUploading(true);
 
-        const storage = getStorage();
-        try {
-            for (let i = 0; i < images.length; i++) {
-                const filename = images[i].uri.substring(
-                    images[i].uri.lastIndexOf("/") + 1
-                );
-                const imageRef = ref(
-                    storage,
-                    `event_${images[i].event_id}/${filename}_${uid}`
-                );
+        // const storage = getStorage();
+        // const uploadPromises = [];
 
-                const response = await fetch(images[i].uri);
-                const blob = await response.blob();
+        // for (let i = 0; i < images.length; i++) {
+        //     const filename = images[i].fileName;
+        //     const imageRef = ref(
+        //         storage,
+        //         `event_${event.event_id}/${filename}_${uid}`
+        //         );
+        //         const img = await fetch(images[i].uri);
+        //         const blob = await img.blob();
+        //         const uploadPromise = uploadBytesResumable(imageRef, blob);
+        //         uploadPromises.push(uploadPromise);
+        //     }
 
-                // const customMetadata = {
-                //     metadata: {
-                //         uploadDate: images[i].uploadDate,
-                //         uploader_id: images[i].uploader_id,
-                //         event_id: images[i].event_id,
-                //     },
-                // };
-                try {
-                    await uploadBytes(imageRef, blob);
-                } catch (error) {
-                    console.log(error);
-                }
-            }
-            setUploading(false);
-            Alert.alert(
-                "Succes! Your photos have been uploaded to the shared album."
-            );
-            setImages([]);
-        } catch (error) {
-            console.log(error);
-        }
+        //     try {
+        //         await Promise.all(uploadPromises);
+        //         console.log("All images uploaded successfully");
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+
+        //     setUploading(false);
+        setImages([]);
+        navigation.navigate("EventGallery");
     };
 
     return (
-        <SafeAreaView style={globalStyles.container}>
+        <SafeAreaView
+            style={{ ...globalStyles.container, justifyContent: "center" }}
+        >
             {images.length > 0 ? (
                 <Button
                     title="Upload selected photos"
@@ -163,8 +128,16 @@ const UploadEventImagesScreen = (params) => {
                     }}
                 />
             ) : (
-                <View>
-                    <Text>Share your pohtos from {event.name}!</Text>
+                <View
+                    styles={{
+                        // alignContent: "center",
+                        // justifyContent: "center",
+                    }}
+                >
+                    <Text style={{...globalStyles.heading3, alignSelf: "center", textAlign: "center"}}>
+                        Share your photos from{"\n"}
+                        {event.name}
+                    </Text>
                 </View>
             )}
         </SafeAreaView>
@@ -174,3 +147,28 @@ const UploadEventImagesScreen = (params) => {
 export default UploadEventImagesScreen;
 
 const styles = StyleSheet.create({});
+
+// BELOW CODE WORKS FOR UPLOADING A SINGLE IMAGE
+// const uploadImages = async () => {
+//     setUploading(true);
+
+//     const storage = getStorage();
+//     const filename = images[0].substring(
+//         images[0].lastIndexOf("/") + 1
+//     );
+//     const imageRef = ref(
+//         storage,
+//         `event_${event.event_id}/${filename}_${uid}`
+//     );
+//     const response = await fetch(images[0]);
+//     const blob = await response.blob();
+
+//     try {
+//         await uploadBytes(imageRef, blob, metadata);
+//     } catch (error) {
+//         console.log(error);
+//     }
+
+//     setUploading(false);
+//     setImages([]);
+// };
