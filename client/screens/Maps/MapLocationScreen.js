@@ -20,9 +20,14 @@ import {
     orderByValue,
     push,
 } from "firebase/database";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Callout, Marker } from "react-native-maps";
+import { useAtom } from "jotai";
+import { user as userStore } from "../../store/user";
 
 const MapLocationScreen = (params) => {
+    const eventHost = params.route.params.eventHost;
+    const [storeUser, setStoreUser] = useAtom(userStore);
+
     const [eventId, setEventId] = useState();
     const [locations, setLocations] = useState([]);
 
@@ -31,6 +36,21 @@ const MapLocationScreen = (params) => {
     });
 
     const [mapRegion, setmapRegion] = useState(null);
+
+    const colors = [
+        "red",
+        "tomato",
+        "green",
+        "blue",
+        "aqua",
+        "teal",
+        "violet",
+        "purple",
+        "indigo",
+        "turquoise",
+        "navy",
+        "plum",
+    ];
 
     const dbRef = ref(getDatabase());
 
@@ -107,68 +127,78 @@ const MapLocationScreen = (params) => {
                 const locationRef = child(dbRef, "locations");
                 const newLocationRef = push(locationRef);
                 const newEventId = newLocationRef.key;
-                console.log("hlllllllll", eventId)
+                console.log("hlllllllll", eventId);
                 set(newLocationRef, newLocation).then(() => {
                     setDataInfo({});
                     console.log(locations);
                     onLoadData();
-                    Keyboard.dismiss()
+                    Keyboard.dismiss();
                 });
             })
             .catch((error) => console.log("error", error));
     };
     return (
         <KeyboardAvoidingView style={styles.container}>
-            <View style={{ paddingVertical: 10, paddingHorizontal: 10 }}>
-                <Text>Name</Text>
-                <TextInput
-                    style={[styles.addressInput]}
-                    value={dataInfo.name}
-                    onChangeText={(val) => {
-                        let tempDataInfo = {
-                            ...dataInfo,
-                            name: val,
-                        };
+            {eventHost === storeUser.uid && (
+                <View>
+                    <View
+                        style={{ paddingVertical: 10, paddingHorizontal: 10 }}
+                    >
+                        <Text>Name</Text>
+                        <TextInput
+                            style={[styles.addressInput]}
+                            value={dataInfo.name}
+                            onChangeText={(val) => {
+                                let tempDataInfo = {
+                                    ...dataInfo,
+                                    name: val,
+                                };
+                                setDataInfo(tempDataInfo);
+                            }}
+                        ></TextInput>
+                    </View>
+                    <View
+                        style={{ paddingVertical: 10, paddingHorizontal: 10 }}
+                    >
+                        <Text>Address</Text>
+                        <TextInput
+                            style={[styles.addressInput]}
+                            value={dataInfo.address}
+                            onChangeText={(val) => {
+                                let tempDataInfo = {
+                                    ...dataInfo,
+                                    address: val,
+                                };
 
-                        setDataInfo(tempDataInfo);
-                    }}
-                ></TextInput>
-            </View>
+                                setDataInfo(tempDataInfo);
+                            }}
+                        ></TextInput>
+                    </View>
+                    <View
+                        style={{ paddingVertical: 10, paddingHorizontal: 10 }}
+                    >
+                        <Text>Label</Text>
+                        <TextInput
+                            style={[styles.addressInput]}
+                            value={dataInfo.label}
+                            onChangeText={(val) => {
+                                let tempDataInfo = {
+                                    ...dataInfo,
+                                    label: val,
+                                };
 
-            <View style={{ paddingVertical: 10, paddingHorizontal: 10 }}>
-                <Text>Address</Text>
-                <TextInput
-                    style={[styles.addressInput]}
-                    value={dataInfo.address}
-                    onChangeText={(val) => {
-                        let tempDataInfo = {
-                            ...dataInfo,
-                            address: val,
-                        };
+                                setDataInfo(tempDataInfo);
+                            }}
+                        ></TextInput>
+                    </View>
 
-                        setDataInfo(tempDataInfo);
-                    }}
-                ></TextInput>
-            </View>
-            <View style={{ paddingVertical: 10, paddingHorizontal: 10 }}>
-                <Text>Label</Text>
-                <TextInput
-                    style={[styles.addressInput]}
-                    value={dataInfo.label}
-                    onChangeText={(val) => {
-                        let tempDataInfo = {
-                            ...dataInfo,
-                            label: val,
-                        };
-
-                        setDataInfo(tempDataInfo);
-                    }}
-                ></TextInput>
-            </View>
-
-            <View style={{ paddingVertical: 10, paddingHorizontal: 10 }}>
-                <Button title="Save" onPress={handleSave}></Button>
-            </View>
+                    <View
+                        style={{ paddingVertical: 10, paddingHorizontal: 10 }}
+                    >
+                        <Button title="Save" onPress={handleSave}></Button>
+                    </View>
+                </View>
+            )}
 
             <View style={{ flex: 1 }}>
                 {locations.length > 0 ? (
@@ -180,13 +210,22 @@ const MapLocationScreen = (params) => {
                         {locations.map((marker, index) => (
                             <Marker
                                 key={index}
-                                title={marker.location}
-                                description={marker.nameLocation}
+                                title={"test"}
+                                description={marker.where}
                                 coordinate={{
-                                    latitude: marker.latitude, 
-                                    longitude: marker.longitude, 
+                                    latitude: marker.latitude,
+                                    longitude: marker.longitude,
                                 }}
-                            />
+                                pinColor={colors[index] || "red"}
+                            >
+                                <Callout>
+                                    <View>
+                                        <Text>{marker.name}</Text>
+                                        <Text>{marker.where}</Text>
+                                        <Text>{marker.label}</Text>
+                                    </View>
+                                </Callout>
+                            </Marker>
                         ))}
                     </MapView>
                 ) : (

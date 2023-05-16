@@ -12,12 +12,16 @@ import React, { useEffect, useState } from "react";
 import { auth } from "../../firebase";
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, child, get, set } from "firebase/database";
+import { useAtom } from "jotai";
+import {user as userStore} from '../store/user'
+
 const BeThereLogoExpanded = require("../../assets/BeThereExpanded.png");
 const Background = require("../../assets/Background.png");
 
 const LoginScreen = () => {
     const [email, setEmail] = useState("kit@kit.com"); // logging in as kit, who is the host of an event
     const [password, setPassword] = useState("pwpwpw");
+    const [storeUser, setStoreUser] = useAtom(userStore)
 
     const navigation = useNavigation();
 
@@ -72,7 +76,8 @@ const LoginScreen = () => {
         auth.signInWithEmailAndPassword(email, password)
             .then((userCredentials) => {
                 const user = userCredentials.user;
-                console.log("Logged in with: ", user.email);
+                console.log("Logged in with: ", user);
+                setStoreUser(user)
             })
             .catch((error) => alert(error.message));
     };
