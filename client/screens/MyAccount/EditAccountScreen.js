@@ -13,7 +13,7 @@ import {
     Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getDatabase, ref, update, set, child, get } from "firebase/database";
+import { getDatabase, ref, update, child, get } from "firebase/database";
 import globalStyles from "../../utils/globalStyles";
 import * as ImagePicker from "expo-image-picker";
 
@@ -33,7 +33,7 @@ const EditAccountScreen = (props) => {
     const [dietary, setDietary] = useState(user.dietary || "");
 
     const navigation = useNavigation();
-        console.log("propic -->", profilePic)
+    console.log("propic -->", profilePic);
     useEffect(() => {
         setUser(props.route.params);
     }, [props]);

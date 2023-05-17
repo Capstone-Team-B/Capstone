@@ -29,11 +29,9 @@ import {
     ref,
     child,
     get,
-    set,
     query,
     orderByChild,
     equalTo,
-    orderByKey,
 } from "firebase/database";
 
 const CheckAccountScreen = (props) => {
@@ -61,39 +59,51 @@ const CheckAccountScreen = (props) => {
         console.log("Checking for phoneNumber ", phoneNumber);
         try {
             const dbRef = ref(getDatabase());
-            const userPhoneRef = await get(
+            get(
                 query(
                     child(dbRef, "users"),
                     orderByChild("phoneNumber"),
                     equalTo(phoneNumber)
                 )
-            );
-            if (userPhoneRef) {
-                console.log("Phone reference -->", userPhoneRef);
-                const user = userPhoneRef.val();
-                console.log("user value ==> ", user);
-                navigation.navigate("CreateAccountScreen", {
-                    user: user,
+            )
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const userRef = snapshot.val();
+                        const uid = Object.keys(userRef)[0];
+                        Alert.alert("Account found. Let's update it.");
+                        navigation.navigate("CreateAccountScreen", {
+                            uid: uid,
+                        });
+                    } else {
+                        Alert.alert("No matching account. Let's create one");
+                        navigation.navigate("CreateAccountScreen");
+                    }
+                })
+                .catch((error) => {
+                    console.log("line 83", error);
                 });
-            } else {
-                console.log("Checking for email ", email);
-                const userEmailRef = await get(
-                    query(
-                        child(dbRef, "users"),
-                        orderByChild("email"),
-                        equalTo(email)
-                    )
-                );
-                if (!userEmailRef.exists()) {
-                    console.log("lets create an account");
-                    navigation.navigate("CreateAccountScreen", {
-                        screen: "CreateAccountScreen",
-                        email: email,
-                        phoneNumber: phoneNumber,
-                    });
-                }
-                console.log("email reference -->", userEmailRef);
-            }
+            console.log("Checking for email ", email);
+            get(
+                query(
+                    child(dbRef, "users"),
+                    orderByChild("email"),
+                    equalTo(email)
+                )
+            )
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const userRef = snapshot.val();
+                        const uid = Object.keys(userRef)[0];
+                        navigation.navigate("CreateAccountScreen", {
+                            uid: uid,
+                        });
+                    } else {
+                        console.log("No email found");
+                    }
+                })
+                .catch((error) => {
+                    console.log("line 83", error);
+                });
         } catch (error) {
             console.log(error);
         }
