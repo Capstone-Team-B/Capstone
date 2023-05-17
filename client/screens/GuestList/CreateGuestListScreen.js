@@ -81,7 +81,7 @@ const CreateGuestList = (params) => {
             await set(newGuestListRef, newGuestListData);
 
             const newEventGuestsRef = child(guestListRef, newGuestListKey);
-            await update(newEventGuestsRef, { [newGuestListKey]: newGuestListKey });         
+            await update(newEventGuestsRef, { "guest_id": newGuestListKey });         
         }
         navigation.navigate("SingleEvent", { event: event });
     };
