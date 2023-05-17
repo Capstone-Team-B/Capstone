@@ -106,7 +106,6 @@ const CreateGuestList = (params) => {
                 
                 if (snapshot.exists()) {
                     const userData = Object.values(snapshot.val());
-                    console.log("userData --->", userData[0].user_id)
                     newGuestListData.user_id = userData[0].user_id;
 
                     const newEventGuestsRef = child(
