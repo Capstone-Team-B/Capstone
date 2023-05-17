@@ -117,29 +117,42 @@ const EventGallery = (params) => {
             ) : eventImages.length > 0 ? (
                 <>
                     {countPhotos <= 6 && (
-                        <TouchableOpacity
-                            style={{
-                                margin: 12,
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}
-                            onPress={() =>
-                                navigation.navigate("UploadEventImagesScreen", {
-                                    event: event,
-                                    uid: uid,
-                                    uploaderName: userName,
-                                })
-                            }
-                        >
-                            <Text style={globalStyles.heading3}>
-                                Add your photos {countPhotos}
+                        <>
+                            <TouchableOpacity
+                                style={{
+                                    margin: 12,
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                                onPress={() =>
+                                    navigation.navigate(
+                                        "UploadEventImagesScreen",
+                                        {
+                                            event: event,
+                                            uid: uid,
+                                            uploaderName: userName,
+                                        }
+                                    )
+                                }
+                            >
+                                <Text style={globalStyles.heading3}>
+                                    Add your photos
+                                </Text>
+                                <Ionicons name="add-circle-outline" size={25} />
+                            </TouchableOpacity>
+                            <Text
+                                style={{
+                                    ...globalStyles.heading3,
+                                    textAlign: "center",
+                                }}
+                            >
+                                {countPhotos} photos
                             </Text>
-                            <Ionicons name="add-circle-outline" size={25} />
-                        </TouchableOpacity>
+                        </>
                     )}
                     <Swiper showsButtons={true}>
                         {eventImages.map((photo, index) => (
-                            <View style={styles.slide1}>
+                            <View key={photo} style={styles.slide1}>
                                 <Image
                                     source={{ uri: photo }}
                                     style={{

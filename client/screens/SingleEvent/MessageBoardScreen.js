@@ -140,11 +140,14 @@ const MessageboardScreen = (params) => {
             <Text style={styles.eventLabel}>Messages for {eventName}</Text>
             <View style={{}}>
                 {messages.map((message) => (
-                    <View
-                        key={message.id}
-                        style={{ margin: 10 }}
-                    >
-                        <Text style={{...globalStyles.heading3, marginBottom: 3, marginTop: 3}}>
+                    <View key={message.id} style={{ margin: 10 }}>
+                        <Text
+                            style={{
+                                ...globalStyles.heading3,
+                                marginBottom: 3,
+                                marginTop: 3,
+                            }}
+                        >
                             {message.content}
                         </Text>
                         <Text
@@ -153,7 +156,19 @@ const MessageboardScreen = (params) => {
                                 fontStyle: "italic",
                             }}
                         >
-                            posted by{message.senderName}{"\n"}{message.dateTimeStamp}</Text>
+                            posted by{message.senderName}
+                            {"\n"}
+                            {new Date(message.dateTimeStamp).toLocaleString("en",
+                                {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                    hour: "numeric",
+                                    minute: "numeric",
+                                    hour12: true,
+                                }
+                            )}
+                        </Text>
                     </View>
                 ))}
                 <TextInput

@@ -211,23 +211,30 @@ const GuestListScreen = (params) => {
                                                 alignItems: "center",
                                             }}
                                         >
-                                            <Image
-                                                style={{
-                                                    ...styles.profilePic,
-                                                    marginBottom: 10,
-                                                    borderWidth: 5,
-                                                    borderColor:
-                                                        guest.attending
-                                                            ? "#36b6ff"
-                                                            : "black",
-                                                    opacity: guest.attending
-                                                    ? 1
-                                                    : .3,
-                                                }}
-                                                source={{
-                                                    uri: guest.profilePic,
-                                                }}
+                                            {guest.profilePic != "" ? (
+                                                <Image
+                                                    style={{
+                                                        ...styles.profilePic,
+                                                        marginBottom: 10,
+                                                        borderWidth: 5,
+                                                        borderColor:
+                                                            guest.attending
+                                                                ? "#36b6ff"
+                                                                : "black",
+                                                        opacity: guest.attending
+                                                        ? 1
+                                                        : .3,
+                                                    }}
+                                                    source={{
+                                                        uri: guest.profilePic
+                                                    }}
+                                                />
+                                            ) : (
+                                                <Ionicons
+                                                name="person-outline"
+                                                size={25}
                                             />
+                                            )}
                                             <Text style={styles.guestName}>
                                                 {guest.firstName}{" "}
                                                 {guest.lastName}
