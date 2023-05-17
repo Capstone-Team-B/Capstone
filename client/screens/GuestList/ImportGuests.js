@@ -116,7 +116,7 @@ const ImportContacts = (params) => {
 
             const newGuestListData = {
                 userEvents: {
-                    [event.event_id]: event.event_id,
+                    "event_id": event.event_id,
                 },
                 user_id: newGuestListKey,
                 firstName: guestFirstname,

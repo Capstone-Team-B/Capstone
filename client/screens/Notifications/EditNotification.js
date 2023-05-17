@@ -12,7 +12,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, child, remove, update } from "firebase/database";
 import { DatePickerModal } from "react-native-paper-dates";
-import { TimePickerModal } from "react-native-paper-dates";
+// import { TimePickerModal } from "react-native-paper-dates";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const EditNotification = (params) => {
@@ -25,7 +25,7 @@ const EditNotification = (params) => {
     const [date, setDate] = useState(
         new Date(notification.scheduled_date) || ""
     );
-    const [time, setTime] = useState(notification.scheduled_time || "");
+    // const [time, setTime] = useState(notification.scheduled_time || "");
     const [open, setOpen] = useState(false);
     const [visible, setVisible] = useState(false);
 
@@ -61,7 +61,7 @@ const EditNotification = (params) => {
 
     const handleSubmit = async () => {
         if (!title || !body || !date) {
-            Alert.alert("Please fill in all required fields");
+            Alert.alert("Please fill in all fields");
             return;
         }
         try {
@@ -75,7 +75,7 @@ const EditNotification = (params) => {
                 title: title,
                 body: body,
                 scheduled_date: date,
-                scheduled_time: time,
+                // scheduled_time: time,
             };
             await update(notificationRef, updatedNotification);
 
@@ -147,7 +147,7 @@ const EditNotification = (params) => {
                                     />
                                 </SafeAreaProvider>
                             </TouchableOpacity>
-                            <TouchableOpacity
+                            {/* <TouchableOpacity
                                 style={styles.outlineButton}
                                 onPress={() => setVisible(true)}
                             >
@@ -179,7 +179,7 @@ const EditNotification = (params) => {
                                     minutes={30}
                                     required={false}
                                 />
-                            </SafeAreaProvider>
+                            </SafeAreaProvider> */}
                             <TouchableOpacity
                                 style={styles.deleteButton}
                                 onPress={() => handleDeleteNotification()}

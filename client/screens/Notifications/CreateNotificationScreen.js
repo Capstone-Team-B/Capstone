@@ -12,7 +12,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, child, push, set, update } from "firebase/database";
 import { DatePickerModal } from "react-native-paper-dates";
-import { TimePickerModal } from "react-native-paper-dates";
+// import { TimePickerModal } from "react-native-paper-dates";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const CreateNotification = (params) => {
@@ -51,7 +51,7 @@ const CreateNotification = (params) => {
             !notification.body ||
             !notification.scheduled_date
         ) {
-            Alert.alert("Please fill in all required fields");
+            Alert.alert("Please fill in all fields");
             return;
         }
 
@@ -69,13 +69,13 @@ const CreateNotification = (params) => {
             title: notificationTitle,
             body: notificationBody,
             scheduled_date: notificationDate,
-            scheduled_time: notificationTime,
+            // scheduled_time: notificationTime,
         } = notification;
         const newNotificationData = {
             title: notificationTitle,
             body: notificationBody,
             scheduled_date: notificationDate,
-            scheduled_time: notificationTime,
+            // scheduled_time: notificationTime,
             event_id: eventId,
             event_name: eventName,
             recipients: { allGuests: true },
@@ -156,7 +156,7 @@ const CreateNotification = (params) => {
                                     />
                                 </SafeAreaProvider>
                             </TouchableOpacity>
-                            <TouchableOpacity
+                            {/* <TouchableOpacity
                                 style={styles.outlineButton}
                                 onPress={() => setVisible(true)}
                             >
@@ -191,7 +191,7 @@ const CreateNotification = (params) => {
                                     minutes={30}
                                     required={false}
                                 />
-                            </SafeAreaProvider>
+                            </SafeAreaProvider> */}
                             <TouchableOpacity
                                 style={styles.deleteButton}
                                 onPress={() => handleDeleteNotification()}
