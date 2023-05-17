@@ -153,7 +153,7 @@ const SingleEvent = (params) => {
                         marginRight: 12,
                     }}
                 >
-                    {event.location}
+                    {event.mainLocation}
                 </Text>
                 <Text
                     style={{

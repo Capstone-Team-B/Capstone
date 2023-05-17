@@ -85,7 +85,7 @@ const CreateEventForm = (props) => {
                 event_id: newEventId,
                 name: weddingName,
                 description: description,
-                locations: { 0: location },
+                mainLocation: location,
                 startDate: eventStartDate,
                 endDate: eventEndDate,
                 startTime: startTime,
@@ -112,7 +112,7 @@ const CreateEventForm = (props) => {
                     <Text style={styles.sectionTitle}>Wedding Details</Text>
                     <TextInput
                         style={globalStyles.input}
-                        placeholder="Wedding Name"
+                        placeholder="Wedding name"
                         value={weddingName}
                         onChangeText={setWeddingName}
                         required={true}
@@ -126,7 +126,7 @@ const CreateEventForm = (props) => {
                     />
                     <TextInput
                         style={globalStyles.input}
-                        placeholder="Location"
+                        placeholder="Main location"
                         value={location}
                         onChangeText={setLocation}
                         required={true}
