@@ -17,10 +17,7 @@ import {
     ref,
     child,
     get,
-    set,
-    query,
-    orderByChild,
-    equalTo,
+    update,
 } from "firebase/database";
 import Toggle from "react-native-toggle-element";
 import globalStyles from "../../utils/globalStyles";
@@ -30,16 +27,16 @@ const Background = require("../../../assets/Background.png");
 
 const GuestProfileScreen = (params) => {
     const uid = params.route.params.uid;
+    const eventId = params.route.params.eventId;
     const [user, setUser] = useState({});
     const [toggleValue, setToggleValue] = useState(true);
     const [rsvpStatus, setRSVPStatus] = useState(true); //will need to update
-
+    console.log("guest prof", params.route.params)
     useEffect(() => {
         const dbRef = ref(getDatabase());
         get(child(dbRef, `users/${uid}`))
             .then((snapshot) => {
                 if (snapshot.exists()) {
-                    console.log(snapshot.val());
                     setUser(snapshot.val());
                 } else {
                     console.log("No data available");
@@ -50,6 +47,24 @@ const GuestProfileScreen = (params) => {
             });
     }, []);
 
+    const sendRsvpUpdate = async () => {
+        const dbRef = ref(getDatabase());
+        const userEventRef = child(dbRef, `users/${uid}/userEvents/${eventId}`)
+        console.log(userEventRef)
+        const updateUserEvent = {
+            attending: toggleValue,
+        }   
+        await update(userEventRef, updateUserEvent)
+        // const updateEvent = {
+        //     [`events/${eventId}/guestlist/${uid}/attending`]: toggleValue,
+        // };
+        // update(dbRef, updateEvent)
+        //     .then(() => console.log("attending status updated on event"))
+        //     .catch((error) => {
+        //         console.log(error);
+        //     });
+    };
+
     return (
         <ImageBackground
             source={Background}
@@ -57,39 +72,89 @@ const GuestProfileScreen = (params) => {
             style={{
                 flex: 1,
                 width: "100%",
-                justifyContent: "center",
+                // justifyContent: "center",
                 alignItems: "center",
             }}
         >
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-                <View
+            <View
+                style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: 20,
+                    margin: 20,
+                    marginBottom: 60,
+                }}
+            >
+                <Text
                     style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                        padding: 20,
+                        fontSize: 20,
+                        padding: 10,
+                        fontWeight: "bold",
                     }}
                 >
-                    <Text
-                        style={{
-                            fontSize: 25,
-                            // fontFamily: "Bukhari Script",
-                            padding: 10,
-                            fontWeight: "bold",
-                        }}
-                    >
-                        Will you be there?
-                    </Text>
-                    <Text style={globalStyles.heading3}>
-                        Toggle your RSVP status
-                    </Text>
+                    Will you be there?
+                </Text>
+                <Text style={globalStyles.paragraph}>
+                    Toggle your RSVP status
+                </Text>
+            </View>
+            <View
+                style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: 150,
+                    padding: 20,
+                }}
+            >
+                <View style={{ margin: 40 }}>
+                    {toggleValue ? (
+                        <View
+                            style={{
+                                ...globalStyles.button,
+                                backgroundColor: "#38b6ff",
+                                height: 175,
+                                width: 175,
+                                padding: 30,
+                                borderRadius: 175,
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 25,
+                                    fontFamily: "Bukhari Script",
+                                    color: "white",
+                                    textAlign: "center",
+                                }}
+                            >
+                                I'll BeThere
+                            </Text>
+                        </View>
+                    ) : (
+                        <View
+                            style={{
+                                backgroundColor: "black",
+                                height: 175,
+                                width: 175,
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 25,
+                                    fontFamily: "Bukhari Script",
+                                    color: "white",
+                                }}
+                            >
+                                Can't make it
+                            </Text>
+                        </View>
+                    )}
                 </View>
-                <View
-                    style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                        padding: 50,
-                    }}
-                >
+
+                <View style={{ position: "fixed", bottom: 0 }}>
                     <Toggle
                         value={toggleValue}
                         onPress={(val) => setToggleValue(val)}
@@ -105,7 +170,7 @@ const GuestProfileScreen = (params) => {
                             margin: 20,
                             inActiveBackgroundColor: "white",
                             activeBackgroundColor: "white",
-                            borderWidth: 8,
+                            borderWidth: 4,
                             borderActiveColor: "black",
                             borderInActiveColor: "black",
                         }}
@@ -139,45 +204,6 @@ const GuestProfileScreen = (params) => {
                         }
                     />
                 </View>
-                {toggleValue ? (
-                    <View
-                        style={{
-                            ...globalStyles.button,
-                            backgroundColor: "#38b6ff",
-                            padding: 30,
-                            borderRadius: 100,
-                        }}
-                    >
-                        <Text
-                            style={{
-                                fontSize: 25,
-                                fontFamily: "Bukhari Script",
-                                color: "white",
-                            }}
-                        >
-                            I'll BeThere!
-                        </Text>
-                    </View>
-                ) : (
-                    <View
-                        style={{
-                            ...globalStyles.button,
-                            backgroundColor: "gray",
-                            padding: 30,
-                            borderRadius: 100,
-                        }}
-                    >
-                        <Text
-                            style={{
-                                fontSize: 25,
-                                fontFamily: "Bukhari Script",
-                                color: "white",
-                            }}
-                        >
-                            Can't make it
-                        </Text>
-                    </View>
-                )}
             </View>
             {/* <Text>
                 <Text style={styles.label}>
@@ -196,8 +222,11 @@ const GuestProfileScreen = (params) => {
                 <TouchableOpacity
                     style={{
                         ...globalStyles.button,
-                         backgroundColor: "#cb6ce6"
+                        backgroundColor: "#cb6ce6",
+                        position: "absolute",
+                        bottom: "20%",
                     }}
+                    onPress={sendRsvpUpdate}
                 >
                     <Ionicons name="send-outline" size={25} color={"white"} />
                     <Text style={{ ...globalStyles.heading3, color: "white" }}>

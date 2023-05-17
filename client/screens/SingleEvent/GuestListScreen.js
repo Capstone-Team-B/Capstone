@@ -1,9 +1,18 @@
 import { useNavigation } from "@react-navigation/core";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+    FlatList,
+    Image,
+    Dimensions,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { getDatabase, ref, child, get, query, remove } from "firebase/database";
 import { useIsFocused } from "@react-navigation/native";
-import { FlatList } from "react-native-web";
+import globalStyles from "../../utils/globalStyles";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const GuestListScreen = (params) => {
     const [guestList, setGuestList] = useState([]);
@@ -17,6 +26,7 @@ const GuestListScreen = (params) => {
     const dbRef = ref(getDatabase());
 
     const navigation = useNavigation();
+    const screenWidth = Dimensions.get("window").width;
 
     useEffect(() => {
         const getGuests = async () => {
@@ -90,50 +100,125 @@ const GuestListScreen = (params) => {
 
         const guestToDeleteRef = child(guestListRef, userId);
         await remove(guestToDeleteRef);
-        
+
         const usersEventsRef = child(dbRef, `users/${userId}/userEvents`);
-        const eventToDeleteRef = child(usersEventsRef, eventId)
+        const eventToDeleteRef = child(usersEventsRef, eventId);
         await remove(eventToDeleteRef);
 
-        const updatedGuestList = guestList.filter((item) => item.user_id !== userId);
+        const updatedGuestList = guestList.filter(
+            (item) => item.user_id !== userId
+        );
         setGuestList(updatedGuestList);
     };
 
     return (
-        <View style={styles.container}>
-            <Text>Guest List</Text>
-            <Text>
-                Host: {host.firstName} {host.lastName}
+        <View style={globalStyles.container}>
+            <View style={{justifyContent: "center", alignItems: "center", margin: 12}}>
+
+            <Text style={globalStyles.heading2}>Invitees of</Text>
+            <Text style={{...globalStyles.heading1, fontFamily: "Bukhari Script", padding: 10}}>{event.name}</Text>
+            <Text style={globalStyles.heading3}>
+                Hosted by: {host.firstName} {host.lastName}
             </Text>
+            </View>
             {guestList.length > 0 ? (
                 uid === event.host_id ? (
-                    Object.keys(guestList).map((key) => {
-                        const guest = guestList[key];
-                        return (
-                            <View key={key} style={styles.guestContainer}>
-                                <TouchableOpacity
-                                    style={styles.deleteButton}
-                                    onPress={() => handleDeleteGuest(guest, key)}
-                                >
-                                    <Text style={styles.deleteButtonText}>
-                                        x
-                                    </Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    onPress={() =>
-                                        navigation.navigate(
-                                            "GuestProfileScreen",
-                                            { user: guest }
-                                        )
-                                    }
-                                >
-                                    <Text style={styles.guestName}>
-                                        {guest.firstName} {guest.lastName}
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                        );
-                    })
+                    // Object.keys(guestList).map((key) => {
+                    //     const guest = guestList[key];
+                    //     return (
+                    //         <View key={key} style={{...styles.guestContainer, borderWidth: 2}}>
+                    //             <TouchableOpacity
+                    //                 style={{ padding: 5 }}
+                    //                 onPress={() =>
+                    //                     handleDeleteGuest(guest, key)
+                    //                 }
+                    //             >
+                    //                 <Ionicons
+                    //                     name="close-circle-outline"
+                    //                     size={25}
+                    //                 />
+                    //             </TouchableOpacity>
+                    //             <TouchableOpacity
+                    //                 onPress={() =>
+                    //                     navigation.navigate(
+                    //                         "GuestProfileScreen",
+                    //                         { user: guest }
+                    //                     )
+                    //                 }
+                    //             >
+                    //                 <Image
+                    //                     style={styles.profilePic}
+                    //                     source={{
+                    //                         uri: guest.profilePic,
+                    //                     }}
+                    //                 />
+                    //                 <Text style={styles.guestName}>
+                    //                     {guest.firstName} {guest.lastName}
+                    //                 </Text>
+                    //             </TouchableOpacity>
+                    //         </View>
+                    //     );
+                    // })
+                    <View style={{ alignItems: "center" }}>
+                        <FlatList
+                            data={Object.keys(guestList)}
+                            numColumns={3}
+                            renderItem={({ item: key }) => {
+                                const guest = guestList[key];
+                                return (
+                                    <View
+                                        key={key}
+                                        style={{
+                                            // ...styles.guestContainer,
+                                            // borderWidth: 2,
+                                            width: screenWidth / 3 - 20,
+                                            margin: 5,
+                                            padding: 5,
+                                            position: "relative",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <TouchableOpacity
+                                            style={{ position: "absolute", top: -5, right: -5 }}
+                                            onPress={() =>
+                                                handleDeleteGuest(guest, key)
+                                            }
+                                        >
+                                            <Ionicons
+                                                name="close-circle-outline"
+                                                size={25}
+                                            />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={{
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                            }}
+                                            // onPress={() =>
+                                            //     navigation.navigate(
+                                            //         "GuestProfileScreen",
+                                            //         { user: guest }
+                                            //     )
+                                            // }
+                                        >
+                                            <Image
+                                                style={{...styles.profilePic, marginBottom: 10}}
+                                                source={{
+                                                    uri: guest.profilePic,
+                                                }}
+                                            />
+                                            <Text style={styles.guestName}>
+                                                {guest.firstName}{" "}
+                                                {guest.lastName}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                );
+                            }}
+                            keyExtractor={(key) => key} // Use the 'key' as the unique identifier
+                        />
+                    </View>
                 ) : (
                     Object.keys(guestList).map((key) => {
                         const guest = guestList[key];
@@ -208,22 +293,28 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     guestContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection: "row",
+        alignItems: "center",
         marginBottom: 10,
     },
     deleteButton: {
-        backgroundColor: 'red',
+        backgroundColor: "red",
         borderRadius: 10,
         padding: 5,
         marginRight: 10,
     },
     deleteButtonText: {
-        color: 'white',
+        color: "white",
         fontSize: 14,
-        fontWeight: 'bold',
+        fontWeight: "bold",
     },
     guestName: {
         fontSize: 16,
+    },
+    profilePic: {
+        width: 100,
+        height: 100,
+        borderRadius: 100,
+        resizeMode: "cover",
     },
 });

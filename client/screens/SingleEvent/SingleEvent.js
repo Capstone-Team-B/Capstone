@@ -21,9 +21,8 @@ const SingleEvent = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
     const uid = params.route.params.uid;
     const [userName, setUserName] = useState({});
-
     // console.log("users unique id --> ", params.route.params.uid);
-    console.log(event);
+    console.log(event.event_id);
 
     useEffect(() => {
         setEvent(params.route.params.event);
@@ -140,7 +139,7 @@ const SingleEvent = (params) => {
                     }}
                     onPress={() =>
                         navigation.navigate("GuestProfileScreen", {
-                            eventId: event.id, uid: uid
+                            event: event, uid: uid
                         })
                     }
                 >

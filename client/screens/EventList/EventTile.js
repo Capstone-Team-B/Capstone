@@ -13,7 +13,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 const EventTile = ({ event, uid }) => {
     const navigation = useNavigation();
-
+    console.log("eventTile", event)
     return (
         <TouchableOpacity
             onPress={() => navigation.navigate("SingleEvent", { event })}

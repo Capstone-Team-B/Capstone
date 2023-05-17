@@ -65,7 +65,7 @@ const EventListScreen = (props) => {
             get(eventIdsQuery).then((eventSnapshot) => {
                 if (eventSnapshot.exists()) {
                     const data = eventSnapshot.val();
-                    const userEventIds = Object.values(data.userEvents);
+                    const userEventIds = Object.keys(data.userEvents);
                     getEvents(userEventIds);
                 } else {
                     console.log("no event data");
@@ -94,7 +94,7 @@ const EventListScreen = (props) => {
                     renderItem={(itemData) => {
                         return (
                             <EventTile
-                                event={itemData.item}
+                                event={itemData}
                                 navigation={navigation}
                                 uid={uid}
                             />
