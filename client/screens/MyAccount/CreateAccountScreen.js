@@ -17,10 +17,10 @@ import { getDatabase, ref, update, set, child, get } from "firebase/database";
 const dbRef = ref(getDatabase());
 
 const CreateAccountScreen = (props) => {
-    // finds the user in database
+    // finds the user in database if they were created by a host
     useEffect(() => {
         const uid = props.route.params.uid;
-        if (uid) {
+        if (uid !== "") {
             get(child(dbRef, `users/${uid}`)).then((snapshot) => {
                 if (snapshot.exists()) {
                     const userRef = snapshot.val();
@@ -30,6 +30,8 @@ const CreateAccountScreen = (props) => {
                     props.route.params.uid = null;
                 }
             });
+        } else {
+            return;
         }
     }, [props]);
 
@@ -49,9 +51,9 @@ const CreateAccountScreen = (props) => {
 
     //Pre fills in form if there is a uid
     useEffect(() => {
-        setFirstName(user.firstName || "");
+        setFirstName("TestAHasAccount" || user.firstName || "");
         setLastName(user.lastName || "");
-        setEmail(user.email || "");
+        setEmail("testA@test.com" || user.email || "");
         setPhoneNumber(user.phoneNumber || "");
         setHomeCity(user.homeCity || "");
         setProfilePic(user.profilePic || "");
@@ -82,22 +84,22 @@ const CreateAccountScreen = (props) => {
             profilePic: profilePic,
             dietary: dietary,
             accessibility: accessibility,
-            user_id: uid,
+            guest_id: uid,
         };
-        console.log("new user --> ", user_id);
+        console.log("new user --> ", newUser);
 
         try {
             const userRef = child(dbRef, `users/${uid}`);
+            let auth_id = "";
             const userSnapshot = await get(userRef);
             if (userSnapshot.exists()) {
+                console.log("snapshotexists with: ", userSnapshot.val());
                 auth.createUserWithEmailAndPassword(email, password)
                     .then((userCredentials) => {
-                        const newUid = userCredentials.user.uid;
-                        setUser_id(newUid);
-                        console.log("Registered with: ", user.email);
+                        // set the auth id to match the credentials created in firebase authentication
+                        auth_id = userCredentials.user.uid;
                     })
                     .then(() => {
-                        console.log(newUid);
                         const updateUser = {
                             firstName: firstName,
                             lastName: lastName,
@@ -107,16 +109,17 @@ const CreateAccountScreen = (props) => {
                             profilePic: profilePic,
                             dietary: dietary,
                             accessibility: accessibility,
-                            user_id: uid,
+                            guest_id: uid,
+                            auth_id: auth_id,
                         };
+                        console.log("updated user info -->", updateUser);
                         update(userRef, updateUser);
                         navigation.navigate("LoginScreen");
                     });
                 // await update(userRef, newUser);
-                console.log(newUser);
+                console.log("new user", newUser);
             }
-            await set(userRef, newUser);
-            console.log("updates to user", newUser);
+            // await set(userRef, newUser);
         } catch (error) {
             console.log(error);
         }

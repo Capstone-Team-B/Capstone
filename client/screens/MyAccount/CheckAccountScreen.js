@@ -19,8 +19,6 @@ import {
     TextInput,
     TouchableOpacity,
     Alert,
-    SafeAreaView,
-    Button,
 } from "react-native";
 // import { auth } from "../../../firebase";
 import { useNavigation } from "@react-navigation/native";
@@ -37,9 +35,9 @@ import {
 const CheckAccountScreen = (props) => {
     console.log("props are -->", props.route.params);
     const [user, setUser] = useState(props.route.params);
-    const [email, setEmail] = useState(user.email || "");
+    const [email, setEmail] = useState("test" || user.email || "");
     const [phoneNumber, setPhoneNumber] = useState(
-        "(975) 555-5555" || user.phoneNumber || ""
+        "(123) 555-5555" || user.phoneNumber || ""
     );
 
     useEffect(() => {
@@ -76,7 +74,7 @@ const CheckAccountScreen = (props) => {
                         });
                     } else {
                         Alert.alert("No matching account. Let's create one");
-                        navigation.navigate("CreateAccountScreen");
+                        navigation.navigate("CreateAccountScreen", { uid: "" });
                     }
                 })
                 .catch((error) => {
@@ -95,7 +93,7 @@ const CheckAccountScreen = (props) => {
                         const userRef = snapshot.val();
                         const uid = Object.keys(userRef)[0];
                         navigation.navigate("CreateAccountScreen", {
-                            uid: uid,
+                            uid: uid || null,
                         });
                     } else {
                         console.log("No email found");
