@@ -28,15 +28,19 @@ const NotificationsScreen = () => {
     const getEventNotifications = async (eventIdArray) => {
         let eventNotifications = [];
         for (let i = 0; i < eventIdArray.length; i++) {
+            let eventId = eventIdArray[i].event_id;
             try {
                 const eventsQuery = query(
-                    child(dbRef, `events/${eventIdArray[i]}/notifications`)
+                    child(dbRef, `events/${eventId}/notifications`)
                 );
                 await get(eventsQuery).then((eventSnapshot) => {
                     if (eventSnapshot.exists()) {
                         const data = eventSnapshot.val();
-                        const eventIds = Object.keys(data);
-                        eventNotifications = [...eventNotifications, eventIds];
+                        const eventObjs = Object.values(data);
+                        for (let j=0; j<eventObjs.length; j++){
+                            let eventId = eventObjs[j].notification_id
+                            eventNotifications.push(eventId);
+                        }
                     } else {
                         console.log("no event data");
                     }
@@ -58,9 +62,9 @@ const NotificationsScreen = () => {
                 await get(notificationsQuery).then((notificationSnapshot) => {
                     if (notificationSnapshot.exists()) {
                         const data = notificationSnapshot.val();
-                        notificationData = [...notificationData, data];
+                        notificationData.push(data);
                     } else {
-                        console.log("no notification data");
+                        console.log("no reminder data");
                     }
                 });
             } catch (error) {
@@ -85,78 +89,56 @@ const NotificationsScreen = () => {
                     getNotificationData(eventNotificationIds);
                     setLoading(false);
                 } else {
-                    console.log("no notification data");
+                    console.log("no reminder data");
                 }
             });
         } catch (error) {
             console.log(error);
         }
+
     }, [isFocused]);
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="height">
-            <ScrollView style={styles.container}>
-                <View style={styles.section}>
-                    {loading ? (
-                        <Text>...Loading your notifications</Text>
-                    ) : notificationData.length > 0 ? (
-                        notificationData.map((notification) => {
-                            const scheduledDate = new Date(
-                                notification.scheduled_date
-                            );
-                            const currentDate = new Date();
-                            const isPastDate = scheduledDate < currentDate;
-
-                            return (
-                                <View key={notification.notification_id} style={styles.item}>
-                                    <Text style={styles.input}>
-                                        {notification.event_name}
-                                    </Text>
-                                    <Text style={styles.input}>
-                                        {notification.title}:
-                                    </Text>
-                                    <Text style={styles.input}>
-                                        {notification.body}
-                                    </Text>
-                                    <View>
-                                        {isPastDate ? (
-                                            <Text style={styles.input}>
-                                                Sent Date:{" "}
-                                                {scheduledDate.toLocaleString(
-                                                    "en-US",
-                                                    {
-                                                        weekday: "long",
-                                                        month: "long",
-                                                        day: "numeric",
-                                                        year: "numeric",
-                                                    }
-                                                )}
-                                            </Text>
-                                        ) : (
-                                            <Text style={styles.input}>
-                                                Scheduled Date:{" "}
-                                                {scheduledDate.toLocaleString(
-                                                    "en-US",
-                                                    {
-                                                        weekday: "long",
-                                                        month: "long",
-                                                        day: "numeric",
-                                                        year: "numeric",
-                                                    }
-                                                )}
-                                            </Text>
-                                        )}
-                                    </View>
-                                </View>
-                            );
-                        })
-                    ) : (
-                        <Text>No notifications found.</Text>
-                    )}
-                </View>
-            </ScrollView>
+          <ScrollView style={styles.container}>
+            <View style={styles.section}>
+              {loading ? (
+                <Text>...Loading your reminders</Text>
+              ) : notificationData.length > 0 ? (
+                notificationData.map((notification) => {
+                  console.log("notification--->", notification);
+                  const scheduledDate = new Date(notification.scheduled_date);
+                  const currentDate = new Date();
+                  const isPastDate = scheduledDate < currentDate;
+                  console.log("isPastDate --->", !isPastDate);
+                  return !isPastDate ? (
+                    <View key={notification.notification_id} style={styles.item}>
+                      <Text style={styles.input}>{notification.event_name}</Text>
+                      <Text style={styles.input}>{notification.title}:</Text>
+                      <Text style={styles.input}>{notification.body}</Text>
+                      <View>
+                        <Text style={styles.input}>
+                          {" "}
+                          {scheduledDate.toLocaleString("en-US", {
+                            weekday: "long",
+                            month: "long",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </Text>
+                      </View>
+                    </View>
+                  ) : (
+                    <View key={notification.notification_id}></View>
+                  );
+                })
+              ) : (
+                <Text>No reminders found.</Text>
+              )}
+            </View>
+          </ScrollView>
         </KeyboardAvoidingView>
-    );
+      );      
 };
 
 export default NotificationsScreen;
