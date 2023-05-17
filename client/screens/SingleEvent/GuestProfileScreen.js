@@ -6,41 +6,233 @@ import {
     TextInput,
     TouchableOpacity,
     View,
+    Image,
+    ImageBackground, Alert
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { auth } from "../../../firebase";
 import { useNavigation } from "@react-navigation/native";
-import {
-    getDatabase,
-    ref,
-    child,
-    get,
-    set,
-    query,
-    orderByChild,
-    equalTo,
-} from "firebase/database";
+import { getDatabase, ref, child, get, update } from "firebase/database";
+import Toggle from "react-native-toggle-element";
+import globalStyles from "../../utils/globalStyles";
+import Ionicons from "react-native-vector-icons/Ionicons";
+const BeThereConcise = require("../../../assets/BeThereConcise.png");
+const Background = require("../../../assets/Background.png");
 
 const GuestProfileScreen = (params) => {
-    const [user, setUser] = useState(params.route.params.user);
+    const uid = params.route.params.uid;
+    const event = params.route.params.event;
+    const eventId = (event.event_id).toString()
+    const [user, setUser] = useState({});
+    const [rsvpStatus, setRSVPStatus] = useState(event.guestList[uid].attending); //will need to update
+    const [toggleValue, setToggleValue] = useState(rsvpStatus);
 
-    //const dbRef = ref(getDatabase());
-    console.log(user);
+    useEffect(() => {
+        const dbRef = ref(getDatabase());
+        get(child(dbRef, `users/${uid}`))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    setUser(snapshot.val());
+                } else {
+                    console.log("No data available");
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, []);
+    const navigation = useNavigation();
+
+    const sendRsvpUpdate = async () => {
+        const dbRef = ref(getDatabase());
+        const userEventRef = child(
+            dbRef,
+            `users/${uid}/userEvents/${event.event_id}`
+        );
+        const updateUserEvent = {
+            attending: toggleValue,
+        };
+        await update(userEventRef, updateUserEvent);
+        const eventRef = child(
+            dbRef,
+            `events/${event.event_id}/guestList/${uid}`
+        );
+        const updateEventRef = { attending: toggleValue };
+        await update(eventRef, updateEventRef);
+
+        navigation.goBack()
+    };
 
     return (
-        <ScrollView>
-            <Text style={styles.title}>Guest Profile</Text>
-            <View style={styles.container}>
-                <Text>
-                    <Text style={styles.label}>Name:</Text>
-                    <Text>{user?.firstName}</Text>
+        <ImageBackground
+            source={Background}
+            resizeMode="cover"
+            style={{
+                flex: 1,
+                width: "100%",
+                // justifyContent: "center",
+                alignItems: "center",
+            }}
+        >
+            <View
+                style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: 20,
+                    margin: 20,
+                    marginBottom: 60,
+                }}
+            >
+                <Text
+                    style={{
+                        fontSize: 20,
+                        padding: 10,
+                        fontWeight: "bold",
+                    }}
+                >
+                    Will you be there?
                 </Text>
-                <Text>
-                    <Text style={styles.label}>Email:</Text>
-                    <Text>{user?.email}</Text>
+                <Text style={globalStyles.paragraph}>
+                    Toggle your RSVP status
                 </Text>
             </View>
-        </ScrollView>
+            <View
+                style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: 150,
+                    padding: 20,
+                }}
+            >
+                <View style={{ margin: 40 }}>
+                    {toggleValue ? (
+                        <View
+                            style={{
+                                ...globalStyles.button,
+                                backgroundColor: "#38b6ff",
+                                height: 175,
+                                width: 175,
+                                padding: 30,
+                                borderRadius: 175,
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 25,
+                                    fontFamily: "Bukhari Script",
+                                    color: "white",
+                                    textAlign: "center",
+                                }}
+                            >
+                                I'll BeThere
+                            </Text>
+                        </View>
+                    ) : (
+                        <View
+                            style={{
+                                backgroundColor: "black",
+                                height: 175,
+                                width: 175,
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 25,
+                                    fontFamily: "Bukhari Script",
+                                    color: "white",
+                                }}
+                            >
+                                Can't make it
+                            </Text>
+                        </View>
+                    )}
+                </View>
+
+                <View style={{ position: "fixed", bottom: 0 }}>
+                    <Toggle
+                        value={toggleValue}
+                        onPress={(val) => setToggleValue(val)}
+                        thumbButton={{
+                            width: 60,
+                            height: 60,
+                            radius: 50,
+                        }}
+                        trackBar={{
+                            width: 200,
+                            height: 40,
+                            radius: 30,
+                            margin: 20,
+                            inActiveBackgroundColor: "white",
+                            activeBackgroundColor: "white",
+                            borderWidth: 4,
+                            borderActiveColor: "black",
+                            borderInActiveColor: "black",
+                        }}
+                        thumbInActiveComponent={
+                            <View
+                                style={{
+                                    backgroundColor: "black",
+                                    width: 60,
+                                    height: 60,
+                                    borderRadius: 50,
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <Ionicons
+                                    name="thumbs-down-outline"
+                                    size={35}
+                                    color={"white"}
+                                />
+                            </View>
+                        }
+                        thumbActiveComponent={
+                            <Image
+                                source={BeThereConcise}
+                                style={{
+                                    height: 100,
+                                    width: 100,
+                                    alignSelf: "center",
+                                }}
+                            />
+                        }
+                    />
+                </View>
+            </View>
+            {/* <Text>
+                <Text style={styles.label}>
+                    Name: {user.firstName ? user.firstName : null}{" "}
+                    {user.lastName ? user.lastName : null}
+                </Text>
+            </Text>
+
+            <Text style={styles.label}>
+                Phone: {user.phoneNumber ? user.phoneNumber : null}
+            </Text>
+            <Text style={styles.label}>
+                Email: {user.email ? user.email : null}
+            </Text> */}
+            {rsvpStatus != toggleValue ? (
+                <TouchableOpacity
+                    style={{
+                        ...globalStyles.button,
+                        backgroundColor: "#cb6ce6",
+                        position: "absolute",
+                        bottom: "20%",
+                    }}
+                    onPress={sendRsvpUpdate}
+                >
+                    <Ionicons name="send-outline" size={25} color={"white"} />
+                    <Text style={{ ...globalStyles.heading3, color: "white" }}>
+                        Send RSVP update to host
+                    </Text>
+                </TouchableOpacity>
+            ) : null}
+        </ImageBackground>
     );
 };
 

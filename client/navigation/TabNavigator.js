@@ -6,6 +6,7 @@ import Notifications from "../screens/Notifications/Notifications";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MyAccountNavigator from "./MyAccountNavigator";
 import EventNavigator from "./EventNavigator";
+import globalStyles from "../utils/globalStyles";
 
 const Tab = createBottomTabNavigator();
 
@@ -68,7 +69,10 @@ const TabNavigator = () => {
                 name="NotificationsScreen"
                 component={Notifications}
                 initialParams={{ uid: uid }}
-                options={{ title: "Notifications" }}
+                options={{
+                    title: "Notifications",
+                    headerTitleStyle: globalStyles.screenHeader,  //!!!KIT this formatting doesn't work
+                }}
             />
         </Tab.Navigator>
     );

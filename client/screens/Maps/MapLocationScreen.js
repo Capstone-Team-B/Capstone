@@ -23,6 +23,7 @@ import {
 import MapView, { Callout, Marker } from "react-native-maps";
 import { useAtom } from "jotai";
 import { user as userStore } from "../../store/user";
+import globalStyles from "../../utils/globalStyles";
 
 const MapLocationScreen = (params) => {
     const eventHost = params.route.params.eventHost;
@@ -136,15 +137,20 @@ const MapLocationScreen = (params) => {
             .catch((error) => console.log("error", error));
     };
     return (
-        <KeyboardAvoidingView style={styles.container}>
+        <KeyboardAvoidingView style={globalStyles.container}>
             {eventHost === storeUser.uid && (
                 <View>
-                    <View
-                        style={{ paddingVertical: 10, paddingHorizontal: 10 }}
-                    >
-                        <Text>Name</Text>
+                    <View>
+                        <Text
+                            style={{
+                                ...globalStyles.paragraph,
+                                marginBottom: 12,
+                            }}
+                        >
+                            Name
+                        </Text>
                         <TextInput
-                            style={[styles.addressInput]}
+                            style={globalStyles.input}
                             value={dataInfo.name}
                             onChangeText={(val) => {
                                 let tempDataInfo = {
@@ -155,12 +161,17 @@ const MapLocationScreen = (params) => {
                             }}
                         ></TextInput>
                     </View>
-                    <View
-                        style={{ paddingVertical: 10, paddingHorizontal: 10 }}
-                    >
-                        <Text>Address</Text>
+                    <View>
+                        <Text
+                            style={{
+                                ...globalStyles.paragraph,
+                                marginBottom: 12,
+                            }}
+                        >
+                            Address
+                        </Text>
                         <TextInput
-                            style={[styles.addressInput]}
+                            style={globalStyles.input}
                             value={dataInfo.address}
                             onChangeText={(val) => {
                                 let tempDataInfo = {
@@ -172,12 +183,17 @@ const MapLocationScreen = (params) => {
                             }}
                         ></TextInput>
                     </View>
-                    <View
-                        style={{ paddingVertical: 10, paddingHorizontal: 10 }}
-                    >
-                        <Text>Label</Text>
+                    <View>
+                        <Text
+                            style={{
+                                ...globalStyles.paragraph,
+                                marginBottom: 12,
+                            }}
+                        >
+                            Label
+                        </Text>
                         <TextInput
-                            style={[styles.addressInput]}
+                            style={globalStyles.input}
                             value={dataInfo.label}
                             onChangeText={(val) => {
                                 let tempDataInfo = {
@@ -229,7 +245,6 @@ const MapLocationScreen = (params) => {
                 ) : (
                     <Text>Not events</Text>
                 )}
-                <Text> Maps and Events {eventId}</Text>
             </View>
         </KeyboardAvoidingView>
     );

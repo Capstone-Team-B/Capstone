@@ -15,6 +15,7 @@ import { getDatabase, ref, child, set, push } from "firebase/database";
 import { DatePickerModal } from "react-native-paper-dates";
 import { TimePickerModal } from "react-native-paper-dates";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import globalStyles from "../../utils/globalStyles";
 
 const CreateEventForm = (props) => {
     const [weddingName, setWeddingName] = useState("");
@@ -84,7 +85,7 @@ const CreateEventForm = (props) => {
                 event_id: newEventId,
                 name: weddingName,
                 description: description,
-                locations: { 0: location },
+                mainLocation: location,
                 startDate: eventStartDate,
                 endDate: eventEndDate,
                 startTime: startTime,
@@ -105,27 +106,27 @@ const CreateEventForm = (props) => {
     };
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior="height">
-            <ScrollView style={styles.container}>
+        <KeyboardAvoidingView style={globalStyles.container} behavior="height">
+            <ScrollView style={globalStyles.container}>
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Wedding Details</Text>
                     <TextInput
-                        style={styles.input}
-                        placeholder="Wedding Name"
+                        style={globalStyles.input}
+                        placeholder="Wedding name"
                         value={weddingName}
                         onChangeText={setWeddingName}
                         required={true}
                     />
                     <TextInput
-                        style={styles.input}
+                        style={globalStyles.input}
                         placeholder="Description"
                         value={description}
                         onChangeText={setDescription}
                         required={true}
                     />
                     <TextInput
-                        style={styles.input}
-                        placeholder="Location"
+                        style={globalStyles.input}
+                        placeholder="Main location"
                         value={location}
                         onChangeText={setLocation}
                         required={true}

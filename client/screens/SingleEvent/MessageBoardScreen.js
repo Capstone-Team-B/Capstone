@@ -21,6 +21,7 @@ import {
     equalTo,
     orderByKey,
 } from "firebase/database";
+import globalStyles from "../../utils/globalStyles";
 
 const MessageboardScreen = (params) => {
     // console.log("params", params.route.params);
@@ -135,28 +136,37 @@ const MessageboardScreen = (params) => {
     };
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior="padding">
+        <KeyboardAvoidingView style={globalStyles.container} behavior="padding">
             <Text style={styles.eventLabel}>Messages for {eventName}</Text>
-            <View style={styles.inputContainer}>
+            <View style={{}}>
                 {messages.map((message) => (
-                    <View key={message.id} style={styles.item}>
-                        <Text style={styles.firstName}>{message.content}</Text>
-                        <Text style={styles.nameText}>
-                            {message.senderName}
+                    <View
+                        key={message.id}
+                        style={{ margin: 10 }}
+                    >
+                        <Text style={{...globalStyles.heading3, marginBottom: 3, marginTop: 3}}>
+                            {message.content}
                         </Text>
+                        <Text
+                            style={{
+                                ...globalStyles.paragraph,
+                                fontStyle: "italic",
+                            }}
+                        >
+                            posted by{message.senderName}{"\n"}{message.dateTimeStamp}</Text>
                     </View>
                 ))}
                 <TextInput
                     placeholder="Write here"
-                    style={styles.input}
+                    style={globalStyles.input}
                     value={newMessage}
                     onChangeText={(text) => setNewMessage(text)}
                 />
                 <TouchableOpacity
                     onPress={handleSubmitMessage}
-                    style={styles.button}
+                    style={globalStyles.button}
                 >
-                    <Text style={styles.buttonText}>Add Your Message</Text>
+                    <Text>Add Your Message</Text>
                 </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>

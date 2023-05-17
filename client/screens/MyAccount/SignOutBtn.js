@@ -16,12 +16,31 @@ const SignOutBtn = () => {
     };
 
     return (
-        <Button
-            style={globalStyles.button}
-            onPress={handleSignOut}
-            title="Sign out"
-        />
+        <View
+            style={{
+                backgroundColor: "#cb6ce6",
+                width: "100%",
+                padding: 15,
+                margin: 10,
+                borderRadius: 10,
+                alignItems: "center",
+                color: "white"
+            }}
+        >
+            <Button onPress={handleSignOut} title="Sign out" />
+        </View>
     );
 };
 
 export default SignOutBtn;
+
+const styles = StyleSheet.create({
+    button: {
+        backgroundColor: "#cb6ce6",
+        width: "100%",
+        padding: 15,
+        margin: 10,
+        borderRadius: 10,
+        alignItems: "center",
+    },
+});

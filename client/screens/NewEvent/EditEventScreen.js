@@ -19,11 +19,16 @@ const EditEvent = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
 
     const [weddingName, setWeddingName] = useState(event.name || "");
-    const [eventStartDate, setEventStartDate] = useState(new Date(event.startDate) || "");
-    const [eventEndDate, setEventEndDate] = useState(new Date(event.endDate) || "");
+    const [eventStartDate, setEventStartDate] = useState(
+        new Date(event.startDate) || ""
+    );
+    const [eventEndDate, setEventEndDate] = useState(
+        new Date(event.endDate) || ""
+    );
     const [description, setDescription] = useState(event.description || "");
     const [startTime, setStartTime] = useState(event.startTime || "");
     const [endTime, setEndTime] = useState(event.endTime || "");
+    const [location, setLocation] = useState(event.mainLocation || "");
     const [selectedEventType, setSelectedEventType] = useState("");
     const [open, setOpen] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -69,7 +74,13 @@ const EditEvent = (params) => {
     };
 
     const handleSubmit = async () => {
-        if (!weddingName || !eventStartDate || !eventEndDate || !startTime || !endTime) {
+        if (
+            !weddingName ||
+            !eventStartDate ||
+            !eventEndDate ||
+            !startTime ||
+            !endTime
+        ) {
             Alert.alert("Please fill in all fields");
             return;
         }
@@ -86,6 +97,7 @@ const EditEvent = (params) => {
             const updatedEvent = {
                 name: weddingName,
                 description: description,
+                mainLocation: location,
                 startDate: eventStartDate,
                 endDate: eventEndDate,
                 startTime: startTime,
@@ -104,10 +116,10 @@ const EditEvent = (params) => {
         <KeyboardAvoidingView style={styles.container} behavior="height">
             <ScrollView style={styles.container}>
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Wedding Details</Text>
+                    <Text style={styles.sectionTitle}>Wedding details</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Wedding Name"
+                        placeholder="Wedding name"
                         value={weddingName}
                         onChangeText={setWeddingName}
                         required={true}
@@ -119,13 +131,33 @@ const EditEvent = (params) => {
                         onChangeText={setDescription}
                         required={true}
                     />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Main location"
+                        value={location}
+                        onChangeText={setLocation}
+                        required={true}
+                    />
                     <TouchableOpacity style={styles.outlineButton}>
                         <TouchableOpacity onPress={() => setOpen(true)}>
                             <Text style={styles.outlineButtonText}>
-                            {eventStartDate && eventEndDate
-                                        ? `${new Date(eventStartDate).toLocaleString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
-                                        } - ${new Date(eventEndDate).toLocaleString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}`
-                                        : "Select Date(s)"}
+                                {eventStartDate && eventEndDate
+                                    ? `${new Date(
+                                          eventStartDate
+                                      ).toLocaleString("en-US", {
+                                          weekday: "long",
+                                          month: "long",
+                                          day: "numeric",
+                                          year: "numeric",
+                                      })} - ${new Date(
+                                          eventEndDate
+                                      ).toLocaleString("en-US", {
+                                          weekday: "long",
+                                          month: "long",
+                                          day: "numeric",
+                                          year: "numeric",
+                                      })}`
+                                    : "Select Date(s)"}
                             </Text>
                         </TouchableOpacity>
                         <SafeAreaProvider>
@@ -178,7 +210,7 @@ const EditEvent = (params) => {
                         />
                     </SafeAreaProvider>
                 </View>
-                
+
                 <View>
                     <TouchableOpacity
                         style={styles.submitButton}
@@ -216,13 +248,13 @@ const EditEvent = (params) => {
                     style={styles.addButton}
                     onPress={() =>
                         navigation.navigate("Maps", {
-                            event: event,
+                            eventId: event.event_id || "0",
+                            eventHost: event.host_id,
                         })
                     }
                 >
                     <Text style={styles.addButtonText}>View Locations</Text>
                 </TouchableOpacity>
-
             </ScrollView>
         </KeyboardAvoidingView>
     );

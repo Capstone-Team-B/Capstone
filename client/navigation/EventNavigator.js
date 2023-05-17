@@ -49,7 +49,6 @@ const EventNavigator = (props) => {
             <Stack.Screen
                 name="GuestProfileScreen"
                 component={GuestProfileScreen}
-                initialParams={{ uid: uid }}
                 options={{
                     title: "My Guest Profile",
                     headerTitleStyle: globalStyles.screenHeader,

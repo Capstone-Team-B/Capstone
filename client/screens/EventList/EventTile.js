@@ -12,13 +12,17 @@ const Backgroundhorizontal = require("../../../assets/Backgroundhorizontal.png")
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const EventTile = ({ event, uid }) => {
+    const eventData = event.item;
     const navigation = useNavigation();
-
+    console.log("event on eventTile -->", eventData);
+    console.log("uid on event tile -->", uid);
     return (
         <TouchableOpacity
-            onPress={() => navigation.navigate("SingleEvent", { event })}
+            onPress={() =>
+                navigation.navigate("SingleEvent", { event: eventData })
+            }
         >
-            {uid === event.host_id ? (
+            {uid === eventData.host_id ? (
                 <View style={styles.imageContainer}>
                     <View style={styles.borderContainer}>
                         <ImageBackground
@@ -29,7 +33,7 @@ const EventTile = ({ event, uid }) => {
                                 padding: 20,
                             }}
                         >
-                            <View key={event.id}>
+                            <View key={eventData.event_id}>
                                 <View
                                     style={{
                                         flexDirection: "row",
@@ -37,13 +41,13 @@ const EventTile = ({ event, uid }) => {
                                     }}
                                 >
                                     <Text style={globalStyles.heading2}>
-                                        {event.name}
+                                        {eventData.name}
                                     </Text>
                                     <Ionicons name="star-outline" size={25} />
                                 </View>
                                 <Text style={globalStyles.heading3}>
                                     {new Date(
-                                        event.startDate
+                                        eventData.startDate
                                     ).toLocaleDateString("en-US", {
                                         weekday: "short",
                                         month: "short",
@@ -51,7 +55,7 @@ const EventTile = ({ event, uid }) => {
                                         year: "numeric",
                                     })}{" "}
                                     -{" "}
-                                    {new Date(event.endDate).toLocaleDateString(
+                                    {new Date(eventData.endDate).toLocaleDateString(
                                         "en-US",
                                         {
                                             weekday: "short",
@@ -62,36 +66,44 @@ const EventTile = ({ event, uid }) => {
                                     )}
                                 </Text>
                                 <Text style={globalStyles.paragraph}>
-                                    {event.location}
+                                    {eventData.mainLocation}
                                 </Text>
                                 <Text style={globalStyles.paragraph}>
-                                    {event.description}
+                                    {eventData.description}
                                 </Text>
                             </View>
                         </ImageBackground>
                     </View>
                 </View>
             ) : (
-                <View key={event.id} style={styles.itemGuest}>
-                    <Text style={globalStyles.heading2}>{event.name}</Text>
+                <View key={eventData.event_id} style={styles.itemGuest}>
+                    <Text style={globalStyles.heading2}>{eventData.name}</Text>
                     <Text style={globalStyles.heading3}>
-                        {new Date(event.startDate).toLocaleDateString("en-US", {
-                            weekday: "short",
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                        })}{" "}
+                        {new Date(eventData.startDate).toLocaleDateString(
+                            "en-US",
+                            {
+                                weekday: "short",
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                            }
+                        )}{" "}
                         -{" "}
-                        {new Date(event.endDate).toLocaleDateString("en-US", {
-                            weekday: "short",
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                        })}
+                        {new Date(eventData.endDate).toLocaleDateString(
+                            "en-US",
+                            {
+                                weekday: "short",
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                            }
+                        )}
                     </Text>
-                    <Text style={globalStyles.paragraph}>{event.location}</Text>
                     <Text style={globalStyles.paragraph}>
-                        {event.description}
+                        {eventData.location}
+                    </Text>
+                    <Text style={globalStyles.paragraph}>
+                        {eventData.description}
                     </Text>
                 </View>
             )}
