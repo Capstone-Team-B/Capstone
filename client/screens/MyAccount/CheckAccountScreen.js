@@ -37,13 +37,12 @@ import {
 } from "firebase/database";
 
 const CheckAccountScreen = (props) => {
-    // console.log("props are -->", props);
+    console.log("props are -->", props.route.params);
     const [user, setUser] = useState(props.route.params);
     const [email, setEmail] = useState(user.email || "");
     const [phoneNumber, setPhoneNumber] = useState(
-        "1 222 222 2222" || user.phoneNumber || ""
+        "(975) 555-5555" || user.phoneNumber || ""
     );
-    const dbRef = ref(getDatabase());
 
     useEffect(() => {
         setUser(props.route.params);
@@ -59,41 +58,44 @@ const CheckAccountScreen = (props) => {
             return;
         }
         // check for matching phone number
-        else {
-            console.log("Checking for this", phoneNumber);
-            try {
-                const userPhoneRef = await get(
+        console.log("Checking for phoneNumber ", phoneNumber);
+        try {
+            const dbRef = ref(getDatabase());
+            const userPhoneRef = await get(
+                query(
+                    child(dbRef, "users"),
+                    orderByChild("phoneNumber"),
+                    equalTo(phoneNumber)
+                )
+            );
+            if (userPhoneRef) {
+                console.log("Phone reference -->", userPhoneRef);
+                const user = userPhoneRef.val();
+                console.log("user value ==> ", user);
+                navigation.navigate("CreateAccountScreen", {
+                    user: user,
+                });
+            } else {
+                console.log("Checking for email ", email);
+                const userEmailRef = await get(
                     query(
                         child(dbRef, "users"),
-                        orderByChild("phoneNumber"),
-                        equalTo(phoneNumber)
+                        orderByChild("email"),
+                        equalTo(email)
                     )
                 );
-                console.log("Phone reference -->", userPhoneRef);
-                if (!userPhoneRef.exists()) {
-                    console.log("there is an email", email);
-                    const userEmailRef = await get(
-                        query(
-                            child(dbRef, "users"),
-                            orderByChild("email"),
-                            equalTo(email)
-                        )
-                    );
-                    if (!userEmailRef.exists()) {
-                        console.log("lets create an account");
-                        navigation.navigate("CreateAccountScreen", {
-                            screen: "CreateAccountScreen",
-                            email: email,
-                            phoneNumber: phoneNumber,
-                        });
-                    }
-
-                    console.log("email reference -->", userEmailRef);
+                if (!userEmailRef.exists()) {
+                    console.log("lets create an account");
+                    navigation.navigate("CreateAccountScreen", {
+                        screen: "CreateAccountScreen",
+                        email: email,
+                        phoneNumber: phoneNumber,
+                    });
                 }
-                const userSnapshot = await get(userRef);
-            } catch (error) {
-                console.log(error);
+                console.log("email reference -->", userEmailRef);
             }
+        } catch (error) {
+            console.log(error);
         }
     };
 

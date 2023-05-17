@@ -1,3 +1,4 @@
+//ENH Was here updated references to phone to phoneNumber to match database
 import React, { useState } from "react";
 import {
     KeyboardAvoidingView,
@@ -20,7 +21,7 @@ const CreateGuestList = (params) => {
 
     const handleAddGuest = () => {
         const newGuestList = [...guestList];
-        newGuestList.push({ phone: "", firstName: "", lastName: "" });
+        newGuestList.push({ phoneNumber: "", firstName: "", lastName: "" });
         setGuestList(newGuestList);
     };
 
@@ -38,7 +39,7 @@ const CreateGuestList = (params) => {
 
     const handleSubmit = async () => {
         for (const guest of guestList) {
-            if (!guest.phone || !guest.firstName || !guest.lastName) {
+            if (!guest.phoneNumber || !guest.firstName || !guest.lastName) {
                 Alert.alert("Please fill in all fields");
                 return;
             }
@@ -50,7 +51,7 @@ const CreateGuestList = (params) => {
 
         for (const guest of guestList) {
             const {
-                phone: guestPhone,
+                phoneNumber: guestPhone,
                 firstName: guestFirstname,
                 lastName: guestLastname,
             } = guest;
@@ -63,9 +64,9 @@ const CreateGuestList = (params) => {
 
             const newGuestListRef = push(usersRef);
             const newGuestListKey = newGuestListRef.key;
-            
+
             const newGuestListData = {
-                phone: formattedPhone.replace(
+                phoneNumber: formattedPhone.replace(
                     /(\d{3})(\d{3})(\d{4})/,
                     "($1) $2-$3"
                 ),
@@ -79,7 +80,9 @@ const CreateGuestList = (params) => {
             await set(newGuestListRef, newGuestListData);
 
             const newEventGuestsRef = child(guestListRef, newGuestListKey);
-            await update(newEventGuestsRef, { [newGuestListKey]: newGuestListKey });         
+            await update(newEventGuestsRef, {
+                [newGuestListKey]: newGuestListKey,
+            });
         }
         navigation.navigate("SingleEvent", { event: event });
     };
@@ -121,9 +124,13 @@ const CreateGuestList = (params) => {
                                 <TextInput
                                     style={styles.input}
                                     placeholder="Phone Number"
-                                    value={guest.phone}
+                                    value={guest.phoneNumber}
                                     onChangeText={(value) =>
-                                        handleUpdateGuest(index, "phone", value)
+                                        handleUpdateGuest(
+                                            index,
+                                            "phoneNumber",
+                                            value
+                                        )
                                     }
                                     required={true}
                                 />
@@ -170,9 +177,13 @@ const CreateGuestList = (params) => {
                     </TouchableOpacity>
                 </View>
                 <View>
-                <TouchableOpacity
+                    <TouchableOpacity
                         style={styles.addButton}
-                        onPress={() => {navigation.navigate("GuestListScreen", { event: event })}}
+                        onPress={() => {
+                            navigation.navigate("GuestListScreen", {
+                                event: event,
+                            });
+                        }}
                     >
                         <Text style={styles.addButtonText}>
                             View All Guests
