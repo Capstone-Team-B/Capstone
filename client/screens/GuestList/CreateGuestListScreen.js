@@ -1,3 +1,4 @@
+//ENH Was here updated references to phone to phoneNumber to match database
 import React, { useState } from "react";
 import {
     KeyboardAvoidingView,
@@ -103,7 +104,7 @@ const CreateGuestList = (params) => {
                     )
                 );
                 const snapshot = await get(usersQuery);
-                
+
                 if (snapshot.exists()) {
                     const userData = Object.values(snapshot.val());
                     newGuestListData.user_id = userData[0].user_id;

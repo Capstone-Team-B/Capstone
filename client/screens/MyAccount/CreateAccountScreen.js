@@ -16,6 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, update, set, child, get } from "firebase/database";
 
 const CreateAccountScreen = (props) => {
+    console.log("props in create Account screen ", props.route.params);
     const [user, setUser] = useState(props.route.params);
     const [password, setPassword] = useState("");
     const [firstName, setFirstName] = useState(user.firstName || "");
@@ -48,15 +49,17 @@ const CreateAccountScreen = (props) => {
             dietary: dietary,
             accessibility: accessibility,
         };
+        console.log("new user --> ", newUser);
         if (firstName === "" || lastName === "" || email === "") {
             Alert.alert("Please provide your name and email");
             return;
         }
         try {
-            const userSnapshot = await get(userRef);
-            const dbRef = ref(getDatabase());
-            const userId = user.uid;
+            let userId = user.uid;
             const userRef = child(dbRef, `users/${userId}`);
+            const userSnapshot = await get(userRef);
+            // const dbRef = ref(getDatabase());
+            console.log(userId);
             if (!userSnapshot.exists()) {
                 auth.createUserWithEmailAndPassword(email, password).then(
                     (userCredentials) => {
