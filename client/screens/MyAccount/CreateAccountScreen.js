@@ -19,7 +19,7 @@ const dbRef = ref(getDatabase());
 const CreateAccountScreen = (props) => {
     // finds the user in database if they were created by a host
     useEffect(() => {
-        const uid = props.route.params.uid;
+        let uid = props.route.params.uid;
         if (uid !== "") {
             get(child(dbRef, `users/${uid}`)).then((snapshot) => {
                 if (snapshot.exists()) {
@@ -36,7 +36,6 @@ const CreateAccountScreen = (props) => {
     }, [props]);
 
     const [user, setUser] = useState({});
-    const [user_id, setUser_id] = useState("");
     const [password, setPassword] = useState("pwpwpw" || "");
     const [firstName, setFirstName] = useState(user.firstName || "");
     const [lastName, setLastName] = useState(user.lastName || "");
@@ -71,17 +70,14 @@ const CreateAccountScreen = (props) => {
             return;
         }
 
-        console.log("user id", uid);
-
+        // Store the user data in the Realtime Database with the Authentication UID as the key for auth_id, user_id, guest_id if those don't exist
         let auth_id = "";
-        // Store the user data in the Realtime Database with the UID as the key
-
+        // If existing user created by a host then update maintianing the guest_id value
         if (uid !== "") {
             try {
                 const userRef = child(dbRef, `users/${uid}`);
                 const userSnapshot = await get(userRef);
                 if (userSnapshot.exists()) {
-                    console.log("snapshotexists with: ", userSnapshot.val());
                     auth.createUserWithEmailAndPassword(email, password)
                         .then((userCredentials) => {
                             // set the auth id to match the credentials created in firebase authentication
@@ -100,20 +96,21 @@ const CreateAccountScreen = (props) => {
                                 guest_id: uid,
                                 auth_id: auth_id,
                             };
-                            console.log("updated user info -->", updateUser);
-                            // update(userRef, updateUser);
-                            navigation.navigate("LoginScreen");
+                            update(userRef, updateUser).then(() =>
+                                navigation.navigate("LoginScreen")
+                            );
                         });
-                    // await update(userRef, newUser);
                 } else {
-                    console.log("new user no snapshot ", newUser);
-                    // await set(userRef, newUser);
+                    // set uid to "" empty string
+                    uid = "";
+                    //run handle submit again with new user logic
+                    handleSubmit();
                 }
             } catch (error) {
                 console.log(error);
             }
         }
-        // if no uid filled in
+        // if uid is ""
         else {
             auth.createUserWithEmailAndPassword(email, password).then(
                 (userCredentials) => {
