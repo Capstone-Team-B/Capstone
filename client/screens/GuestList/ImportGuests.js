@@ -10,7 +10,7 @@ import {
     Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getDatabase, ref, child, set, push, query, get } from "firebase/database";
+import { getDatabase, ref, child, set, push, query, get, orderByChild, equalTo, update } from "firebase/database";
 import * as Contacts from "expo-contacts";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
@@ -163,9 +163,16 @@ const ImportContacts = (params) => {
                     "($1) $2-$3"
                 );
                 try {
-                    const query = query(usersRef, orderByChild("phoneNumber").equalTo(formattedPhone));
-                    const snapshot = await get(query);
-                
+                    const usersQuery = query(
+                        child(dbRef, "users"),
+                        orderByChild("phoneNumber"),
+                        equalTo(formattedPhone.replace(
+                            /(\d{3})(\d{3})(\d{4})/,
+                            "($1) $2-$3"
+                        ))
+                      );
+                      console.log("=====>". usersQuery)
+                    const snapshot = await get(usersQuery);
                     if (snapshot.exists()) {
                       const userData = snapshot.val();
                       newGuestListData.user_id = userData.user_id;
@@ -185,7 +192,7 @@ const ImportContacts = (params) => {
                     }
                   } catch (error) {
                     console.log("Error:", error);
-                    Alert.alert("Something went wrong, please try again.");
+                    //Alert.alert("Something went wrong, please try again.");
                     return;
                   }
             } else {

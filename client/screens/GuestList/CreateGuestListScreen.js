@@ -10,7 +10,18 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getDatabase, ref, child, set, push, update, get, query } from "firebase/database";
+import {
+    getDatabase,
+    ref,
+    child,
+    set,
+    push,
+    update,
+    get,
+    query,
+    orderByChild,
+    equalTo,
+} from "firebase/database";
 
 const CreateGuestList = (params) => {
     const [guestList, setGuestList] = useState([]);
@@ -20,7 +31,12 @@ const CreateGuestList = (params) => {
 
     const handleAddGuest = () => {
         const newGuestList = [...guestList];
-        newGuestList.push({ phoneNumber: "", email: "", firstName: "", lastName: "" });
+        newGuestList.push({
+            phoneNumber: "",
+            email: "",
+            firstName: "",
+            lastName: "",
+        });
         setGuestList(newGuestList);
     };
 
@@ -39,66 +55,89 @@ const CreateGuestList = (params) => {
     const handleSubmit = async () => {
         for (const guest of guestList) {
             if (!guest.phoneNumber || !guest.firstName || !guest.lastName) {
-              Alert.alert("Please fill in all required fields");
-              return;
+                Alert.alert("Please fill in all required fields");
+                return;
             }
-          }
-          
-          const dbRef = ref(getDatabase());
-          const usersRef = child(dbRef, `users`);
-          const guestListRef = child(dbRef, `events/${eventId}/guestList`);
-          
-          for (const guest of guestList) {
+        }
+
+        const dbRef = ref(getDatabase());
+        const usersRef = child(dbRef, `users`);
+        const guestListRef = child(dbRef, `events/${eventId}/guestList`);
+
+        for (const guest of guestList) {
             const {
-              phoneNumber: guestPhone,
-              email: guestEmail,
-              firstName: guestFirstname,
-              lastName: guestLastname,
+                phoneNumber: guestPhone,
+                email: guestEmail,
+                firstName: guestFirstname,
+                lastName: guestLastname,
             } = guest;
-          
+
             const formattedPhone = guestPhone.replace(/\D/g, "");
             if (formattedPhone.length !== 10) {
-              Alert.alert("Invalid phone number");
-              return;
+                Alert.alert("Invalid phone number");
+                return;
             }
-          
+
             const newGuestListData = {
-              phoneNumber: formattedPhone.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3"),
-              email: guestEmail,
-              firstName: guestFirstname,
-              lastName: guestLastname,
-              userEvents: {
-                event_id: event.event_id,
-              }
+                phoneNumber: formattedPhone.replace(
+                    /(\d{3})(\d{3})(\d{4})/,
+                    "($1) $2-$3"
+                ),
+                email: guestEmail,
+                firstName: guestFirstname,
+                lastName: guestLastname,
+                userEvents: {
+                    event_id: event.event_id,
+                },
             };
-          
+
             try {
-              const query = query(usersRef, orderByChild("phoneNumber").equalTo(formattedPhone));
-              const snapshot = await get(query);
-          
-              if (snapshot.exists()) {
-                const userData = snapshot.val();
-                newGuestListData.user_id = userData.user_id;
-            
-                const newEventGuestsRef = child(guestListRef, userData.user_id);
-                await update(newEventGuestsRef, { guest_id: userData.user_id });
+                const usersQuery = query(
+                    child(dbRef, "users"),
+                    orderByChild("phoneNumber"),
+                    equalTo(
+                        formattedPhone.replace(
+                            /(\d{3})(\d{3})(\d{4})/,
+                            "($1) $2-$3"
+                        )
+                    )
+                );
+                const snapshot = await get(usersQuery);
+                
+                if (snapshot.exists()) {
+                    const userData = Object.values(snapshot.val());
+                    console.log("userData --->", userData[0].user_id)
+                    newGuestListData.user_id = userData[0].user_id;
 
-              } else {
-                const newGuestListRef = push(usersRef);
-                const newGuestListKey = newGuestListRef.key;
-                newGuestListData.user_id = newGuestListKey;
+                    const newEventGuestsRef = child(
+                        guestListRef,
+                        userData[0].user_id
+                    );
+                    await update(newEventGuestsRef, {
+                        guest_id: userData[0].user_id,
+                    });
+                } else {
+                    const newGuestListRef = push(usersRef);
+                    const newGuestListKey = newGuestListRef.key;
+                    newGuestListData.user_id = newGuestListKey;
 
-                await set(newGuestListRef, newGuestListData);
-            
-                const newEventGuestsRef = child(guestListRef, newGuestListKey);
-                await update(newEventGuestsRef, { guest_id: newGuestListKey });
-              }
+                    await set(newGuestListRef, newGuestListData);
+
+                    const newEventGuestsRef = child(
+                        guestListRef,
+                        newGuestListKey
+                    );
+                    await update(newEventGuestsRef, {
+                        guest_id: newGuestListKey,
+                    });
+                }
             } catch (error) {
-              console.log("Error:", error);
-              Alert.alert("Something went wrong, please try again.");
+                console.log("Error:", error);
+                Alert.alert("Something went wrong, please try again.");
+                return;
             }
-          }
-          
+        }
+
         navigation.navigate("SingleEvent", { event: event });
     };
 
@@ -141,7 +180,11 @@ const CreateGuestList = (params) => {
                                     placeholder="Phone number"
                                     value={guest.phoneNumber}
                                     onChangeText={(value) =>
-                                        handleUpdateGuest(index, "phoneNumber", value)
+                                        handleUpdateGuest(
+                                            index,
+                                            "phoneNumber",
+                                            value
+                                        )
                                     }
                                     required={true}
                                 />
@@ -197,9 +240,13 @@ const CreateGuestList = (params) => {
                     </TouchableOpacity>
                 </View>
                 <View>
-                <TouchableOpacity
+                    <TouchableOpacity
                         style={styles.addButton}
-                        onPress={() => {navigation.navigate("GuestListScreen", { event: event })}}
+                        onPress={() => {
+                            navigation.navigate("GuestListScreen", {
+                                event: event,
+                            });
+                        }}
                     >
                         <Text style={styles.addButtonText}>
                             View All Guests
