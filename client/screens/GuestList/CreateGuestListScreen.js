@@ -10,7 +10,7 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getDatabase, ref, child, set, push, update } from "firebase/database";
+import { getDatabase, ref, child, set, push, update, get, query } from "firebase/database";
 
 const CreateGuestList = (params) => {
     const [guestList, setGuestList] = useState([]);
@@ -39,50 +39,66 @@ const CreateGuestList = (params) => {
     const handleSubmit = async () => {
         for (const guest of guestList) {
             if (!guest.phoneNumber || !guest.firstName || !guest.lastName) {
-                Alert.alert("Please fill in all required fields");
-                return;
+              Alert.alert("Please fill in all required fields");
+              return;
             }
-        }
-
-        const dbRef = ref(getDatabase());
-        const usersRef = child(dbRef, `users`);
-        const guestListRef = child(dbRef, `events/${eventId}/guestList`);
-
-        for (const guest of guestList) {
+          }
+          
+          const dbRef = ref(getDatabase());
+          const usersRef = child(dbRef, `users`);
+          const guestListRef = child(dbRef, `events/${eventId}/guestList`);
+          
+          for (const guest of guestList) {
             const {
-                phoneNumber: guestPhone,
-                email: guestEmail,
-                firstName: guestFirstname,
-                lastName: guestLastname,
+              phoneNumber: guestPhone,
+              email: guestEmail,
+              firstName: guestFirstname,
+              lastName: guestLastname,
             } = guest;
-
+          
             const formattedPhone = guestPhone.replace(/\D/g, "");
             if (formattedPhone.length !== 10) {
-                Alert.alert("Invalid phone number");
-                return;
+              Alert.alert("Invalid phone number");
+              return;
             }
-
-            const newGuestListRef = push(usersRef);
-            const newGuestListKey = newGuestListRef.key;
-            
+          
             const newGuestListData = {
-                phoneNumber: formattedPhone.replace(
-                    /(\d{3})(\d{3})(\d{4})/,
-                    "($1) $2-$3"
-                ),
-                email: guestEmail,
-                firstName: guestFirstname,
-                lastName: guestLastname,
-                user_id: newGuestListKey,
-                userEvents: {
-                    "event_id": event.event_id,
-                },
+              phoneNumber: formattedPhone.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3"),
+              email: guestEmail,
+              firstName: guestFirstname,
+              lastName: guestLastname,
+              userEvents: {
+                event_id: event.event_id,
+              }
             };
-            await set(newGuestListRef, newGuestListData);
+          
+            try {
+              const query = query(usersRef, orderByChild("phoneNumber").equalTo(formattedPhone));
+              const snapshot = await get(query);
+          
+              if (snapshot.exists()) {
+                const userData = snapshot.val();
+                newGuestListData.user_id = userData.user_id;
+            
+                const newEventGuestsRef = child(guestListRef, userData.user_id);
+                await update(newEventGuestsRef, { guest_id: userData.user_id });
 
-            const newEventGuestsRef = child(guestListRef, newGuestListKey);
-            await update(newEventGuestsRef, { "guest_id": newGuestListKey });         
-        }
+              } else {
+                const newGuestListRef = push(usersRef);
+                const newGuestListKey = newGuestListRef.key;
+                newGuestListData.user_id = newGuestListKey;
+
+                await set(newGuestListRef, newGuestListData);
+            
+                const newEventGuestsRef = child(guestListRef, newGuestListKey);
+                await update(newEventGuestsRef, { guest_id: newGuestListKey });
+              }
+            } catch (error) {
+              console.log("Error:", error);
+              Alert.alert("Something went wrong, please try again.");
+            }
+          }
+          
         navigation.navigate("SingleEvent", { event: event });
     };
 
