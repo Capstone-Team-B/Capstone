@@ -68,34 +68,34 @@ const UploadEventImagesScreen = (params) => {
     };
 
     const uploadImages = async () => {
-        // COMMENT BACK IN ONCE STORAGE USAGE RESOLVED
-        // setUploading(true);
+//        COMMENT BACK IN ONCE STORAGE USAGE RESOLVED
+        setUploading(true);
 
-        // const storage = getStorage();
-        // const uploadPromises = [];
+        const storage = getStorage();
+        const uploadPromises = [];
 
-        // for (let i = 0; i < images.length; i++) {
-        //     const filename = images[i].fileName;
-        //     const imageRef = ref(
-        //         storage,
-        //         `event_${event.event_id}/${filename}_${uid}`
-        //         );
-        //         const img = await fetch(images[i].uri);
-        //         const blob = await img.blob();
-        //         const uploadPromise = uploadBytesResumable(imageRef, blob);
-        //         uploadPromises.push(uploadPromise);
-        //     }
+        for (let i = 0; i < images.length; i++) {
+            const filename = images[i].fileName;
+            const imageRef = ref(
+                storage,
+                `event_${event.event_id}/${filename}_${uid}`
+                );
+                const img = await fetch(images[i].uri);
+                const blob = await img.blob();
+                const uploadPromise = uploadBytesResumable(imageRef, blob);
+                uploadPromises.push(uploadPromise);
+            }
 
-        //     try {
-        //         await Promise.all(uploadPromises);
-        //         console.log("All images uploaded successfully");
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
+            try {
+                await Promise.all(uploadPromises);
+                console.log("All images uploaded successfully");
+            } catch (error) {
+                console.log(error);
+            }
 
-        //     setUploading(false);
+            setUploading(false);
         setImages([]);
-        navigation.navigate("EventGallery");
+        navigation.navigate("EventGallery", {event, uid, userName});
     };
 
     const screenWidth = Dimensions.get("window").width;

@@ -8,6 +8,7 @@ import {
     TouchableOpacity,
     Dimensions,
     ActivityIndicator,
+    Modal,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/core";
@@ -24,55 +25,84 @@ import {
 import globalStyles from "../../utils/globalStyles";
 import { useIsFocused } from "@react-navigation/native";
 import { Video } from "expo-av";
+import Swiper from "react-native-swiper";
 
-const dummyPhotos = [
-    "https://fastly.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U",
-    "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68",
-    "https://fastly.picsum.photos/id/106/2592/1728.jpg?hmac=E1-3Hac5ffuCVwYwexdHImxbMFRsv83exZ2EhlYxkgY",
-    "https://fastly.picsum.photos/id/155/3264/2176.jpg?hmac=Zgf_oGMJeg18XoKBFmJgp2DgHMRYuorXlDx5wLII9nU",
-    "https://fastly.picsum.photos/id/257/5000/3333.jpg?hmac=B0TMVZJOXC_cBK0gZj5EzCBnCwoBMEyvt9t8AbJDkdA",
-    "https://fastly.picsum.photos/id/254/200/300.jpg?hmac=VoOUXxjWvbLuWPBSHy_pbMAoLSYCaO-3drnOhwvA2yY",
-];
+// const dummyPhotos = [
+//     "https://fastly.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U",
+//     "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68",
+//     "https://fastly.picsum.photos/id/106/2592/1728.jpg?hmac=E1-3Hac5ffuCVwYwexdHImxbMFRsv83exZ2EhlYxkgY",
+//     "https://fastly.picsum.photos/id/155/3264/2176.jpg?hmac=Zgf_oGMJeg18XoKBFmJgp2DgHMRYuorXlDx5wLII9nU",
+//     "https://fastly.picsum.photos/id/257/5000/3333.jpg?hmac=B0TMVZJOXC_cBK0gZj5EzCBnCwoBMEyvt9t8AbJDkdA",
+//     "https://fastly.picsum.photos/id/254/200/300.jpg?hmac=VoOUXxjWvbLuWPBSHy_pbMAoLSYCaO-3drnOhwvA2yY",
+// ];
 
 const EventGallery = (params) => {
-    const event = params.route.params.event;
-    const uid = params.route.params.uid;
-    const userName = params.route.params.userName;
-    // const photos = params.route.params.event.photos;
+    const [event] = useState(params.route.params.event);
+    const [uid] = useState(params.route.params.uid);
+    const [userName] = useState(params.route.params.userName);
+    //const [photos] = useState(params.route.params.event.photos);
 
-    const [eventImages, setEventImages] = useState(dummyPhotos);
+    const [eventImages, setEventImages] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [storage, setStorage] = useState(getStorage());
+    const [countPhotos, setCountPhotos] = useState(0);
     const isFocused = useIsFocused();
 
-    // COMMENT BACK IN ONCE STORAGE USAGE RESOLVED
-    // const storage = getStorage();
-    // const getPhotos = async () => {
-    //     let imageURLs = [];
-    //     const listRef = ref(storage, `event_${event.event_id}`);
-    //     listAll(listRef)
-    //         .then((res) => {
-    //             res.items.forEach((itemRef) => {
-    //                 getDownloadURL(itemRef).then((url) => {
-    //                     imageURLs = [...imageURLs, url];
-    //                     setEventImages(imageURLs);
-    //                 });
-    //             });
-    //         })
-    //         .catch((error) => {
-    //             console.log(error);
-    //         });
-    //     setLoading(false);
-    // };
+    //Modal state
+    const [modalVisible, setModalVisible] = useState(false);
+    const [photoIndex, setIndexPhoto] = useState(null);
+
+    const getPhotos = async () => {
+        let imageURLs = [];
+        const listRef = ref(storage, `event_${event.event_id}`);
+        listAll(listRef)
+            //console.log("=====>", event.event_id)
+            .then((res) => {
+                setCountPhotos(res.items.length);
+                res.items.forEach((itemRef) => {
+                    getDownloadURL(itemRef).then((url) => {
+                        imageURLs = [...imageURLs, url];
+                        console.log(imageURLs, "imageURLs");
+                        setEventImages(imageURLs);
+                    });
+                });
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        setLoading(false);
+    };
 
     useEffect(() => {
-        // getPhotos();
-        setTimeout(() => {
-            setLoading(false);
-        }, 5000);
-    }, []);
+        if (storage) {
+            getPhotos();
+        }
+    }, [isFocused]);
+
+    const renderItem = (item, index) => (
+        <TouchableOpacity
+            key={index}
+            onPress={() => {
+                setIndexPhoto(eventImages.indexOf(item));
+                setModalVisible(true);
+            }}
+        >
+            <Image
+                source={{ uri: item }}
+                style={{
+                    height: screenWidth / 2 - 12,
+                    width: screenWidth / 2 - 12,
+                    margin: 6,
+                    borderRadius: 10,
+                }}
+            />
+        </TouchableOpacity>
+    );
 
     const navigation = useNavigation();
     const screenWidth = Dimensions.get("window").width;
+    const screenHeight = Dimensions.get("window").height;
 
     return (
         <SafeAreaView style={globalStyles.container}>
@@ -84,62 +114,44 @@ const EventGallery = (params) => {
                     isLooping
                     resizeMode="cover"
                 />
-            ) : eventImages.length && eventImages.length > 0 ? (
+            ) : eventImages.length > 0 ? (
                 <>
-                    <TouchableOpacity
-                        style={{
-                            ...globalStyles.button,
-                            backgroundColor: "#38b6ff",
-                        }}
-                        onPress={() =>
-                            navigation.navigate("UploadEventImagesScreen", {
-                                event: event,
-                                uid: uid,
-                                uploaderName: userName,
-                            })
-                        }
-                    >
-                        <Ionicons
-                            name="add-circle-outline"
-                            color={"white"}
-                            size={25}
-                        />
-                        <Text
-                            style={{ ...globalStyles.heading3, color: "white" }}
+                    {countPhotos <= 6 && (
+                        <TouchableOpacity
+                            style={{
+                                margin: 12,
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                            onPress={() =>
+                                navigation.navigate("UploadEventImagesScreen", {
+                                    event: event,
+                                    uid: uid,
+                                    uploaderName: userName,
+                                })
+                            }
                         >
-                            Add your photos
-                        </Text>
-                    </TouchableOpacity>
-                    <FlatList
-                        data={eventImages}
-                        numColumns={2}
-                        contentContainerStyle={{
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
-                        renderItem={({ item }) => (
-                            <TouchableOpacity
-                                onPress={() =>
-                                    navigation.navigate("SwipeGallery", {
-                                        currentPhoto: item,
-                                        photoIndex: eventImages.indexOf(item),
-                                        allPhotos: eventImages,
-                                    })
-                                }
-                            >
+                            <Text style={globalStyles.heading3}>
+                                Add your photos {countPhotos}
+                            </Text>
+                            <Ionicons name="add-circle-outline" size={25} />
+                        </TouchableOpacity>
+                    )}
+                    <Swiper showsButtons={true}>
+                        {eventImages.map((photo, index) => (
+                            <View style={styles.slide1}>
                                 <Image
-                                    source={{ uri: item }}
+                                    source={{ uri: photo }}
                                     style={{
-                                        height: screenWidth / 2 - 12,
-                                        width: screenWidth / 2 - 12,
+                                        height: "100%",
+                                        width: "100%",
                                         margin: 6,
                                         borderRadius: 10,
                                     }}
                                 />
-                            </TouchableOpacity>
-                        )}
-                        keyExtractor={(item, index) => index.toString()}
-                    />
+                            </View>
+                        ))}
+                    </Swiper>
                 </>
             ) : (
                 <View
@@ -197,5 +209,29 @@ const styles = StyleSheet.create({
         resizeMode: "cover",
         margin: 8,
         borderRadius: 10,
+    },
+    wrapper: {},
+    slide1: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#9DD6EB",
+    },
+    slide2: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#97CAE5",
+    },
+    slide3: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#92BBD9",
+    },
+    text: {
+        color: "#000",
+        fontSize: 30,
+        fontWeight: "bold",
     },
 });
