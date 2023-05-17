@@ -34,7 +34,8 @@ const CreateAccountScreen = (props) => {
     }, [props]);
 
     const [user, setUser] = useState({});
-    const [password, setPassword] = useState("");
+    const [user_id, setUser_id] = useState("");
+    const [password, setPassword] = useState("pwpwpw" || "");
     const [firstName, setFirstName] = useState(user.firstName || "");
     const [lastName, setLastName] = useState(user.lastName || "");
     const [email, setEmail] = useState(user.email || "");
@@ -61,13 +62,18 @@ const CreateAccountScreen = (props) => {
     const navigation = useNavigation();
 
     const handleSubmit = async () => {
-        if (firstName === "" || lastName === "" || email === "") {
-            Alert.alert("Please provide your name and email");
+        const uid = props.route.params.uid;
+        if (
+            firstName === "" ||
+            lastName === "" ||
+            (email === "" && phoneNumber === "")
+        ) {
+            Alert.alert("Please provide your name and a contact method");
             return;
         }
-        console.log("user creation", user);
+        console.log("user id", uid);
         // Store the user data in the Realtime Database with the UID as the key
-        const newUser = {
+        let newUser = {
             firstName: firstName,
             lastName: lastName,
             email: email,
@@ -76,27 +82,40 @@ const CreateAccountScreen = (props) => {
             profilePic: profilePic,
             dietary: dietary,
             accessibility: accessibility,
+            user_id: uid,
         };
-        console.log("new user --> ", newUser);
+        console.log("new user --> ", user_id);
 
         try {
-            let userId = user.uid;
-            const userRef = child(dbRef, `users/${userId}`);
+            const userRef = child(dbRef, `users/${uid}`);
             const userSnapshot = await get(userRef);
-            // const dbRef = ref(getDatabase());
-            console.log(userId);
-            if (!userSnapshot.exists()) {
-                auth.createUserWithEmailAndPassword(email, password).then(
-                    (userCredentials) => {
-                        const user = userCredentials.user;
+            if (userSnapshot.exists()) {
+                auth.createUserWithEmailAndPassword(email, password)
+                    .then((userCredentials) => {
+                        const newUid = userCredentials.user.uid;
+                        setUser_id(newUid);
                         console.log("Registered with: ", user.email);
-                        const userId = user.uid;
-                    }
-                );
-                await set(userRef, newUser);
+                    })
+                    .then(() => {
+                        console.log(newUid);
+                        const updateUser = {
+                            firstName: firstName,
+                            lastName: lastName,
+                            email: email,
+                            phoneNumber: phoneNumber,
+                            homeCity: homeCity,
+                            profilePic: profilePic,
+                            dietary: dietary,
+                            accessibility: accessibility,
+                            user_id: uid,
+                        };
+                        update(userRef, updateUser);
+                        navigation.navigate("LoginScreen");
+                    });
+                // await update(userRef, newUser);
+                console.log(newUser);
             }
-            await update(userRef, newUser);
-            navigation.navigate("MyAccountScreen", { user: newUser });
+            await set(userRef, newUser);
             console.log("updates to user", newUser);
         } catch (error) {
             console.log(error);
