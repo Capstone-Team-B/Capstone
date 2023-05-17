@@ -14,10 +14,26 @@ import {
 import { auth } from "../../../firebase";
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, update, set, child, get } from "firebase/database";
+const dbRef = ref(getDatabase());
 
 const CreateAccountScreen = (props) => {
-    console.log("props in create Account screen ", props.route.params);
-    const [user, setUser] = useState(props.route.params);
+    // finds the user in database
+    useEffect(() => {
+        const uid = props.route.params.uid;
+        if (uid) {
+            get(child(dbRef, `users/${uid}`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const userRef = snapshot.val();
+                    setUser(userRef);
+                } else {
+                    console.log("error reaching database");
+                    props.route.params.uid = null;
+                }
+            });
+        }
+    }, [props]);
+
+    const [user, setUser] = useState({});
     const [password, setPassword] = useState("");
     const [firstName, setFirstName] = useState(user.firstName || "");
     const [lastName, setLastName] = useState(user.lastName || "");
@@ -30,13 +46,25 @@ const CreateAccountScreen = (props) => {
     );
     const [dietary, setDietary] = useState(user.dietary || "");
 
+    //Pre fills in form if there is a uid
     useEffect(() => {
-        setUser(props.route.params);
-    }, [props]);
+        setFirstName(user.firstName || "");
+        setLastName(user.lastName || "");
+        setEmail(user.email || "");
+        setPhoneNumber(user.phoneNumber || "");
+        setHomeCity(user.homeCity || "");
+        setProfilePic(user.profilePic || "");
+        setAccessibility(user.accessibility || "");
+        setDietary(user.dietary || "");
+    }, [user]);
 
     const navigation = useNavigation();
 
     const handleSubmit = async () => {
+        if (firstName === "" || lastName === "" || email === "") {
+            Alert.alert("Please provide your name and email");
+            return;
+        }
         console.log("user creation", user);
         // Store the user data in the Realtime Database with the UID as the key
         const newUser = {
@@ -50,10 +78,7 @@ const CreateAccountScreen = (props) => {
             accessibility: accessibility,
         };
         console.log("new user --> ", newUser);
-        if (firstName === "" || lastName === "" || email === "") {
-            Alert.alert("Please provide your name and email");
-            return;
-        }
+
         try {
             let userId = user.uid;
             const userRef = child(dbRef, `users/${userId}`);
