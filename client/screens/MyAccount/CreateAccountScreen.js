@@ -128,7 +128,7 @@ const CreateAccountScreen = (props) => {
                         profilePic: profilePic,
                         dietary: dietary,
                         accessibility: accessibility,
-                        userEvents: {},
+                        userEvents: { default: "defaultEvent" },
                         guest_id: auth_id,
                         user_id: auth_id,
                         auth_id: auth_id,

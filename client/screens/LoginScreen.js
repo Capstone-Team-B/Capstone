@@ -19,8 +19,8 @@ const BeThereLogoExpanded = require("../../assets/BeThereExpanded.png");
 const Background = require("../../assets/Background.png");
 
 const LoginScreen = () => {
-    const [email, setEmail] = useState(""); // logging in as kit, who is the host of an event
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("testC@test.com"); // logging in as kit, who is the host of an event
+    const [password, setPassword] = useState("pwpwpw");
     const [storeUser, setStoreUser] = useAtom(userStore);
     const navigation = useNavigation();
 
