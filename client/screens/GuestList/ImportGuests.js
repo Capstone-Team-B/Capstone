@@ -166,19 +166,27 @@ const ImportContacts = (params) => {
                     const usersQuery = query(
                         child(dbRef, "users"),
                         orderByChild("phoneNumber"),
-                        equalTo(formattedPhone.replace(
-                            /(\d{3})(\d{3})(\d{4})/,
-                            "($1) $2-$3"
-                        ))
-                      );
-                      console.log("=====>". usersQuery)
+                        equalTo(
+                            formattedPhone.replace(
+                                /(\d{3})(\d{3})(\d{4})/,
+                                "($1) $2-$3"
+                            )
+                        )
+                    );
                     const snapshot = await get(usersQuery);
+                    
                     if (snapshot.exists()) {
-                      const userData = snapshot.val();
-                      newGuestListData.user_id = userData.user_id;
- 
-                      const newEventGuestsRef = child(guestListRef, userData.user_id);
-                      await update(newEventGuestsRef, { guest_id: userData.user_id });
+                        const userData = Object.values(snapshot.val());
+                        console.log("userData --->", userData[0].user_id)
+                        newGuestListData.user_id = userData[0].user_id;
+    
+                        const newEventGuestsRef = child(
+                            guestListRef,
+                            userData[0].user_id
+                        );
+                        await update(newEventGuestsRef, {
+                            guest_id: userData[0].user_id,
+                        });
       
                     } else {
                       const newGuestListRef = push(usersRef);
