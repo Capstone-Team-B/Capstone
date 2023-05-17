@@ -113,13 +113,26 @@ const GuestListScreen = (params) => {
 
     return (
         <View style={globalStyles.container}>
-            <View style={{justifyContent: "center", alignItems: "center", margin: 12}}>
-
-            <Text style={globalStyles.heading2}>Invitees of</Text>
-            <Text style={{...globalStyles.heading1, fontFamily: "Bukhari Script", padding: 10}}>{event.name}</Text>
-            <Text style={globalStyles.heading3}>
-                Hosted by: {host.firstName} {host.lastName}
-            </Text>
+            <View
+                style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    margin: 12,
+                }}
+            >
+                <Text style={globalStyles.heading2}>Invitees of</Text>
+                <Text
+                    style={{
+                        ...globalStyles.heading1,
+                        fontFamily: "Bukhari Script",
+                        padding: 10,
+                    }}
+                >
+                    {event.name}
+                </Text>
+                <Text style={globalStyles.heading3}>
+                    Hosted by: {host.firstName} {host.lastName}
+                </Text>
             </View>
             {guestList.length > 0 ? (
                 uid === event.host_id ? (
@@ -169,8 +182,6 @@ const GuestListScreen = (params) => {
                                     <View
                                         key={key}
                                         style={{
-                                            // ...styles.guestContainer,
-                                            // borderWidth: 2,
                                             width: screenWidth / 3 - 20,
                                             margin: 5,
                                             padding: 5,
@@ -180,7 +191,11 @@ const GuestListScreen = (params) => {
                                         }}
                                     >
                                         <TouchableOpacity
-                                            style={{ position: "absolute", top: -5, right: -5 }}
+                                            style={{
+                                                position: "absolute",
+                                                top: 0,
+                                                right: 0,
+                                            }}
                                             onPress={() =>
                                                 handleDeleteGuest(guest, key)
                                             }
@@ -190,20 +205,25 @@ const GuestListScreen = (params) => {
                                                 size={25}
                                             />
                                         </TouchableOpacity>
-                                        <TouchableOpacity
+                                        <View
                                             style={{
                                                 justifyContent: "center",
                                                 alignItems: "center",
                                             }}
-                                            // onPress={() =>
-                                            //     navigation.navigate(
-                                            //         "GuestProfileScreen",
-                                            //         { user: guest }
-                                            //     )
-                                            // }
                                         >
                                             <Image
-                                                style={{...styles.profilePic, marginBottom: 10}}
+                                                style={{
+                                                    ...styles.profilePic,
+                                                    marginBottom: 10,
+                                                    borderWidth: 5,
+                                                    borderColor:
+                                                        guest.attending
+                                                            ? "#36b6ff"
+                                                            : "black",
+                                                    opacity: guest.attending
+                                                    ? 1
+                                                    : .3,
+                                                }}
                                                 source={{
                                                     uri: guest.profilePic,
                                                 }}
@@ -212,7 +232,7 @@ const GuestListScreen = (params) => {
                                                 {guest.firstName}{" "}
                                                 {guest.lastName}
                                             </Text>
-                                        </TouchableOpacity>
+                                        </View>
                                     </View>
                                 );
                             }}
@@ -220,23 +240,90 @@ const GuestListScreen = (params) => {
                         />
                     </View>
                 ) : (
-                    Object.keys(guestList).map((key) => {
-                        const guest = guestList[key];
-                        return (
-                            <TouchableOpacity
-                                key={key}
-                                onPress={() =>
-                                    navigation.navigate("GuestProfileScreen", {
-                                        user: guest,
-                                    })
-                                }
-                            >
-                                <Text style={styles.guestName}>
-                                    {guest.firstName} {guest.lastName}
-                                </Text>
-                            </TouchableOpacity>
-                        );
-                    })
+                    // Object.keys(guestList).map((key) => {
+                    //     const guest = guestList[key];
+                    //     return (
+                    //         <TouchableOpacity
+                    //             key={key}
+                    //             onPress={() =>
+                    //                 navigation.navigate("GuestProfileScreen", {
+                    //                     user: guest,
+                    //                 })
+                    //             }
+                    //         >
+                    //             <Text style={styles.guestName}>
+                    //                 {guest.firstName} {guest.lastName}
+                    //             </Text>
+                    //         </TouchableOpacity>
+                    //     );
+                    // })
+                    <View style={{ alignItems: "center" }}>
+                        <FlatList
+                            data={Object.keys(guestList)}
+                            numColumns={3}
+                            renderItem={({ item: key }) => {
+                                const guest = guestList[key];
+                                return (
+                                    <View
+                                        key={key}
+                                        style={{
+                                            width: screenWidth / 3 - 20,
+                                            margin: 5,
+                                            padding: 5,
+                                            position: "relative",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <TouchableOpacity
+                                            style={{
+                                                position: "absolute",
+                                                top: 0,
+                                                right: 0,
+                                            }}
+                                            onPress={() =>
+                                                handleDeleteGuest(guest, key)
+                                            }
+                                        >
+                                            <Ionicons
+                                                name="close-circle-outline"
+                                                size={25}
+                                            />
+                                        </TouchableOpacity>
+                                        <View
+                                            style={{
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <Image
+                                                style={{
+                                                    ...styles.profilePic,
+                                                    marginBottom: 10,
+                                                    borderWidth: 5,
+                                                    borderColor:
+                                                        guest.attending
+                                                            ? "#36b6ff"
+                                                            : "black",
+                                                    opacity: guest.attending
+                                                    ? 1
+                                                    : .3,
+                                                }}
+                                                source={{
+                                                    uri: guest.profilePic,
+                                                }}
+                                            />
+                                            <Text style={styles.guestName}>
+                                                {guest.firstName}{" "}
+                                                {guest.lastName}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                );
+                            }}
+                            keyExtractor={(key) => key} // Use the 'key' as the unique identifier
+                        />
+                    </View>
                 )
             ) : (
                 <Text>No guests at this time!</Text>

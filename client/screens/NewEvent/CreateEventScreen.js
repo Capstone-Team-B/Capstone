@@ -15,6 +15,7 @@ import { getDatabase, ref, child, set, push } from "firebase/database";
 import { DatePickerModal } from "react-native-paper-dates";
 import { TimePickerModal } from "react-native-paper-dates";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import globalStyles from "../../utils/globalStyles";
 
 const CreateEventForm = (props) => {
     const [weddingName, setWeddingName] = useState("");
@@ -105,26 +106,26 @@ const CreateEventForm = (props) => {
     };
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior="height">
-            <ScrollView style={styles.container}>
+        <KeyboardAvoidingView style={globalStyles.container} behavior="height">
+            <ScrollView style={globalStyles.container}>
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Wedding Details</Text>
                     <TextInput
-                        style={styles.input}
+                        style={globalStyles.input}
                         placeholder="Wedding Name"
                         value={weddingName}
                         onChangeText={setWeddingName}
                         required={true}
                     />
                     <TextInput
-                        style={styles.input}
+                        style={globalStyles.input}
                         placeholder="Description"
                         value={description}
                         onChangeText={setDescription}
                         required={true}
                     />
                     <TextInput
-                        style={styles.input}
+                        style={globalStyles.input}
                         placeholder="Location"
                         value={location}
                         onChangeText={setLocation}

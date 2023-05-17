@@ -10,6 +10,7 @@ export default StyleSheet.create({
     screenHeader: {
         fontFamily: "Bukhari Script",
         fontSize: 20,
+        padding: 20
     },
     heading1: {
         fontSize: 35,

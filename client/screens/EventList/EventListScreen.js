@@ -45,7 +45,7 @@ const EventListScreen = (props) => {
                         const data = eventSnapshot.val();
                         events = [...events, data];
                     } else {
-                        console.log("no event data");
+                        console.log("no event data!!!");
                     }
                 });
             } catch (error) {
@@ -68,7 +68,7 @@ const EventListScreen = (props) => {
                     const userEventIds = Object.keys(data.userEvents);
                     getEvents(userEventIds);
                 } else {
-                    console.log("no event data");
+                    console.log("no data");
                 }
             });
         } catch (error) {

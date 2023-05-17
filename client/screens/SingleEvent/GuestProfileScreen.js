@@ -7,18 +7,12 @@ import {
     TouchableOpacity,
     View,
     Image,
-    ImageBackground,
+    ImageBackground, Alert
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { auth } from "../../../firebase";
 import { useNavigation } from "@react-navigation/native";
-import {
-    getDatabase,
-    ref,
-    child,
-    get,
-    update,
-} from "firebase/database";
+import { getDatabase, ref, child, get, update } from "firebase/database";
 import Toggle from "react-native-toggle-element";
 import globalStyles from "../../utils/globalStyles";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -27,11 +21,12 @@ const Background = require("../../../assets/Background.png");
 
 const GuestProfileScreen = (params) => {
     const uid = params.route.params.uid;
-    const eventId = params.route.params.eventId;
+    const event = params.route.params.event;
+    const eventId = (event.event_id).toString()
     const [user, setUser] = useState({});
-    const [toggleValue, setToggleValue] = useState(true);
-    const [rsvpStatus, setRSVPStatus] = useState(true); //will need to update
-    console.log("guest prof", params.route.params)
+    const [rsvpStatus, setRSVPStatus] = useState(event.guestList[uid].attending); //will need to update
+    const [toggleValue, setToggleValue] = useState(rsvpStatus);
+
     useEffect(() => {
         const dbRef = ref(getDatabase());
         get(child(dbRef, `users/${uid}`))
@@ -46,23 +41,26 @@ const GuestProfileScreen = (params) => {
                 console.log(error);
             });
     }, []);
+    const navigation = useNavigation();
 
     const sendRsvpUpdate = async () => {
         const dbRef = ref(getDatabase());
-        const userEventRef = child(dbRef, `users/${uid}/userEvents/${eventId}`)
-        console.log(userEventRef)
+        const userEventRef = child(
+            dbRef,
+            `users/${uid}/userEvents/${event.event_id}`
+        );
         const updateUserEvent = {
             attending: toggleValue,
-        }   
-        await update(userEventRef, updateUserEvent)
-        // const updateEvent = {
-        //     [`events/${eventId}/guestlist/${uid}/attending`]: toggleValue,
-        // };
-        // update(dbRef, updateEvent)
-        //     .then(() => console.log("attending status updated on event"))
-        //     .catch((error) => {
-        //         console.log(error);
-        //     });
+        };
+        await update(userEventRef, updateUserEvent);
+        const eventRef = child(
+            dbRef,
+            `events/${event.event_id}/guestList/${uid}`
+        );
+        const updateEventRef = { attending: toggleValue };
+        await update(eventRef, updateEventRef);
+
+        navigation.goBack()
     };
 
     return (

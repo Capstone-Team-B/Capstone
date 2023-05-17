@@ -12,13 +12,14 @@ import {
     FlatList,
     Dimensions,
 } from "react-native";
-import { getDatabase, ref, child, get } from "firebase/database";
+import { getDatabase, ref, child, get, query } from "firebase/database";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import globalStyles from "../../utils/globalStyles";
 import Banner from "../../../assets/Banner.png";
 
 const SingleEvent = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
+    const [host, setHost] = useState({});
     const uid = params.route.params.uid;
     const [userName, setUserName] = useState({});
     // console.log("users unique id --> ", params.route.params.uid);
@@ -26,7 +27,7 @@ const SingleEvent = (params) => {
 
     useEffect(() => {
         setEvent(params.route.params.event);
-    }, [params.route.params.event]);
+    }, [params.route.params.event, event.guestList[uid].attending]);
 
     // useEffect to get all logged-in user info to pass along with image upload
     useEffect(() => {
@@ -44,8 +45,33 @@ const SingleEvent = (params) => {
             .catch((error) => {
                 console.log(error);
             });
+    }, [event.guestList[uid].attending]);
+
+    useEffect(() => {
+        const dbRef = ref(getDatabase());
+        const getHost = async () => {
+            const hostQuery = query(child(dbRef, `users/${event.host_id}`));
+            try {
+                await get(hostQuery)
+                    .then((snapshot) => {
+                        if (snapshot.exists()) {
+                            const data = snapshot.val();
+                            setHost(data);
+                        } else {
+                            console.log("No data available");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        getHost();
     }, []);
 
+    console.log("host -->", host);
     const navigation = useNavigation();
 
     return (
@@ -74,6 +100,16 @@ const SingleEvent = (params) => {
                 >
                     {event.name}
                 </Text>
+                <Text
+                    style={{
+                        fontSize: 15,
+                        marginLeft: 12,
+                        marginRight: 12,
+                    }}
+                >
+                    hosted by {host.firstName} {host.lastName}
+                </Text>
+
                 <Text
                     style={{
                         fontSize: 20,
@@ -106,7 +142,7 @@ const SingleEvent = (params) => {
                         marginRight: 12,
                     }}
                 >
-                    {event.location}
+                    {event.startTime} & {event.endTime}
                 </Text>
                 <Text
                     style={{
@@ -117,7 +153,7 @@ const SingleEvent = (params) => {
                         marginRight: 12,
                     }}
                 >
-                    {event.startTime} & {event.endTime}
+                    {event.location}
                 </Text>
                 <Text
                     style={{
@@ -130,6 +166,34 @@ const SingleEvent = (params) => {
                 >
                     {event.description}
                 </Text>
+                {event.guestList[uid].attending ? (
+                    <View
+                        style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flexDirection: "row",
+                            height: 80,
+                            backgroundColor: "#38b6ff",
+                        }}
+                    >
+                        <Text style={{...globalStyles.heading2, color: "white"}}>My RSVP:{"   "}</Text>
+                        <Text style={{fontSize: 25, fontFamily: "Bukhari Script", color: "white"}}>I'll be there</Text>
+                    </View>
+                ) : (
+                    <View
+                        style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flexDirection: "row",
+                            height: 80,
+                            backgroundColor: "black",
+                            marginBottom: 15
+                        }}
+                    >
+                        <Text style={{...globalStyles.heading2, color: "white"}}>My RSVP:{"   "}</Text>
+                        <Text style={{fontSize: 25, fontFamily: "Bukhari Script", color: "white"}}>Can't make it</Text>
+                    </View>
+                )}
                 <TouchableOpacity
                     style={{
                         ...globalStyles.button,
@@ -139,13 +203,14 @@ const SingleEvent = (params) => {
                     }}
                     onPress={() =>
                         navigation.navigate("GuestProfileScreen", {
-                            event: event, uid: uid
+                            event: event,
+                            uid: uid,
                         })
                     }
                 >
                     <View style={{ alignItems: "center" }}>
                         <Ionicons name="happy-outline" size={25} />
-                        <Text>My RSVP Status</Text>
+                        <Text>Update RSVP Status</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
