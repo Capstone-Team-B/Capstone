@@ -37,7 +37,7 @@ const CheckAccountScreen = (props) => {
     const [user, setUser] = useState(props.route.params);
     const [email, setEmail] = useState("test" || user.email || "");
     const [phoneNumber, setPhoneNumber] = useState(
-        "(123) 555-5555" || user.phoneNumber || ""
+        "(123) 555-5565" || user.phoneNumber || ""
     );
 
     useEffect(() => {
