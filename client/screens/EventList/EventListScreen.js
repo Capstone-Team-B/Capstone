@@ -32,8 +32,10 @@ const EventListScreen = (props) => {
     const isFocused = useIsFocused();
 
     const dbRef = ref(getDatabase());
+    console.log(dbRef);
 
     const getEvents = async (eventIdArray) => {
+        console.log("eventIdArray ==> ", eventIdArray);
         let events = [];
         for (let i = 0; i < eventIdArray.length; i++) {
             try {
@@ -41,6 +43,8 @@ const EventListScreen = (props) => {
                     child(dbRef, `events/${eventIdArray[i]}`)
                 );
                 await get(eventsQuery).then((eventSnapshot) => {
+                    console.log("eventsQuery", eventsQuery);
+                    console.log("eventSnapshot", eventSnapshot);
                     if (eventSnapshot.exists()) {
                         const data = eventSnapshot.val();
                         events = [...events, data];
@@ -49,7 +53,7 @@ const EventListScreen = (props) => {
                     }
                 });
             } catch (error) {
-                console.log('here',error);
+                console.log("here", error);
             }
         }
         setEventList(events);
