@@ -19,7 +19,7 @@ import EventGallery from "../screens/SingleEvent/EventGallery";
 import SinglePhoto from "../screens/SingleEvent/SinglePhoto";
 import globalStyles from "../utils/globalStyles";
 import EditNotification from "../screens/Notifications/EditNotification";
-import SwipeGallery from "../screens/SingleEvent/SwipeGallery";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -146,11 +146,7 @@ const EventNavigator = (props) => {
                 component={SinglePhoto}
                 options={{ title: "" }}
             />
-            <Stack.Screen
-                name="SwipeGallery"
-                component={SwipeGallery}
-                options={{ title: "" }}
-            />
+            
         </Stack.Navigator>
     );
 };
