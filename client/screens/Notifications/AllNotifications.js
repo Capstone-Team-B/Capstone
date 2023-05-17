@@ -21,15 +21,13 @@ const AllNotifications = (params) => {
 
     useEffect(() => {
         const getNotifications = async () => {
-            const eventQuery = query(
-                child(dbRef, `events/${eventId}`)
-            );
+            const eventQuery = query(child(dbRef, `events/${eventId}`));
             try {
                 await get(eventQuery).then((snapshot) => {
                     if (snapshot.exists()) {
                         const data = snapshot.val();
                         setEvent(data);
-                        console.log("data", data)
+                        console.log("data", data);
                     } else {
                         console.log("No data available");
                     }
@@ -70,7 +68,10 @@ const AllNotifications = (params) => {
                 <View style={styles.section}>
                     {notifications.length > 0 ? (
                         notifications.map((notification) => (
-                            <View key={notification.notification_id} style={styles.item}>
+                            <View
+                                key={notification.notification_id}
+                                style={styles.item}
+                            >
                                 <Text style={styles.input}>
                                     Title: {notification.title}
                                 </Text>
@@ -94,28 +95,33 @@ const AllNotifications = (params) => {
                                 </Text>
                                 <TouchableOpacity
                                     style={styles.outlineButton}
-                                    onPress={() => navigation.navigate("Edit Notification", { notification: notification, event : event })}
+                                    onPress={() =>
+                                        navigation.navigate("Edit Reminder", {
+                                            notification: notification,
+                                            event: event,
+                                        })
+                                    }
                                 >
                                     <Text style={styles.outlineButtonText}>
-                                        Edit Notification
+                                        Edit Reminder
                                     </Text>
                                 </TouchableOpacity>
                             </View>
                         ))
                     ) : (
-                        <Text>No notifications found</Text>
+                        <Text>No reminders found</Text>
                     )}
                     <View>
                         <TouchableOpacity
                             style={styles.addButton}
                             onPress={() =>
-                                navigation.navigate("Create Notification", {
+                                navigation.navigate("Create Reminder", {
                                     event: event,
                                 })
                             }
                         >
                             <Text style={styles.addButtonText}>
-                                Create New Notification
+                                Create New Reminder
                             </Text>
                         </TouchableOpacity>
                     </View>

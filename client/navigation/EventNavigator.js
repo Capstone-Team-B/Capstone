@@ -20,7 +20,6 @@ import SinglePhoto from "../screens/SingleEvent/SinglePhoto";
 import globalStyles from "../utils/globalStyles";
 import EditNotification from "../screens/Notifications/EditNotification";
 
-
 const Stack = createNativeStackNavigator();
 
 const EventNavigator = (props) => {
@@ -90,7 +89,7 @@ const EventNavigator = (props) => {
                 options={{ headerTitleStyle: globalStyles.screenHeader }}
             />
             <Stack.Screen
-                name="Create Notification"
+                name="Create Reminder"
                 component={CreateNotification}
                 options={{ headerTitleStyle: globalStyles.screenHeader }}
             />
@@ -100,7 +99,7 @@ const EventNavigator = (props) => {
                 options={{ headerTitleStyle: globalStyles.screenHeader }}
             />
             <Stack.Screen
-                name="All Notifications"
+                name="All Reminders"
                 component={AllNotifications}
                 options={{ headerTitleStyle: globalStyles.screenHeader }}
             />
@@ -120,10 +119,7 @@ const EventNavigator = (props) => {
                 options={{ headerTitleStyle: globalStyles.screenHeader }}
             />
             {/* <Stack.Screen name="All Sub Events" component={AllSubEvents} /> */}
-            <Stack.Screen
-                name="Edit Notification"
-                component={EditNotification}
-            />
+            <Stack.Screen name="Edit Reminder" component={EditNotification} />
             <Stack.Screen
                 name="UploadEventImagesScreen"
                 component={UploadEventImagesScreen}
@@ -146,7 +142,6 @@ const EventNavigator = (props) => {
                 component={SinglePhoto}
                 options={{ title: "" }}
             />
-            
         </Stack.Navigator>
     );
 };
