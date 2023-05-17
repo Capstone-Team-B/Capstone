@@ -51,9 +51,9 @@ const CreateAccountScreen = (props) => {
 
     //Pre fills in form if there is a uid
     useEffect(() => {
-        setFirstName("TestAHasAccount" || user.firstName || "");
-        setLastName(user.lastName || "");
-        setEmail("testA@test.com" || user.email || "");
+        setFirstName("NewAccount" || user.firstName || "");
+        setLastName("TestC", user.lastName || "");
+        setEmail("testC@test.com" || user.email || "");
         setPhoneNumber(user.phoneNumber || "");
         setHomeCity(user.homeCity || "");
         setProfilePic(user.profilePic || "");
@@ -65,63 +65,82 @@ const CreateAccountScreen = (props) => {
 
     const handleSubmit = async () => {
         const uid = props.route.params.uid;
-        if (
-            firstName === "" ||
-            lastName === "" ||
-            (email === "" && phoneNumber === "")
-        ) {
+        // Check that Form was filled out with name and email
+        if (firstName === "" || lastName === "" || email === "") {
             Alert.alert("Please provide your name and a contact method");
             return;
         }
-        console.log("user id", uid);
-        // Store the user data in the Realtime Database with the UID as the key
-        let newUser = {
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            phoneNumber: phoneNumber,
-            homeCity: homeCity,
-            profilePic: profilePic,
-            dietary: dietary,
-            accessibility: accessibility,
-            guest_id: uid,
-        };
-        console.log("new user --> ", newUser);
 
-        try {
-            const userRef = child(dbRef, `users/${uid}`);
-            let auth_id = "";
-            const userSnapshot = await get(userRef);
-            if (userSnapshot.exists()) {
-                console.log("snapshotexists with: ", userSnapshot.val());
-                auth.createUserWithEmailAndPassword(email, password)
-                    .then((userCredentials) => {
-                        // set the auth id to match the credentials created in firebase authentication
-                        auth_id = userCredentials.user.uid;
-                    })
-                    .then(() => {
-                        const updateUser = {
-                            firstName: firstName,
-                            lastName: lastName,
-                            email: email,
-                            phoneNumber: phoneNumber,
-                            homeCity: homeCity,
-                            profilePic: profilePic,
-                            dietary: dietary,
-                            accessibility: accessibility,
-                            guest_id: uid,
-                            auth_id: auth_id,
-                        };
-                        console.log("updated user info -->", updateUser);
-                        update(userRef, updateUser);
-                        navigation.navigate("LoginScreen");
-                    });
-                // await update(userRef, newUser);
-                console.log("new user", newUser);
+        console.log("user id", uid);
+
+        let auth_id = "";
+        // Store the user data in the Realtime Database with the UID as the key
+
+        if (uid !== "") {
+            try {
+                const userRef = child(dbRef, `users/${uid}`);
+                const userSnapshot = await get(userRef);
+                if (userSnapshot.exists()) {
+                    console.log("snapshotexists with: ", userSnapshot.val());
+                    auth.createUserWithEmailAndPassword(email, password)
+                        .then((userCredentials) => {
+                            // set the auth id to match the credentials created in firebase authentication
+                            auth_id = userCredentials.user.uid;
+                        })
+                        .then(() => {
+                            const updateUser = {
+                                firstName: firstName,
+                                lastName: lastName,
+                                email: email,
+                                phoneNumber: phoneNumber,
+                                homeCity: homeCity,
+                                profilePic: profilePic,
+                                dietary: dietary,
+                                accessibility: accessibility,
+                                guest_id: uid,
+                                auth_id: auth_id,
+                            };
+                            console.log("updated user info -->", updateUser);
+                            // update(userRef, updateUser);
+                            navigation.navigate("LoginScreen");
+                        });
+                    // await update(userRef, newUser);
+                } else {
+                    console.log("new user no snapshot ", newUser);
+                    // await set(userRef, newUser);
+                }
+            } catch (error) {
+                console.log(error);
             }
-            // await set(userRef, newUser);
-        } catch (error) {
-            console.log(error);
+        }
+        // if no uid filled in
+        else {
+            auth.createUserWithEmailAndPassword(email, password).then(
+                (userCredentials) => {
+                    // set the auth id to match the credentials created in firebase authentication
+                    auth_id = userCredentials.user.uid;
+                    let newUser = {
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        phoneNumber: phoneNumber,
+                        homeCity: homeCity,
+                        profilePic: profilePic,
+                        dietary: dietary,
+                        accessibility: accessibility,
+                        userEvents: {},
+                        guest_id: auth_id,
+                        user_id: auth_id,
+                        auth_id: auth_id,
+                    };
+                    console.log("New user info -->", newUser);
+                    const newUserRef = child(dbRef, `users/${auth_id}`);
+                    console.log(newUserRef);
+                    set(newUserRef, newUser).then(() =>
+                        navigation.navigate("LoginScreen")
+                    );
+                }
+            );
         }
     };
 
