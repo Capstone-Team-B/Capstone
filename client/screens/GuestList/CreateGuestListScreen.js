@@ -20,7 +20,7 @@ const CreateGuestList = (params) => {
 
     const handleAddGuest = () => {
         const newGuestList = [...guestList];
-        newGuestList.push({ phone: "", firstName: "", lastName: "" });
+        newGuestList.push({ phoneNumber: "", email: "", firstName: "", lastName: "" });
         setGuestList(newGuestList);
     };
 
@@ -38,8 +38,8 @@ const CreateGuestList = (params) => {
 
     const handleSubmit = async () => {
         for (const guest of guestList) {
-            if (!guest.phone || !guest.firstName || !guest.lastName) {
-                Alert.alert("Please fill in all fields");
+            if (!guest.phoneNumber || !guest.firstName || !guest.lastName) {
+                Alert.alert("Please fill in all required fields");
                 return;
             }
         }
@@ -50,7 +50,8 @@ const CreateGuestList = (params) => {
 
         for (const guest of guestList) {
             const {
-                phone: guestPhone,
+                phoneNumber: guestPhone,
+                email: guestEmail,
                 firstName: guestFirstname,
                 lastName: guestLastname,
             } = guest;
@@ -65,15 +66,16 @@ const CreateGuestList = (params) => {
             const newGuestListKey = newGuestListRef.key;
             
             const newGuestListData = {
-                phone: formattedPhone.replace(
+                phoneNumber: formattedPhone.replace(
                     /(\d{3})(\d{3})(\d{4})/,
                     "($1) $2-$3"
                 ),
+                email: guestEmail,
                 firstName: guestFirstname,
                 lastName: guestLastname,
                 user_id: newGuestListKey,
                 userEvents: {
-                    [event.event_id]: event.event_id,
+                    "event_id": event.event_id,
                 },
             };
             await set(newGuestListRef, newGuestListData);
@@ -94,7 +96,7 @@ const CreateGuestList = (params) => {
                             <View style={styles.section} key={index}>
                                 <TextInput
                                     style={styles.input}
-                                    placeholder="First Name"
+                                    placeholder="First name"
                                     value={guest.firstName}
                                     onChangeText={(value) =>
                                         handleUpdateGuest(
@@ -107,7 +109,7 @@ const CreateGuestList = (params) => {
                                 />
                                 <TextInput
                                     style={styles.input}
-                                    placeholder="Last Name"
+                                    placeholder="Last name"
                                     value={guest.lastName}
                                     onChangeText={(value) =>
                                         handleUpdateGuest(
@@ -120,12 +122,21 @@ const CreateGuestList = (params) => {
                                 />
                                 <TextInput
                                     style={styles.input}
-                                    placeholder="Phone Number"
-                                    value={guest.phone}
+                                    placeholder="Phone number"
+                                    value={guest.phoneNumber}
                                     onChangeText={(value) =>
-                                        handleUpdateGuest(index, "phone", value)
+                                        handleUpdateGuest(index, "phoneNumber", value)
                                     }
                                     required={true}
+                                />
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Email address (optional)"
+                                    value={guest.email}
+                                    onChangeText={(value) =>
+                                        handleUpdateGuest(index, "email", value)
+                                    }
+                                    required={false}
                                 />
                                 <TouchableOpacity
                                     style={styles.deleteButton}

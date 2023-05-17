@@ -89,10 +89,10 @@ const AllNotifications = (params) => {
                                         year: "numeric",
                                     })}
                                 </Text>
-                                <Text style={styles.input}>
+                                {/* <Text style={styles.input}>
                                     Scheduled Time:{" "}
                                     {notification.scheduled_time}
-                                </Text>
+                                </Text> */}
                                 <TouchableOpacity
                                     style={styles.outlineButton}
                                     onPress={() =>
