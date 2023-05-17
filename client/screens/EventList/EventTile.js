@@ -14,8 +14,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 const EventTile = ({ event, uid }) => {
     const eventData = event.item;
     const navigation = useNavigation();
-    console.log("event on eventTile -->", eventData);
-    console.log("uid on event tile -->", uid);
+
     return (
         <TouchableOpacity
             onPress={() =>

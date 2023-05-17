@@ -22,8 +22,6 @@ const SingleEvent = (params) => {
     const [host, setHost] = useState({});
     const uid = params.route.params.uid;
     const [userName, setUserName] = useState({});
-    // console.log("users unique id --> ", params.route.params.uid);
-    console.log(event.event_id);
 
     useEffect(() => {
         setEvent(params.route.params.event);
@@ -71,7 +69,6 @@ const SingleEvent = (params) => {
         getHost();
     }, []);
 
-    console.log("host -->", host);
     const navigation = useNavigation();
 
     return (
