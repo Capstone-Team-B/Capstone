@@ -39,7 +39,7 @@ const EventNavigator = (props) => {
             <Stack.Screen
                 name="SingleEvent"
                 component={SingleEvent}
-                initialParams={{ uid: uid }}
+                // initialParams={{ uid: uid }}
                 options={{
                     title: "Event Details",
                     headerTitleStyle: globalStyles.screenHeader,

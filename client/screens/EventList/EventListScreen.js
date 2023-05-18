@@ -34,7 +34,7 @@ const EventListScreen = (props) => {
     const dbRef = ref(getDatabase());
 
     const getEvents = async (eventIdArray) => {
-        // console.log(eventIdArray)
+        console.log(eventIdArray)
         let events = [];
         for (let i = 0; i < eventIdArray.length; i++) {
             try {
