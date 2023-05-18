@@ -35,10 +35,8 @@ import {
 const CheckAccountScreen = (props) => {
     console.log("props are -->", props.route.params);
     const [user, setUser] = useState(props.route.params);
-    const [email, setEmail] = useState("test" || user.email || "");
-    const [phoneNumber, setPhoneNumber] = useState(
-        "(123) 555-5565" || user.phoneNumber || ""
-    );
+    const [email, setEmail] = useState(user.email || "");
+    const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || "");
 
     useEffect(() => {
         setUser(props.route.params);

@@ -36,7 +36,7 @@ const CreateAccountScreen = (props) => {
     }, [props]);
 
     const [user, setUser] = useState({});
-    const [password, setPassword] = useState("pwpwpw" || "");
+    const [password, setPassword] = useState("");
     const [firstName, setFirstName] = useState(user.firstName || "");
     const [lastName, setLastName] = useState(user.lastName || "");
     const [email, setEmail] = useState(user.email || "");
@@ -50,9 +50,9 @@ const CreateAccountScreen = (props) => {
 
     //Pre fills in form if there is a uid
     useEffect(() => {
-        setFirstName("NewAccount" || user.firstName || "");
-        setLastName("TestC", user.lastName || "");
-        setEmail("testC@test.com" || user.email || "");
+        setFirstName(user.firstName || "");
+        setLastName(user.lastName || "");
+        setEmail(user.email || "");
         setPhoneNumber(user.phoneNumber || "");
         setHomeCity(user.homeCity || "");
         setProfilePic(user.profilePic || "");
@@ -125,7 +125,7 @@ const CreateAccountScreen = (props) => {
                         profilePic: profilePic,
                         dietary: dietary,
                         accessibility: accessibility,
-                        userEvents: { default: "defaultEvent" },
+                        userEvents: {},
                         guest_id: auth_id,
                         user_id: auth_id,
                         auth_id: auth_id,
@@ -134,7 +134,7 @@ const CreateAccountScreen = (props) => {
                     const newUserRef = child(dbRef, `users/${auth_id}`);
                     console.log(newUserRef);
                     set(newUserRef, newUser).then(() =>
-                        navigation.navigate("LoginScreen")
+                        navigation.navigate("MyAccountScreen", {uid: newUser.user_id})
                     );
                 }
             );

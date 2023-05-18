@@ -40,6 +40,10 @@ const EventListScreen = (props) => {
     
     // USEEFFECT
     useEffect(() => {
+        const checkUserEvents = child(dbRef, `users/${uid}/userEvents`)
+        if (!checkUserEvents) {
+            return setLoading(false)
+        }
         const eventIdsQuery = query(
             child(dbRef, `users/${uid}`),
             orderByChild("userEvents")
@@ -58,6 +62,7 @@ const EventListScreen = (props) => {
             } catch (error) {
                 console.log(error);
             }
+            setLoading(false)
         }, [isFocused]);
         
     // FUNCTIONS

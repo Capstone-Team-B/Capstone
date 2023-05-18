@@ -67,10 +67,12 @@ const LoginScreen = () => {
         //     screen: "CheckAccountScreen",
         //     email: email,
         // });
-        navigation.navigate("CreateAccountScreen", {
-            screen: "CreateAccountScreen",
-            email: email,
-        });
+        // navigation.navigate("CheckAccountScreen", { email: email});
+
+        // navigation.navigate("CreateAccountScreen", {
+        //     screen: "CreateAccountScreen",
+        //     email: email,
+        // });
         const dbRef = ref(getDatabase());
         // Check if the email entered during registration already exists in the database
         // should this also check if they are signed up too?
