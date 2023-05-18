@@ -16,7 +16,6 @@ import globalStyles from "../../utils/globalStyles";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Video } from "expo-av";
 
-
 const GuestListScreen = (params) => {
     const [loading, setLoading] = useState(true);
     const [guestList, setGuestList] = useState([]);
@@ -61,15 +60,18 @@ const GuestListScreen = (params) => {
                         if (snapshot.exists()) {
                             const data = snapshot.val();
                             // console.log("data -->", data)
-                            const userEvent = Object.entries(data.userEvents).find(([key, value]) => value.event_id)[0]
-                            const attendingStatus = Object.entries(data.userEvents).find(([key, value]) => value.attending)[1]
+                            // const userEvent = Object.entries(data.userEvents).find(([key, value]) => value.event_id)[0]
+                            const attendingStatus = Object.entries(
+                                data.userEvents
+                            ).find(([key, value]) => value.attending)[1];
                             const neededInfo = {
                                 firstName: data.firstName,
                                 lastName: data.lastName,
                                 profilePic: data.profilePic,
-                                userEvent: attendingStatus
-                            }
-                            console.log("neededInfo -->", neededInfo)
+                                userEvent: attendingStatus,
+                                user_id: data.user_id
+                            };
+                            // console.log("neededInfo -->", neededInfo);
                             guests = [...guests, neededInfo];
                         } else {
                             console.log("No data available");
@@ -116,12 +118,22 @@ const GuestListScreen = (params) => {
         const guestListRef = child(dbRef, `events/${eventId}/guestList`);
         const userId = guest.user_id;
 
+        console.log("guestListRef -->", guestListRef);
+        console.log("userId -->", userId);
+
         const guestToDeleteRef = child(guestListRef, userId);
         await remove(guestToDeleteRef);
 
-        const usersEventsRef = child(dbRef, `users/${userId}/userEvents`);
+        console.log("guest.userEvent -->", guest.userEvent)
+        const usersEventsRef = child(
+            dbRef,
+            `users/${userId}/userEvents}`
+        );
+        console.log("usersEventsRef -->", usersEventsRef);
+
         const eventToDeleteRef = child(usersEventsRef, eventId);
         await remove(eventToDeleteRef);
+
 
         const updatedGuestList = guestList.filter(
             (item) => item.user_id !== userId
@@ -131,25 +143,19 @@ const GuestListScreen = (params) => {
 
     const showAttending = async () => {
         setGuestList(
-            guestList.filter(
-                (guest) => guest.userEvent.attending === true
-            )
+            guestList.filter((guest) => guest.userEvent.attending === true)
         );
     };
 
     const showNotAttending = async () => {
         setGuestList(
-            guestList.filter(
-                (guest) => guest.userEvent.attending === false
-            )
+            guestList.filter((guest) => guest.userEvent.attending === false)
         );
     };
 
     const showNotResponded = async () => {
         setGuestList(
-            guestList.filter(
-                (guest) => guest.userEvent.attending === undefined
-            )
+            guestList.filter((guest) => guest.userEvent.attending === undefined)
         );
     };
 
@@ -313,6 +319,7 @@ const GuestListScreen = (params) => {
                                                         position: "absolute",
                                                         top: 0,
                                                         right: 0,
+                                                        zIndex: 5,
                                                     }}
                                                     onPress={() =>
                                                         handleDeleteGuest(
@@ -340,7 +347,8 @@ const GuestListScreen = (params) => {
                                                             marginBottom: 10,
                                                             borderWidth: 8,
                                                             borderColor: guest
-                                                                .userEvent.attending
+                                                                .userEvent
+                                                                .attending
                                                                 ? "#36b6ff"
                                                                 : "#cb6ce6",
                                                             justifyContent:
@@ -353,8 +361,8 @@ const GuestListScreen = (params) => {
                                                             name="person-outline"
                                                             size={55}
                                                             color={
-                                                                guest
-                                                                    .userEvent.attending
+                                                                guest.userEvent
+                                                                    .attending
                                                                     ? "#36b6ff"
                                                                     : "#cb6ce6"
                                                             }
@@ -366,7 +374,11 @@ const GuestListScreen = (params) => {
                                                             ...styles.profilePic,
                                                             marginBottom: 10,
                                                             borderWidth: 8,
-                                                            borderColor: guest.userEvent.attending ? "#36b6ff" : "#cb6ce6",
+                                                            borderColor: guest
+                                                                .userEvent
+                                                                .attending
+                                                                ? "#36b6ff"
+                                                                : "#cb6ce6",
                                                         }}
                                                         source={{
                                                             uri: guest.profilePic,

@@ -24,6 +24,9 @@ const EditEvent = (params) => {
     // COMPONENT VARIABLES
     const navigation = useNavigation();
 
+    // PROPS & PARAMS
+    const uid = params.route.params.uid
+
     // USESTATE
     const [event, setEvent] = useState(params.route.params.event);
     const [weddingName, setWeddingName] = useState(event.name || "");
@@ -355,7 +358,7 @@ const EditEvent = (params) => {
                     style={styles.addButton}
                     onPress={() =>
                         navigation.navigate("Create Guest List", {
-                            event: event,
+                            event: event, uid: uid
                         })
                     }
                 >

@@ -244,7 +244,7 @@ const EventGallery = (params) => {
                             <Text style={globalStyles.heading3}>
                                 Add your photos {countPhotos}
                             </Text>
-                        </>
+                        </TouchableOpacity>
                     )}
                     {isSearchText && (
                         <View style={styles.userSearch}>
