@@ -1,16 +1,16 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/auth";
-import "firebase/compat/storage"
+import "firebase/compat/storage";
+import Constants from 'expo-constants';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBDxtIoTBzZzkUMg-r8jJ3-Zt49RBf-jFw",
-    authDomain: "bethere-1d38e.firebaseapp.com",
-    projectId: "bethere-1d38e",
-    storageBucket: "bethere-1d38e.appspot.com",
-    messagingSenderId: "363222311016",
-    appId: "1:363222311016:web:db134b839743a7d20c1bdd",
-    measurementId: "G-QQR3NH74Q2",
+    apiKey: Constants.manifest?.extra?.firebaseApiKey,
+    authDomain: Constants.manifest?.extra?.firebaseAuthDomain,
+    projectId: Constants.manifest?.extra?.firebaseProjectId,
+    storageBucket: Constants.manifest?.extra?.firebaseStorageBucket,
+    messagingSenderId: Constants.manifest?.extra?.firebaseMessagingSenderId,
+    appId: Constants.manifest?.extra?.firebaseAppId,
 };
 
 if (!firebase.apps.length) {

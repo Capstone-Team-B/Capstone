@@ -13,7 +13,7 @@ import {
     ImageBackground,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getDatabase, ref, update, set, child, get } from "firebase/database";
+import { getDatabase, ref, update, child, get } from "firebase/database";
 import globalStyles from "../../utils/globalStyles";
 import * as ImagePicker from "expo-image-picker";
 const Background = require("../../../assets/Background.png");
@@ -37,7 +37,6 @@ const EditAccountScreen = (props) => {
     // COMPONENT VARIABLES
     const navigation = useNavigation();
 
-    // USEEFFECT
     useEffect(() => {
         setUser(props.route.params);
     }, [props]);

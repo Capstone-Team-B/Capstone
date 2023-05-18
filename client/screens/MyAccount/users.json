@@ -1,0 +1,22 @@
+{
+    "description": "testing new event",
+    "endDate": "2023-05-27T03:59:59.000Z",
+    "endTime": "12:30 PM",
+    "event_id": "-NVfviigPhV-FRZj0ixS",
+    "host_id": "NLxGphpLhkM6F8Gln8xuHC4hVxB2",
+    "mainLocation": "New York, NY",
+    "name": "Kit event three",
+    "startDate": "2023-05-24T04:00:00.000Z",
+    "startTime": "12:30 PM",
+    "notifications": {
+        "-NVWpCU7LRYLB_YqjWaX": {
+            "notification_id": "-NVWpCU7LRYLB_YqjWaX"
+        }
+    },
+    "guestList": {
+        "NLxGphpLhkM6F8Gln8xuHC4hVxB2": {
+            "attending": true,
+            "guest_id": "NLxGphpLhkM6F8Gln8xuHC4hVxB2"
+        }
+    }
+}

@@ -15,7 +15,7 @@ const CreateEventNavigator = () => {
                     options={{ headerTitleStyle: globalStyles.screenHeader }}
                 />
                 {/* <Stack.Screen name="Create SubEvent" component={CreateSubEvent} />
-        <Stack.Screen name="Create Notification" component={CreateNotification} />
+        <Stack.Screen name="Create Reminder" component={CreateNotification} />
         <Stack.Screen name="Create Guest List" component={CreateGuestList} /> */}
             </Stack.Navigator>
         </NavigationContainer>

@@ -19,8 +19,6 @@ import {
     TextInput,
     TouchableOpacity,
     Alert,
-    SafeAreaView,
-    Button,
 } from "react-native";
 // import { auth } from "../../../firebase";
 import { useNavigation } from "@react-navigation/native";
@@ -29,18 +27,18 @@ import {
     ref,
     child,
     get,
-    set,
     query,
     orderByChild,
     equalTo,
-    orderByKey,
 } from "firebase/database";
 
 const CheckAccountScreen = (props) => {
-    console.log("props are -->", props);
+    console.log("props are -->", props.route.params);
     const [user, setUser] = useState(props.route.params);
-    const [email, setEmail] = useState(user.email || "");
-    const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || "");
+    const [email, setEmail] = useState("test" || user.email || "");
+    const [phoneNumber, setPhoneNumber] = useState(
+        "(123) 555-5565" || user.phoneNumber || ""
+    );
 
     useEffect(() => {
         setUser(props.route.params);
@@ -50,34 +48,60 @@ const CheckAccountScreen = (props) => {
 
     const handleSubmit = async () => {
         //Make sure phone or email is entered
+        console.log("submit clicked");
         if (phoneNumber === "" && email === "") {
-            Alert.alert(
-                "Please provide an email or phone number so we can look you up in the database"
-            );
+            Alert.alert(`Please provide an email or phone number`);
             return;
         }
-        // check for userprofile
+        // check for matching phone number
+        console.log("Checking for phoneNumber ", phoneNumber);
         try {
             const dbRef = ref(getDatabase());
-            const userPhoneRef = get(
+            get(
                 query(
                     child(dbRef, "users"),
                     orderByChild("phoneNumber"),
                     equalTo(phoneNumber)
                 )
-            );
-            if (!userPhoneRef.exists()) {
-                const userEmailRef = get(
-                    query(
-                        child(dbRef, "users"),
-                        orderByChild("email"),
-                        equalTo(email)
-                    )
-                );
-                console.log("email reference -->", userEmailRef);
-            }
-            console.log("Phone reference -->", userPhoneRef);
-            const userSnapshot = await get(userRef);
+            )
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const userRef = snapshot.val();
+                        const uid = Object.keys(userRef)[0];
+                        Alert.alert("Account found. Let's update it.");
+                        navigation.navigate("CreateAccountScreen", {
+                            uid: uid,
+                        });
+                    } else {
+                        Alert.alert("No matching account. Let's create one");
+                        navigation.navigate("CreateAccountScreen", { uid: "" });
+                    }
+                })
+                .catch((error) => {
+                    console.log("line 83", error);
+                });
+            console.log("Checking for email ", email);
+            get(
+                query(
+                    child(dbRef, "users"),
+                    orderByChild("email"),
+                    equalTo(email)
+                )
+            )
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const userRef = snapshot.val();
+                        const uid = Object.keys(userRef)[0];
+                        navigation.navigate("CreateAccountScreen", {
+                            uid: uid || null,
+                        });
+                    } else {
+                        console.log("No email found");
+                    }
+                })
+                .catch((error) => {
+                    console.log("line 83", error);
+                });
         } catch (error) {
             console.log(error);
         }
@@ -110,7 +134,7 @@ const CheckAccountScreen = (props) => {
                         required={true}
                     >
                         <Text style={styles.submitButtonText}>
-                            Update Account
+                            Check for Account
                         </Text>
                     </TouchableOpacity>
                 </View>

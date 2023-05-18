@@ -10,7 +10,7 @@ import {
     Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getDatabase, ref, child, set, push } from "firebase/database";
+import { getDatabase, ref, child, set, push, query, get, orderByChild, equalTo, update } from "firebase/database";
 import * as Contacts from "expo-contacts";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
@@ -111,14 +111,10 @@ const ImportContacts = (params) => {
                 phoneNumbers: guestPhone,
             } = guest;
 
-            const newGuestListRef = push(usersRef);
-            const newGuestListKey = newGuestListRef.key;
-
             const newGuestListData = {
                 userEvents: {
-                    [event.event_id]: event.event_id,
+                    "event_id": event.event_id,
                 },
-                user_id: newGuestListKey,
                 firstName: guestFirstname,
             };
 
@@ -166,12 +162,51 @@ const ImportContacts = (params) => {
                     /(\d{3})(\d{3})(\d{4})/,
                     "($1) $2-$3"
                 );
+                try {
+                    const usersQuery = query(
+                        child(dbRef, "users"),
+                        orderByChild("phoneNumber"),
+                        equalTo(
+                            formattedPhone.replace(
+                                /(\d{3})(\d{3})(\d{4})/,
+                                "($1) $2-$3"
+                            )
+                        )
+                    );
+                    const snapshot = await get(usersQuery);
+                    
+                    if (snapshot.exists()) {
+                        const userData = Object.values(snapshot.val());
+                        console.log("userData --->", userData[0].user_id)
+                        newGuestListData.user_id = userData[0].user_id;
+    
+                        const newEventGuestsRef = child(
+                            guestListRef,
+                            userData[0].user_id
+                        );
+                        await update(newEventGuestsRef, {
+                            guest_id: userData[0].user_id,
+                        });
+      
+                    } else {
+                      const newGuestListRef = push(usersRef);
+                      const newGuestListKey = newGuestListRef.key;
+                      newGuestListData.user_id = newGuestListKey;
+      
+                      await set(newGuestListRef, newGuestListData);
+                  
+                      const newEventGuestsRef = child(guestListRef, newGuestListKey);
+                      await update(newEventGuestsRef, { guest_id: newGuestListKey });
+                    }
+                  } catch (error) {
+                    console.log("Error:", error);
+                    //Alert.alert("Something went wrong, please try again.");
+                    return;
+                  }
+            } else {
+                Alert.alert("Please only import contacts with a valid phone number.");
+                return;
             }
-
-            await set(newGuestListRef, newGuestListData);
-
-            const newEventGuestsRef = child(guestListRef, newGuestListKey);
-            await update(newEventGuestsRef, { [newGuestListKey]: newGuestListKey });  
         }
 
         navigation.navigate("SingleEvent", { event: event });

@@ -39,7 +39,7 @@ const EventNavigator = (props) => {
             <Stack.Screen
                 name="SingleEvent"
                 component={SingleEvent}
-                initialParams={{ uid: uid }}
+                // initialParams={{ uid: uid }}
                 options={{
                     title: "Event Details",
                     headerTitleStyle: globalStyles.screenHeader,
@@ -89,7 +89,7 @@ const EventNavigator = (props) => {
                 options={{ headerTitleStyle: globalStyles.screenHeader }}
             />
             <Stack.Screen
-                name="Create Notification"
+                name="Create Reminder"
                 component={CreateNotification}
                 options={{ headerTitleStyle: globalStyles.screenHeader }}
             />
@@ -99,7 +99,7 @@ const EventNavigator = (props) => {
                 options={{ headerTitleStyle: globalStyles.screenHeader }}
             />
             <Stack.Screen
-                name="All Notifications"
+                name="All Reminders"
                 component={AllNotifications}
                 options={{ headerTitleStyle: globalStyles.screenHeader }}
             />
@@ -118,10 +118,8 @@ const EventNavigator = (props) => {
                 component={MapLocationScreen}
                 options={{ headerTitleStyle: globalStyles.screenHeader }}
             />
-            <Stack.Screen
-                name="Edit Notification"
-                component={EditNotification}
-            />
+            {/* <Stack.Screen name="All Sub Events" component={AllSubEvents} /> */}
+            <Stack.Screen name="Edit Reminder" component={EditNotification} />
             <Stack.Screen
                 name="UploadEventImagesScreen"
                 component={UploadEventImagesScreen}
@@ -144,7 +142,6 @@ const EventNavigator = (props) => {
                 component={SinglePhoto}
                 options={{ title: "" }}
             />
-            
         </Stack.Navigator>
     );
 };

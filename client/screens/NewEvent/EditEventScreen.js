@@ -365,12 +365,12 @@ const EditEvent = (params) => {
                 <TouchableOpacity
                     style={styles.addButton}
                     onPress={() =>
-                        navigation.navigate("All Notifications", {
+                        navigation.navigate("All Reminders", {
                             event: event,
                         })
                     }
                 >
-                    <Text style={styles.addButtonText}>View Notifications</Text>
+                    <Text style={styles.addButtonText}>View Reminders</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity

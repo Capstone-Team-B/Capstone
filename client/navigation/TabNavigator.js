@@ -70,7 +70,7 @@ const TabNavigator = () => {
                 component={Notifications}
                 initialParams={{ uid: uid }}
                 options={{
-                    title: "Notifications",
+                    title: "Reminders",
                     headerTitleStyle: globalStyles.screenHeader,  //!!!KIT this formatting doesn't work
                 }}
             />

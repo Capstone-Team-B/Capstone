@@ -16,10 +16,9 @@ const Backgroundhorizontal = require("../../../assets/Backgroundhorizontal.png")
 const EventTile = ({ event, uid }) => {
     // COMPONENT VARIABLES
     const navigation = useNavigation();
-
     // PROPS & PARAMS
     const eventData = event.item;
-
+  
     return (
         <TouchableOpacity
             onPress={() =>
