@@ -96,7 +96,10 @@ const CreateEventForm = (props) => {
 
             const userRef = child(dbRef, `users/${uid}/userEvents`);
             const updatedUser = push(userRef);
-            const newUserEvent = newEventId;
+            const newUserEvent = {
+                attending: false,
+                event_id: newEventId
+            };
             await set(updatedUser, newUserEvent);
 
             navigation.navigate("SingleEvent", { event: newEvent });

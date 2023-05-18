@@ -38,8 +38,8 @@ const AllNotifications = (params) => {
             let notificationData = [];
             let notificationIds = [];
             notificationIds = Object.keys(event.notifications);
-            console.log("events", event);
-            console.log("notificationIds", notificationIds);
+            // console.log("events", event);
+            // console.log("notificationIds", notificationIds);
             for (let i = 0; i < notificationIds.length; i++) {
                 const notificationQuery = query(
                     child(dbRef, `notifications/${notificationIds[i]}`)
