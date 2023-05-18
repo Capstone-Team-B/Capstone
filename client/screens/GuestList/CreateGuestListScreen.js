@@ -32,12 +32,16 @@ const CreateGuestList = (params) => {
 
     const handleAddGuest = () => {
         const newGuestList = [...guestList];
+<<<<<<< HEAD
         newGuestList.push({
             phoneNumber: "",
             email: "",
             firstName: "",
             lastName: "",
         });
+=======
+        newGuestList.push({ phoneNumber: "", firstName: "", lastName: "" });
+>>>>>>> b0acbf8be84c16ae485b493b6a9aac1c09243499
         setGuestList(newGuestList);
     };
 
@@ -56,7 +60,11 @@ const CreateGuestList = (params) => {
     const handleSubmit = async () => {
         for (const guest of guestList) {
             if (!guest.phoneNumber || !guest.firstName || !guest.lastName) {
+<<<<<<< HEAD
                 Alert.alert("Please fill in all required fields");
+=======
+                Alert.alert("Please fill in all fields");
+>>>>>>> b0acbf8be84c16ae485b493b6a9aac1c09243499
                 return;
             }
         }
@@ -68,7 +76,10 @@ const CreateGuestList = (params) => {
         for (const guest of guestList) {
             const {
                 phoneNumber: guestPhone,
+<<<<<<< HEAD
                 email: guestEmail,
+=======
+>>>>>>> b0acbf8be84c16ae485b493b6a9aac1c09243499
                 firstName: guestFirstname,
                 lastName: guestLastname,
             } = guest;
@@ -79,6 +90,12 @@ const CreateGuestList = (params) => {
                 return;
             }
 
+<<<<<<< HEAD
+=======
+            const newGuestListRef = push(usersRef);
+            const newGuestListKey = newGuestListRef.key;
+
+>>>>>>> b0acbf8be84c16ae485b493b6a9aac1c09243499
             const newGuestListData = {
                 phoneNumber: formattedPhone.replace(
                     /(\d{3})(\d{3})(\d{4})/,
@@ -92,6 +109,7 @@ const CreateGuestList = (params) => {
                 },
             };
 
+<<<<<<< HEAD
             try {
                 const usersQuery = query(
                     child(dbRef, "users"),
@@ -136,6 +154,12 @@ const CreateGuestList = (params) => {
                 Alert.alert("Something went wrong, please try again.");
                 return;
             }
+=======
+            const newEventGuestsRef = child(guestListRef, newGuestListKey);
+            await update(newEventGuestsRef, {
+                [newGuestListKey]: newGuestListKey,
+            });
+>>>>>>> b0acbf8be84c16ae485b493b6a9aac1c09243499
         }
 
         navigation.navigate("SingleEvent", { event: event });
@@ -177,7 +201,11 @@ const CreateGuestList = (params) => {
                                 />
                                 <TextInput
                                     style={styles.input}
+<<<<<<< HEAD
                                     placeholder="Phone number"
+=======
+                                    placeholder="Phone Number"
+>>>>>>> b0acbf8be84c16ae485b493b6a9aac1c09243499
                                     value={guest.phoneNumber}
                                     onChangeText={(value) =>
                                         handleUpdateGuest(
