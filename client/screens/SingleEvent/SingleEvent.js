@@ -19,7 +19,6 @@ import { getDatabase, ref, child, get, query } from "firebase/database";
 import globalStyles from "../../utils/globalStyles";
 import Backgroundhorizontal from "../../../assets/Backgroundhorizontal.png";
 
-const SingleEvent = (params) => {
     // COMPONENT VARIABLES
     const isFocused = useIsFocused();
     const navigation = useNavigation();
