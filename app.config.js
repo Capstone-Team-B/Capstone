@@ -8,6 +8,7 @@ export default {
         "orientation": "portrait",
         "icon": "./assets/BeThereConcise.png",
         "userInterfaceStyle": "light",
+        "jsEngine": "hermes",
         "splash": {
             "video": "./assets/BeThereAnimation.mp4",
             "resizeMode": "cover",
@@ -15,13 +16,16 @@ export default {
         },
         "assetBundlePatterns": ["**/*"],
         "ios": {
-            "supportsTablet": true
+            "jsEngine": "hermes",
+            "supportsTablet": true,
+            "bundleIdentifier": "BeThere.app"
         },
         "android": {
             "adaptiveIcon": {
                 "foregroundImage": "./assets/BeThereConcise.png",
                 "backgroundColor": "#ffffff"
-            }
+            },
+            "package": "BeThere.app",
         },
         "web": {
             "favicon": "./assets/favicon.png"
@@ -32,7 +36,10 @@ export default {
             firebaseProjectId: process.env.FIREBASE_PROJECT_ID,
             firebaseStorageBucket: process.env.FIREBASE_STORAGE_BUCKET,
             firebaseMessagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-            firebaseAppId: process.env.FIREBASE_APP_ID
+            firebaseAppId: process.env.FIREBASE_APP_ID,
+            "eas": {
+                "projectId": "59930442-87da-4a40-9d15-1fffd0e7a555"
+              }
         },
         "plugins": [
             [
