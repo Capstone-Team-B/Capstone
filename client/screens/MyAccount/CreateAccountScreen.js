@@ -11,12 +11,32 @@ import {
     SafeAreaView,
     Button,
 } from "react-native";
-// import { auth } from "../../../firebase";
+import { auth } from "../../../firebase";
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, update, set, child, get } from "firebase/database";
+const dbRef = ref(getDatabase());
 
 const CreateAccountScreen = (props) => {
-    const [user, setUser] = useState(props.route.params);
+    // finds the user in database if they were created by a host
+    useEffect(() => {
+        let uid = props.route.params.uid;
+        if (uid !== "") {
+            get(child(dbRef, `users/${uid}`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const userRef = snapshot.val();
+                    setUser(userRef);
+                } else {
+                    console.log("error reaching database");
+                    props.route.params.uid = null;
+                }
+            });
+        } else {
+            return;
+        }
+    }, [props]);
+
+    const [user, setUser] = useState({});
+    const [password, setPassword] = useState("pwpwpw" || "");
     const [firstName, setFirstName] = useState(user.firstName || "");
     const [lastName, setLastName] = useState(user.lastName || "");
     const [email, setEmail] = useState(user.email || "");
@@ -28,41 +48,96 @@ const CreateAccountScreen = (props) => {
     );
     const [dietary, setDietary] = useState(user.dietary || "");
 
+    //Pre fills in form if there is a uid
     useEffect(() => {
-        setUser(props.route.params);
-    }, [props]);
+        setFirstName("NewAccount" || user.firstName || "");
+        setLastName("TestC", user.lastName || "");
+        setEmail("testC@test.com" || user.email || "");
+        setPhoneNumber(user.phoneNumber || "");
+        setHomeCity(user.homeCity || "");
+        setProfilePic(user.profilePic || "");
+        setAccessibility(user.accessibility || "");
+        setDietary(user.dietary || "");
+    }, [user]);
 
     const navigation = useNavigation();
 
     const handleSubmit = async () => {
-        console.log("user updates", user);
+        const uid = props.route.params.uid;
+        // Check that Form was filled out with name and email
         if (firstName === "" || lastName === "" || email === "") {
-            Alert.alert("Please provide your name and email");
+            Alert.alert("Please provide your name and a contact method");
             return;
         }
-        try {
-            const dbRef = ref(getDatabase());
-            const userId = user.uid;
-            const userRef = child(dbRef, `users/${userId}`);
-            const userSnapshot = await get(userRef);
-            if (!userSnapshot.exists()) {
-                throw new Error(`User with ID ${userId} does not exist`);
+
+        // Store the user data in the Realtime Database with the Authentication UID as the key for auth_id, user_id, guest_id if those don't exist
+        let auth_id = "";
+        // If existing user created by a host then update maintianing the guest_id value
+        if (uid !== "") {
+            try {
+                const userRef = child(dbRef, `users/${uid}`);
+                const userSnapshot = await get(userRef);
+                if (userSnapshot.exists()) {
+                    auth.createUserWithEmailAndPassword(email, password)
+                        .then((userCredentials) => {
+                            // set the auth id to match the credentials created in firebase authentication
+                            auth_id = userCredentials.user.uid;
+                        })
+                        .then(() => {
+                            const updateUser = {
+                                firstName: firstName,
+                                lastName: lastName,
+                                email: email,
+                                phoneNumber: phoneNumber,
+                                homeCity: homeCity,
+                                profilePic: profilePic,
+                                dietary: dietary,
+                                accessibility: accessibility,
+                                guest_id: uid,
+                                auth_id: auth_id,
+                            };
+                            update(userRef, updateUser).then(() =>
+                                navigation.navigate("LoginScreen")
+                            );
+                        });
+                } else {
+                    // set uid to "" empty string
+                    uid = "";
+                    //run handle submit again with new user logic
+                    handleSubmit();
+                }
+            } catch (error) {
+                console.log(error);
             }
-            const updatedUser = {
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                phoneNumber: phoneNumber,
-                homeCity: homeCity,
-                profilePic: profilePic,
-                dietary: dietary,
-                accessibility: accessibility,
-            };
-            await update(userRef, updatedUser);
-            navigation.navigate("MyAccountScreen", { user: updatedUser });
-            console.log("updates to user", updatedUser);
-        } catch (error) {
-            console.log(error);
+        }
+        // if uid is ""
+        else {
+            auth.createUserWithEmailAndPassword(email, password).then(
+                (userCredentials) => {
+                    // set the auth id to match the credentials created in firebase authentication
+                    auth_id = userCredentials.user.uid;
+                    let newUser = {
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        phoneNumber: phoneNumber,
+                        homeCity: homeCity,
+                        profilePic: profilePic,
+                        dietary: dietary,
+                        accessibility: accessibility,
+                        userEvents: { default: "defaultEvent" },
+                        guest_id: auth_id,
+                        user_id: auth_id,
+                        auth_id: auth_id,
+                    };
+                    console.log("New user info -->", newUser);
+                    const newUserRef = child(dbRef, `users/${auth_id}`);
+                    console.log(newUserRef);
+                    set(newUserRef, newUser).then(() =>
+                        navigation.navigate("LoginScreen")
+                    );
+                }
+            );
         }
     };
 
@@ -71,6 +146,13 @@ const CreateAccountScreen = (props) => {
             <ScrollView style={styles.container}>
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Account Details</Text>
+                    <TextInput
+                        placeholder="Password"
+                        value={password}
+                        onChangeText={(text) => setPassword(text)}
+                        style={styles.input}
+                        secureTextEntry
+                    />
                     <TextInput
                         style={styles.input}
                         placeholder={"First Name"}
@@ -134,7 +216,7 @@ const CreateAccountScreen = (props) => {
                         required={true}
                     >
                         <Text style={styles.submitButtonText}>
-                            Update Account
+                            Create Account
                         </Text>
                     </TouchableOpacity>
                 </View>

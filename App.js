@@ -1,15 +1,14 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect, useCallback } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { auth } from "./firebase";
 import LoginScreen from "./client/screens/LoginScreen";
 import TabNavigator from "./client/navigation/TabNavigator";
 import { Video } from "expo-av";
 import { useFonts } from "expo-font";
-
-//import MessageboardScreen from "./client/screens/MessageBoardScreen";
+import CheckAccountScreen from "./client/screens/MyAccount/CheckAccountScreen";
+import CreateAccountScreen from "./client/screens/MyAccount/CreateAccountScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -57,6 +56,15 @@ export default function App() {
                         name="TabNav"
                         component={TabNavigator}
                         options={{ headerShown: false }}
+                    />
+                    {/* ENH added in checkaccount and create account screen */}
+                    <Stack.Screen
+                        name="CheckAccountScreen"
+                        component={CheckAccountScreen}
+                    />
+                    <Stack.Screen
+                        name="CreateAccountScreen"
+                        component={CreateAccountScreen}
                     />
                 </Stack.Navigator>
             </NavigationContainer>

@@ -19,17 +19,11 @@ const BeThereLogoExpanded = require("../../assets/BeThereExpanded.png");
 const Background = require("../../assets/Background.png");
 
 const LoginScreen = () => {
-    const [email, setEmail] = useState("kit@kit.com"); // logging in as kit, who is the host of an event
+    const [email, setEmail] = useState("testC@test.com"); // logging in as kit, who is the host of an event
     const [password, setPassword] = useState("pwpwpw");
     const [storeUser, setStoreUser] = useAtom(userStore);
-
     const navigation = useNavigation();
 
-    // It's hard to tell without seeing the rest of the code and how the navigation variable is defined. However, assuming that navigation is correctly defined and imported from the react-navigation library, there could be a few reasons why the component is not navigating to the "Create User" page:
-
-    // The component may not be rendered within a navigator: In order for the navigation prop to be passed down to the component, it must be rendered within a navigator component (e.g. StackNavigator, DrawerNavigator, etc.). Make sure that the component that contains the showAlert function is rendered within a navigator.
-
-    // The screen name "Create User" may not match the actual screen name: The navigation.navigate function takes the name of the destination screen as an argument. Make sure that the name "Create User" matches the actual screen name defined in the navigator.
     const showAlert = () => {
         return Alert.alert(
             "User Not Found",
@@ -39,8 +33,9 @@ const LoginScreen = () => {
                     text: "Yes Please",
                     // need to go to the check for user
                     onPress: () =>
-                        navigation.navigate("LoginNavigator", {
+                        navigation.navigate("CheckAccountScreen", {
                             screen: "CheckAccountScreen",
+                            email: email || "",
                         }),
                     //navigation()
                 },
@@ -66,6 +61,16 @@ const LoginScreen = () => {
     }, [handleLogin]);
 
     const handleSignUp = () => {
+        console.log("sign up pressed");
+        console.log("check account screen activated", email);
+        // navigation.navigate("CheckAccountScreen", {
+        //     screen: "CheckAccountScreen",
+        //     email: email,
+        // });
+        navigation.navigate("CreateAccountScreen", {
+            screen: "CreateAccountScreen",
+            email: email,
+        });
         const dbRef = ref(getDatabase());
         // Check if the email entered during registration already exists in the database
         // should this also check if they are signed up too?
@@ -79,7 +84,7 @@ const LoginScreen = () => {
                 if (!existingUser) {
                     console.log("no existing user", email);
                     navigation.navigate("CheckAccountScreen", {
-                        email: email,
+                        email: email || "",
                     });
                 } else {
                     auth.signInWithEmailAndPassword(email, password)
