@@ -24,7 +24,6 @@ const MyAccountNavigator = (props) => {
             <Stack.Screen
                 name="CreateEvent"
                 component={CreateEventForm}
-                initialParams={{ uid: uid }}
                 options={{ title: "Create Event", headerTitleStyle: globalStyles.screenHeader}}
             />
             <Stack.Screen

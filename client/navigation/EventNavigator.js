@@ -20,7 +20,6 @@ import SinglePhoto from "../screens/SingleEvent/SinglePhoto";
 import globalStyles from "../utils/globalStyles";
 import EditNotification from "../screens/Notifications/EditNotification";
 
-
 const Stack = createNativeStackNavigator();
 
 const EventNavigator = (props) => {
@@ -119,7 +118,6 @@ const EventNavigator = (props) => {
                 component={MapLocationScreen}
                 options={{ headerTitleStyle: globalStyles.screenHeader }}
             />
-            {/* <Stack.Screen name="All Sub Events" component={AllSubEvents} /> */}
             <Stack.Screen
                 name="Edit Notification"
                 component={EditNotification}

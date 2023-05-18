@@ -41,7 +41,7 @@ const MyAccountScreen = (props) => {
     const navigation = useNavigation();
 
     const handlePressCreateEvent = () => {
-        navigation.navigate("CreateEvent");
+        navigation.navigate("CreateEvent", {uid: uid});
     };
 
     const handlePressEditAccount = () => {

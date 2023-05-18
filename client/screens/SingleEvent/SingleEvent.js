@@ -1,5 +1,4 @@
-//Nataly was here
-import { useNavigation } from "@react-navigation/core";
+// REACT IMPORTS
 import React, { useEffect, useState } from "react";
 import {
     StyleSheet,
@@ -9,46 +8,55 @@ import {
     SafeAreaView,
     ScrollView,
     Image,
-    FlatList,
     Dimensions,
 } from "react-native";
-import { getDatabase, ref, child, get, query } from "firebase/database";
+import { useNavigation } from "@react-navigation/core";
+import { useIsFocused } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+// FIREBASE IMPORTS
+import { getDatabase, ref, child, get, query } from "firebase/database";
+// PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
 import Banner from "../../../assets/Banner.png";
-import { useIsFocused } from "@react-navigation/native";
 
 const SingleEvent = (params) => {
-    const [event, setEvent] = useState(params.route.params.event);
-    const [host, setHost] = useState({});
-    const uid = params.route.params.uid;
-    const [userName, setUserName] = useState({});
-    const [attending, setAttending] = useState(event.guestList[uid].attending);
+    // COMPONENT VARIABLES
     const isFocused = useIsFocused();
+    const navigation = useNavigation();
+    const dbRef = ref(getDatabase());
 
-    useEffect(() => {
-        setEvent(params.route.params.event);
-    }, [params.route.params.event, isFocused]);
+    // PROPS & PARAMS
+    const uid = params.route.params.uid;
+    const event = params.route.params.event;
+    const attending = event.guestList[uid].attending || null;
 
-    useEffect(() => {
-        const dbRef = ref(getDatabase());
-        get(child(dbRef, `users/${uid}`))
-            .then((snapshot) => {
-                if (snapshot.exists()) {
-                    setUserName(
-                        `${snapshot.val().firstName} ${snapshot.val().lastName}`
-                    );
-                } else {
-                    console.log("No data available");
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }, [attending, isFocused, navigation]);
+    // USESTATE
+    const [host, setHost] = useState({});
+    const [user, setUser] = useState({});
+    const [userName, setUserName] = useState({});
 
+    // USEEFFECTS
     useEffect(() => {
-        const dbRef = ref(getDatabase());
+        const getUser = () => {
+            get(child(dbRef, `users/${uid}`))
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const userData = snapshot.val();
+                        setUser(userData);
+                        setUserName(
+                            `${userData.firstName} ${userData.lastName}`
+                        );
+                    } else {
+                        console.log("No data available");
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        };
+        getUser();
+    }, [isFocused, navigation]);
+    useEffect(() => {
         const getHost = async () => {
             const hostQuery = query(child(dbRef, `users/${event.host_id}`));
             try {
@@ -69,9 +77,7 @@ const SingleEvent = (params) => {
             }
         };
         getHost();
-    }, []);
-
-    const navigation = useNavigation();
+    }, [isFocused, navigation]);
 
     return (
         <SafeAreaView style={globalStyles.container}>
@@ -108,7 +114,6 @@ const SingleEvent = (params) => {
                 >
                     hosted by {host.firstName} {host.lastName}
                 </Text>
-
                 <Text
                     style={{
                         fontSize: 20,
@@ -165,7 +170,7 @@ const SingleEvent = (params) => {
                 >
                     {event.description}
                 </Text>
-                {event.guestList[uid].attending ? (
+                {attending === true ? (
                     <View
                         style={{
                             justifyContent: "center",
@@ -190,7 +195,7 @@ const SingleEvent = (params) => {
                             I'll be there
                         </Text>
                     </View>
-                ) : (
+                ) : attending === false ? (
                     <View
                         style={{
                             justifyContent: "center",
@@ -216,7 +221,24 @@ const SingleEvent = (params) => {
                             Can't make it
                         </Text>
                     </View>
-                )}
+                ) : attending === null ? (
+                    <View
+                        style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flexDirection: "row",
+                            height: 80,
+                            backgroundColor: "lightgray",
+                            marginBottom: 15,
+                        }}
+                    >
+                        <Text
+                            style={{ ...globalStyles.heading2, color: "white" }}
+                        >
+                            RSVP pending
+                        </Text>
+                    </View>
+                ) : null}
                 <TouchableOpacity
                     style={{
                         ...globalStyles.button,
@@ -305,7 +327,7 @@ const SingleEvent = (params) => {
                         navigation.navigate("EventGallery", {
                             event: event,
                             uid: uid,
-                            userName: userName,
+                            userName: `${user.firstName} ${user.lastName}`,
                         })
                     }
                 >
@@ -339,7 +361,7 @@ const SingleEvent = (params) => {
                                     color: "white",
                                 }}
                             >
-                                Edit Your Event{" "}
+                                Edit Your Event
                             </Text>
                         </View>
                     </TouchableOpacity>

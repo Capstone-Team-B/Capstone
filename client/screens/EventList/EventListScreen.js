@@ -1,5 +1,5 @@
+// REACT IMPORTS
 import {
-    StyleSheet,
     View,
     Text,
     SafeAreaView,
@@ -8,7 +8,9 @@ import {
     TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import EventTile from "./EventTile";
+// EXPO IMPORTS
+import { Video } from "expo-av";
+// FIREBASE IMPORTS
 import {
     getDatabase,
     ref,
@@ -16,23 +18,50 @@ import {
     get,
     query,
     orderByChild,
-    equalTo,
 } from "firebase/database";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
+// PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
-import { useIsFocused } from "@react-navigation/native";
-import { Video } from "expo-av";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import EventTile from "./EventTile";
 const BeThereConcise = require("../../../assets/BeThereConcise.png");
 
 const EventListScreen = (props) => {
+    // COMPONENT VARIABLES
+    const isFocused = useIsFocused();
+    const dbRef = ref(getDatabase());
+    const navigation = useNavigation();
+
+    // PROPS & PARAMS
     const { uid } = props.route.params;
+
+    // USESTATE
     const [eventList, setEventList] = useState([]);
     const [loading, setLoading] = useState(true);
-    const isFocused = useIsFocused();
 
-    const dbRef = ref(getDatabase());
-
+    
+    // USEEFFECT
+    useEffect(() => {
+        const eventIdsQuery = query(
+            child(dbRef, `users/${uid}`),
+            orderByChild("userEvents")
+            );
+            try {
+                get(eventIdsQuery).then((eventSnapshot) => {
+                    if (eventSnapshot.exists()) {
+                        const data = eventSnapshot.val();
+                        const objVal = Object.values(data.userEvents)
+                        const userEventIds = objVal.map((event) => event.event_id)
+                        getEvents(userEventIds);
+                    } else {
+                        console.log("no data");
+                    }
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        }, [isFocused]);
+        
+    // FUNCTIONS
     const getEvents = async (eventIdArray) => {
         let events = [];
         for (let i = 0; i < eventIdArray.length; i++) {
@@ -49,35 +78,13 @@ const EventListScreen = (props) => {
                     }
                 });
             } catch (error) {
-                console.log('here',error);
+                console.log("here", error);
             }
         }
         setEventList(events);
         setLoading(false);
     };
-
-    useEffect(() => {
-        const eventIdsQuery = query(
-            child(dbRef, `users/${uid}`),
-            orderByChild("userEvents")
-        );
-        try {
-            get(eventIdsQuery).then((eventSnapshot) => {
-                if (eventSnapshot.exists()) {
-                    const data = eventSnapshot.val();
-                    const userEventIds = Object.keys(data.userEvents);
-                    getEvents(userEventIds);
-                } else {
-                    console.log("no data");
-                }
-            });
-        } catch (error) {
-            console.log(error);
-        }
-    }, [isFocused]);
-
-    const navigation = useNavigation();
-
+        
     return (
         <SafeAreaView style={globalStyles.container}>
             {loading ? (
