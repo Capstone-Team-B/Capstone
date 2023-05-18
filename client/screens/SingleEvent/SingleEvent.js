@@ -16,18 +16,20 @@ import { getDatabase, ref, child, get, query } from "firebase/database";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import globalStyles from "../../utils/globalStyles";
 import Banner from "../../../assets/Banner.png";
+import { useIsFocused } from "@react-navigation/native";
 
 const SingleEvent = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
     const [host, setHost] = useState({});
     const uid = params.route.params.uid;
     const [userName, setUserName] = useState({});
+    const [attending, setAttending] = useState(event.guestList[uid].attending);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         setEvent(params.route.params.event);
-    }, [params.route.params.event, event.guestList[uid].attending]);
+    }, [params.route.params.event, isFocused]);
 
-    // useEffect to get all logged-in user info to pass along with image upload
     useEffect(() => {
         const dbRef = ref(getDatabase());
         get(child(dbRef, `users/${uid}`))
@@ -43,7 +45,7 @@ const SingleEvent = (params) => {
             .catch((error) => {
                 console.log(error);
             });
-    }, [event.guestList[uid].attending]);
+    }, [attending, isFocused, navigation]);
 
     useEffect(() => {
         const dbRef = ref(getDatabase());
@@ -173,8 +175,20 @@ const SingleEvent = (params) => {
                             backgroundColor: "#38b6ff",
                         }}
                     >
-                        <Text style={{...globalStyles.heading2, color: "white"}}>My RSVP:{"   "}</Text>
-                        <Text style={{fontSize: 25, fontFamily: "Bukhari Script", color: "white"}}>I'll be there</Text>
+                        <Text
+                            style={{ ...globalStyles.heading2, color: "white" }}
+                        >
+                            My RSVP:{"   "}
+                        </Text>
+                        <Text
+                            style={{
+                                fontSize: 25,
+                                fontFamily: "Bukhari Script",
+                                color: "white",
+                            }}
+                        >
+                            I'll be there
+                        </Text>
                     </View>
                 ) : (
                     <View
@@ -184,11 +198,23 @@ const SingleEvent = (params) => {
                             flexDirection: "row",
                             height: 80,
                             backgroundColor: "black",
-                            marginBottom: 15
+                            marginBottom: 15,
                         }}
                     >
-                        <Text style={{...globalStyles.heading2, color: "white"}}>My RSVP:{"   "}</Text>
-                        <Text style={{fontSize: 25, fontFamily: "Bukhari Script", color: "white"}}>Can't make it</Text>
+                        <Text
+                            style={{ ...globalStyles.heading2, color: "white" }}
+                        >
+                            My RSVP:{"   "}
+                        </Text>
+                        <Text
+                            style={{
+                                fontSize: 25,
+                                fontFamily: "Bukhari Script",
+                                color: "white",
+                            }}
+                        >
+                            Can't make it
+                        </Text>
                     </View>
                 )}
                 <TouchableOpacity

@@ -7,14 +7,18 @@ import {
     FlatList,
     Image,
     Dimensions,
+    SafeAreaView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { getDatabase, ref, child, get, query, remove } from "firebase/database";
 import { useIsFocused } from "@react-navigation/native";
 import globalStyles from "../../utils/globalStyles";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { Video } from "expo-av";
+
 
 const GuestListScreen = (params) => {
+    const [loading, setLoading] = useState(true);
     const [guestList, setGuestList] = useState([]);
     const [host, setHost] = useState({});
     const event = params.route.params.event;
@@ -28,55 +32,32 @@ const GuestListScreen = (params) => {
     const navigation = useNavigation();
     const screenWidth = Dimensions.get("window").width;
 
-    useEffect(() => {
-        const getGuests = async () => {
-            let guestIds = [];
-            let guests = [];
-            try {
-                const guestsQuery = query(
-                    child(dbRef, `events/${eventId}/guestList`)
-                );
-                await get(guestsQuery).then((guestsSnapshot) => {
-                    if (guestsSnapshot.exists()) {
-                        const data = guestsSnapshot.val();
-                        guestIds = Object.keys(data);
-                    } else {
-                        console.log("no guest data found");
-                    }
-                });
-            } catch (error) {
-                console.log(error);
-            }
-            for (let i = 0; i < guestIds.length; i++) {
-                const guestQuery = query(child(dbRef, `users/${guestIds[i]}`));
-                try {
-                    await get(guestQuery)
-                        .then((snapshot) => {
-                            if (snapshot.exists()) {
-                                const data = snapshot.val();
-                                guests = [...guests, data];
-                            } else {
-                                console.log("No data available");
-                            }
-                        })
-                        .catch((error) => {
-                            console.error(error);
-                        });
-                } catch (error) {
-                    console.log(error);
+    const getGuests = async () => {
+        let guestIds = [];
+        let guests = [];
+        try {
+            const guestsQuery = query(
+                child(dbRef, `events/${eventId}/guestList`)
+            );
+            await get(guestsQuery).then((guestsSnapshot) => {
+                if (guestsSnapshot.exists()) {
+                    const data = guestsSnapshot.val();
+                    guestIds = Object.keys(data);
+                } else {
+                    console.log("no guest data found");
                 }
-            }
-            setGuestList(guests);
-        };
-
-        const getHost = async () => {
-            const hostQuery = query(child(dbRef, `users/${host_id}`));
+            });
+        } catch (error) {
+            console.log(error);
+        }
+        for (let i = 0; i < guestIds.length; i++) {
+            const guestQuery = query(child(dbRef, `users/${guestIds[i]}`));
             try {
-                await get(hostQuery)
+                await get(guestQuery)
                     .then((snapshot) => {
                         if (snapshot.exists()) {
                             const data = snapshot.val();
-                            setHost(data);
+                            guests = [...guests, data];
                         } else {
                             console.log("No data available");
                         }
@@ -87,11 +68,35 @@ const GuestListScreen = (params) => {
             } catch (error) {
                 console.log(error);
             }
-        };
+        }
+        setGuestList(guests);
+        setLoading(false);
+    };
 
+    const getHost = async () => {
+        const hostQuery = query(child(dbRef, `users/${host_id}`));
+        try {
+            await get(hostQuery)
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        setHost(data);
+                    } else {
+                        console.log("No data available");
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
         getGuests();
         getHost();
-    }, [isFocused, setGuestList]);
+    }, [isFocused]);
 
     const handleDeleteGuest = async (guest, key) => {
         const dbRef = ref(getDatabase());
@@ -111,231 +116,440 @@ const GuestListScreen = (params) => {
         setGuestList(updatedGuestList);
     };
 
+    const showAttending = async () => {
+        let guestIds = [];
+        let guests = [];
+        try {
+            const guestsQuery = query(
+                child(dbRef, `events/${eventId}/guestList`)
+            );
+            await get(guestsQuery).then((guestsSnapshot) => {
+                if (guestsSnapshot.exists()) {
+                    const data = guestsSnapshot.val();
+                    guestIds = Object.keys(data);
+                } else {
+                    console.log("no guest data found");
+                }
+            });
+        } catch (error) {
+            console.log(error);
+        }
+        for (let i = 0; i < guestIds.length; i++) {
+            const guestQuery = query(child(dbRef, `users/${guestIds[i]}`));
+            try {
+                await get(guestQuery)
+                    .then((snapshot) => {
+                        if (snapshot.exists()) {
+                            const data = snapshot.val();
+                            guests = [...guests, data];
+                        } else {
+                            console.log("No data available");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        setGuestList(
+            guests.filter(
+                (guest) => guest.userEvents[eventId]?.attending === true
+            )
+        );
+    };
+
+    const showNotAttending = async () => {
+        let guestIds = [];
+        let guests = [];
+        try {
+            const guestsQuery = query(
+                child(dbRef, `events/${eventId}/guestList`)
+            );
+            await get(guestsQuery).then((guestsSnapshot) => {
+                if (guestsSnapshot.exists()) {
+                    const data = guestsSnapshot.val();
+                    guestIds = Object.keys(data);
+                } else {
+                    console.log("no guest data found");
+                }
+            });
+        } catch (error) {
+            console.log(error);
+        }
+        for (let i = 0; i < guestIds.length; i++) {
+            const guestQuery = query(child(dbRef, `users/${guestIds[i]}`));
+            try {
+                await get(guestQuery)
+                    .then((snapshot) => {
+                        if (snapshot.exists()) {
+                            const data = snapshot.val();
+                            guests = [...guests, data];
+                        } else {
+                            console.log("No data available");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        setGuestList(
+            guests.filter(
+                (guest) => guest.userEvents[eventId]?.attending === false
+            )
+        );
+    };
+
+    const showNotResponded = async () => {
+        let guestIds = [];
+        let guests = [];
+        try {
+            const guestsQuery = query(
+                child(dbRef, `events/${eventId}/guestList`)
+            );
+            await get(guestsQuery).then((guestsSnapshot) => {
+                if (guestsSnapshot.exists()) {
+                    const data = guestsSnapshot.val();
+                    guestIds = Object.keys(data);
+                } else {
+                    console.log("no guest data found");
+                }
+            });
+        } catch (error) {
+            console.log(error);
+        }
+        for (let i = 0; i < guestIds.length; i++) {
+            const guestQuery = query(child(dbRef, `users/${guestIds[i]}`));
+            try {
+                await get(guestQuery)
+                    .then((snapshot) => {
+                        if (snapshot.exists()) {
+                            const data = snapshot.val();
+                            guests = [...guests, data];
+                        } else {
+                            console.log("No data available");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        setGuestList(
+            guests.filter(
+                (guest) => guest.userEvents[eventId]?.attending === undefined
+            )
+        );
+    };
+
     return (
-        <View style={globalStyles.container}>
-            <View
-                style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    margin: 12,
-                }}
-            >
-                <Text style={globalStyles.heading2}>Invitees of</Text>
-                <Text
-                    style={{
-                        ...globalStyles.heading1,
-                        fontFamily: "Bukhari Script",
-                        padding: 10,
-                    }}
-                >
-                    {event.name}
-                </Text>
-                <Text style={globalStyles.heading3}>
-                    Hosted by: {host.firstName} {host.lastName}
-                </Text>
-            </View>
-            {guestList.length > 0 ? (
-                uid === event.host_id ? (
-                    // Object.keys(guestList).map((key) => {
-                    //     const guest = guestList[key];
-                    //     return (
-                    //         <View key={key} style={{...styles.guestContainer, borderWidth: 2}}>
-                    //             <TouchableOpacity
-                    //                 style={{ padding: 5 }}
-                    //                 onPress={() =>
-                    //                     handleDeleteGuest(guest, key)
-                    //                 }
-                    //             >
-                    //                 <Ionicons
-                    //                     name="close-circle-outline"
-                    //                     size={25}
-                    //                 />
-                    //             </TouchableOpacity>
-                    //             <TouchableOpacity
-                    //                 onPress={() =>
-                    //                     navigation.navigate(
-                    //                         "GuestProfileScreen",
-                    //                         { user: guest }
-                    //                     )
-                    //                 }
-                    //             >
-                    //                 <Image
-                    //                     style={styles.profilePic}
-                    //                     source={{
-                    //                         uri: guest.profilePic,
-                    //                     }}
-                    //                 />
-                    //                 <Text style={styles.guestName}>
-                    //                     {guest.firstName} {guest.lastName}
-                    //                 </Text>
-                    //             </TouchableOpacity>
-                    //         </View>
-                    //     );
-                    // })
-                    <View style={{ alignItems: "center" }}>
-                        <FlatList
-                            data={Object.keys(guestList)}
-                            numColumns={3}
-                            renderItem={({ item: key }) => {
-                                const guest = guestList[key];
-                                return (
-                                    <View
-                                        key={key}
-                                        style={{
-                                            width: screenWidth / 3 - 20,
-                                            margin: 5,
-                                            padding: 5,
-                                            position: "relative",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        <TouchableOpacity
-                                            style={{
-                                                position: "absolute",
-                                                top: 0,
-                                                right: 0,
-                                            }}
-                                            onPress={() =>
-                                                handleDeleteGuest(guest, key)
-                                            }
-                                        >
-                                            <Ionicons
-                                                name="close-circle-outline"
-                                                size={25}
-                                            />
-                                        </TouchableOpacity>
-                                        <View
-                                            style={{
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                            }}
-                                        >
-                                            {guest.profilePic != "" ? (
-                                                <Image
-                                                    style={{
-                                                        ...styles.profilePic,
-                                                        marginBottom: 10,
-                                                        borderWidth: 5,
-                                                        borderColor:
-                                                            guest.attending
-                                                                ? "#36b6ff"
-                                                                : "black",
-                                                        opacity: guest.attending
-                                                        ? 1
-                                                        : .3,
-                                                    }}
-                                                    source={{
-                                                        uri: guest.profilePic
-                                                    }}
-                                                />
-                                            ) : (
-                                                <Ionicons
-                                                name="person-outline"
-                                                size={25}
-                                            />
-                                            )}
-                                            <Text style={styles.guestName}>
-                                                {guest.firstName}{" "}
-                                                {guest.lastName}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                );
-                            }}
-                            keyExtractor={(key) => key} // Use the 'key' as the unique identifier
-                        />
-                    </View>
-                ) : (
-                    // Object.keys(guestList).map((key) => {
-                    //     const guest = guestList[key];
-                    //     return (
-                    //         <TouchableOpacity
-                    //             key={key}
-                    //             onPress={() =>
-                    //                 navigation.navigate("GuestProfileScreen", {
-                    //                     user: guest,
-                    //                 })
-                    //             }
-                    //         >
-                    //             <Text style={styles.guestName}>
-                    //                 {guest.firstName} {guest.lastName}
-                    //             </Text>
-                    //         </TouchableOpacity>
-                    //     );
-                    // })
-                    <View style={{ alignItems: "center" }}>
-                        <FlatList
-                            data={Object.keys(guestList)}
-                            numColumns={3}
-                            renderItem={({ item: key }) => {
-                                const guest = guestList[key];
-                                return (
-                                    <View
-                                        key={key}
-                                        style={{
-                                            width: screenWidth / 3 - 20,
-                                            margin: 5,
-                                            padding: 5,
-                                            position: "relative",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        <TouchableOpacity
-                                            style={{
-                                                position: "absolute",
-                                                top: 0,
-                                                right: 0,
-                                            }}
-                                            onPress={() =>
-                                                handleDeleteGuest(guest, key)
-                                            }
-                                        >
-                                            <Ionicons
-                                                name="close-circle-outline"
-                                                size={25}
-                                            />
-                                        </TouchableOpacity>
-                                        <View
-                                            style={{
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                            }}
-                                        >
-                                            <Image
-                                                style={{
-                                                    ...styles.profilePic,
-                                                    marginBottom: 10,
-                                                    borderWidth: 5,
-                                                    borderColor:
-                                                        guest.attending
-                                                            ? "#36b6ff"
-                                                            : "black",
-                                                    opacity: guest.attending
-                                                    ? 1
-                                                    : .3,
-                                                }}
-                                                source={{
-                                                    uri: guest.profilePic,
-                                                }}
-                                            />
-                                            <Text style={styles.guestName}>
-                                                {guest.firstName}{" "}
-                                                {guest.lastName}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                );
-                            }}
-                            keyExtractor={(key) => key} // Use the 'key' as the unique identifier
-                        />
-                    </View>
-                )
+        <SafeAreaView style={globalStyles.container}>
+            {loading ? (
+                <Video
+                    source={require("../../../assets/LoadingScreen.mp4")}
+                    style={{ flex: 1 }}
+                    shouldPlay
+                    isLooping
+                    resizeMode="cover"
+                />
             ) : (
-                <Text>No guests at this time!</Text>
+                <>
+                    <View
+                        style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            margin: 12,
+                        }}
+                    >
+                        <Text style={globalStyles.heading2}>Invitees of</Text>
+                        <Text
+                            style={{
+                                ...globalStyles.heading1,
+                                fontFamily: "Bukhari Script",
+                                padding: 10,
+                            }}
+                        >
+                            {event.name}
+                        </Text>
+                        <Text style={globalStyles.heading3}>
+                            Hosted by: {host.firstName} {host.lastName}
+                        </Text>
+                    </View>
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            margin: 20,
+                            marginBottom: 35,
+                        }}
+                    >
+                        <View
+                            style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                                height: 80,
+                                width: 80,
+                                borderRadius: 80,
+                                margin: 10,
+                                backgroundColor: "black",
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    ...globalStyles.paragraph,
+                                    textAlign: "center",
+                                    color: "white",
+                                    fontWeight: "bold",
+                                }}
+                                onPress={getGuests}
+                            >
+                                All invitees
+                            </Text>
+                        </View>
+                        <View
+                            style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                                height: 80,
+                                width: 80,
+                                borderRadius: 80,
+                                margin: 10,
+                                backgroundColor: "#38b6ff",
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    ...globalStyles.paragraph,
+                                    textAlign: "center",
+                                    color: "white",
+                                    fontWeight: "bold",
+                                }}
+                                onPress={showAttending}
+                            >
+                                Will be there
+                            </Text>
+                        </View>
+                        <View
+                            style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                                height: 80,
+                                width: 80,
+                                borderRadius: 80,
+                                margin: 10,
+                                backgroundColor: "#cb6ce6",
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    ...globalStyles.paragraph,
+                                    textAlign: "center",
+                                    color: "white",
+                                    fontWeight: "bold",
+                                }}
+                                onPress={showNotAttending}
+                            >
+                                Can't make it
+                            </Text>
+                        </View>
+                        <View
+                            style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                                height: 80,
+                                width: 80,
+                                borderRadius: 80,
+                                margin: 10,
+                                backgroundColor: "lightgray",
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    ...globalStyles.paragraph,
+                                    textAlign: "center",
+                                    color: "black",
+                                    fontWeight: "bold",
+                                }}
+                                onPress={showNotResponded}
+                            >
+                                RSVP pending
+                            </Text>
+                        </View>
+                    </View>
+                    <View style={{ alignItems: "center" }}>
+                        {guestList.length > 0 ? (
+                            <FlatList
+                                data={Object.keys(guestList)}
+                                numColumns={3}
+                                renderItem={({ item: key }) => {
+                                    const guest = guestList[key];
+                                    return (
+                                        <View
+                                            key={key}
+                                            style={{
+                                                width: screenWidth / 3 - 20,
+                                                margin: 5,
+                                                padding: 5,
+                                                position: "relative",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            {uid === event.host_id ? (
+                                                <TouchableOpacity
+                                                    style={{
+                                                        position: "absolute",
+                                                        top: 0,
+                                                        right: 0,
+                                                    }}
+                                                    onPress={() =>
+                                                        handleDeleteGuest(
+                                                            guest,
+                                                            key
+                                                        )
+                                                    }
+                                                >
+                                                    <Ionicons
+                                                        name="close-circle-outline"
+                                                        size={25}
+                                                    />
+                                                </TouchableOpacity>
+                                            ) : null}
+                                            <View
+                                                style={{
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                }}
+                                            >
+                                                {guest.profilePic === "" ? (
+                                                    <View
+                                                        style={{
+                                                            ...styles.profilePic,
+                                                            marginBottom: 10,
+                                                            borderWidth: 8,
+                                                            borderColor: guest
+                                                                .userEvents[
+                                                                eventId
+                                                            ].attending
+                                                                ? "#36b6ff"
+                                                                : guest
+                                                                      .userEvents[
+                                                                      eventId
+                                                                  ]
+                                                                      .attending ===
+                                                                  false
+                                                                ? "#cb6ce6"
+                                                                : "black",
+                                                            opacity: guest
+                                                                .userEvents[
+                                                                eventId
+                                                            ].attending
+                                                                ? 1
+                                                                : 0.3,
+                                                            justifyContent:
+                                                                "center",
+                                                            alignItems:
+                                                                "center",
+                                                        }}
+                                                    >
+                                                        <Ionicons
+                                                            name="person-outline"
+                                                            size={55}
+                                                            color={
+                                                                guest
+                                                                    .userEvents[
+                                                                    eventId
+                                                                ].attending
+                                                                    ? "#36b6ff"
+                                                                    : guest
+                                                                          .userEvents[
+                                                                          eventId
+                                                                      ]
+                                                                          .attending ===
+                                                                      false
+                                                                    ? "#cb6ce6"
+                                                                    : "black"
+                                                            }
+                                                        />
+                                                    </View>
+                                                ) : (
+                                                    <Image
+                                                        style={{
+                                                            ...styles.profilePic,
+                                                            marginBottom: 10,
+                                                            borderWidth:
+                                                                guest
+                                                                    .userEvents[
+                                                                    eventId
+                                                                ].attending ||
+                                                                guest
+                                                                    .userEvents[
+                                                                    eventId
+                                                                ].attending ===
+                                                                    false
+                                                                    ? 8
+                                                                    : 0,
+                                                            borderColor: guest
+                                                                .userEvents[
+                                                                eventId
+                                                            ].attending
+                                                                ? "#36b6ff"
+                                                                : "#cb6ce6",
+                                                            opacity:
+                                                                guest
+                                                                    .userEvents[
+                                                                    eventId
+                                                                ].attending ||
+                                                                guest
+                                                                    .userEvents[
+                                                                    eventId
+                                                                ].attending ===
+                                                                    false
+                                                                    ? 1
+                                                                    : 0.3,
+                                                        }}
+                                                        source={{
+                                                            uri: guest.profilePic,
+                                                        }}
+                                                    />
+                                                )}
+                                                <View
+                                                    style={{
+                                                        overflow: "hidden",
+                                                    }}
+                                                >
+                                                    <Text
+                                                        style={{
+                                                            ...globalStyles.paragraph,
+                                                            overflow: "hidden",
+                                                        }}
+                                                        numberOfLines={1}
+                                                        ellipsizeMode="tail"
+                                                    >
+                                                        {guest.firstName}{" "}
+                                                        {guest.lastName}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    );
+                                }}
+                                keyExtractor={(key) => key} // Use the 'key' as the unique identifier
+                            />
+                        ) : (
+                            <Text>No guests at this time!</Text>
+                        )}
+                    </View>
+                </>
             )}
-        </View>
+        </SafeAreaView>
     );
 };
 

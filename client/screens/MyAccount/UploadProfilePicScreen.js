@@ -60,19 +60,34 @@ const UploadProfilePicScreen = (props) => {
                         source={{ uri: image }}
                         style={{ height: 300, width: 300, borderRadius: 150 }}
                     />
-                    <Ionicons name="cloud-upload-outline" size={55} />
-                    <Text style={globalStyles.heading2}>Upload profile picture</Text>
+                    <TouchableOpacity
+                        style={{
+                            ...globalStyles.button,
+                            backgroundColor: "#cb6cd6", flexDirection: "row"
+                        }}
+                    >
+                        <Text
+                            style={{
+                                ...globalStyles.paragraph,
+                                color: "white",
+                                fontWeight: "bold",
+                            }}
+                        >
+                            Upload profile picture
+                        </Text>
+                            <Ionicons name="cloud-upload-outline" size={25} color="white" paddingLeft={10}/>
+                    </TouchableOpacity>
                 </View>
             ) : (
                 <TouchableOpacity
                     onPress={() => pickImage()}
-                    style={{ justifyContent: "center", alignItems: "center" }}
+                    style={{...globalStyles.button, backgroundColor: "#38b6ff", justifyContent: "center", alignItems: "center" }}
                 >
-                    <Ionicons name="camera-outline" size={55} />
+                    <Ionicons name="camera-outline" size={55} color="white"/>
                     <Text
                         style={{
                             ...globalStyles.heading2,
-                            textAlign: "center",
+                            textAlign: "center", color: "white"
                         }}
                     >
                         Tap to select a new profile picture{"\n"}from your

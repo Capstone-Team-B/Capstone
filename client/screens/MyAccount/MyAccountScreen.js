@@ -94,7 +94,7 @@ const MyAccountScreen = (props) => {
                         <Ionicons name="create-outline" size={25} />
                     </Pressable>
                 </View>
-                <View style={globalStyles.tile}>
+                <View style={{...globalStyles.tile, backgroundColor: "white", borderWidth: 0}}>
                     <View
                         style={{
                             flexDirection: "row",
@@ -152,7 +152,7 @@ const MyAccountScreen = (props) => {
                         <Ionicons name="archive-outline" size={25} />
                     </Pressable>
                 </View>
-                <View style={globalStyles.tile}>
+                <View style={{...globalStyles.tile, backgroundColor: "white", borderWidth: 0}}>
                     <View>
                         <Text style={globalStyles.paragraph}>
                             Past event's I've attended/hosted

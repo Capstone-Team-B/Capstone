@@ -7,7 +7,8 @@ import {
     TouchableOpacity,
     View,
     Image,
-    ImageBackground, Alert
+    ImageBackground,
+    Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { auth } from "../../../firebase";
@@ -22,9 +23,8 @@ const Background = require("../../../assets/Background.png");
 const GuestProfileScreen = (params) => {
     const uid = params.route.params.uid;
     const event = params.route.params.event;
-    const eventId = (event.event_id).toString()
     const [user, setUser] = useState({});
-    const [rsvpStatus, setRSVPStatus] = useState(event.guestList[uid].attending); //will need to update
+    const [rsvpStatus, setRSVPStatus] = useState(event.guestList[uid].attending);
     const [toggleValue, setToggleValue] = useState(rsvpStatus);
 
     useEffect(() => {
@@ -60,7 +60,8 @@ const GuestProfileScreen = (params) => {
         const updateEventRef = { attending: toggleValue };
         await update(eventRef, updateEventRef);
 
-        navigation.goBack()
+        Alert.alert("Updated RSVP sent")
+        navigation.navigate("SingleEvent", {uid: uid, event: event});
     };
 
     return (
@@ -203,19 +204,6 @@ const GuestProfileScreen = (params) => {
                     />
                 </View>
             </View>
-            {/* <Text>
-                <Text style={styles.label}>
-                    Name: {user.firstName ? user.firstName : null}{" "}
-                    {user.lastName ? user.lastName : null}
-                </Text>
-            </Text>
-
-            <Text style={styles.label}>
-                Phone: {user.phoneNumber ? user.phoneNumber : null}
-            </Text>
-            <Text style={styles.label}>
-                Email: {user.email ? user.email : null}
-            </Text> */}
             {rsvpStatus != toggleValue ? (
                 <TouchableOpacity
                     style={{

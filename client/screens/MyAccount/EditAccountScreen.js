@@ -9,17 +9,19 @@ import {
     TouchableOpacity,
     Alert,
     SafeAreaView,
-    Button,
     Image,
+    ImageBackground,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, update, set, child, get } from "firebase/database";
 import globalStyles from "../../utils/globalStyles";
 import * as ImagePicker from "expo-image-picker";
+const Background = require("../../../assets/Background.png");
 
 // import { auth } from "../../../firebase";
 
 const EditAccountScreen = (props) => {
+    // STATE
     const [user, setUser] = useState(props.route.params);
     const [firstName, setFirstName] = useState(user.firstName || "");
     const [lastName, setLastName] = useState(user.lastName || "");
@@ -32,12 +34,15 @@ const EditAccountScreen = (props) => {
     );
     const [dietary, setDietary] = useState(user.dietary || "");
 
+    // COMPONENT VARIABLES
     const navigation = useNavigation();
-        console.log("propic -->", profilePic)
+
+    // USEEFFECTS
     useEffect(() => {
         setUser(props.route.params);
     }, [props]);
 
+    // FUNCTIONS
     const handleSubmit = async () => {
         if (firstName === "" || lastName === "" || email === "") {
             Alert.alert("Please provide your name and email");
@@ -69,144 +74,227 @@ const EditAccountScreen = (props) => {
     };
 
     return (
-        <KeyboardAvoidingView style={globalStyles.container} behavior="height">
-            <ScrollView style={globalStyles.container}>
-                <View style={styles.section}>
-                    <Text
-                        style={{
-                            ...globalStyles.heading2,
-                            marginBottom: 20,
-                            textAlign: "center",
-                        }}
-                    >
-                        Account Details
-                    </Text>
-                    <Text
-                        style={{ ...globalStyles.paragraph, marginBottom: 12 }}
-                    >
-                        First name:
-                    </Text>
-                    <TextInput
-                        style={globalStyles.input}
-                        placeholder={"First Name"}
-                        value={firstName}
-                        onChangeText={setFirstName}
-                    />
-                    <Text
-                        style={{ ...globalStyles.paragraph, marginBottom: 12 }}
-                    >
-                        Last name:
-                    </Text>
-                    <TextInput
-                        style={globalStyles.input}
-                        placeholder="Last Name"
-                        value={lastName}
-                        onChangeText={setLastName}
-                    />
-                    <Text
-                        style={{ ...globalStyles.paragraph, marginBottom: 12 }}
-                    >
-                        Email:
-                    </Text>
-                    <TextInput
-                        style={globalStyles.input}
-                        placeholder="Email"
-                        value={email}
-                        onChangeText={setEmail}
-                    />
-                    <Text
-                        style={{ ...globalStyles.paragraph, marginBottom: 12 }}
-                    >
-                        Phone:
-                    </Text>
-                    <TextInput
-                        style={globalStyles.input}
-                        placeholder="Phone Number"
-                        value={phoneNumber}
-                        onChangeText={setPhoneNumber}
-                    />
-                    <Text
-                        style={{ ...globalStyles.paragraph, marginBottom: 12 }}
-                    >
-                        Address:
-                    </Text>
-                    <TextInput
-                        style={globalStyles.input}
-                        placeholder="Home City"
-                        value={homeCity}
-                        onChangeText={setHomeCity}
-                    />
+        <KeyboardAvoidingView
+            style={{
+                flex: 1,
+                backgroundColor: "#fff",
+                justifyContent: "center",
+            }}
+            behavior="height"
+        >
+            <ImageBackground
+                source={Background}
+                resizeMode="cover"
+                style={{
+                    flex: 1,
+                    width: "100%",
+                }}
+            >
+                <ScrollView>
                     <View style={styles.section}>
                         <Text
                             style={{
                                 ...globalStyles.heading2,
-                                marginTop: 20,
-                                marginBottom: 20,
+                                margin: 20,
                                 textAlign: "center",
                             }}
                         >
-                            Edit Guest Profile
+                            Account Details
                         </Text>
                         <Text
                             style={{
                                 ...globalStyles.paragraph,
                                 marginBottom: 12,
+                                marginLeft: 8,
                             }}
                         >
-                            Dietary restrictions:
+                            First name:
                         </Text>
                         <TextInput
-                            style={globalStyles.input}
-                            placeholder="Dietary"
-                            value={dietary}
-                            onChangeText={setDietary}
+                            style={{
+                                ...globalStyles.input,
+                                backgroundColor: "white",
+                            }}
+                            placeholder={"First Name"}
+                            value={firstName}
+                            onChangeText={setFirstName}
                         />
                         <Text
                             style={{
                                 ...globalStyles.paragraph,
                                 marginBottom: 12,
+                                marginLeft: 8,
                             }}
                         >
-                            Accessibility notes:
+                            Last name:
                         </Text>
                         <TextInput
-                            style={globalStyles.input}
-                            placeholder="Accessibility"
-                            value={accessibility}
-                            onChangeText={setAccessibility}
+                            style={{
+                                ...globalStyles.input,
+                                backgroundColor: "white",
+                            }}
+                            placeholder="Last Name"
+                            value={lastName}
+                            onChangeText={setLastName}
                         />
-                    </View>
-                    <SafeAreaView style={{ alignItems: "center" }}>
-                        {profilePic ? (
-                            <Image
-                                style={styles.profilePic}
-                                source={{
-                                    uri: profilePic,
+                        <Text
+                            style={{
+                                ...globalStyles.paragraph,
+                                marginBottom: 12,
+                                marginLeft: 8,
+                            }}
+                        >
+                            Email:
+                        </Text>
+                        <TextInput
+                            style={{
+                                ...globalStyles.input,
+                                backgroundColor: "white",
+                            }}
+                            placeholder="Email"
+                            value={email}
+                            onChangeText={setEmail}
+                        />
+                        <Text
+                            style={{
+                                ...globalStyles.paragraph,
+                                marginBottom: 12,
+                                marginLeft: 8,
+                            }}
+                        >
+                            Phone:
+                        </Text>
+                        <TextInput
+                            style={{
+                                ...globalStyles.input,
+                                backgroundColor: "white",
+                            }}
+                            placeholder="Phone Number"
+                            value={phoneNumber}
+                            onChangeText={setPhoneNumber}
+                        />
+                        <Text
+                            style={{
+                                ...globalStyles.paragraph,
+                                marginBottom: 12,
+                                marginLeft: 8,
+                            }}
+                        >
+                            Address:
+                        </Text>
+                        <TextInput
+                            style={{
+                                ...globalStyles.input,
+                                backgroundColor: "white",
+                            }}
+                            placeholder="Home City"
+                            value={homeCity}
+                            onChangeText={setHomeCity}
+                        />
+                        <View style={styles.section}>
+                            <Text
+                                style={{
+                                    ...globalStyles.heading2,
+                                    margin: 20,
+                                    textAlign: "center",
                                 }}
+                            >
+                                Edit Guest Profile
+                            </Text>
+                            <Text
+                                style={{
+                                    ...globalStyles.paragraph,
+                                    marginBottom: 12,
+                                    marginLeft: 8,
+                                }}
+                            >
+                                Dietary restrictions:
+                            </Text>
+                            <TextInput
+                                style={{
+                                    ...globalStyles.input,
+                                    backgroundColor: "white",
+                                }}
+                                placeholder="Dietary"
+                                value={dietary}
+                                onChangeText={setDietary}
                             />
-                        ) : null}
-                        <Button
-                            title="Change profile picture"
-                            onPress={() =>
-                                navigation.navigate("UploadProfilePicScreen", {
-                                    uid: user.user_id,
-                                })
-                            }
-                        />
-                    </SafeAreaView>
-                </View>
-                <View>
-                    <TouchableOpacity
-                        style={styles.submitButton}
-                        onPress={handleSubmit}
-                        required={true}
-                    >
-                        <Text style={styles.submitButtonText}>
-                            Update Account
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
+                            <Text
+                                style={{
+                                    ...globalStyles.paragraph,
+                                    marginBottom: 12,
+                                    marginLeft: 8,
+                                }}
+                            >
+                                Accessibility notes:
+                            </Text>
+                            <TextInput
+                                style={{
+                                    ...globalStyles.input,
+                                    backgroundColor: "white",
+                                }}
+                                placeholder="Accessibility"
+                                value={accessibility}
+                                onChangeText={setAccessibility}
+                            />
+                        </View>
+                        <SafeAreaView style={{ alignItems: "center" }}>
+                            {profilePic ? (
+                                <Image
+                                    style={styles.profilePic}
+                                    source={{
+                                        uri: profilePic,
+                                    }}
+                                />
+                            ) : null}
+                            <TouchableOpacity
+                                style={{
+                                    ...globalStyles.button,
+                                    backgroundColor: "#38b6ff",
+                                }}
+                                onPress={() =>
+                                    navigation.navigate(
+                                        "UploadProfilePicScreen",
+                                        {
+                                            uid: user.user_id,
+                                        }
+                                    )
+                                }
+                            >
+                                <Text
+                                    style={{
+                                        ...globalStyles.paragraph,
+                                        color: "white",
+                                        fontWeight: "bold",
+                                    }}
+                                >
+                                    Change profile picture
+                                </Text>
+                            </TouchableOpacity>
+                        </SafeAreaView>
+                    </View>
+                    <View>
+                        <TouchableOpacity
+                            style={{
+                                ...globalStyles.button,
+                                backgroundColor: "#cb6ce6",
+                            }}
+                            onPress={handleSubmit}
+                            required={true}
+                        >
+                            <Text
+                                style={{
+                                    ...globalStyles.paragraph,
+                                    color: "white",
+                                    fontWeight: "bold",
+                                }}
+                            >
+                                Update Account
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+            </ImageBackground>
         </KeyboardAvoidingView>
     );
 };
@@ -217,7 +305,7 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     section: {
-        marginBottom: 20,
+        margin: 12,
     },
     addButton: {
         backgroundColor: "#007bff",

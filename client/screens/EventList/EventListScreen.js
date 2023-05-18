@@ -45,7 +45,7 @@ const EventListScreen = (props) => {
                         const data = eventSnapshot.val();
                         events = [...events, data];
                     } else {
-                        console.log("no event data!!!");
+                        console.log("no event data");
                     }
                 });
             } catch (error) {
