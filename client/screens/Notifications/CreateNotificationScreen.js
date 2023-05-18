@@ -12,7 +12,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, child, push, set, update } from "firebase/database";
 import { DatePickerModal } from "react-native-paper-dates";
-import { TimePickerModal } from "react-native-paper-dates";
+// import { TimePickerModal } from "react-native-paper-dates";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const CreateNotification = (params) => {
@@ -35,7 +35,7 @@ const CreateNotification = (params) => {
 
     const handleDeleteNotification = () => {
         setNotification({});
-        navigation.navigate("All Notifications", { event: event });
+        navigation.navigate("All Reminders", { event: event });
     };
 
     const handleUpdateNotification = (field, value) => {
@@ -49,8 +49,7 @@ const CreateNotification = (params) => {
         if (
             !notification.title ||
             !notification.body ||
-            !notification.scheduled_date ||
-            !notification.scheduled_time
+            !notification.scheduled_date
         ) {
             Alert.alert("Please fill in all fields");
             return;
@@ -70,13 +69,13 @@ const CreateNotification = (params) => {
             title: notificationTitle,
             body: notificationBody,
             scheduled_date: notificationDate,
-            scheduled_time: notificationTime,
+            // scheduled_time: notificationTime,
         } = notification;
         const newNotificationData = {
             title: notificationTitle,
             body: notificationBody,
             scheduled_date: notificationDate,
-            scheduled_time: notificationTime,
+            // scheduled_time: notificationTime,
             event_id: eventId,
             event_name: eventName,
             recipients: { allGuests: true },
@@ -89,17 +88,17 @@ const CreateNotification = (params) => {
             newNotificationKey
         );
         await update(newEventNotificationRef, {
-            [newNotificationKey]: newNotificationKey,
+            "notification_id": newNotificationKey,
         });
 
-        navigation.navigate("All Notifications", { event: event });
+        navigation.navigate("All Reminders", { event: event });
     };
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="height">
             <ScrollView style={styles.container}>
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Notifications</Text>
+                    <Text style={styles.sectionTitle}>Reminders</Text>
                     <View style={styles.section}>
                         <View style={styles.section}>
                             <TextInput
@@ -113,7 +112,7 @@ const CreateNotification = (params) => {
                             />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Enter notification text here..."
+                                placeholder="Enter reminder text here..."
                                 value={notification.type}
                                 onChangeText={(value) =>
                                     handleUpdateNotification("body", value)
@@ -135,7 +134,7 @@ const CreateNotification = (params) => {
                                                   day: "numeric",
                                                   year: "numeric",
                                               })
-                                            : "Select Notification Date"}
+                                            : "Select date"}
                                     </Text>
                                 </TouchableOpacity>
                                 <SafeAreaProvider>
@@ -157,14 +156,14 @@ const CreateNotification = (params) => {
                                     />
                                 </SafeAreaProvider>
                             </TouchableOpacity>
-                            <TouchableOpacity
+                            {/* <TouchableOpacity
                                 style={styles.outlineButton}
                                 onPress={() => setVisible(true)}
                             >
                                 <Text style={styles.outlineButtonText}>
                                     {notification.scheduled_time
                                         ? `${notification.scheduled_time}`
-                                        : "Select Notification Time"}
+                                        : "Select time (optional)"}
                                 </Text>
                             </TouchableOpacity>
                             <SafeAreaProvider>
@@ -176,10 +175,11 @@ const CreateNotification = (params) => {
                                         const date = new Date();
                                         date.setHours(selectedTime.hours);
                                         date.setMinutes(selectedTime.minutes);
-                                        const formattedTime = date.toLocaleTimeString([], {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                        });
+                                        const formattedTime =
+                                            date.toLocaleTimeString([], {
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                            });
                                         handleUpdateNotification(
                                             "scheduled_time",
                                             formattedTime
@@ -189,9 +189,9 @@ const CreateNotification = (params) => {
                                     onDismiss={onDismiss}
                                     hours={12}
                                     minutes={30}
-                                    required={true}
+                                    required={false}
                                 />
-                            </SafeAreaProvider>
+                            </SafeAreaProvider> */}
                             <TouchableOpacity
                                 style={styles.deleteButton}
                                 onPress={() => handleDeleteNotification()}
@@ -209,7 +209,7 @@ const CreateNotification = (params) => {
                         onPress={handleSubmit}
                     >
                         <Text style={styles.submitButtonText}>
-                            Create Notifications
+                            Create Reminder
                         </Text>
                     </TouchableOpacity>
                 </View>
