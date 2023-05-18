@@ -24,6 +24,9 @@ const EditEvent = (params) => {
     // COMPONENT VARIABLES
     const navigation = useNavigation();
 
+    // PROPS & PARAMS
+    const uid = params.route.params.uid
+
     // USESTATE
     const [event, setEvent] = useState(params.route.params.event);
     const [weddingName, setWeddingName] = useState(event.name || "");
@@ -109,7 +112,7 @@ const EditEvent = (params) => {
 
             await update(eventRef, updatedEvent);
 
-            navigation.navigate("SingleEvent", { event: updatedEvent });
+            navigation.navigate("SingleEvent", { uid: uid, event: updatedEvent });
         } catch (error) {
             console.log(error);
         }
@@ -351,18 +354,18 @@ const EditEvent = (params) => {
                         </Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={styles.addButton}
                     onPress={() =>
                         navigation.navigate("Create Guest List", {
-                            event: event,
+                            event: event, uid: uid
                         })
                     }
                 >
                     <Text style={styles.addButtonText}>Edit Guests</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={styles.addButton}
                     onPress={() =>
                         navigation.navigate("All Reminders", {
@@ -371,7 +374,7 @@ const EditEvent = (params) => {
                     }
                 >
                     <Text style={styles.addButtonText}>View Reminders</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 <TouchableOpacity
                     style={styles.addButton}

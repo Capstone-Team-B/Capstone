@@ -19,7 +19,7 @@ const BeThereLogoExpanded = require("../../assets/BeThereExpanded.png");
 const Background = require("../../assets/Background.png");
 
 const LoginScreen = () => {
-    const [email, setEmail] = useState("testC@test.com"); // logging in as kit, who is the host of an event
+    const [email, setEmail] = useState("kit@kit.com"); // logging in as kit, who is the host of an event
     const [password, setPassword] = useState("pwpwpw");
     const [storeUser, setStoreUser] = useAtom(userStore);
     const navigation = useNavigation();
@@ -67,10 +67,12 @@ const LoginScreen = () => {
         //     screen: "CheckAccountScreen",
         //     email: email,
         // });
-        navigation.navigate("CreateAccountScreen", {
-            screen: "CreateAccountScreen",
-            email: email,
-        });
+        // navigation.navigate("CheckAccountScreen", { email: email});
+
+        // navigation.navigate("CreateAccountScreen", {
+        //     screen: "CreateAccountScreen",
+        //     email: email,
+        // });
         const dbRef = ref(getDatabase());
         // Check if the email entered during registration already exists in the database
         // should this also check if they are signed up too?

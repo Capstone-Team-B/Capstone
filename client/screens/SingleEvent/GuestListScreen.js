@@ -16,16 +16,17 @@ import globalStyles from "../../utils/globalStyles";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Video } from "expo-av";
 
-
 const GuestListScreen = (params) => {
     const [loading, setLoading] = useState(true);
     const [guestList, setGuestList] = useState([]);
     const [host, setHost] = useState({});
     const event = params.route.params.event;
     const uid = params.route.params.uid;
-    const attending = params.route.params.attending
+    // const attending = params.route.params.attending
     const host_id = event.host_id;
     const eventId = event.event_id;
+
+    // console.log("guestList -->", guestList)
 
     const isFocused = useIsFocused();
     const dbRef = ref(getDatabase());
@@ -58,7 +59,18 @@ const GuestListScreen = (params) => {
                     .then((snapshot) => {
                         if (snapshot.exists()) {
                             const data = snapshot.val();
-                            guests = [...guests, data];
+                            // console.log("data -->", data)
+                            // const userEvent = Object.entries(data.userEvents).find(([key, value]) => value.event_id)[0]
+                            const attendingStatus = Object.values(data.userEvents).find(({event_id}) => event_id === eventId);
+                            const neededInfo = {
+                                firstName: data.firstName,
+                                lastName: data.lastName,
+                                profilePic: data.profilePic,
+                                userEvent: attendingStatus,
+                                user_id: data.user_id
+                            };
+                            console.log("neededInfo -->", neededInfo);
+                            guests = [...guests, neededInfo];
                         } else {
                             console.log("No data available");
                         }
@@ -104,12 +116,22 @@ const GuestListScreen = (params) => {
         const guestListRef = child(dbRef, `events/${eventId}/guestList`);
         const userId = guest.user_id;
 
+        console.log("guestListRef -->", guestListRef);
+        console.log("userId -->", userId);
+
         const guestToDeleteRef = child(guestListRef, userId);
         await remove(guestToDeleteRef);
 
-        const usersEventsRef = child(dbRef, `users/${userId}/userEvents`);
-        const eventToDeleteRef = child(usersEventsRef, eventId);
+        console.log("guest.userEvent -->", guest.userEvent)
+        const usersEventsRef = child(
+            dbRef,
+            `users/${userId}/userEvents}`
+        );
+        console.log("usersEventsRef -->", usersEventsRef);
+
+        const eventToDeleteRef = child(usersEventsRef, guest.userEvent);
         await remove(eventToDeleteRef);
+
 
         const updatedGuestList = guestList.filter(
             (item) => item.user_id !== userId
@@ -118,134 +140,20 @@ const GuestListScreen = (params) => {
     };
 
     const showAttending = async () => {
-        let guestIds = [];
-        let guests = [];
-        try {
-            const guestsQuery = query(
-                child(dbRef, `events/${eventId}/guestList`)
-            );
-            await get(guestsQuery).then((guestsSnapshot) => {
-                if (guestsSnapshot.exists()) {
-                    const data = guestsSnapshot.val();
-                    guestIds = Object.keys(data);
-                } else {
-                    console.log("no guest data found");
-                }
-            });
-        } catch (error) {
-            console.log(error);
-        }
-        for (let i = 0; i < guestIds.length; i++) {
-            const guestQuery = query(child(dbRef, `users/${guestIds[i]}`));
-            try {
-                await get(guestQuery)
-                    .then((snapshot) => {
-                        if (snapshot.exists()) {
-                            const data = snapshot.val();
-                            guests = [...guests, data];
-                        } else {
-                            console.log("No data available");
-                        }
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    });
-            } catch (error) {
-                console.log(error);
-            }
-        }
         setGuestList(
-            guests.filter(
-                (guest) => guest.userEvents[eventId]?.attending === true
-            )
+            guestList.filter((guest) => guest.userEvent.attending === true)
         );
     };
 
     const showNotAttending = async () => {
-        let guestIds = [];
-        let guests = [];
-        try {
-            const guestsQuery = query(
-                child(dbRef, `events/${eventId}/guestList`)
-            );
-            await get(guestsQuery).then((guestsSnapshot) => {
-                if (guestsSnapshot.exists()) {
-                    const data = guestsSnapshot.val();
-                    guestIds = Object.keys(data);
-                } else {
-                    console.log("no guest data found");
-                }
-            });
-        } catch (error) {
-            console.log(error);
-        }
-        for (let i = 0; i < guestIds.length; i++) {
-            const guestQuery = query(child(dbRef, `users/${guestIds[i]}`));
-            try {
-                await get(guestQuery)
-                    .then((snapshot) => {
-                        if (snapshot.exists()) {
-                            const data = snapshot.val();
-                            guests = [...guests, data];
-                        } else {
-                            console.log("No data available");
-                        }
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    });
-            } catch (error) {
-                console.log(error);
-            }
-        }
         setGuestList(
-            guests.filter(
-                (guest) => guest.userEvents[eventId]?.attending === false
-            )
+            guestList.filter((guest) => guest.userEvent.attending === false)
         );
     };
 
     const showNotResponded = async () => {
-        let guestIds = [];
-        let guests = [];
-        try {
-            const guestsQuery = query(
-                child(dbRef, `events/${eventId}/guestList`)
-            );
-            await get(guestsQuery).then((guestsSnapshot) => {
-                if (guestsSnapshot.exists()) {
-                    const data = guestsSnapshot.val();
-                    guestIds = Object.keys(data);
-                } else {
-                    console.log("no guest data found");
-                }
-            });
-        } catch (error) {
-            console.log(error);
-        }
-        for (let i = 0; i < guestIds.length; i++) {
-            const guestQuery = query(child(dbRef, `users/${guestIds[i]}`));
-            try {
-                await get(guestQuery)
-                    .then((snapshot) => {
-                        if (snapshot.exists()) {
-                            const data = snapshot.val();
-                            guests = [...guests, data];
-                        } else {
-                            console.log("No data available");
-                        }
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    });
-            } catch (error) {
-                console.log(error);
-            }
-        }
         setGuestList(
-            guests.filter(
-                (guest) => guest.userEvents[eventId]?.attending === undefined
-            )
+            guestList.filter((guest) => guest.userEvent.attending === undefined)
         );
     };
 
@@ -409,6 +317,7 @@ const GuestListScreen = (params) => {
                                                         position: "absolute",
                                                         top: 0,
                                                         right: 0,
+                                                        zIndex: 5,
                                                     }}
                                                     onPress={() =>
                                                         handleDeleteGuest(
@@ -436,24 +345,10 @@ const GuestListScreen = (params) => {
                                                             marginBottom: 10,
                                                             borderWidth: 8,
                                                             borderColor: guest
-                                                                .userEvents[
-                                                                eventId
-                                                            ].attending
+                                                                .userEvent
+                                                                .attending
                                                                 ? "#36b6ff"
-                                                                : guest
-                                                                      .userEvents[
-                                                                      eventId
-                                                                  ]
-                                                                      .attending ===
-                                                                  false
-                                                                ? "#cb6ce6"
-                                                                : "black",
-                                                            opacity: guest
-                                                                .userEvents[
-                                                                eventId
-                                                            ].attending
-                                                                ? 1
-                                                                : 0.3,
+                                                                : "#cb6ce6",
                                                             justifyContent:
                                                                 "center",
                                                             alignItems:
@@ -464,19 +359,10 @@ const GuestListScreen = (params) => {
                                                             name="person-outline"
                                                             size={55}
                                                             color={
-                                                                guest
-                                                                    .userEvents[
-                                                                    eventId
-                                                                ].attending
+                                                                guest.userEvent
+                                                                    .attending
                                                                     ? "#36b6ff"
-                                                                    : guest
-                                                                          .userEvents[
-                                                                          eventId
-                                                                      ]
-                                                                          .attending ===
-                                                                      false
-                                                                    ? "#cb6ce6"
-                                                                    : "black"
+                                                                    : "#cb6ce6"
                                                             }
                                                         />
                                                     </View>
@@ -485,35 +371,12 @@ const GuestListScreen = (params) => {
                                                         style={{
                                                             ...styles.profilePic,
                                                             marginBottom: 10,
-                                                            borderWidth:
-                                                                guest.userEvents[
-                                                                    eventId
-                                                                ].attending ||
-                                                                guest
-                                                                    .userEvents[
-                                                                    eventId
-                                                                ].attending ===
-                                                                    false
-                                                                    ? 8
-                                                                    : 0,
+                                                            borderWidth: 8,
                                                             borderColor: guest
-                                                                .userEvents[
-                                                                eventId
-                                                            ].attending
+                                                                .userEvent
+                                                                .attending
                                                                 ? "#36b6ff"
                                                                 : "#cb6ce6",
-                                                            opacity:
-                                                                guest
-                                                                    .userEvents[
-                                                                    eventId
-                                                                ].attending ||
-                                                                guest
-                                                                    .userEvents[
-                                                                    eventId
-                                                                ].attending ===
-                                                                    false
-                                                                    ? 1
-                                                                    : 0.3,
                                                         }}
                                                         source={{
                                                             uri: guest.profilePic,

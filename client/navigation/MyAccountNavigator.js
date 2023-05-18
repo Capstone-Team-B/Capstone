@@ -7,6 +7,7 @@ import ViewArchiveScreen from "../screens/MyAccount/ViewArchiveScreen";
 import { useRoute } from "@react-navigation/native";
 import UploadProfilePicScreen from "../screens/MyAccount/UploadProfilePicScreen";
 import globalStyles from "../utils/globalStyles";
+import CreateAccountScreen from "../screens/MyAccount/CreateAccountScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -43,6 +44,12 @@ const MyAccountNavigator = (props) => {
                 component={ViewArchiveScreen}
                 initialParams={{ uid: uid }}
                 options={{ title: "Event Archive", headerTitleStyle: globalStyles.screenHeader}}
+            />
+            <Stack.Screen
+                name="CreateAccountScreen"
+                component={CreateAccountScreen}
+                initialParams={{ uid: uid }}
+                options={{ title: "Create Account", headerTitleStyle: globalStyles.screenHeader}}
             />
         </Stack.Navigator>
     );

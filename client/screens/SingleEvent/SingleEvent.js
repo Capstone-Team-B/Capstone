@@ -19,6 +19,7 @@ import { getDatabase, ref, child, get, query } from "firebase/database";
 import globalStyles from "../../utils/globalStyles";
 import Backgroundhorizontal from "../../../assets/Backgroundhorizontal.png";
 
+const SingleEvent = (params) => {
     // COMPONENT VARIABLES
     const isFocused = useIsFocused();
     const navigation = useNavigation();
@@ -199,7 +200,7 @@ import Backgroundhorizontal from "../../../assets/Backgroundhorizontal.png";
                             <TouchableOpacity
                                 onPress={() =>
                                     navigation.navigate("Edit Event", {
-                                        event: event,
+                                        event: event, uid: uid
                                     })
                                 }
                             >
@@ -229,7 +230,12 @@ import Backgroundhorizontal from "../../../assets/Backgroundhorizontal.png";
                                     </Text>
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                            onPress={() =>
+                                navigation.navigate("Create Guest List", {
+                                    event: event, uid: uid
+                                })
+                            }>
                                 <View
                                     style={{
                                         ...globalStyles.button,
@@ -256,7 +262,12 @@ import Backgroundhorizontal from "../../../assets/Backgroundhorizontal.png";
                                     </Text>
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                            onPress={() =>
+                                navigation.navigate("All Reminders", {
+                                    uid: uid, event: event,
+                                })
+                            }>
                                 <View
                                     style={{
                                         ...globalStyles.button,

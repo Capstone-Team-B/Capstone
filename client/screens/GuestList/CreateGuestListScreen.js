@@ -27,6 +27,7 @@ import {
 const CreateGuestList = (params) => {
     const [guestList, setGuestList] = useState([]);
     const event = params.route.params.event;
+    const uid = params.route.params.uid;
     const eventId = event.event_id;
     const navigation = useNavigation();
 
@@ -79,17 +80,28 @@ const CreateGuestList = (params) => {
                 return;
             }
 
+            // const newGuestListData = {
+            //     phoneNumber: formattedPhone.replace(
+            //         /(\d{3})(\d{3})(\d{4})/,
+            //         "($1) $2-$3"
+            //     ),
+            //     email: guestEmail,
+            //     firstName: guestFirstname,
+            //     lastName: guestLastname,
+            //     userEvents: {
+            //         [eventId]: {
+            //             event_id: event.event_id,
+            //             attending: false,
+            //         },
+            //     },
+            // };
+
             const newGuestListData = {
                 phoneNumber: formattedPhone.replace(
                     /(\d{3})(\d{3})(\d{4})/,
                     "($1) $2-$3"
                 ),
                 email: guestEmail,
-                firstName: guestFirstname,
-                lastName: guestLastname,
-                userEvents: {
-                    event_id: event.event_id,
-                },
             };
 
             try {
@@ -115,11 +127,28 @@ const CreateGuestList = (params) => {
                     );
                     await update(newEventGuestsRef, {
                         guest_id: userData[0].user_id,
+                        attending: false,
                     });
+
+                    const existingUserEventRef = child(dbRef,
+                        `users/${userData[0].user_id}/userEvents`
+                    );
+                    const updatedUserEvent = {
+                        event_id: event.event_id,
+                        attending: false,
+                    };
+                    await push(existingUserEventRef, updatedUserEvent);
                 } else {
                     const newGuestListRef = push(usersRef);
                     const newGuestListKey = newGuestListRef.key;
                     newGuestListData.user_id = newGuestListKey;
+
+                    newGuestListData.userEvents = {
+                        [event.event_id]: {
+                            event_id: event.event_id,
+                            attending: false,
+                        },
+                    };
 
                     await set(newGuestListRef, newGuestListData);
 
@@ -129,6 +158,7 @@ const CreateGuestList = (params) => {
                     );
                     await update(newEventGuestsRef, {
                         guest_id: newGuestListKey,
+                        attending: false,
                     });
                 }
             } catch (error) {
@@ -138,7 +168,7 @@ const CreateGuestList = (params) => {
             }
         }
 
-        navigation.navigate("SingleEvent", { event: event });
+        navigation.navigate("SingleEvent", { uid: uid, event: event });
     };
 
     return (
@@ -212,7 +242,7 @@ const CreateGuestList = (params) => {
                         style={styles.outlineButton}
                         onPress={() =>
                             navigation.navigate("Import Contacts", {
-                                event: event,
+                                event: event, uid: uid
                             })
                         }
                     >
