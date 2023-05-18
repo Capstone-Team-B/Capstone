@@ -1,14 +1,3 @@
-// Let's see if your Host started an Account for you.
-// First what is your phone number, name and email?
-
-//
-
-// if (accountExists) {
-//     //direct to update account page
-// } else {
-//     //direct to create new Account page
-// }
-
 import React, { useEffect, useState } from "react";
 import {
     KeyboardAvoidingView,
@@ -20,7 +9,6 @@ import {
     TouchableOpacity,
     Alert,
 } from "react-native";
-// import { auth } from "../../../firebase";
 import { useNavigation } from "@react-navigation/native";
 import {
     getDatabase,
@@ -45,14 +33,13 @@ const CheckAccountScreen = (props) => {
     const navigation = useNavigation();
 
     const handleSubmit = async () => {
-        //Make sure phone or email is entered
+        //Make sure phone or email is entered to look up
         console.log("submit clicked");
         if (phoneNumber === "" && email === "") {
             Alert.alert(`Please provide an email or phone number`);
             return;
         }
-        // check for matching phone number
-        console.log("Checking for phoneNumber ", phoneNumber);
+        // check for matching phone number first
         try {
             const dbRef = ref(getDatabase());
             get(
@@ -66,43 +53,86 @@ const CheckAccountScreen = (props) => {
                     if (snapshot.exists()) {
                         const userRef = snapshot.val();
                         const uid = Object.keys(userRef)[0];
-                        Alert.alert("Account found. Let's update it.");
+                        Alert.alert(
+                            "Your Host made an account. Let's update it."
+                        );
                         navigation.navigate("CreateAccountScreen", {
                             uid: uid,
                         });
+                        return;
                     } else {
+                        //now should check for email not there go to create account
+                        if (email === "") {
+                            Alert.alert(
+                                "No matching account. Let's create one"
+                            );
+
+                            navigation.navigate("CreateAccountScreen", {
+                                uid: "",
+                            });
+                            return;
+                        }
+                        console.log("Checking for email ", email);
+                        get(
+                            query(
+                                child(dbRef, "users"),
+                                orderByChild("email"),
+                                equalTo(email)
+                            )
+                        ).then((snapshot) => {
+                            console.log("Checked for email ", email);
+                            if (snapshot.exists()) {
+                                const userRef = snapshot.val();
+                                const uid = Object.keys(userRef)[0];
+                                navigation.navigate("CreateAccountScreen", {
+                                    uid: uid || "",
+                                });
+                            } else {
+                                console.log("No email found");
+                                Alert.alert(
+                                    "No matching account. Let's create one"
+                                );
+                                navigation.navigate("CreateAccountScreen", {
+                                    uid: "",
+                                });
+                            }
+                        });
                         Alert.alert("No matching account. Let's create one");
                         navigation.navigate("CreateAccountScreen", { uid: "" });
                     }
                 })
                 .catch((error) => {
-                    console.log("line 83", error);
+                    console.log("line 105", error);
                 });
-            console.log("Checking for email ", email);
-            get(
-                query(
-                    child(dbRef, "users"),
-                    orderByChild("email"),
-                    equalTo(email)
-                )
-            )
-                .then((snapshot) => {
-                    if (snapshot.exists()) {
-                        const userRef = snapshot.val();
-                        const uid = Object.keys(userRef)[0];
-                        navigation.navigate("CreateAccountScreen", {
-                            uid: uid || null,
-                        });
-                    } else {
-                        console.log("No email found");
-                    }
-                })
-                .catch((error) => {
-                    console.log("line 83", error);
-                });
+
+            // get(
+            //     query(
+            //         child(dbRef, "users"),
+            //         orderByChild("email"),
+            //         equalTo(email)
+            //     )
+            // )
+            //     .then((snapshot) => {
+            //         if (snapshot.exists()) {
+            //             const userRef = snapshot.val();
+            //             const uid = Object.keys(userRef)[0];
+            //             navigation.navigate("CreateAccountScreen", {
+            //                 uid: uid || null,
+            //             });
+            //         } else {
+            //             console.log("No email found");
+            //         }
+            //     })
+            //     .catch((error) => {
+            //         console.log("line 83", error);
+            //     });
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const handleSkip = async () => {
+        navigation.navigate("CreateAccountScreen", { uid: "" });
     };
 
     return (
@@ -134,6 +164,13 @@ const CheckAccountScreen = (props) => {
                         <Text style={styles.submitButtonText}>
                             Check for Account
                         </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.submitButton}
+                        onPress={handleSkip}
+                        required={true}
+                    >
+                        <Text style={styles.submitButtonText}>Skip</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>

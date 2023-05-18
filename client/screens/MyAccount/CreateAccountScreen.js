@@ -14,6 +14,8 @@ import {
 import { auth } from "../../../firebase";
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, update, set, child, get } from "firebase/database";
+import globalStyles from "../../utils/globalStyles";
+
 const dbRef = ref(getDatabase());
 
 const CreateAccountScreen = (props) => {
@@ -36,7 +38,14 @@ const CreateAccountScreen = (props) => {
     }, [props]);
 
     const [user, setUser] = useState({});
-    const [password, setPassword] = useState("");
+
+    //testing elements
+    const [password, setPassword] = useState("pwpwpwpw" || "");
+    const [confirmPassword, setConfirmPassword] = useState("pwpwpwpw" || "");
+
+    // const [password, setPassword] = useState("");
+    // const [confirmPassword, setConfirmPassword] = useState("");
+
     const [firstName, setFirstName] = useState(user.firstName || "");
     const [lastName, setLastName] = useState(user.lastName || "");
     const [email, setEmail] = useState(user.email || "");
@@ -61,10 +70,22 @@ const CreateAccountScreen = (props) => {
     }, [user]);
 
     const navigation = useNavigation();
+    let errorFlag = false;
+
+    const isConfirmedPassword = () => {
+        if (password !== confirmPassword) {
+            errorFlag = true;
+            Alert.alert({
+                message: "Passwoad and confirm password should be same.",
+            });
+        }
+    };
 
     const handleSubmit = async () => {
         const uid = props.route.params.uid;
         // Check that Form was filled out with name and email
+        isConfirmedPassword();
+        console.log(errorFlag);
         if (firstName === "" || lastName === "" || email === "") {
             Alert.alert("Please provide your name and a contact method");
             return;
@@ -134,7 +155,9 @@ const CreateAccountScreen = (props) => {
                     const newUserRef = child(dbRef, `users/${auth_id}`);
                     console.log(newUserRef);
                     set(newUserRef, newUser).then(() =>
-                        navigation.navigate("MyAccountScreen", {uid: newUser.user_id})
+                        navigation.navigate("MyAccountScreen", {
+                            uid: newUser.user_id,
+                        })
                     );
                 }
             );
@@ -145,7 +168,7 @@ const CreateAccountScreen = (props) => {
         <KeyboardAvoidingView style={styles.container} behavior="height">
             <ScrollView style={styles.container}>
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Account Details</Text>
+                    <Text style={styles.sectionTitle}>Create a Password</Text>
                     <TextInput
                         placeholder="Password"
                         value={password}
@@ -153,6 +176,15 @@ const CreateAccountScreen = (props) => {
                         style={styles.input}
                         secureTextEntry
                     />
+                    <TextInput
+                        placeholder="Confirm Password"
+                        value={confirmPassword}
+                        onChangeText={(text) => setConfirmPassword(text)}
+                        style={styles.input}
+                        secureTextEntry
+                    />
+                    <Text style={styles.sectionTitle}>Account Details</Text>
+
                     <TextInput
                         style={styles.input}
                         placeholder={"First Name"}
