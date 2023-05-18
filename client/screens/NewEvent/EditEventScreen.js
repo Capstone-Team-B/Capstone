@@ -112,7 +112,7 @@ const EditEvent = (params) => {
 
             await update(eventRef, updatedEvent);
 
-            navigation.navigate("SingleEvent", { event: updatedEvent });
+            navigation.navigate("SingleEvent", { uid: uid, event: updatedEvent });
         } catch (error) {
             console.log(error);
         }

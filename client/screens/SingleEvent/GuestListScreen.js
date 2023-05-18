@@ -61,9 +61,7 @@ const GuestListScreen = (params) => {
                             const data = snapshot.val();
                             // console.log("data -->", data)
                             // const userEvent = Object.entries(data.userEvents).find(([key, value]) => value.event_id)[0]
-                            const attendingStatus = Object.entries(
-                                data.userEvents
-                            ).find(([key, value]) => value.attending)[1];
+                            const attendingStatus = Object.values(data.userEvents).find(({event_id}) => event_id === eventId);
                             const neededInfo = {
                                 firstName: data.firstName,
                                 lastName: data.lastName,
@@ -71,7 +69,7 @@ const GuestListScreen = (params) => {
                                 userEvent: attendingStatus,
                                 user_id: data.user_id
                             };
-                            // console.log("neededInfo -->", neededInfo);
+                            console.log("neededInfo -->", neededInfo);
                             guests = [...guests, neededInfo];
                         } else {
                             console.log("No data available");
@@ -131,7 +129,7 @@ const GuestListScreen = (params) => {
         );
         console.log("usersEventsRef -->", usersEventsRef);
 
-        const eventToDeleteRef = child(usersEventsRef, eventId);
+        const eventToDeleteRef = child(usersEventsRef, guest.userEvent);
         await remove(eventToDeleteRef);
 
 

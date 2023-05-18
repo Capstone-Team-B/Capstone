@@ -242,7 +242,7 @@ const CreateGuestList = (params) => {
                         style={styles.outlineButton}
                         onPress={() =>
                             navigation.navigate("Import Contacts", {
-                                event: event,
+                                event: event, uid: uid
                             })
                         }
                     >
