@@ -1,3 +1,4 @@
+// REACT IMPORTS
 import {
     StyleSheet,
     Text,
@@ -7,19 +8,21 @@ import {
 } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/core";
+import Ionicons from "react-native-vector-icons/Ionicons";
+// PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
 const Backgroundhorizontal = require("../../../assets/Backgroundhorizontal.png");
-import Ionicons from "react-native-vector-icons/Ionicons";
 
 const EventTile = ({ event, uid }) => {
-    const eventData = event.item;
+    // COMPONENT VARIABLES
     const navigation = useNavigation();
-    // console.log("event on eventTile -->", eventData);
-    // console.log("uid on event tile -->", uid);
+    // PROPS & PARAMS
+    const eventData = event.item;
+  
     return (
         <TouchableOpacity
             onPress={() =>
-                navigation.navigate("SingleEvent", { event: eventData })
+                navigation.navigate("SingleEvent", { uid: uid, event: eventData })
             }
         >
             {uid === eventData.host_id ? (
@@ -100,7 +103,7 @@ const EventTile = ({ event, uid }) => {
                         )}
                     </Text>
                     <Text style={globalStyles.paragraph}>
-                        {eventData.location}
+                        {eventData.mainLocation}
                     </Text>
                     <Text style={globalStyles.paragraph}>
                         {eventData.description}
