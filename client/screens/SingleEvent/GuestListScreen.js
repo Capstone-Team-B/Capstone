@@ -23,6 +23,7 @@ const GuestListScreen = (params) => {
     const [host, setHost] = useState({});
     const event = params.route.params.event;
     const uid = params.route.params.uid;
+    const attending = params.route.params.attending
     const host_id = event.host_id;
     const eventId = event.event_id;
 
@@ -359,7 +360,7 @@ const GuestListScreen = (params) => {
                                 Can't make it
                             </Text>
                         </View>
-                        <View
+                        {/* <View
                             style={{
                                 justifyContent: "center",
                                 alignItems: "center",
@@ -381,7 +382,7 @@ const GuestListScreen = (params) => {
                             >
                                 RSVP pending
                             </Text>
-                        </View>
+                        </View> */}
                     </View>
                     <View style={{ alignItems: "center" }}>
                         {guestList.length > 0 ? (
@@ -485,8 +486,7 @@ const GuestListScreen = (params) => {
                                                             ...styles.profilePic,
                                                             marginBottom: 10,
                                                             borderWidth:
-                                                                guest
-                                                                    .userEvents[
+                                                                guest.userEvents[
                                                                     eventId
                                                                 ].attending ||
                                                                 guest

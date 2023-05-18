@@ -37,7 +37,7 @@ const EditAccountScreen = (props) => {
     // COMPONENT VARIABLES
     const navigation = useNavigation();
 
-    // USEEFFECTS
+    // USEEFFECT
     useEffect(() => {
         setUser(props.route.params);
     }, [props]);

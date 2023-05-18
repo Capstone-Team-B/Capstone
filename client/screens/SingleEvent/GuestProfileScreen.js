@@ -1,9 +1,7 @@
+// REACT IMPORTS
 import {
-    KeyboardAvoidingView,
-    ScrollView,
     StyleSheet,
     Text,
-    TextInput,
     TouchableOpacity,
     View,
     Image,
@@ -11,22 +9,32 @@ import {
     Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { auth } from "../../../firebase";
 import { useNavigation } from "@react-navigation/native";
-import { getDatabase, ref, child, get, update } from "firebase/database";
 import Toggle from "react-native-toggle-element";
-import globalStyles from "../../utils/globalStyles";
 import Ionicons from "react-native-vector-icons/Ionicons";
+// FIREBASE IMPORTS
+import { auth } from "../../../firebase";
+import { getDatabase, ref, child, get, update } from "firebase/database";
+// PROJECT IMPORTS
+import globalStyles from "../../utils/globalStyles";
 const BeThereConcise = require("../../../assets/BeThereConcise.png");
 const Background = require("../../../assets/Background.png");
 
 const GuestProfileScreen = (params) => {
+    // COMPONENT VARIABLES
+    const navigation = useNavigation();
+
+    // PROPS & PARAMS
     const uid = params.route.params.uid;
     const event = params.route.params.event;
+    const userEventId = params.route.params.userEventId
+
+    // USESTATE
     const [user, setUser] = useState({});
     const [rsvpStatus, setRSVPStatus] = useState(event.guestList[uid].attending);
     const [toggleValue, setToggleValue] = useState(rsvpStatus);
 
+    // USEEFFECT
     useEffect(() => {
         const dbRef = ref(getDatabase());
         get(child(dbRef, `users/${uid}`))
@@ -41,13 +49,13 @@ const GuestProfileScreen = (params) => {
                 console.log(error);
             });
     }, []);
-    const navigation = useNavigation();
 
+    // FUNCTIONS
     const sendRsvpUpdate = async () => {
         const dbRef = ref(getDatabase());
         const userEventRef = child(
             dbRef,
-            `users/${uid}/userEvents/${event.event_id}`
+            `users/${uid}/userEvents/${userEventId}`
         );
         const updateUserEvent = {
             attending: toggleValue,
@@ -71,7 +79,6 @@ const GuestProfileScreen = (params) => {
             style={{
                 flex: 1,
                 width: "100%",
-                // justifyContent: "center",
                 alignItems: "center",
             }}
         >

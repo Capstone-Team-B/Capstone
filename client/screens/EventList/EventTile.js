@@ -104,7 +104,7 @@ const EventTile = ({ event, uid }) => {
                         )}
                     </Text>
                     <Text style={globalStyles.paragraph}>
-                        {eventData.location}
+                        {eventData.mainLocation}
                     </Text>
                     <Text style={globalStyles.paragraph}>
                         {eventData.description}

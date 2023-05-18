@@ -1,6 +1,15 @@
 // REACT IMPORTS
 import React, { useState, useCallback } from "react";
-import { KeyboardAvoidingView, Alert, ScrollView, View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+    KeyboardAvoidingView,
+    Alert,
+    ScrollView,
+    View,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { DatePickerModal } from "react-native-paper-dates";
 import { TimePickerModal } from "react-native-paper-dates";
@@ -93,8 +102,8 @@ const CreateEventForm = (props) => {
                 guestList: {
                     [uid]: {
                         guest_id: uid,
-                        attending: true
-                    } 
+                        attending: true,
+                    },
                 },
                 mainLocation: location,
                 name: weddingName,
@@ -107,7 +116,7 @@ const CreateEventForm = (props) => {
             const updatedUser = push(userRef);
             const newUserEvent = {
                 event_id: newEventId,
-                attending: true
+                attending: true,
             };
             await set(updatedUser, newUserEvent);
 
@@ -136,6 +145,7 @@ const CreateEventForm = (props) => {
                             ...globalStyles.paragraph,
                             marginBottom: 12,
                             marginLeft: 8,
+                            fontWeight: "bold",
                         }}
                     >
                         Event name:
@@ -152,6 +162,7 @@ const CreateEventForm = (props) => {
                             ...globalStyles.paragraph,
                             marginBottom: 12,
                             marginLeft: 8,
+                            fontWeight: "bold",
                         }}
                     >
                         Description:
@@ -168,6 +179,7 @@ const CreateEventForm = (props) => {
                             ...globalStyles.paragraph,
                             marginBottom: 12,
                             marginLeft: 8,
+                            fontWeight: "bold",
                         }}
                     >
                         Main location:
@@ -179,78 +191,84 @@ const CreateEventForm = (props) => {
                         onChangeText={setLocation}
                         required={true}
                     />
-                    <TouchableOpacity
+                    <View
                         style={{
-                            ...globalStyles.button,
-                            flex: 1,
-                            margin: 0,
-                            backgroundColor: "#38B6FF",
-                            marginRight: 6,
-                            width: 150,
                             justifyContent: "center",
                             alignItems: "center",
+                            margin: 12,
                         }}
-                        onPress={() => setOpen(true)}
                     >
-                        <TouchableOpacity onPress={() => setOpen(true)}>
-                            <TouchableOpacity
-                                onPress={() => setOpen(true)}
-                                style={{
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <Ionicons
-                                    name="calendar-outline"
-                                    size={25}
-                                    color="white"
-                                    marginBottom={12}
-                                />
-                                <Text
+                        <TouchableOpacity
+                            style={{
+                                ...globalStyles.button,
+                                flex: 1,
+                                margin: 0,
+                                backgroundColor: "#38B6FF",
+                                marginRight: 6,
+                                width: 150,
+                            }}
+                            onPress={() => setOpen(true)}
+                        >
+                            <TouchableOpacity onPress={() => setOpen(true)}>
+                                <TouchableOpacity
+                                    onPress={() => setOpen(true)}
                                     style={{
-                                        ...globalStyles.paragraph,
-                                        color: "white",
-                                        fontWeight: "bold",
-                                        textAlign: "center",
+                                        justifyContent: "center",
+                                        alignItems: "center",
                                     }}
                                 >
-                                    {eventStartDate && eventEndDate
-                                        ? `${new Date(
-                                              eventStartDate
-                                          ).toLocaleString("en-US", {
-                                              weekday: "long",
-                                              month: "long",
-                                              day: "numeric",
-                                              year: "numeric",
-                                          })} - ${new Date(
-                                              eventEndDate
-                                          ).toLocaleString("en-US", {
-                                              weekday: "long",
-                                              month: "long",
-                                              day: "numeric",
-                                              year: "numeric",
-                                          })}`
-                                        : "Select Date(s)"}
-                                </Text>
+                                    <Ionicons
+                                        name="calendar-outline"
+                                        size={25}
+                                        color="white"
+                                        marginBottom={12}
+                                    />
+                                    <Text
+                                        style={{
+                                            ...globalStyles.paragraph,
+                                            color: "white",
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        {eventStartDate && eventEndDate
+                                            ? `${new Date(
+                                                  eventStartDate
+                                              ).toLocaleString("en-US", {
+                                                  weekday: "long",
+                                                  month: "long",
+                                                  day: "numeric",
+                                                  year: "numeric",
+                                              })} - ${new Date(
+                                                  eventEndDate
+                                              ).toLocaleString("en-US", {
+                                                  weekday: "long",
+                                                  month: "long",
+                                                  day: "numeric",
+                                                  year: "numeric",
+                                              })}`
+                                            : "Select Dates"}
+                                    </Text>
+                                </TouchableOpacity>
                             </TouchableOpacity>
+                            <SafeAreaProvider>
+                                <DatePickerModal // !@# after selecting/saving dates, if you click again to change the dates you get an error
+                                    mode="range"
+                                    locale="en"
+                                    visible={open}
+                                    onDismiss={onDismissRange}
+                                    startDate={eventStartDate}
+                                    endDate={eventEndDate}
+                                    onConfirm={onConfirmRange}
+                                    saveLabel="Save"
+                                    label="Select Date Range"
+                                    startLabel="From"
+                                    endLabel="To"
+                                    animationType="slide"
+                                />
+                            </SafeAreaProvider>
                         </TouchableOpacity>
-                        <SafeAreaProvider>
-                            <DatePickerModal
-                                mode="range"
-                                locale="en"
-                                visible={open}
-                                onDismiss={onDismissRange}
-                                startDate={eventStartDate}
-                                endDate={eventEndDate}
-                                onConfirm={onConfirmRange}
-                                saveLabel="Save"
-                                label="Select Date Range"
-                                startLabel="From"
-                                endLabel="To"
-                                animationType="slide"
-                            />
-                        </SafeAreaProvider>
-                    </TouchableOpacity>
+                    </View>
                     <View
                         style={{
                             flexDirection: "row",
@@ -335,7 +353,7 @@ const CreateEventForm = (props) => {
                                 borderRadius: 200,
                                 justifyContent: "center",
                                 alignItems: "center",
-                                margin: 30,
+                                margin: 0,
                             }}
                             onPress={handleSubmit}
                             required={true}

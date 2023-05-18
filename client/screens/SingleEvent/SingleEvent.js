@@ -17,25 +17,27 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { getDatabase, ref, child, get, query } from "firebase/database";
 // PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
-import Banner from "../../../assets/Banner.png";
+import Backgroundhorizontal from "../../../assets/Backgroundhorizontal.png";
 
 const SingleEvent = (params) => {
     // COMPONENT VARIABLES
     const isFocused = useIsFocused();
     const navigation = useNavigation();
     const dbRef = ref(getDatabase());
+    const screenWidth = Dimensions.get("window").width;
 
     // PROPS & PARAMS
     const uid = params.route.params.uid;
     const event = params.route.params.event;
-    const attending = event.guestList[uid].attending || null;
+    const attending = event.guestList[uid].attending;
 
     // USESTATE
     const [host, setHost] = useState({});
     const [user, setUser] = useState({});
     const [userName, setUserName] = useState({});
+    const [userEventId, setUserEventId] = useState("");
 
-    // USEEFFECTS
+    // USEEFFECT
     useEffect(() => {
         const getUser = () => {
             get(child(dbRef, `users/${uid}`))
@@ -46,6 +48,11 @@ const SingleEvent = (params) => {
                         setUserName(
                             `${userData.firstName} ${userData.lastName}`
                         );
+                        const userEvents = userData.userEvents;
+                        const filteredKey = Object.entries(userEvents).find(
+                            ([key, value]) => value.event_id === event.event_id
+                        )[0];
+                        setUserEventId(filteredKey);
                     } else {
                         console.log("No data available");
                     }
@@ -84,7 +91,9 @@ const SingleEvent = (params) => {
             <ScrollView>
                 <Image
                     source={
-                        !event.eventPhoto ? Banner : { uri: event.eventPhoto }
+                        !event.eventPhoto
+                            ? Backgroundhorizontal
+                            : { uri: event.eventPhoto }
                     }
                     resizeMode="cover"
                     style={{
@@ -170,75 +179,171 @@ const SingleEvent = (params) => {
                 >
                     {event.description}
                 </Text>
-                {attending === true ? (
-                    <View
-                        style={{
-                            justifyContent: "center",
-                            alignItems: "center",
-                            flexDirection: "row",
-                            height: 80,
-                            backgroundColor: "#38b6ff",
-                        }}
-                    >
-                        <Text
-                            style={{ ...globalStyles.heading2, color: "white" }}
-                        >
-                            My RSVP:{"   "}
-                        </Text>
+                {uid === event.host_id ? (
+                    <>
                         <Text
                             style={{
-                                fontSize: 25,
-                                fontFamily: "Bukhari Script",
-                                color: "white",
+                                ...globalStyles.heading2,
+                                textAlign: "center",
                             }}
                         >
-                            I'll be there
+                            Host controls
                         </Text>
-                    </View>
-                ) : attending === false ? (
-                    <View
-                        style={{
-                            justifyContent: "center",
-                            alignItems: "center",
-                            flexDirection: "row",
-                            height: 80,
-                            backgroundColor: "black",
-                            marginBottom: 15,
-                        }}
-                    >
-                        <Text
-                            style={{ ...globalStyles.heading2, color: "white" }}
-                        >
-                            My RSVP:{"   "}
-                        </Text>
-                        <Text
+                        <View
                             style={{
-                                fontSize: 25,
-                                fontFamily: "Bukhari Script",
-                                color: "white",
+                                flexDirection: "row",
+                                marginBottom: 20,
+                                justifyContent: "center",
+                                alignItems: "center",
                             }}
                         >
-                            Can't make it
-                        </Text>
-                    </View>
-                ) : attending === null ? (
-                    <View
-                        style={{
-                            justifyContent: "center",
-                            alignItems: "center",
-                            flexDirection: "row",
-                            height: 80,
-                            backgroundColor: "lightgray",
-                            marginBottom: 15,
-                        }}
-                    >
-                        <Text
-                            style={{ ...globalStyles.heading2, color: "white" }}
-                        >
-                            RSVP pending
-                        </Text>
-                    </View>
+                            <TouchableOpacity
+                                onPress={() =>
+                                    navigation.navigate("Edit Event", {
+                                        event: event,
+                                    })
+                                }
+                            >
+                                <View
+                                    style={{
+                                        ...globalStyles.button,
+                                        backgroundColor: "#8291F3",
+                                        width: screenWidth / 3 - 24,
+                                        height: screenWidth / 3.5 - 24,
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <Ionicons
+                                        name="create-outline"
+                                        size={25}
+                                        color={"white"}
+                                    />
+                                    <Text
+                                        style={{
+                                            ...globalStyles.paragraph,
+                                            color: "white",
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        Edit event
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity>
+                                <View
+                                    style={{
+                                        ...globalStyles.button,
+                                        backgroundColor: "#8291F3",
+                                        width: screenWidth / 3 - 24,
+                                        height: screenWidth / 3.5 - 24,
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <Ionicons
+                                        name="mail-outline"
+                                        size={25}
+                                        color={"white"}
+                                    />
+                                    <Text
+                                        style={{
+                                            ...globalStyles.paragraph,
+                                            color: "white",
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        Invite guests
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity>
+                                <View
+                                    style={{
+                                        ...globalStyles.button,
+                                        backgroundColor: "#8291F3",
+                                        width: screenWidth / 3 - 24,
+                                        height: screenWidth / 3.5 - 24,
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <Ionicons
+                                        name="alarm-outline"
+                                        size={25}
+                                        color={"white"}
+                                    />
+                                    <Text
+                                        style={{
+                                            ...globalStyles.paragraph,
+                                            color: "white",
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        Create reminders
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </>
                 ) : null}
+                <View
+                    style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <View
+                        style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: 80,
+                            backgroundColor: attending ? "#38b6ff" : "black",
+                            width: 300,
+                            borderRadius: attending === true ? 300 : 0,
+                            marginBottom: 20,
+                        }}
+                    >
+                        <Text
+                            style={{ ...globalStyles.heading3, color: "white" }}
+                        >
+                            My RSVP
+                        </Text>
+                        {attending === true ? (
+                            <Text
+                                style={{
+                                    fontSize: 25,
+                                    fontFamily: "Bukhari Script",
+                                    color: "white",
+                                }}
+                            >
+                                I'll be there
+                            </Text>
+                        ) : (
+                            <Text
+                                style={{
+                                    fontSize: 25,
+                                    fontFamily: "Bukhari Script",
+                                    color: "white",
+                                }}
+                            >
+                                Can't make it
+                            </Text>
+                        ) 
+                        // : attending === undefined ? (
+                        //     <Text
+                        //         style={{
+                        //             fontSize: 25,
+                        //             fontFamily: "Bukhari Script",
+                        //             color: "black",
+                        //         }}
+                        //     >
+                        //         RSVP pending
+                        //     </Text>
+                        // ) 
+                       }
+                    </View>
+                </View>
                 <TouchableOpacity
                     style={{
                         ...globalStyles.button,
@@ -250,6 +355,7 @@ const SingleEvent = (params) => {
                         navigation.navigate("GuestProfileScreen", {
                             event: event,
                             uid: uid,
+                            userEventId: userEventId,
                         })
                     }
                 >
@@ -267,7 +373,7 @@ const SingleEvent = (params) => {
                     }}
                     onPress={() =>
                         navigation.navigate("GuestListScreen", {
-                            event: event,
+                            event: event, attending: attending
                         })
                     }
                 >
@@ -336,44 +442,12 @@ const SingleEvent = (params) => {
                         <Text>Gallery</Text>
                     </View>
                 </TouchableOpacity>
-                {uid === event.host_id ? (
-                    <TouchableOpacity
-                        onPress={() =>
-                            navigation.navigate("Edit Event", {
-                                event: event,
-                            })
-                        }
-                    >
-                        <View
-                            style={{
-                                ...globalStyles.button,
-                                backgroundColor: "#CB6CE6",
-                            }}
-                        >
-                            <Ionicons
-                                name="create-outline"
-                                size={25}
-                                color={"white"}
-                            />
-                            <Text
-                                style={{
-                                    ...globalStyles.paragraph,
-                                    color: "white",
-                                }}
-                            >
-                                Edit Your Event
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                ) : null}
             </ScrollView>
         </SafeAreaView>
     );
 };
 
 export default SingleEvent;
-
-const screenWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
     container: {
