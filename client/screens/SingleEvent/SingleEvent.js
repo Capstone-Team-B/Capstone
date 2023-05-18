@@ -176,8 +176,20 @@ const SingleEvent = (params) => {
                             backgroundColor: "#38b6ff",
                         }}
                     >
-                        <Text style={{...globalStyles.heading2, color: "white"}}>My RSVP:{"   "}</Text>
-                        <Text style={{fontSize: 25, fontFamily: "Bukhari Script", color: "white"}}>I'll be there</Text>
+                        <Text
+                            style={{ ...globalStyles.heading2, color: "white" }}
+                        >
+                            My RSVP:{"   "}
+                        </Text>
+                        <Text
+                            style={{
+                                fontSize: 25,
+                                fontFamily: "Bukhari Script",
+                                color: "white",
+                            }}
+                        >
+                            I'll be there
+                        </Text>
                     </View>
                 ) : (
                     <View
@@ -187,11 +199,23 @@ const SingleEvent = (params) => {
                             flexDirection: "row",
                             height: 80,
                             backgroundColor: "black",
-                            marginBottom: 15
+                            marginBottom: 15,
                         }}
                     >
-                        <Text style={{...globalStyles.heading2, color: "white"}}>My RSVP:{"   "}</Text>
-                        <Text style={{fontSize: 25, fontFamily: "Bukhari Script", color: "white"}}>Can't make it</Text>
+                        <Text
+                            style={{ ...globalStyles.heading2, color: "white" }}
+                        >
+                            My RSVP:{"   "}
+                        </Text>
+                        <Text
+                            style={{
+                                fontSize: 25,
+                                fontFamily: "Bukhari Script",
+                                color: "white",
+                            }}
+                        >
+                            Can't make it
+                        </Text>
                     </View>
                 )}
                 <TouchableOpacity
