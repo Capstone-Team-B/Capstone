@@ -11,11 +11,24 @@ import React, { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 import globalStyles from "../../utils/globalStyles";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import {
+    getStorage,
+    uploadBytes,
+    uploadBytesResumable,
+    getDownloadURL,
+    metadata,
+    ref,
+    push,
+} from "firebase/storage";
+import { getDatabase, ref as refDB, update } from "firebase/database";
+import { useNavigation } from "@react-navigation/core";
 
 const UploadProfilePicScreen = (props) => {
     const uid = props.route.params.uid;
     const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
     const [image, setImage] = useState(null);
+    const [uploading, setUploading] = useState(false);
+    const navigation = useNavigation();
 
     useEffect(() => {
         (async () => {
@@ -31,6 +44,7 @@ const UploadProfilePicScreen = (props) => {
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
                 allowsEditing: true,
                 aspect: [1, 1],
+                quality: 0.2,
             });
             console.log(result);
             if (!result.canceled) {
@@ -42,6 +56,38 @@ const UploadProfilePicScreen = (props) => {
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const uploadProfilePic = async () => {
+        // upload the picture to storage
+        const storage = getStorage();
+        const imageRef = ref(storage, `profilePic/user_${uid}`);
+        const img = await fetch(image);
+        // console.log("img -->", img);
+        const blob = await img.blob();
+        const uploadPromise = uploadBytesResumable(imageRef, blob);
+        try {
+            await push(uploadPromise);
+            console.log("profile picture uploaded successfully");
+        } catch (error) {
+            console.log(error);
+        }
+
+        // download the imageUrl from storage and add it to the user in realtimeDb
+        const url = await getDownloadURL(imageRef);
+        const dbRef = getDatabase();
+        const userRef = refDB(dbRef, `users/${uid}`);
+        const updatedProPic = { profilePic: url };
+
+        try {
+            await update(userRef, updatedProPic);
+            console.log("profile pic updated")
+        } catch (error) {
+            console.log(error)
+        }
+
+        setImage(null);
+        navigation.goBack()
     };
 
     return (
@@ -63,8 +109,10 @@ const UploadProfilePicScreen = (props) => {
                     <TouchableOpacity
                         style={{
                             ...globalStyles.button,
-                            backgroundColor: "#cb6cd6", flexDirection: "row"
+                            backgroundColor: "#cb6cd6",
+                            flexDirection: "row",
                         }}
+                        onPress={uploadProfilePic}
                     >
                         <Text
                             style={{
@@ -75,19 +123,30 @@ const UploadProfilePicScreen = (props) => {
                         >
                             Upload profile picture
                         </Text>
-                            <Ionicons name="cloud-upload-outline" size={25} color="white" paddingLeft={10}/>
+                        <Ionicons
+                            name="cloud-upload-outline"
+                            size={25}
+                            color="white"
+                            paddingLeft={10}
+                        />
                     </TouchableOpacity>
                 </View>
             ) : (
                 <TouchableOpacity
                     onPress={() => pickImage()}
-                    style={{...globalStyles.button, backgroundColor: "#38b6ff", justifyContent: "center", alignItems: "center" }}
+                    style={{
+                        ...globalStyles.button,
+                        backgroundColor: "#38b6ff",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
                 >
-                    <Ionicons name="camera-outline" size={55} color="white"/>
+                    <Ionicons name="camera-outline" size={55} color="white" />
                     <Text
                         style={{
                             ...globalStyles.heading2,
-                            textAlign: "center", color: "white"
+                            textAlign: "center",
+                            color: "white",
                         }}
                     >
                         Tap to select a new profile picture{"\n"}from your

@@ -8,6 +8,7 @@ import {
     SafeAreaView,
     ScrollView,
     Image,
+    ImageBackground,
     Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/core";
@@ -19,12 +20,13 @@ import { getDatabase, ref, child, get, query } from "firebase/database";
 import globalStyles from "../../utils/globalStyles";
 import Backgroundhorizontal from "../../../assets/Backgroundhorizontal.png";
 
+const screenWidth = Dimensions.get("window").width;
+
 const SingleEvent = (params) => {
     // COMPONENT VARIABLES
     const isFocused = useIsFocused();
     const navigation = useNavigation();
     const dbRef = ref(getDatabase());
-    const screenWidth = Dimensions.get("window").width;
 
     // PROPS & PARAMS
     const uid = params.route.params.uid;
@@ -102,6 +104,161 @@ const SingleEvent = (params) => {
                         height: 200,
                     }}
                 />
+                {uid === event.host_id ? (
+                    <>
+                        {/* <View
+                            style={{
+                                paddingTop: 12,
+                                backgroundColor: "black",
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    ...globalStyles.heading2,
+                                    textAlign: "center",
+                                    color: "white",
+                                }}
+                            >
+                                Manage my event
+                            </Text>
+                        </View> */}
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                marginBottom: 20,
+                                justifyContent: "center",
+                                alignItems: "center",
+                                borderWidth: 2,
+                                padding: 8,
+                                backgroundColor: "black",
+                            }}
+                        >
+                            <View style={styles.imageContainer}>
+                                <View style={styles.borderContainer}>
+                                    <TouchableOpacity
+                                        onPress={() =>
+                                            navigation.navigate(
+                                                "Create Guest List",
+                                                {
+                                                    event: event,
+                                                    uid: uid,
+                                                }
+                                            )
+                                        }
+                                    >
+                                        <View
+                                            style={
+                                                styles.imageBackgroundWrapper
+                                            }
+                                        >
+                                            <ImageBackground
+                                                source={Backgroundhorizontal}
+                                                resizeMode="cover"
+                                                style={styles.imageBackground}
+                                            >
+                                                <Ionicons
+                                                    name="create-outline"
+                                                    size={25}
+                                                />
+                                                <Text
+                                                    style={{
+                                                        ...globalStyles.paragraph,
+                                                        textAlign: "center",
+                                                        fontWeight: "bold",
+                                                    }}
+                                                >
+                                                    Edit event
+                                                </Text>
+                                            </ImageBackground>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={styles.imageContainer}>
+                                <View style={styles.borderContainer}>
+                                    <TouchableOpacity
+                                        onPress={() =>
+                                            navigation.navigate(
+                                                "Create Guest List",
+                                                {
+                                                    event: event,
+                                                    uid: uid,
+                                                }
+                                            )
+                                        }
+                                    >
+                                        <View
+                                            style={
+                                                styles.imageBackgroundWrapper
+                                            }
+                                        >
+                                            <ImageBackground
+                                                source={Backgroundhorizontal}
+                                                resizeMode="cover"
+                                                style={styles.imageBackground}
+                                            >
+                                                <Ionicons
+                                                    name="mail-outline"
+                                                    size={25}
+                                                />
+                                                <Text
+                                                    style={{
+                                                        ...globalStyles.paragraph,
+                                                        textAlign: "center",
+                                                        fontWeight: "bold",
+                                                    }}
+                                                >
+                                                    Invite guests
+                                                </Text>
+                                            </ImageBackground>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={styles.imageContainer}>
+                                <View style={styles.borderContainer}>
+                                    <TouchableOpacity
+                                        onPress={() =>
+                                            navigation.navigate(
+                                                "Create Guest List",
+                                                {
+                                                    event: event,
+                                                    uid: uid,
+                                                }
+                                            )
+                                        }
+                                    >
+                                        <View
+                                            style={
+                                                styles.imageBackgroundWrapper
+                                            }
+                                        >
+                                            <ImageBackground
+                                                source={Backgroundhorizontal}
+                                                resizeMode="cover"
+                                                style={styles.imageBackground}
+                                            >
+                                                <Ionicons
+                                                    name="alarm-outline"
+                                                    size={25}
+                                                />
+                                                <Text
+                                                    style={{
+                                                        ...globalStyles.paragraph,
+                                                        textAlign: "center",
+                                                        fontWeight: "bold",
+                                                    }}
+                                                >
+                                                    Create{"\n"}reminders
+                                                </Text>
+                                            </ImageBackground>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </>
+                ) : null}
                 <Text
                     style={{
                         fontFamily: "Bukhari Script",
@@ -179,124 +336,7 @@ const SingleEvent = (params) => {
                 >
                     {event.description}
                 </Text>
-                {uid === event.host_id ? (
-                    <>
-                        <Text
-                            style={{
-                                ...globalStyles.heading2,
-                                textAlign: "center",
-                            }}
-                        >
-                            Host controls
-                        </Text>
-                        <View
-                            style={{
-                                flexDirection: "row",
-                                marginBottom: 20,
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}
-                        >
-                            <TouchableOpacity
-                                onPress={() =>
-                                    navigation.navigate("Edit Event", {
-                                        event: event, uid: uid
-                                    })
-                                }
-                            >
-                                <View
-                                    style={{
-                                        ...globalStyles.button,
-                                        backgroundColor: "#8291F3",
-                                        width: screenWidth / 3 - 24,
-                                        height: screenWidth / 3.5 - 24,
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    <Ionicons
-                                        name="create-outline"
-                                        size={25}
-                                        color={"white"}
-                                    />
-                                    <Text
-                                        style={{
-                                            ...globalStyles.paragraph,
-                                            color: "white",
-                                            textAlign: "center",
-                                        }}
-                                    >
-                                        Edit event
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                            onPress={() =>
-                                navigation.navigate("Create Guest List", {
-                                    event: event, uid: uid
-                                })
-                            }>
-                                <View
-                                    style={{
-                                        ...globalStyles.button,
-                                        backgroundColor: "#8291F3",
-                                        width: screenWidth / 3 - 24,
-                                        height: screenWidth / 3.5 - 24,
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    <Ionicons
-                                        name="mail-outline"
-                                        size={25}
-                                        color={"white"}
-                                    />
-                                    <Text
-                                        style={{
-                                            ...globalStyles.paragraph,
-                                            color: "white",
-                                            textAlign: "center",
-                                        }}
-                                    >
-                                        Invite guests
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                            onPress={() =>
-                                navigation.navigate("All Reminders", {
-                                    uid: uid, event: event,
-                                })
-                            }>
-                                <View
-                                    style={{
-                                        ...globalStyles.button,
-                                        backgroundColor: "#8291F3",
-                                        width: screenWidth / 3 - 24,
-                                        height: screenWidth / 3.5 - 24,
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    <Ionicons
-                                        name="alarm-outline"
-                                        size={25}
-                                        color={"white"}
-                                    />
-                                    <Text
-                                        style={{
-                                            ...globalStyles.paragraph,
-                                            color: "white",
-                                            textAlign: "center",
-                                        }}
-                                    >
-                                        Create reminders
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                    </>
-                ) : null}
+                
                 <View
                     style={{
                         justifyContent: "center",
@@ -319,39 +359,40 @@ const SingleEvent = (params) => {
                         >
                             My RSVP
                         </Text>
-                        {attending === true ? (
-                            <Text
-                                style={{
-                                    fontSize: 25,
-                                    fontFamily: "Bukhari Script",
-                                    color: "white",
-                                }}
-                            >
-                                I'll be there
-                            </Text>
-                        ) : (
-                            <Text
-                                style={{
-                                    fontSize: 25,
-                                    fontFamily: "Bukhari Script",
-                                    color: "white",
-                                }}
-                            >
-                                Can't make it
-                            </Text>
-                        ) 
-                        // : attending === undefined ? (
-                        //     <Text
-                        //         style={{
-                        //             fontSize: 25,
-                        //             fontFamily: "Bukhari Script",
-                        //             color: "black",
-                        //         }}
-                        //     >
-                        //         RSVP pending
-                        //     </Text>
-                        // ) 
-                       }
+                        {
+                            attending === true ? (
+                                <Text
+                                    style={{
+                                        fontSize: 25,
+                                        fontFamily: "Bukhari Script",
+                                        color: "white",
+                                    }}
+                                >
+                                    I'll be there
+                                </Text>
+                            ) : (
+                                <Text
+                                    style={{
+                                        fontSize: 25,
+                                        fontFamily: "Bukhari Script",
+                                        color: "white",
+                                    }}
+                                >
+                                    Can't make it
+                                </Text>
+                            )
+                            // : attending === undefined ? (
+                            //     <Text
+                            //         style={{
+                            //             fontSize: 25,
+                            //             fontFamily: "Bukhari Script",
+                            //             color: "black",
+                            //         }}
+                            //     >
+                            //         RSVP pending
+                            //     </Text>
+                            // )
+                        }
                     </View>
                 </View>
                 <TouchableOpacity
@@ -383,7 +424,8 @@ const SingleEvent = (params) => {
                     }}
                     onPress={() =>
                         navigation.navigate("GuestListScreen", {
-                            event: event, attending: attending
+                            event: event,
+                            attending: attending,
                         })
                     }
                 >
@@ -490,6 +532,31 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 2,
         borderColor: "black",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    imageContainer: {
+        flex: 1,
+    },
+    borderContainer: {
+        flex: 1,
+        borderRadius: 10,
+        overflow: "hidden",
+        backgroundColor: "black",
+    },
+    imageBackgroundWrapper: {
+        flex: 1,
+        borderRadius: 10,
+        overflow: "hidden",
+        margin: 12,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "black",
+    },
+    imageBackground: {
+        flex: 1,
+        width: screenWidth / 3,
+        height: screenWidth / 4,
         justifyContent: "center",
         alignItems: "center",
     },
