@@ -148,9 +148,9 @@ const MyAccountScreen = (props) => {
                 </View>
                 <View style={styles.sectionHeader}>
                     <Text style={globalStyles.heading2}>Archive</Text>
-                    <Pressable onPress={handlePressViewArchive}>
+                    {/* <Pressable onPress={handlePressViewArchive}> */}
                         <Ionicons name="archive-outline" size={25} />
-                    </Pressable>
+                    {/* </Pressable> */}
                 </View>
                 <View style={{...globalStyles.tile, backgroundColor: "white", borderWidth: 0}}>
                     <View>

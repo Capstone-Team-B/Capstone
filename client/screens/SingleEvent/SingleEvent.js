@@ -230,7 +230,12 @@ const SingleEvent = (params) => {
                                     </Text>
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                            onPress={() =>
+                                navigation.navigate("Create Guest List", {
+                                    event: event, uid: uid
+                                })
+                            }>
                                 <View
                                     style={{
                                         ...globalStyles.button,
@@ -257,7 +262,12 @@ const SingleEvent = (params) => {
                                     </Text>
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                            onPress={() =>
+                                navigation.navigate("All Reminders", {
+                                    uid: uid, event: event,
+                                })
+                            }>
                                 <View
                                     style={{
                                         ...globalStyles.button,

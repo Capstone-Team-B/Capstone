@@ -354,7 +354,7 @@ const EditEvent = (params) => {
                         </Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={styles.addButton}
                     onPress={() =>
                         navigation.navigate("Create Guest List", {
@@ -363,9 +363,9 @@ const EditEvent = (params) => {
                     }
                 >
                     <Text style={styles.addButtonText}>Edit Guests</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={styles.addButton}
                     onPress={() =>
                         navigation.navigate("All Reminders", {
@@ -374,7 +374,7 @@ const EditEvent = (params) => {
                     }
                 >
                     <Text style={styles.addButtonText}>View Reminders</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 <TouchableOpacity
                     style={styles.addButton}
