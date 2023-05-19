@@ -41,10 +41,10 @@ const CreateAccountScreen = (props) => {
     }, [props]);
 
     const [user, setUser] = useState({});
-    
+
     //testing elements
     const [password, setPassword] = useState("pwpwpwpw" || "");
-    const [confirmPassword, setConfirmPassword] = useState("pwpwpwpw" || "");
+    const [confirmPassword, setConfirmPassword] = useState("pwpwpwp" || "");
 
     // const [password, setPassword] = useState("");
     // const [confirmPassword, setConfirmPassword] = useState("");
@@ -73,12 +73,12 @@ const CreateAccountScreen = (props) => {
     }, [user]);
 
     const navigation = useNavigation();
-    let errorFlag = false;
+    // let errorFlag = false;
 
     const isConfirmedPassword = () => {
         if (password !== confirmPassword) {
-            errorFlag = true;
-            Alert.alert({
+            // errorFlag = true;
+            return Alert.alert({
                 message: "Password and confirm password should be same.",
             });
         }
