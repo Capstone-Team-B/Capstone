@@ -9,6 +9,7 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
+    FlatList
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { DatePickerModal } from "react-native-paper-dates";
@@ -20,6 +21,7 @@ import { auth } from "../../../firebase";
 import { getDatabase, ref, child, set, push } from "firebase/database";
 // PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
+import cities from '../../../node_modules/cities.json/cities.json';
 
 const CreateEventForm = (props) => {
     // COMPONENT VARIABLES
@@ -39,14 +41,17 @@ const CreateEventForm = (props) => {
     const [selectedEventType, setSelectedEventType] = useState("");
     const [open, setOpen] = useState(false);
     const [visible, setVisible] = useState(false);
+    const [filteredOptions, setFilteredOptions] = useState([]);
 
     // FUNCTIONS
     const onDismiss = useCallback(() => {
         setVisible(false);
     }, [setVisible]);
+
     const onDismissRange = useCallback(() => {
         setOpen(false);
     }, [setOpen]);
+
     const onConfirmRange = useCallback(
         ({ startDate, endDate }) => {
             setOpen(false);
@@ -55,6 +60,7 @@ const CreateEventForm = (props) => {
         },
         [setOpen, setEventStartDate, setEventEndDate]
     );
+
     const handleTimeConfirm = (selectedTime) => {
         const date = new Date();
         date.setHours(selectedTime.hours);
@@ -70,6 +76,14 @@ const CreateEventForm = (props) => {
         }
         setVisible(false);
     };
+
+    const filterOptions = (text) => {
+        const filtered = cities
+          .filter(city => city.country === 'US' && city.name.toLowerCase().includes(text.toLowerCase()))
+          .map(city => city.name);
+        setFilteredOptions(filtered);
+    };
+      
     const handleSubmit = async () => {
         if (
             !weddingName ||
@@ -188,8 +202,16 @@ const CreateEventForm = (props) => {
                         style={globalStyles.input}
                         placeholder="Main location"
                         value={location}
-                        onChangeText={setLocation}
+                        onChangeText={(text) => {
+                            console.log('onChangeText triggered:', text);
+                            filterOptions(text);
+                            setLocation(text);
+                        }}
                         required={true}
+                    />
+                    <FlatList
+                        data={filteredOptions}
+                        renderItem={({ item }) => <Text>{item}</Text>}
                     />
                     <View
                         style={{
