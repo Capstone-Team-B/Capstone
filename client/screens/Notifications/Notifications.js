@@ -13,14 +13,16 @@ import {
     get,
     query,
     orderByChild,
+    equalTo
 } from "firebase/database";
 import { useIsFocused } from "@react-navigation/native";
+import { auth } from "../../../firebase";
 
 const NotificationsScreen = (props) => {
-    const { uid } = props.route.params;
     const [eventNotificationIds, setEventNotificationIds] = useState([]);
     const [notificationData, setNotificationData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [userId, setUserId] = useState("");
     const dbRef = ref(getDatabase());
     const isFocused = useIsFocused();
 
@@ -74,9 +76,25 @@ const NotificationsScreen = (props) => {
     };
 
     useEffect(() => {
+        const getUserId = async () => {
+            const currentUserId = auth.currentUser.uid
+            const dbRef = ref(getDatabase());
+            const usersQuery = query(
+                child(dbRef, 'users'),
+                orderByChild('auth_id'),
+                equalTo(currentUserId)
+            )
+            const snapshot = await get (usersQuery);
+    
+            if (snapshot.exists()) {
+                const data = Object.keys(snapshot.val());
+                setUserId(data[0])
+            }
+        }
+        getUserId()
         setLoading(true);
         const eventIdsQuery = query(
-            child(dbRef, `users/${uid}`),
+            child(dbRef, `users/${userId}`),
             orderByChild("userEvents")
         );
         try {

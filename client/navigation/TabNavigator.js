@@ -1,40 +1,14 @@
-import { View, Text } from "react-native";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { useRoute } from "@react-navigation/native";
 import Notifications from "../screens/Notifications/Notifications";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MyAccountNavigator from "./MyAccountNavigator";
 import EventNavigator from "./EventNavigator";
 import globalStyles from "../utils/globalStyles";
-import { auth } from "../../firebase";
-import { getDatabase, ref, child, get, orderByChild, equalTo, query } from "firebase/database";
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
-    const [userId, setUserId] = useState("");
-
-    useEffect(() => {
-        const getUserId = async () => {
-            const currentUserId = auth.currentUser.uid
-            const dbRef = ref(getDatabase());
-            const usersQuery = query(
-                child(dbRef, 'users'),
-                orderByChild('auth_id'),
-                equalTo(currentUserId)
-            )
-            const snapshot = await get (usersQuery);
-    
-            if (snapshot.exists()) {
-                const data = Object.keys(snapshot.val());
-                setUserId(data[0])
-            }
-        }
-        getUserId()
-    }, [])
-
-
 
     return (
         <Tab.Navigator
@@ -73,7 +47,6 @@ const TabNavigator = () => {
             <Tab.Screen
                 name="MyAccountNavigator"
                 component={MyAccountNavigator}
-                initialParams={{ uid: userId }}
                 options={{
                     headerShown: false,
                     tabBarLabel: "My Account",
@@ -82,7 +55,6 @@ const TabNavigator = () => {
             <Tab.Screen
                 name="EventNavigator"
                 component={EventNavigator}
-                initialParams={{ uid: userId }}
                 options={{
                     headerShown: false,
                     tabBarLabel: "Events",
@@ -91,7 +63,6 @@ const TabNavigator = () => {
             <Tab.Screen
                 name="NotificationsScreen"
                 component={Notifications}
-                initialParams={{ uid: userId }}
                 options={{
                     title: "Reminders",
                     headerTitleStyle: globalStyles.screenHeader,  //!!!KIT this formatting doesn't work

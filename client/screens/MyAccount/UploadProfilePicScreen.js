@@ -20,17 +20,34 @@ import {
     ref,
     push,
 } from "firebase/storage";
-import { getDatabase, ref as refDB, update } from "firebase/database";
+import { getDatabase, ref as refDB, update, child, get, query, equalTo, orderByChild } from "firebase/database";
 import { useNavigation } from "@react-navigation/core";
+import { auth } from "../../../firebase";
 
 const UploadProfilePicScreen = (props) => {
-    const uid = props.route.params.uid;
+    const [userId, setUserId] = useState("");
     const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
     const [image, setImage] = useState(null);
     const [uploading, setUploading] = useState(false);
     const navigation = useNavigation();
 
     useEffect(() => {
+        const getUserId = async () => {
+            const currentUserId = auth.currentUser.uid
+            const dbRef = ref(getDatabase());
+            const usersQuery = query(
+                child(dbRef, 'users'),
+                orderByChild('auth_id'),
+                equalTo(currentUserId)
+            )
+            const snapshot = await get (usersQuery);
+    
+            if (snapshot.exists()) {
+                const data = Object.keys(snapshot.val());
+                setUserId(data[0])
+            }
+        }
+        getUserId()
         (async () => {
             const galleryStatus =
                 await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -61,7 +78,7 @@ const UploadProfilePicScreen = (props) => {
     const uploadProfilePic = async () => {
         // upload the picture to storage
         const storage = getStorage();
-        const imageRef = ref(storage, `profilePic/user_${uid}`);
+        const imageRef = ref(storage, `profilePic/user_${userId}`);
         const img = await fetch(image);
         // console.log("img -->", img);
         const blob = await img.blob();
@@ -76,7 +93,7 @@ const UploadProfilePicScreen = (props) => {
         // download the imageUrl from storage and add it to the user in realtimeDb
         const url = await getDownloadURL(imageRef);
         const dbRef = getDatabase();
-        const userRef = refDB(dbRef, `users/${uid}`);
+        const userRef = refDB(dbRef, `users/${userId}`);
         const updatedProPic = { profilePic: url };
 
         try {

@@ -20,39 +20,16 @@ import SinglePhoto from "../screens/SingleEvent/SinglePhoto";
 import globalStyles from "../utils/globalStyles";
 import EditNotification from "../screens/Notifications/EditNotification";
 import UploadCoverPhotoScreen from "../screens/NewEvent/UploadCoverPhotoScreen";
-import { auth } from "../../firebase";
-import { getDatabase, ref, child, get, orderByChild, equalTo, query } from "firebase/database";
 
 const Stack = createNativeStackNavigator();
 
 const EventNavigator = (props) => {
-    const [userId, setUserId] = useState("");
-
-    useEffect(() => {
-        const getUserId = async () => {
-            const currentUserId = auth.currentUser.uid
-            const dbRef = ref(getDatabase());
-            const usersQuery = query(
-                child(dbRef, 'users'),
-                orderByChild('auth_id'),
-                equalTo(currentUserId)
-            )
-            const snapshot = await get (usersQuery);
-    
-            if (snapshot.exists()) {
-                const data = Object.keys(snapshot.val());
-                setUserId(data[0])
-            }
-        }
-        getUserId()
-    }, [])
 
     return (
         <Stack.Navigator initialRouteName="EventListScreen">
             <Stack.Screen
                 name="EventListScreen"
                 component={EventListScreen}
-                initialParams={{ uid: userId }}
                 options={{
                     title: "Upcoming Events",
                     headerTitleStyle: globalStyles.screenHeader,
@@ -77,7 +54,6 @@ const EventNavigator = (props) => {
             <Stack.Screen
                 name="GuestListScreen"
                 component={GuestListScreen}
-                initialParams={{ uid: userId }}
                 options={{
                     title: "Guest List",
                     headerTitleStyle: globalStyles.screenHeader,
@@ -149,7 +125,6 @@ const EventNavigator = (props) => {
             <Stack.Screen
                 name="UploadEventImagesScreen"
                 component={UploadEventImagesScreen}
-                initialParams={{ uid: userId }}
                 options={{
                     title: "Upload Event Images",
                     headerTitleStyle: globalStyles.screenHeader,

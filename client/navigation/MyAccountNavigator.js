@@ -19,7 +19,6 @@ const MyAccountNavigator = (props) => {
             <Stack.Screen
                 name="MyAccountScreen"
                 component={MyAccountScreen}
-                initialParams={{ uid: uid }}
                 options={{ title: "My Account", headerTitleStyle: globalStyles.screenHeader}}
             />
             <Stack.Screen
@@ -30,19 +29,16 @@ const MyAccountNavigator = (props) => {
             <Stack.Screen
                 name="EditAccountScreen"
                 component={EditAccountScreen}
-                initialParams={{ uid: uid }}
                 options={{ title: "Edit Account", headerTitleStyle: globalStyles.screenHeader}}
             />
             <Stack.Screen
                 name="UploadProfilePicScreen"
                 component={UploadProfilePicScreen}
-                initialParams={{ uid: uid }}
                 options={{ title: "Upload Profile Picture", headerTitleStyle: globalStyles.screenHeader }}
             />
             <Stack.Screen
                 name="ViewArchiveScreen"
                 component={ViewArchiveScreen}
-                initialParams={{ uid: uid }}
                 options={{ title: "Event Archive", headerTitleStyle: globalStyles.screenHeader}}
             />
             <Stack.Screen

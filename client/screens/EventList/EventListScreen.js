@@ -37,10 +37,6 @@ const EventListScreen = (props) => {
     const [eventList, setEventList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [userId, setUserId] = useState("");
-
-    useEffect(() => {
-       
-    }, [])
     
     // USEEFFECT
     useEffect(() => {

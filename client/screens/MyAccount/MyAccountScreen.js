@@ -11,7 +11,6 @@ import {
 import React, { useState, useEffect } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { getDatabase, ref, child, get, query, equalTo, orderByChild } from "firebase/database";
-import SignOutBtn from "./SignOutBtn";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { auth } from "../../../firebase";
 import globalStyles from "../../utils/globalStyles";
