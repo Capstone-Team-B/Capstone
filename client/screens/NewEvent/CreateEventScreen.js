@@ -18,7 +18,6 @@ import { TimePickerModal } from "react-native-paper-dates";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Ionicons from "react-native-vector-icons/Ionicons";
 // FIREBASE IMPORTS
-import { auth } from "../../../firebase";
 import { getDatabase, ref, child, set, push } from "firebase/database";
 // PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
@@ -94,12 +93,6 @@ const CreateEventForm = (props) => {
         }
         try {
             const dbRef = ref(getDatabase());
-            const currentUser = auth.currentUser;
-            if (!currentUser) {
-                navigation.navigate("Login");
-                return;
-            }
-            const currentUserId = currentUser.uid;
             const eventRef = child(dbRef, "events");
             const newEventRef = push(eventRef);
             const newEventId = newEventRef.key;

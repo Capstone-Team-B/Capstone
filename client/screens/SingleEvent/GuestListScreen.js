@@ -10,18 +10,28 @@ import {
     SafeAreaView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { getDatabase, ref, child, get, query, remove } from "firebase/database";
+import {
+    getDatabase,
+    ref,
+    child,
+    get,
+    query,
+    remove,
+    orderByChild,
+    equalTo,
+} from "firebase/database";
 import { useIsFocused } from "@react-navigation/native";
 import globalStyles from "../../utils/globalStyles";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Video } from "expo-av";
+import { auth } from "../../../firebase";
 
 const GuestListScreen = (params) => {
     const [loading, setLoading] = useState(true);
     const [guestList, setGuestList] = useState([]);
     const [host, setHost] = useState({});
+    const [userId, setUserId] = useState("");
     const event = params.route.params.event;
-    const uid = params.route.params.uid;
     // const attending = params.route.params.attending
     const host_id = event.host_id;
     const eventId = event.event_id;
@@ -61,13 +71,15 @@ const GuestListScreen = (params) => {
                             const data = snapshot.val();
                             // console.log("data -->", data)
                             // const userEvent = Object.entries(data.userEvents).find(([key, value]) => value.event_id)[0]
-                            const attendingStatus = Object.values(data.userEvents).find(({event_id}) => event_id === eventId);
+                            const attendingStatus = Object.values(
+                                data.userEvents
+                            ).find(({ event_id }) => event_id === eventId);
                             const neededInfo = {
                                 firstName: data.firstName,
                                 lastName: data.lastName,
                                 profilePic: data.profilePic,
                                 userEvent: attendingStatus,
-                                user_id: data.user_id
+                                user_id: data.user_id,
                             };
                             console.log("neededInfo -->", neededInfo);
                             guests = [...guests, neededInfo];
@@ -107,6 +119,22 @@ const GuestListScreen = (params) => {
     };
 
     useEffect(() => {
+        const getUserId = async () => {
+            const currentUserId = auth.currentUser.uid;
+            const dbRef = ref(getDatabase());
+            const usersQuery = query(
+                child(dbRef, "users"),
+                orderByChild("auth_id"),
+                equalTo(currentUserId)
+            );
+            const snapshot = await get(usersQuery);
+
+            if (snapshot.exists()) {
+                const data = Object.keys(snapshot.val());
+                setUserId(data[0]);
+            }
+        };
+        getUserId();
         getGuests();
         getHost();
     }, [isFocused]);
@@ -122,16 +150,12 @@ const GuestListScreen = (params) => {
         const guestToDeleteRef = child(guestListRef, userId);
         await remove(guestToDeleteRef);
 
-        console.log("guest.userEvent -->", guest.userEvent)
-        const usersEventsRef = child(
-            dbRef,
-            `users/${userId}/userEvents}`
-        );
+        console.log("guest.userEvent -->", guest.userEvent);
+        const usersEventsRef = child(dbRef, `users/${userId}/userEvents}`);
         console.log("usersEventsRef -->", usersEventsRef);
 
         const eventToDeleteRef = child(usersEventsRef, guest.userEvent);
         await remove(eventToDeleteRef);
-
 
         const updatedGuestList = guestList.filter(
             (item) => item.user_id !== userId
@@ -181,7 +205,8 @@ const GuestListScreen = (params) => {
                             style={{
                                 ...globalStyles.heading1,
                                 fontFamily: "Bukhari Script",
-                                padding: 10, textAlign: "center"
+                                padding: 10,
+                                textAlign: "center",
                             }}
                         >
                             {event.name}
@@ -311,7 +336,7 @@ const GuestListScreen = (params) => {
                                                 alignItems: "center",
                                             }}
                                         >
-                                            {uid === event.host_id ? (
+                                            {userId === event.host_id ? (
                                                 <TouchableOpacity
                                                     style={{
                                                         position: "absolute",
@@ -372,7 +397,9 @@ const GuestListScreen = (params) => {
                                                             ...styles.profilePic,
                                                             marginBottom: 10,
                                                             borderWidth: 8,
-                                                            borderColor: guest.userEvent.attending
+                                                            borderColor: guest
+                                                                .userEvent
+                                                                .attending
                                                                 ? "#36b6ff"
                                                                 : "#cb6ce6",
                                                         }}

@@ -22,7 +22,9 @@ import {
     ref,
 } from "firebase/storage";
 import { useNavigation } from "@react-navigation/core";
+import { auth } from "../../../firebase";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { getDatabase, child, get, query, equalTo, orderByChild, ref as refD } from "firebase/database";
 
 const UploadEventImagesScreen = (params) => {
     const uid = params.route.params.uid;
@@ -31,9 +33,29 @@ const UploadEventImagesScreen = (params) => {
     const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
     const [images, setImages] = useState([]);
     const [uploading, setUploading] = useState(false);
+    const [userId, setUserId] = useState("");
     const navigation = useNavigation();
 
     // useEffect to get logged-in user approval to access media library
+    useEffect(() => {
+        const getUserId = async () => {
+            const currentUserId = auth.currentUser.uid
+            const dbRef = refD(getDatabase());
+            const usersQuery = query(
+                child(dbRef, 'users'),
+                orderByChild('auth_id'),
+                equalTo(currentUserId)
+            )
+            const snapshot = await get (usersQuery);
+    
+            if (snapshot.exists()) {
+                const data = Object.keys(snapshot.val());
+                setUserId(data[0])
+            }
+        }
+        getUserId()
+    }, []);
+
     useEffect(() => {
         (async () => {
             const galleryStatus =

@@ -37,7 +37,7 @@ const MessageboardScreen = (params) => {
     const db = getDatabase();
     const [newMessage, setNewMessage] = useState("");
     const [eventName, setEventName] = useState(params.route.params.name || "");
-    const [user_id, setUser_id] = useState(params.route.params.user_id || "");
+    const [user_id, setUser_id] = useState(params.route.params.uid || "");
     const [messages, setMessages] = useState([]);
 
     useEffect(() => {

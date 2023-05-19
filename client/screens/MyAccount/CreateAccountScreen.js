@@ -41,7 +41,7 @@ const CreateAccountScreen = (props) => {
     }, [props]);
 
     const [user, setUser] = useState({});
-
+    
     //testing elements
     const [password, setPassword] = useState("pwpwpwpw" || "");
     const [confirmPassword, setConfirmPassword] = useState("pwpwpwpw" || "");

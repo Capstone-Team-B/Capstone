@@ -138,7 +138,10 @@ const CheckAccountScreen = (props) => {
                         style={styles.input}
                         placeholder="Phone Number"
                         value={phoneNumber}
-                        onChangeText={setPhoneNumber}
+                        onChangeText={(phoneNumber) => setPhoneNumber(phoneNumber.replace(
+                            /(\d{3})(\d{3})(\d{4})/,
+                            "($1) $2-$3"
+                        ))}
                     />
                 </View>
                 <View>

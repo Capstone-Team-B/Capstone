@@ -1,7 +1,5 @@
-import { View, Text } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { useRoute } from "@react-navigation/native";
 import Notifications from "../screens/Notifications/Notifications";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MyAccountNavigator from "./MyAccountNavigator";
@@ -11,8 +9,7 @@ import globalStyles from "../utils/globalStyles";
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
-    const route = useRoute();
-    const { uid } = route.params;
+
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -50,7 +47,6 @@ const TabNavigator = () => {
             <Tab.Screen
                 name="MyAccountNavigator"
                 component={MyAccountNavigator}
-                initialParams={{ uid: uid }}
                 options={{
                     headerShown: false,
                     tabBarLabel: "My Account",
@@ -59,7 +55,6 @@ const TabNavigator = () => {
             <Tab.Screen
                 name="EventNavigator"
                 component={EventNavigator}
-                initialParams={{ uid: uid }}
                 options={{
                     headerShown: false,
                     tabBarLabel: "Events",
@@ -68,7 +63,6 @@ const TabNavigator = () => {
             <Tab.Screen
                 name="NotificationsScreen"
                 component={Notifications}
-                initialParams={{ uid: uid }}
                 options={{
                     title: "Reminders",
                     headerTitleStyle: globalStyles.screenHeader,  //!!!KIT this formatting doesn't work

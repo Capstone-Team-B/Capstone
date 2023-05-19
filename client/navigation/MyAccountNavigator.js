@@ -12,14 +12,12 @@ import CreateAccountScreen from "../screens/MyAccount/CreateAccountScreen";
 const Stack = createNativeStackNavigator();
 
 const MyAccountNavigator = (props) => {
-    const { uid } = props.route.params;
 
     return (
         <Stack.Navigator initialRouteName="MyAccountScreen">
             <Stack.Screen
                 name="MyAccountScreen"
                 component={MyAccountScreen}
-                initialParams={{ uid: uid }}
                 options={{ title: "My Account", headerTitleStyle: globalStyles.screenHeader}}
             />
             <Stack.Screen
@@ -30,25 +28,21 @@ const MyAccountNavigator = (props) => {
             <Stack.Screen
                 name="EditAccountScreen"
                 component={EditAccountScreen}
-                initialParams={{ uid: uid }}
                 options={{ title: "Edit Account", headerTitleStyle: globalStyles.screenHeader}}
             />
             <Stack.Screen
                 name="UploadProfilePicScreen"
                 component={UploadProfilePicScreen}
-                initialParams={{ uid: uid }}
                 options={{ title: "Upload Profile Picture", headerTitleStyle: globalStyles.screenHeader }}
             />
             <Stack.Screen
                 name="ViewArchiveScreen"
                 component={ViewArchiveScreen}
-                initialParams={{ uid: uid }}
                 options={{ title: "Event Archive", headerTitleStyle: globalStyles.screenHeader}}
             />
             <Stack.Screen
                 name="CreateAccountScreen"
                 component={CreateAccountScreen}
-                initialParams={{ uid: uid }}
                 options={{ title: "Create Account", headerTitleStyle: globalStyles.screenHeader}}
             />
         </Stack.Navigator>

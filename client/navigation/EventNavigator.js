@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SingleEvent from "../screens/SingleEvent/SingleEvent";
 import GuestProfileScreen from "../screens/SingleEvent/GuestProfileScreen";
@@ -24,14 +24,12 @@ import UploadCoverPhotoScreen from "../screens/NewEvent/UploadCoverPhotoScreen";
 const Stack = createNativeStackNavigator();
 
 const EventNavigator = (props) => {
-    const { uid } = props.route.params;
 
     return (
         <Stack.Navigator initialRouteName="EventListScreen">
             <Stack.Screen
                 name="EventListScreen"
                 component={EventListScreen}
-                initialParams={{ uid: uid }}
                 options={{
                     title: "Upcoming Events",
                     headerTitleStyle: globalStyles.screenHeader,
@@ -40,7 +38,6 @@ const EventNavigator = (props) => {
             <Stack.Screen
                 name="SingleEvent"
                 component={SingleEvent}
-                // initialParams={{ uid: uid }}
                 options={{
                     title: "Event Details",
                     headerTitleStyle: globalStyles.screenHeader,
@@ -57,7 +54,6 @@ const EventNavigator = (props) => {
             <Stack.Screen
                 name="GuestListScreen"
                 component={GuestListScreen}
-                initialParams={{ uid: uid }}
                 options={{
                     title: "Guest List",
                     headerTitleStyle: globalStyles.screenHeader,
@@ -129,7 +125,6 @@ const EventNavigator = (props) => {
             <Stack.Screen
                 name="UploadEventImagesScreen"
                 component={UploadEventImagesScreen}
-                initialParams={{ uid: uid }}
                 options={{
                     title: "Upload Event Images",
                     headerTitleStyle: globalStyles.screenHeader,

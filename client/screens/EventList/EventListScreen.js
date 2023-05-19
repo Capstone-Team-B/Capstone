@@ -18,11 +18,13 @@ import {
     get,
     query,
     orderByChild,
+    equalTo
 } from "firebase/database";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 // PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
 import EventTile from "./EventTile";
+import { auth } from "../../../firebase";
 const BeThereConcise = require("../../../assets/BeThereConcise.png");
 
 const EventListScreen = (props) => {
@@ -31,30 +33,48 @@ const EventListScreen = (props) => {
     const dbRef = ref(getDatabase());
     const navigation = useNavigation();
 
-    // PROPS & PARAMS
-    const { uid } = props.route.params;
-
     // USESTATE
     const [eventList, setEventList] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [userId, setUserId] = useState("");
     
     // USEEFFECT
     useEffect(() => {
-        const checkUserEvents = child(dbRef, `users/${uid}/userEvents`)
+        const getUserId = async () => {
+            const currentUserId = auth.currentUser.uid
+            const dbRef = ref(getDatabase());
+            const usersQuery = query(
+                child(dbRef, 'users'),
+                orderByChild('auth_id'),
+                equalTo(currentUserId)
+            )
+            const snapshot = await get (usersQuery);
+    
+            if (snapshot.exists()) {
+                const data = Object.keys(snapshot.val());
+                setUserId(data[0])
+            }
+        }
+        getUserId()
+        const checkUserEvents = child(dbRef, `users/${userId}/userEvents`)
         if (!checkUserEvents) {
             return setLoading(false)
         }
         const eventIdsQuery = query(
-            child(dbRef, `users/${uid}`),
+            child(dbRef, `users/${userId}`),
             orderByChild("userEvents")
             );
             try {
                 get(eventIdsQuery).then((eventSnapshot) => {
                     if (eventSnapshot.exists()) {
                         const data = eventSnapshot.val();
-                        const objVal = Object.values(data.userEvents)
-                        const userEventIds = objVal.map((event) => event.event_id)
-                        getEvents(userEventIds);
+                        if(data.userEvents){
+                            const objVal = Object.values(data.userEvents)
+                            const userEventIds = objVal.map((event) => event.event_id)
+                            getEvents(userEventIds);
+                        } else {
+                            return;
+                        }
                     } else {
                         console.log("no data");
                     }
@@ -107,7 +127,7 @@ const EventListScreen = (props) => {
                             <EventTile
                                 event={itemData}
                                 navigation={navigation}
-                                uid={uid}
+                                uid={userId}
                             />
                         );
                     }}
@@ -128,7 +148,7 @@ const EventListScreen = (props) => {
                     </Text>
                     <TouchableOpacity
                         onPress={() => {
-                            navigation.navigate("Create Event", { uid: uid });
+                            navigation.navigate("Create Event", { uid: userId });
                         }}
                     >
                         <Image

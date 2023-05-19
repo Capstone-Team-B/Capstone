@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/core";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 // PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
 const Backgroundhorizontal = require("../../../assets/Backgroundhorizontal.png");
