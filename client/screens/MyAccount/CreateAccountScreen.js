@@ -41,12 +41,8 @@ const CreateAccountScreen = (props) => {
 
     const [user, setUser] = useState({});
 
-    //testing elements
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-
-    // const [password, setPassword] = useState("");
-    // const [confirmPassword, setConfirmPassword] = useState("");
 
     const [firstName, setFirstName] = useState(user.firstName || "");
     const [lastName, setLastName] = useState(user.lastName || "");
@@ -173,7 +169,7 @@ const CreateAccountScreen = (props) => {
                 }}
             >
                 <ScrollView>
-                    <View style={styles.section}>
+                    <View style={{ margin: 25 }}>
                         <Text
                             style={{
                                 ...globalStyles.heading2,
@@ -240,11 +236,20 @@ const CreateAccountScreen = (props) => {
                     </View>
                     <View>
                         <TouchableOpacity
-                            style={styles.submitButton}
+                            style={{
+                                ...globalStyles.button,
+                                backgroundColor: "#ad6ce6",
+                            }}
                             onPress={handleSubmit}
                             required={true}
                         >
-                            <Text style={styles.submitButtonText}>
+                            <Text
+                                style={{
+                                    ...globalStyles.paragraph,
+                                    color: "white",
+                                    fontWeight: "bold",
+                                }}
+                            >
                                 Create Account
                             </Text>
                         </TouchableOpacity>
@@ -254,78 +259,5 @@ const CreateAccountScreen = (props) => {
         </KeyboardAvoidingView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-    },
-    section: {
-        margin: 12,
-    },
-    // input: {
-    //     borderWidth: 1,
-    //     borderColor: "#ccc",
-    //     borderRadius: 5,
-    //     padding: 10,
-    //     marginBottom: 10,
-    // },
-    addButton: {
-        backgroundColor: "#007bff",
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    addButtonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    deleteButton: {
-        backgroundColor: "white",
-        borderColor: "#dc3545",
-        borderWidth: 2,
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    deleteButtonText: {
-        color: "#dc3545",
-        fontSize: 14,
-        fontWeight: "bold",
-    },
-    outlineButton: {
-        backgroundColor: "white",
-        borderColor: "#007bff",
-        borderWidth: 2,
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    outlineButtonText: {
-        color: "#007bff",
-        fontSize: 14,
-        fontWeight: "bold",
-    },
-    submitButton: {
-        backgroundColor: "#2E8B57",
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    submitButtonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-});
 
 export default CreateAccountScreen;
