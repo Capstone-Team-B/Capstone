@@ -31,7 +31,7 @@ const CreateEventForm = (props) => {
 
     // PROPS & PARAMS
     const { uid } = props.route.params;
-
+    console.log("uid on createeventform -->", uid)
     // STATE
     const [weddingName, setWeddingName] = useState("");
     const [location, setLocation] = useState("");
@@ -101,7 +101,7 @@ const CreateEventForm = (props) => {
                 endDate: eventEndDate,
                 endTime: endTime,
                 event_id: newEventId,
-                host_id: currentUserId,
+                host_id: uid,
                 guestList: {
                     [uid]: {
                         guest_id: uid,
