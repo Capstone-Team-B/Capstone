@@ -16,7 +16,6 @@ export default {
         },
         "assetBundlePatterns": ["**/*"],
         "ios": {
-            "jsEngine": "hermes",
             "supportsTablet": true,
             "bundleIdentifier": "BeThere.app"
         },

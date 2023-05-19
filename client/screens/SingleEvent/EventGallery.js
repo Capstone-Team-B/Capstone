@@ -24,7 +24,6 @@ import {
     metadata,
     ref,
     listAll,
-    
 } from "firebase/storage";
 import globalStyles from "../../utils/globalStyles";
 import { useIsFocused } from "@react-navigation/native";
@@ -40,7 +39,7 @@ import {
     orderByChild,
     equalTo,
     set,
-    push
+    push,
 } from "firebase/database";
 
 const screenWidth = Dimensions.get("window").width;
@@ -86,35 +85,36 @@ const EventGallery = (params) => {
 
     const [tagList, setTagList] = useState([]);
     const [cordinates, setCordinates] = useState({ top: 0, left: 0 });
-    const [imageSelected, setImageSelected] = useState('');
+    const [imageSelected, setImageSelected] = useState("");
 
     const navigation = useNavigation();
     const dbRef = dbrefF(getDatabase());
 
     const getGuesses = async () => {
         try {
-            await get(query(child(dbRef, `events/${event.event_id}/guestList`)))
-            .then(async(guestIdsData) => {
+            await get(
+                query(child(dbRef, `events/${event.event_id}/guestList`))
+            ).then(async (guestIdsData) => {
                 if (guestIdsData.exists()) {
                     const data = guestIdsData.val();
                     const guestIds = Object.keys(data);
-                    
-                    let guests = []
+
+                    let guests = [];
 
                     for (let index = 0; index < guestIds.length; index++) {
                         const guestId = guestIds[index];
-                        await get(query(child(dbRef, `users/${guestId}`)))
-                        .then((guestUsers) => {
-                            if (guestUsers.exists()) {
-                                const data = guestUsers.val();
-                                guests.push(data)
-                            } else {
-                                console.log("no guests in this event");
+                        await get(query(child(dbRef, `users/${guestId}`))).then(
+                            (guestUsers) => {
+                                if (guestUsers.exists()) {
+                                    const data = guestUsers.val();
+                                    guests.push(data);
+                                } else {
+                                    console.log("no guests in this event");
+                                }
                             }
-                        });
+                        );
                     }
-                    setUserList(guests)
-
+                    setUserList(guests);
                 } else {
                     console.log("no guests in this event");
                 }
@@ -126,18 +126,21 @@ const EventGallery = (params) => {
 
     const getPhotoTags = async () => {
         try {
-            await get(query(child(dbRef, `photoTags`), orderByChild("event_id"),
-            equalTo(event.event_id)))
-            .then(async(photoTagsData) => {
+            await get(
+                query(
+                    child(dbRef, `photoTags`),
+                    orderByChild("event_id"),
+                    equalTo(event.event_id)
+                )
+            ).then(async (photoTagsData) => {
                 if (photoTagsData.exists()) {
                     const data = photoTagsData.val();
                     //const tags = Object.keys(data);
                     const tags = Object.keys(data).map((key) => ({
                         ...data[key],
                     }));
-                    console.info('tags', tags)
-                    setTagList(tags)
-
+                    console.info("tags", tags);
+                    setTagList(tags);
                 } else {
                     console.log("no tags in this event");
                 }
@@ -173,11 +176,11 @@ const EventGallery = (params) => {
         console.log("cordinates", top + "---" + left);
         setIsSearchText(true);
         setCordinates({ top, left });
-        setImageSelected(photo)
+        setImageSelected(photo);
     };
 
     const tagUser = async (guest) => {
-        console.info('tagged', guest)
+        console.info("tagged", guest);
         let newView = {
             event_id: event.event_id,
             imageUrl: imageSelected,
@@ -191,13 +194,12 @@ const EventGallery = (params) => {
             await set(push(child(dbRef, `photoTags`)), newView);
             setTagList(tagList.concat([newView]));
         } catch (error) {
-            console.error('tag', error)
+            console.error("tag", error);
         }
         setIsSearchText(false);
     };
 
     const dynamicStyle = (location) => {
-
         return {
             position: "absolute",
             top: location.top,
@@ -209,7 +211,7 @@ const EventGallery = (params) => {
     useEffect(() => {
         if (storage) {
             getPhotos();
-            getPhotoTags()
+            getPhotoTags();
             getGuesses();
         }
     }, [isFocused]);
@@ -249,21 +251,13 @@ const EventGallery = (params) => {
                     {isSearchText && (
                         <View style={styles.userSearch}>
                             <View style={styles.searchContainer}>
-                                {/* <Image
-                                    source={require("../../../assets/images/search.png")}
-                                    style={styles.searchIconStyle}
-                                /> */}
                                 <TextInput
                                     style={styles.textInputStyle}
                                     placeholder="Search for a User"
                                 />
-                                {/* <Image
-                                    source={require("../../../assets/images/close.png")}
-                                    style={styles.closeIconStyle}
-                                /> */}
                             </View>
                             <Modal>
-                                <ScrollView style={{marginTop: 50}}>
+                                <ScrollView style={{ marginTop: 50 }}>
                                     {userList.map((user) => (
                                         <TouchableOpacity
                                             key={user.id}
@@ -275,34 +269,26 @@ const EventGallery = (params) => {
                                                 <Text
                                                     style={styles.userListText}
                                                 >
-                                                    {user.firstName} {user.lastName}
+                                                    {user.firstName}{" "}
+                                                    {user.lastName}
                                                 </Text>
                                             </View>
                                         </TouchableOpacity>
                                     ))}
                                 </ScrollView>
                             </Modal>
-                            
                         </View>
                     )}
                     {isSearchText && (
                         <View style={styles.userSearch}>
                             <View style={styles.searchContainer}>
-                                {/* <Image
-                                    source={require("../../../assets/images/search.png")}
-                                    style={styles.searchIconStyle}
-                                /> */}
                                 <TextInput
                                     style={styles.textInputStyle}
                                     placeholder="Search for a User"
                                 />
-                                {/* <Image
-                                    source={require("../../../assets/images/close.png")}
-                                    style={styles.closeIconStyle}
-                                /> */}
                             </View>
                             <Modal>
-                                <ScrollView style={{marginTop: 50}}>
+                                <ScrollView style={{ marginTop: 50 }}>
                                     {userList.map((user) => (
                                         <TouchableOpacity
                                             key={user.id}
@@ -314,7 +300,8 @@ const EventGallery = (params) => {
                                                 <Text
                                                     style={styles.userListText}
                                                 >
-                                                    {user.firstName} {user.lastName}
+                                                    {user.firstName}{" "}
+                                                    {user.lastName}
                                                 </Text>
                                             </View>
                                         </TouchableOpacity>
@@ -340,23 +327,37 @@ const EventGallery = (params) => {
                                         }}
                                     />
                                 </TouchableWithoutFeedback>
-                                {tagList.map((item) => (
-                        item.imageUrl == photo &&
-                        <View key={item.id} style={dynamicStyle(item)}>
-                            <View style={styles.tagTriangle}></View>
-                            <View style={styles.tagUserView}>
-                                <Text style={styles.tagListText}>
-                                    {" "}
-                                    {item.user}{" "}
-                                </Text>
-                                <TouchableOpacity
-                                    key={item.id}
-                                    style={styles.removeTagUser}
-                                >
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    ))}
+                                {tagList.map(
+                                    (item) =>
+                                        item.imageUrl == photo && (
+                                            <View
+                                                key={item.id}
+                                                style={dynamicStyle(item)}
+                                            >
+                                                <View
+                                                    style={styles.tagTriangle}
+                                                ></View>
+                                                <View
+                                                    style={styles.tagUserView}
+                                                >
+                                                    <Text
+                                                        style={
+                                                            styles.tagListText
+                                                        }
+                                                    >
+                                                        {" "}
+                                                        {item.user}{" "}
+                                                    </Text>
+                                                    <TouchableOpacity
+                                                        key={item.id}
+                                                        style={
+                                                            styles.removeTagUser
+                                                        }
+                                                    ></TouchableOpacity>
+                                                </View>
+                                            </View>
+                                        )
+                                )}
                             </View>
                         ))}
                     </Swiper>
