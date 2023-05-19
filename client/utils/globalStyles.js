@@ -10,7 +10,7 @@ export default StyleSheet.create({
     screenHeader: {
         fontFamily: "Bukhari Script",
         fontSize: 20,
-        padding: 20
+        padding: 20,
     },
     heading1: {
         fontSize: 35,
@@ -26,6 +26,11 @@ export default StyleSheet.create({
     },
     paragraph: {
         fontSize: 15,
+    },
+    inputLabel: {
+        fontSize: 15,
+        marginBottom: 12,
+        marginLeft: 8,
     },
     tile: {
         margin: 12,
@@ -46,5 +51,14 @@ export default StyleSheet.create({
         padding: 10,
         marginBottom: 10,
         fontSize: 15,
+    },
+    inputAccount: {
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 10,
+        fontSize: 15,
+        backgroundColor: "white",
     },
 });
