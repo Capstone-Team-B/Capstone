@@ -23,7 +23,9 @@ import {
 const CheckAccountScreen = (props) => {
     console.log("props are -->", props.route.params);
     const [user, setUser] = useState(props.route.params);
-    const [email, setEmail] = useState(user.email || "");
+    const [email, setEmail] = useState(
+        "nophone@nophone.com" || user.email || ""
+    );
     const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || "");
 
     useEffect(() => {
@@ -40,6 +42,9 @@ const CheckAccountScreen = (props) => {
             return;
         }
         // check for matching phone number first
+        if (phoneNumber === "") {
+            console.log("run check email?");
+        }
         try {
             const dbRef = ref(getDatabase());
             get(
@@ -104,28 +109,6 @@ const CheckAccountScreen = (props) => {
                 .catch((error) => {
                     console.log("line 105", error);
                 });
-
-            // get(
-            //     query(
-            //         child(dbRef, "users"),
-            //         orderByChild("email"),
-            //         equalTo(email)
-            //     )
-            // )
-            //     .then((snapshot) => {
-            //         if (snapshot.exists()) {
-            //             const userRef = snapshot.val();
-            //             const uid = Object.keys(userRef)[0];
-            //             navigation.navigate("CreateAccountScreen", {
-            //                 uid: uid || null,
-            //             });
-            //         } else {
-            //             console.log("No email found");
-            //         }
-            //     })
-            //     .catch((error) => {
-            //         console.log("line 83", error);
-            //     });
         } catch (error) {
             console.log(error);
         }
