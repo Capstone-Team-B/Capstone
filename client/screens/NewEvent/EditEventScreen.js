@@ -132,6 +132,31 @@ const EditEvent = (params) => {
                     >
                         Edit Event Details
                     </Text>
+                    <TouchableOpacity
+                        style={{
+                            ...globalStyles.button,
+                            backgroundColor: "#A67FEC",
+                        }}
+                        onPress={() =>
+                            navigation.navigate("UploadCoverPhotoScreen", {event: event})
+                        }
+                    >
+                        <Ionicons
+                            name="camera-outline"
+                            size={25}
+                            color="white"
+                            marginBottom={12}
+                        />
+                        <Text
+                            style={{
+                                ...globalStyles.paragraph,
+                                color: "white",
+                                fontWeight: "bold",
+                            }}
+                        >
+                            Upload event cover photo
+                        </Text>
+                    </TouchableOpacity>
                     <Text
                         style={{
                             ...globalStyles.paragraph,
@@ -197,7 +222,7 @@ const EditEvent = (params) => {
                                 margin: 0,
                                 backgroundColor: "#38B6FF",
                                 marginRight: 6,
-                                width: 150,
+                                width: "100%",
                             }}
                         >
                             <TouchableOpacity onPress={() => setOpen(true)}>
@@ -230,7 +255,7 @@ const EditEvent = (params) => {
                                                   month: "long",
                                                   day: "numeric",
                                                   year: "numeric",
-                                              })} - ${new Date(
+                                              })} - ${"\n"}${new Date(
                                                   eventEndDate
                                               ).toLocaleString("en-US", {
                                                   weekday: "long",

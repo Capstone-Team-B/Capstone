@@ -8,7 +8,7 @@ import {
     StyleSheet,
     Text,
     TextInput,
-    TouchableOpacity,
+    TouchableOpacity, Dimensions
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { DatePickerModal } from "react-native-paper-dates";
@@ -20,6 +20,8 @@ import { auth } from "../../../firebase";
 import { getDatabase, ref, child, set, push } from "firebase/database";
 // PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
+
+const screenWidth = Dimensions.get("window").width;
 
 const CreateEventForm = (props) => {
     // COMPONENT VARIABLES
@@ -39,6 +41,7 @@ const CreateEventForm = (props) => {
     const [selectedEventType, setSelectedEventType] = useState("");
     const [open, setOpen] = useState(false);
     const [visible, setVisible] = useState(false);
+    const [coverPhoto, setCoverPhoto] = useState("")
 
     // FUNCTIONS
     const onDismiss = useCallback(() => {
@@ -70,6 +73,7 @@ const CreateEventForm = (props) => {
         }
         setVisible(false);
     };
+
     const handleSubmit = async () => {
         if (
             !weddingName ||
@@ -127,8 +131,8 @@ const CreateEventForm = (props) => {
     };
 
     return (
-        <KeyboardAvoidingView style={globalStyles.container} behavior="height">
-            <ScrollView style={globalStyles.container}>
+        <ScrollView style={globalStyles.container}>
+                <KeyboardAvoidingView style={globalStyles.container} behavior="height">
                 <View style={styles.section}>
                     <Text
                         style={{
@@ -205,7 +209,7 @@ const CreateEventForm = (props) => {
                                 margin: 0,
                                 backgroundColor: "#38B6FF",
                                 marginRight: 6,
-                                width: 150,
+                                width: "100%",
                             }}
                             onPress={() => setOpen(true)}
                         >
@@ -239,7 +243,7 @@ const CreateEventForm = (props) => {
                                                   month: "long",
                                                   day: "numeric",
                                                   year: "numeric",
-                                              })} - ${new Date(
+                                              })} - ${"\n"}${new Date(
                                                   eventEndDate
                                               ).toLocaleString("en-US", {
                                                   weekday: "long",
@@ -272,7 +276,7 @@ const CreateEventForm = (props) => {
                     <View
                         style={{
                             flexDirection: "row",
-                            justifyContent: "space-evenly",
+                            justifyContent: "center", alignItems: "center"
                         }}
                     >
                         <TouchableOpacity
@@ -280,6 +284,7 @@ const CreateEventForm = (props) => {
                                 ...globalStyles.button,
                                 backgroundColor: "#699DF7",
                                 margin: 0,
+                                height: 80, width: 160, alignItems: "center", justifyContent: "center"
                             }}
                             onPress={() => {
                                 setVisible(true);
@@ -303,6 +308,7 @@ const CreateEventForm = (props) => {
                                 ...globalStyles.button,
                                 backgroundColor: "#9A85EE",
                                 margin: 0,
+                                height: 80, width: 160, alignItems: "center", justifyContent: "center"
                             }}
                             onPress={() => {
                                 setVisible(true);
@@ -376,8 +382,8 @@ const CreateEventForm = (props) => {
                         </TouchableOpacity>
                     ) : null}
                 </View>
-            </ScrollView>
         </KeyboardAvoidingView>
+            </ScrollView>
     );
 };
 

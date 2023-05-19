@@ -137,13 +137,10 @@ const SingleEvent = (params) => {
                                 <View style={styles.borderContainer}>
                                     <TouchableOpacity
                                         onPress={() =>
-                                            navigation.navigate(
-                                                "Create Guest List",
-                                                {
-                                                    event: event,
-                                                    uid: uid,
-                                                }
-                                            )
+                                            navigation.navigate("Edit Event", {
+                                                event: event,
+                                                uid: uid,
+                                            })
                                         }
                                     >
                                         <View
@@ -336,85 +333,95 @@ const SingleEvent = (params) => {
                 >
                     {event.description}
                 </Text>
-                
+
                 <View
                     style={{
                         justifyContent: "center",
                         alignItems: "center",
                     }}
                 >
-                    <View
-                        style={{
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: 80,
-                            backgroundColor: attending ? "#38b6ff" : "black",
-                            width: 300,
-                            borderRadius: attending === true ? 300 : 0,
-                            marginBottom: 20,
-                        }}
-                    >
-                        <Text
-                            style={{ ...globalStyles.heading3, color: "white" }}
+                    {uid != event.host_id && (
+                        <View
+                            style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                                height: 80,
+                                backgroundColor: attending
+                                    ? "#38b6ff"
+                                    : "black",
+                                width: 300,
+                                borderRadius: attending === true ? 300 : 0,
+                                marginBottom: 20,
+                            }}
                         >
-                            My RSVP
-                        </Text>
-                        {
-                            attending === true ? (
-                                <Text
-                                    style={{
-                                        fontSize: 25,
-                                        fontFamily: "Bukhari Script",
-                                        color: "white",
-                                    }}
-                                >
-                                    I'll be there
-                                </Text>
-                            ) : (
-                                <Text
-                                    style={{
-                                        fontSize: 25,
-                                        fontFamily: "Bukhari Script",
-                                        color: "white",
-                                    }}
-                                >
-                                    Can't make it
-                                </Text>
-                            )
-                            // : attending === undefined ? (
-                            //     <Text
-                            //         style={{
-                            //             fontSize: 25,
-                            //             fontFamily: "Bukhari Script",
-                            //             color: "black",
-                            //         }}
-                            //     >
-                            //         RSVP pending
-                            //     </Text>
-                            // )
-                        }
-                    </View>
+                            <Text
+                                style={{
+                                    ...globalStyles.heading3,
+                                    color: "white",
+                                }}
+                            >
+                                My RSVP
+                            </Text>
+                            {
+                                attending === true ? (
+                                    <Text
+                                        style={{
+                                            fontSize: 25,
+                                            fontFamily: "Bukhari Script",
+                                            color: "white",
+                                        }}
+                                    >
+                                        I'll be there
+                                    </Text>
+                                ) : (
+                                    <Text
+                                        style={{
+                                            fontSize: 25,
+                                            fontFamily: "Bukhari Script",
+                                            color: "white",
+                                        }}
+                                    >
+                                        Can't make it
+                                    </Text>
+                                )
+                                // : attending === undefined ? (
+                                //     <Text
+                                //         style={{
+                                //             fontSize: 25,
+                                //             fontFamily: "Bukhari Script",
+                                //             color: "black",
+                                //         }}
+                                //     >
+                                //         RSVP pending
+                                //     </Text>
+                                // )
+                            }
+                        </View>
+                    )}
                 </View>
-                <TouchableOpacity
-                    style={{
-                        ...globalStyles.button,
-                        borderWidth: 2,
-                        marginBottom: 5,
-                        borderColor: "#38B6FF",
-                    }}
-                    onPress={() =>
-                        navigation.navigate("GuestProfileScreen", {
-                            event: event,
-                            uid: uid,
-                            userEventId: userEventId,
-                        })
-                    }
-                >
-                    <View style={{ alignItems: "center" }}>
-                        <Ionicons name="happy-outline" size={25} />
-                        <Text>Update RSVP Status</Text>
-                    </View>
-                </TouchableOpacity>
+                {uid != event.host_id && (
+                    <TouchableOpacity
+                        style={{
+                            ...globalStyles.button,
+                            borderWidth: 2,
+                            marginBottom: 5,
+                            borderColor: "#38B6FF",
+                        }}
+                        onPress={() =>
+                            navigation.navigate("GuestProfileScreen", {
+                                event: event,
+                                uid: uid,
+                                userEventId: userEventId,
+                            })
+                        }
+                    >
+                        <View style={{ alignItems: "center" }}>
+                            <Ionicons name="happy-outline" size={25} />
+                            <Text>Update RSVP Status</Text>
+                        </View>
+                    </TouchableOpacity>
+                )}
+
                 <TouchableOpacity
                     style={{
                         ...globalStyles.button,

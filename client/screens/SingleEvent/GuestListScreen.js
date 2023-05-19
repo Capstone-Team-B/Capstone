@@ -372,9 +372,7 @@ const GuestListScreen = (params) => {
                                                             ...styles.profilePic,
                                                             marginBottom: 10,
                                                             borderWidth: 8,
-                                                            borderColor: guest
-                                                                .userEvent
-                                                                .attending
+                                                            borderColor: guest.userEvent.attending
                                                                 ? "#36b6ff"
                                                                 : "#cb6ce6",
                                                         }}
