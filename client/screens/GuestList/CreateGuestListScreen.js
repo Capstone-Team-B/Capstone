@@ -1,4 +1,3 @@
-//ENH Was here updated references to phone to phoneNumber to match database
 import React, { useState } from "react";
 import {
     KeyboardAvoidingView,
@@ -23,9 +22,12 @@ import {
     orderByChild,
     equalTo,
 } from "firebase/database";
+import { Platform, PermissionsAndroid, Linking } from "react-native";
+import * as SMS from "expo-sms";
 
 const CreateGuestList = (params) => {
     const [guestList, setGuestList] = useState([]);
+    const bodySMS = `You have been invited to a new event on BeThere! Open or download the BeThere app to view your invite!`;
     const event = params.route.params.event;
     const uid = params.route.params.uid;
     const eventId = event.event_id;
@@ -54,6 +56,62 @@ const CreateGuestList = (params) => {
         setGuestList(newGuestList);
     };
 
+    const initiateSMS = async (guestPhone) => {
+        try {
+            if (Platform.OS === "android") {
+                console.log(Platform.OS, "permission granted? ---->", permission === PermissionsAndroid.RESULTS.GRANTED)
+                const permission = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.SEND_SMS
+                    );
+                if (permission === PermissionsAndroid.RESULTS.GRANTED) {
+                    SmsManager.sendMessageWithoutThreadID(
+                        guestPhone,
+                        bodySMS,
+                        null,
+                        null
+                    );
+                    console.log(`SMS sent successfully to ${guestPhone}`);
+                } else if (permission === PermissionsAndroid.RESULTS.DENIED) {
+                    console.log('Permission to send SMS denied');
+                    return false;
+                } else if (permission === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+                    console.log('Permission to send SMS permanently denied');
+                    return false;
+                } else {
+                    console.log('Permission request failed');
+                    return false;
+                }
+            } else if (Platform.OS === "ios") {
+                Alert.alert(
+                    "iOS devices do not allow BeThere to send bulk SMS messages on your behalf. Please add your guests one at a time to send SMS invites to each guest."
+                );
+                const canSendText = await SMS.isAvailableAsync();
+                if (canSendText) {
+                    const url = `sms:${guestPhone}&body=${encodeURIComponent(
+                        bodySMS
+                    )}`;
+                    Linking.openURL(url).catch((error) => {
+                        console.log(
+                            `Failed to open SMS app for ${guestPhone}:`,
+                            error
+                        );
+                    });
+                } else {
+                    console.log("SMS service is not available on this device");
+                }
+            } else {
+                console.log(
+                    "Sending SMS automatically is not supported on this platform"
+                );
+            }
+        } catch (error) {
+            console.log(
+                `Error occurred when sending SMS to ${guestPhone}:`,
+                error
+            );
+        }
+    };
+
     const handleSubmit = async () => {
         for (const guest of guestList) {
             if (!guest.phoneNumber || !guest.firstName || !guest.lastName) {
@@ -79,22 +137,6 @@ const CreateGuestList = (params) => {
                 Alert.alert("Invalid phone number");
                 return;
             }
-
-            // const newGuestListData = {
-            //     phoneNumber: formattedPhone.replace(
-            //         /(\d{3})(\d{3})(\d{4})/,
-            //         "($1) $2-$3"
-            //     ),
-            //     email: guestEmail,
-            //     firstName: guestFirstname,
-            //     lastName: guestLastname,
-            //     userEvents: {
-            //         [eventId]: {
-            //             event_id: event.event_id,
-            //             attending: false,
-            //         },
-            //     },
-            // };
 
             const newGuestListData = {
                 phoneNumber: formattedPhone.replace(
@@ -130,7 +172,8 @@ const CreateGuestList = (params) => {
                         attending: false,
                     });
 
-                    const existingUserEventRef = child(dbRef,
+                    const existingUserEventRef = child(
+                        dbRef,
                         `users/${userData[0].user_id}/userEvents`
                     );
                     const updatedUserEvent = {
@@ -161,13 +204,13 @@ const CreateGuestList = (params) => {
                         attending: false,
                     });
                 }
+                await initiateSMS(guestPhone.replace(/\D/g, ""));
             } catch (error) {
                 console.log("Error:", error);
                 Alert.alert("Something went wrong, please try again.");
                 return;
             }
         }
-
         navigation.navigate("SingleEvent", { uid: uid, event: event });
     };
 
@@ -242,7 +285,8 @@ const CreateGuestList = (params) => {
                         style={styles.outlineButton}
                         onPress={() =>
                             navigation.navigate("Import Contacts", {
-                                event: event, uid: uid
+                                event: event,
+                                uid: uid,
                             })
                         }
                     >
@@ -255,7 +299,7 @@ const CreateGuestList = (params) => {
                         onPress={handleAddGuest}
                     >
                         <Text style={styles.addButtonText}>
-                            Add Guest Manually
+                            Add New Guest Manually
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -265,7 +309,7 @@ const CreateGuestList = (params) => {
                         onPress={handleSubmit}
                     >
                         <Text style={styles.submitButtonText}>
-                            Save Updates
+                            Save Updates & Send SMS Invites
                         </Text>
                     </TouchableOpacity>
                 </View>
