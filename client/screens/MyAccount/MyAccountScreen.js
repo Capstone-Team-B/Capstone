@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { getDatabase, ref, child, get } from "firebase/database";
+import { getDatabase, ref, child, get, query, equalTo, orderByChild } from "firebase/database";
 import SignOutBtn from "./SignOutBtn";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { auth } from "../../../firebase";
@@ -20,12 +20,29 @@ const Background = require("../../../assets/Background.png");
 
 const MyAccountScreen = (props) => {
     const [user, setUser] = useState({});
-    const { uid } = props.route.params;
+    // const { uid } = props.route.params.uid;
     const isFocused = useIsFocused();
+    const [userId, setUserId] = useState("");
 
     useEffect(() => {
+        const getUserId = async () => {
+            const currentUserId = auth.currentUser.uid
+            const dbRef = ref(getDatabase());
+            const usersQuery = query(
+                child(dbRef, 'users'),
+                orderByChild('auth_id'),
+                equalTo(currentUserId)
+            )
+            const snapshot = await get (usersQuery);
+    
+            if (snapshot.exists()) {
+                const data = Object.keys(snapshot.val());
+                setUserId(data[0])
+            }
+        }
+        getUserId()
         const dbRef = ref(getDatabase());
-        get(child(dbRef, `users/${uid}`))
+        get(child(dbRef, `users/${userId}`))
             .then((snapshot) => {
                 if (snapshot.exists()) {
                     setUser(snapshot.val());
@@ -41,7 +58,7 @@ const MyAccountScreen = (props) => {
     const navigation = useNavigation();
 
     const handlePressCreateEvent = () => {
-        navigation.navigate("CreateEvent", {uid: uid});
+        navigation.navigate("CreateEvent", {uid: userId});
     };
 
     const handlePressEditAccount = () => {
@@ -49,7 +66,7 @@ const MyAccountScreen = (props) => {
     };
 
     const handlePressViewArchive = () => {
-        navigation.navigate("ViewArchiveScreen");
+        navigation.navigate("ViewArchiveScreen", {uid: userId});
     };
 
     const handleSignOut = () => {

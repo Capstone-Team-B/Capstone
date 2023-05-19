@@ -12,7 +12,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { auth } from "../../firebase";
 import { useNavigation } from "@react-navigation/native";
-import { getDatabase, ref, child, get, set } from "firebase/database";
+import { getDatabase, ref, child, get, set, orderByChild, equalTo, query } from "firebase/database";
 import { useAtom } from "jotai";
 import { user as userStore } from "../store/user";
 const BeThereLogoExpanded = require("../../assets/BeThereExpanded.png");
@@ -24,6 +24,7 @@ const LoginScreen = () => {
     // const [password, setPassword] = useState("pwpwpw");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [userId, setUserId] = useState("");
     const [storeUser, setStoreUser] = useAtom(userStore);
     const navigation = useNavigation();
 
@@ -52,10 +53,26 @@ const LoginScreen = () => {
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
+            const getUserId = async (uid) => {
+                const dbRef = ref(getDatabase());
+                const usersQuery = query(
+                    child(dbRef, 'users'),
+                    orderByChild('auth_id'),
+                    equalTo(uid)
+                )
+                const snapshot = await get (usersQuery);
+        
+                if (snapshot.exists()) {
+                    const data = Object.keys(snapshot.val());
+                    setUserId(data[0])
+                }
+            }
+
             if (user) {
+                getUserId(user.uid)
                 navigation.navigate("TabNav", {
                     screen: "EventNavigator",
-                    uid: user.uid,
+                    uid: userId,
                 });
                 return;
             }

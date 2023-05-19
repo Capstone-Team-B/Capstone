@@ -144,6 +144,8 @@ const CreateGuestList = (params) => {
                     "($1) $2-$3"
                 ),
                 email: guestEmail,
+                firstName: guestFirstname,
+                lastName: guestLastname,
             };
 
             try {

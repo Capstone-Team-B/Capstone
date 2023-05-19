@@ -31,7 +31,7 @@ const SingleEvent = (params) => {
     // PROPS & PARAMS
     const uid = params.route.params.uid;
     const event = params.route.params.event;
-    const attending = event.guestList[uid]?.attending;
+    const attending = event.guestList[uid].attending;
 
     // USESTATE
     const [host, setHost] = useState({});

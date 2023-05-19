@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SingleEvent from "../screens/SingleEvent/SingleEvent";
 import GuestProfileScreen from "../screens/SingleEvent/GuestProfileScreen";
@@ -20,18 +20,39 @@ import SinglePhoto from "../screens/SingleEvent/SinglePhoto";
 import globalStyles from "../utils/globalStyles";
 import EditNotification from "../screens/Notifications/EditNotification";
 import UploadCoverPhotoScreen from "../screens/NewEvent/UploadCoverPhotoScreen";
+import { auth } from "../../firebase";
+import { getDatabase, ref, child, get, orderByChild, equalTo, query } from "firebase/database";
 
 const Stack = createNativeStackNavigator();
 
 const EventNavigator = (props) => {
-    const { uid } = props.route.params;
+    const [userId, setUserId] = useState("");
+
+    useEffect(() => {
+        const getUserId = async () => {
+            const currentUserId = auth.currentUser.uid
+            const dbRef = ref(getDatabase());
+            const usersQuery = query(
+                child(dbRef, 'users'),
+                orderByChild('auth_id'),
+                equalTo(currentUserId)
+            )
+            const snapshot = await get (usersQuery);
+    
+            if (snapshot.exists()) {
+                const data = Object.keys(snapshot.val());
+                setUserId(data[0])
+            }
+        }
+        getUserId()
+    }, [])
 
     return (
         <Stack.Navigator initialRouteName="EventListScreen">
             <Stack.Screen
                 name="EventListScreen"
                 component={EventListScreen}
-                initialParams={{ uid: uid }}
+                initialParams={{ uid: userId }}
                 options={{
                     title: "Upcoming Events",
                     headerTitleStyle: globalStyles.screenHeader,
@@ -40,7 +61,6 @@ const EventNavigator = (props) => {
             <Stack.Screen
                 name="SingleEvent"
                 component={SingleEvent}
-                // initialParams={{ uid: uid }}
                 options={{
                     title: "Event Details",
                     headerTitleStyle: globalStyles.screenHeader,
@@ -57,7 +77,7 @@ const EventNavigator = (props) => {
             <Stack.Screen
                 name="GuestListScreen"
                 component={GuestListScreen}
-                initialParams={{ uid: uid }}
+                initialParams={{ uid: userId }}
                 options={{
                     title: "Guest List",
                     headerTitleStyle: globalStyles.screenHeader,
@@ -129,7 +149,7 @@ const EventNavigator = (props) => {
             <Stack.Screen
                 name="UploadEventImagesScreen"
                 component={UploadEventImagesScreen}
-                initialParams={{ uid: uid }}
+                initialParams={{ uid: userId }}
                 options={{
                     title: "Upload Event Images",
                     headerTitleStyle: globalStyles.screenHeader,

@@ -14,11 +14,10 @@ import {
     query,
     orderByChild,
 } from "firebase/database";
-import { auth } from "../../../firebase";
 import { useIsFocused } from "@react-navigation/native";
 
-const NotificationsScreen = () => {
-    const uid = auth.currentUser.uid;
+const NotificationsScreen = (props) => {
+    const { uid } = props.route.params;
     const [eventNotificationIds, setEventNotificationIds] = useState([]);
     const [notificationData, setNotificationData] = useState([]);
     const [loading, setLoading] = useState(true);

@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -10,6 +10,8 @@ import { useFonts } from "expo-font";
 import CheckAccountScreen from "./client/screens/MyAccount/CheckAccountScreen";
 import CreateAccountScreen from "./client/screens/MyAccount/CreateAccountScreen";
 import { RootSiblingParent } from "react-native-root-siblings";
+import globalStyles from "./client/utils/globalStyles";
+import MyAccountScreen from "./client/screens/MyAccount/MyAccountScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -63,13 +65,20 @@ export default function App() {
                         <Stack.Screen
                             name="CheckAccountScreen"
                             component={CheckAccountScreen}
-                        options={{ title: "Already Signed Up?" }}
-
+                            options={{ title: "Already Signed Up?" }}
                         />
                         <Stack.Screen
                             name="CreateAccountScreen"
                             component={CreateAccountScreen}
-      options={{ title: "Create New Account" }}
+                            options={{ title: "Create New Account" }}
+                        />
+                        <Stack.Screen
+                            name="MyAccountScreen"
+                            component={MyAccountScreen}
+                            options={{
+                                title: "My Account",
+                                headerTitleStyle: globalStyles.screenHeader,
+                            }}
                         />
                     </Stack.Navigator>
                 </NavigationContainer>
