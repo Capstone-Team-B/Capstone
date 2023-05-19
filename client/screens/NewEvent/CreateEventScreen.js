@@ -8,7 +8,9 @@ import {
     StyleSheet,
     Text,
     TextInput,
-    TouchableOpacity, Dimensions
+    TouchableOpacity,
+    Dimensions,
+    ImageBackground,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { DatePickerModal } from "react-native-paper-dates";
@@ -20,6 +22,7 @@ import { auth } from "../../../firebase";
 import { getDatabase, ref, child, set, push } from "firebase/database";
 // PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
+import BlueBG from "../../../assets/BlueBG.png";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -41,7 +44,7 @@ const CreateEventForm = (props) => {
     const [selectedEventType, setSelectedEventType] = useState("");
     const [open, setOpen] = useState(false);
     const [visible, setVisible] = useState(false);
-    const [coverPhoto, setCoverPhoto] = useState("")
+    const [coverPhoto, setCoverPhoto] = useState("");
 
     // FUNCTIONS
     const onDismiss = useCallback(() => {
@@ -131,259 +134,306 @@ const CreateEventForm = (props) => {
     };
 
     return (
-        <ScrollView style={globalStyles.container}>
-                <KeyboardAvoidingView style={globalStyles.container} behavior="height">
-                <View style={styles.section}>
-                    <Text
-                        style={{
-                            ...globalStyles.heading1,
-                            fontFamily: "Bukhari Script",
-                            margin: 20,
-                            textAlign: "center",
-                        }}
-                    >
-                        New Event Details
-                    </Text>
-                    <Text
-                        style={{
-                            ...globalStyles.paragraph,
-                            marginBottom: 12,
-                            marginLeft: 8,
-                            fontWeight: "bold",
-                        }}
-                    >
-                        Event name:
-                    </Text>
-                    <TextInput
-                        style={globalStyles.input}
-                        placeholder="Event name"
-                        value={weddingName}
-                        onChangeText={setWeddingName}
-                        required={true}
-                    />
-                    <Text
-                        style={{
-                            ...globalStyles.paragraph,
-                            marginBottom: 12,
-                            marginLeft: 8,
-                            fontWeight: "bold",
-                        }}
-                    >
-                        Description:
-                    </Text>
-                    <TextInput
-                        style={globalStyles.input}
-                        placeholder="Description"
-                        value={description}
-                        onChangeText={setDescription}
-                        required={true}
-                    />
-                    <Text
-                        style={{
-                            ...globalStyles.paragraph,
-                            marginBottom: 12,
-                            marginLeft: 8,
-                            fontWeight: "bold",
-                        }}
-                    >
-                        Main location:
-                    </Text>
-                    <TextInput
-                        style={globalStyles.input}
-                        placeholder="Main location"
-                        value={location}
-                        onChangeText={setLocation}
-                        required={true}
-                    />
-                    <View
-                        style={{
-                            justifyContent: "center",
-                            alignItems: "center",
-                            margin: 12,
-                        }}
-                    >
-                        <TouchableOpacity
+        // <View
+        //     style={{...globalStyles.container,
+        //         alignItems: "center", justifyContent: "center"
+        //     }}
+        // >
+        <ImageBackground
+            source={BlueBG}
+            resizeMode="cover"
+            style={{
+                flex: 1,
+                width: "100%",
+                // alignItems: "center",
+                // justifyContent: "center",
+            }}
+        >
+            <ScrollView style={{ flex: 1 }}>
+                <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
+                    <View style={{ margin: 12 }}>
+                        <Text
                             style={{
-                                ...globalStyles.button,
-                                flex: 1,
-                                margin: 0,
-                                backgroundColor: "#38B6FF",
-                                marginRight: 6,
-                                width: "100%",
+                                ...globalStyles.heading1,
+                                fontFamily: "Bukhari Script",
+                                margin: 20,
+                                textAlign: "center",
                             }}
-                            onPress={() => setOpen(true)}
                         >
-                            <TouchableOpacity onPress={() => setOpen(true)}>
+                            New Event Details
+                        </Text>
+                        <Text
+                            style={{
+                                ...globalStyles.paragraph,
+                                marginBottom: 12,
+                                marginLeft: 8,
+                                fontWeight: "bold",
+                            }}
+                        >
+                            Event name:
+                        </Text>
+                        <TextInput
+                            style={{
+                                ...globalStyles.input,
+                                backgroundColor: "white",
+                            }}
+                            placeholder="Event name"
+                            value={weddingName}
+                            onChangeText={setWeddingName}
+                            required={true}
+                        />
+                        <Text
+                            style={{
+                                ...globalStyles.paragraph,
+                                marginBottom: 12,
+                                marginLeft: 8,
+                                fontWeight: "bold",
+                            }}
+                        >
+                            Description:
+                        </Text>
+                        <TextInput
+                            style={{
+                                ...globalStyles.input,
+                                backgroundColor: "white",
+                            }}
+                            placeholder="Description"
+                            value={description}
+                            onChangeText={setDescription}
+                            required={true}
+                        />
+                        <Text
+                            style={{
+                                ...globalStyles.paragraph,
+                                marginBottom: 12,
+                                marginLeft: 8,
+                                fontWeight: "bold",
+                            }}
+                        >
+                            Main location:
+                        </Text>
+                        <TextInput
+                            style={{
+                                ...globalStyles.input,
+                                backgroundColor: "white",
+                            }}
+                            placeholder="Main location"
+                            value={location}
+                            onChangeText={setLocation}
+                            required={true}
+                        />
+                        <View
+                            style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                                margin: 12,
+                            }}
+                        >
+                            <TouchableOpacity
+                                style={{
+                                    ...globalStyles.button,
+                                    flex: 1,
+                                    margin: 0,
+                                    backgroundColor: "#38B6FF",
+                                    marginRight: 6,
+                                    width: screenWidth / 1.5,
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                                onPress={() => setOpen(true)}
+                            >
                                 <TouchableOpacity
-                                    onPress={() => setOpen(true)}
                                     style={{
                                         justifyContent: "center",
                                         alignItems: "center",
                                     }}
+                                    onPress={() => setOpen(true)}
                                 >
-                                    <Ionicons
-                                        name="calendar-outline"
-                                        size={25}
-                                        color="white"
-                                        marginBottom={12}
-                                    />
-                                    <Text
+                                    <TouchableOpacity
+                                        onPress={() => setOpen(true)}
                                         style={{
-                                            ...globalStyles.paragraph,
-                                            color: "white",
-                                            fontWeight: "bold",
-                                            textAlign: "center",
+                                            justifyContent: "center",
+                                            alignItems: "center",
                                         }}
                                     >
-                                        {eventStartDate && eventEndDate
-                                            ? `${new Date(
-                                                  eventStartDate
-                                              ).toLocaleString("en-US", {
-                                                  weekday: "long",
-                                                  month: "long",
-                                                  day: "numeric",
-                                                  year: "numeric",
-                                              })} - ${"\n"}${new Date(
-                                                  eventEndDate
-                                              ).toLocaleString("en-US", {
-                                                  weekday: "long",
-                                                  month: "long",
-                                                  day: "numeric",
-                                                  year: "numeric",
-                                              })}`
-                                            : "Select Dates"}
-                                    </Text>
+                                        <Ionicons
+                                            name="calendar-outline"
+                                            size={25}
+                                            color="white"
+                                            marginBottom={12}
+                                        />
+                                        <Text
+                                            style={{
+                                                ...globalStyles.paragraph,
+                                                color: "white",
+                                                fontWeight: "bold",
+                                                textAlign: "center",
+                                            }}
+                                        >
+                                            {eventStartDate && eventEndDate
+                                                ? `${new Date(
+                                                      eventStartDate
+                                                  ).toLocaleString("en-US", {
+                                                      weekday: "long",
+                                                      month: "long",
+                                                      day: "numeric",
+                                                      year: "numeric",
+                                                  })} - ${"\n"}${new Date(
+                                                      eventEndDate
+                                                  ).toLocaleString("en-US", {
+                                                      weekday: "long",
+                                                      month: "long",
+                                                      day: "numeric",
+                                                      year: "numeric",
+                                                  })}`
+                                                : "Select Dates"}
+                                        </Text>
+                                    </TouchableOpacity>
                                 </TouchableOpacity>
+                                <SafeAreaProvider>
+                                    <DatePickerModal // !@# after selecting/saving dates, if you click again to change the dates you get an error
+                                        mode="range"
+                                        locale="en"
+                                        visible={open}
+                                        onDismiss={onDismissRange}
+                                        startDate={eventStartDate}
+                                        endDate={eventEndDate}
+                                        onConfirm={onConfirmRange}
+                                        saveLabel="Save"
+                                        label="Select Date Range"
+                                        startLabel="From"
+                                        endLabel="To"
+                                        animationType="slide"
+                                    />
+                                </SafeAreaProvider>
                             </TouchableOpacity>
-                            <SafeAreaProvider>
-                                <DatePickerModal // !@# after selecting/saving dates, if you click again to change the dates you get an error
-                                    mode="range"
-                                    locale="en"
-                                    visible={open}
-                                    onDismiss={onDismissRange}
-                                    startDate={eventStartDate}
-                                    endDate={eventEndDate}
-                                    onConfirm={onConfirmRange}
-                                    saveLabel="Save"
-                                    label="Select Date Range"
-                                    startLabel="From"
-                                    endLabel="To"
-                                    animationType="slide"
-                                />
-                            </SafeAreaProvider>
-                        </TouchableOpacity>
+                        </View>
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
+                            <TouchableOpacity
+                                style={{
+                                    ...globalStyles.button,
+                                    backgroundColor: "#699DF7",
+                                    margin: 0,
+                                    height: 80,
+                                    width: 160,
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
+                                onPress={() => {
+                                    setVisible(true);
+                                    setSelectedEventType("start");
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        ...globalStyles.paragraph,
+                                        color: "white",
+                                        fontWeight: "bold",
+                                        textAlign: "center",
+                                    }}
+                                >
+                                    {startTime
+                                        ? startTime
+                                        : "Select Start Time"}
+                                </Text>
+                            </TouchableOpacity>
+                            <Ionicons
+                                name="time-outline"
+                                size={25}
+                                margin={12}
+                            />
+                            <TouchableOpacity
+                                style={{
+                                    ...globalStyles.button,
+                                    backgroundColor: "#9A85EE",
+                                    margin: 0,
+                                    height: 80,
+                                    width: 160,
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
+                                onPress={() => {
+                                    setVisible(true);
+                                    setSelectedEventType("end");
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        ...globalStyles.paragraph,
+                                        color: "white",
+                                        fontWeight: "bold",
+                                        textAlign: "center",
+                                    }}
+                                >
+                                    {endTime ? endTime : "Select End Time"}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                        <SafeAreaProvider>
+                            <TimePickerModal
+                                visible={visible}
+                                mode="time"
+                                onConfirm={(time) => handleTimeConfirm(time)}
+                                onDismiss={onDismiss}
+                                hours={12}
+                                minutes={30}
+                            />
+                        </SafeAreaProvider>
                     </View>
                     <View
                         style={{
-                            flexDirection: "row",
-                            justifyContent: "center", alignItems: "center"
+                            justifyContent: "center",
+                            alignItems: "center",
                         }}
                     >
-                        <TouchableOpacity
-                            style={{
-                                ...globalStyles.button,
-                                backgroundColor: "#699DF7",
-                                margin: 0,
-                                height: 80, width: 160, alignItems: "center", justifyContent: "center"
-                            }}
-                            onPress={() => {
-                                setVisible(true);
-                                setSelectedEventType("start");
-                            }}
-                        >
-                            <Text
+                        {weddingName &&
+                        location &&
+                        eventStartDate &&
+                        eventEndDate &&
+                        startTime &&
+                        endTime ? (
+                            <TouchableOpacity
                                 style={{
-                                    ...globalStyles.paragraph,
-                                    color: "white",
-                                    fontWeight: "bold",
-                                    textAlign: "center",
+                                    ...globalStyles.button,
+                                    height: 150,
+                                    width: 150,
+                                    backgroundColor: "#cb6ce6",
+                                    borderRadius: 200,
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    margin: 0,
                                 }}
+                                onPress={handleSubmit}
+                                required={true}
                             >
-                                {startTime ? startTime : "Select Start Time"}
-                            </Text>
-                        </TouchableOpacity>
-                        <Ionicons name="time-outline" size={25} margin={12} />
-                        <TouchableOpacity
-                            style={{
-                                ...globalStyles.button,
-                                backgroundColor: "#9A85EE",
-                                margin: 0,
-                                height: 80, width: 160, alignItems: "center", justifyContent: "center"
-                            }}
-                            onPress={() => {
-                                setVisible(true);
-                                setSelectedEventType("end");
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    ...globalStyles.paragraph,
-                                    color: "white",
-                                    fontWeight: "bold",
-                                    textAlign: "center",
-                                }}
-                            >
-                                {endTime ? endTime : "Select End Time"}
-                            </Text>
-                        </TouchableOpacity>
+                                <Ionicons
+                                    name="rocket-outline"
+                                    size={55}
+                                    color="white"
+                                />
+                                <Text
+                                    style={{
+                                        ...globalStyles.heading2,
+                                        color: "white",
+                                        fontWeight: "bold",
+                                        textAlign: "center",
+                                    }}
+                                >
+                                    Create Event
+                                </Text>
+                            </TouchableOpacity>
+                        ) : null}
                     </View>
-                    <SafeAreaProvider>
-                        <TimePickerModal
-                            visible={visible}
-                            mode="time"
-                            onConfirm={(time) => handleTimeConfirm(time)}
-                            onDismiss={onDismiss}
-                            hours={12}
-                            minutes={30}
-                        />
-                    </SafeAreaProvider>
-                </View>
-                <View
-                    style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                    }}
-                >
-                    {weddingName &&
-                    location &&
-                    eventStartDate &&
-                    eventEndDate &&
-                    startTime &&
-                    endTime ? (
-                        <TouchableOpacity
-                            style={{
-                                ...globalStyles.button,
-                                height: 150,
-                                width: 150,
-                                backgroundColor: "#cb6ce6",
-                                borderRadius: 200,
-                                justifyContent: "center",
-                                alignItems: "center",
-                                margin: 0,
-                            }}
-                            onPress={handleSubmit}
-                            required={true}
-                        >
-                            <Ionicons
-                                name="rocket-outline"
-                                size={55}
-                                color="white"
-                            />
-                            <Text
-                                style={{
-                                    ...globalStyles.heading2,
-                                    color: "white",
-                                    fontWeight: "bold",
-                                    textAlign: "center",
-                                }}
-                            >
-                                Create Event
-                            </Text>
-                        </TouchableOpacity>
-                    ) : null}
-                </View>
-        </KeyboardAvoidingView>
+                </KeyboardAvoidingView>
             </ScrollView>
+        </ImageBackground>
+        // {/* </View> */}
     );
 };
 

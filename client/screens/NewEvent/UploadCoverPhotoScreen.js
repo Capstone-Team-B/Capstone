@@ -122,7 +122,7 @@ const UploadCoverPhotoScreen = (params) => {
                                 fontWeight: "bold",
                             }}
                         >
-                            Upload profile picture
+                            Upload cover photo
                         </Text>
                         <Ionicons
                             name="cloud-upload-outline"

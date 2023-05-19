@@ -181,7 +181,7 @@ const GuestListScreen = (params) => {
                             style={{
                                 ...globalStyles.heading1,
                                 fontFamily: "Bukhari Script",
-                                padding: 10,
+                                padding: 10, textAlign: "center"
                             }}
                         >
                             {event.name}
@@ -203,8 +203,8 @@ const GuestListScreen = (params) => {
                             style={{
                                 justifyContent: "center",
                                 alignItems: "center",
-                                height: 80,
-                                width: 80,
+                                height: 100,
+                                width: 100,
                                 borderRadius: 80,
                                 margin: 10,
                                 backgroundColor: "black",
@@ -219,15 +219,15 @@ const GuestListScreen = (params) => {
                                 }}
                                 onPress={getGuests}
                             >
-                                All invitees
+                                All{"\n"}invitees
                             </Text>
                         </View>
                         <View
                             style={{
                                 justifyContent: "center",
                                 alignItems: "center",
-                                height: 80,
-                                width: 80,
+                                height: 100,
+                                width: 100,
                                 borderRadius: 80,
                                 margin: 10,
                                 backgroundColor: "#38b6ff",
@@ -242,15 +242,15 @@ const GuestListScreen = (params) => {
                                 }}
                                 onPress={showAttending}
                             >
-                                Will be there
+                                Will{"\n"}be there
                             </Text>
                         </View>
                         <View
                             style={{
                                 justifyContent: "center",
                                 alignItems: "center",
-                                height: 80,
-                                width: 80,
+                                height: 100,
+                                width: 100,
                                 borderRadius: 80,
                                 margin: 10,
                                 backgroundColor: "#cb6ce6",
@@ -265,7 +265,7 @@ const GuestListScreen = (params) => {
                                 }}
                                 onPress={showNotAttending}
                             >
-                                Can't make it
+                                Can't{"\n"}make it
                             </Text>
                         </View>
                         {/* <View

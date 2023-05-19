@@ -472,7 +472,7 @@ const SingleEvent = (params) => {
                             event_id: event.event_id,
                             eventMessages: event.messages,
                             name: event.name,
-                            user_id: params.route.params.uid,
+                            uid: params.route.params.uid,
                         })
                     }
                 >

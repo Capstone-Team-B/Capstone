@@ -9,6 +9,8 @@ import {
     TextInput,
     TouchableOpacity,
     View,
+    FlatList,
+    SafeAreaView,
 } from "react-native";
 import {
     getDatabase,
@@ -22,9 +24,10 @@ import {
     orderByKey,
 } from "firebase/database";
 import globalStyles from "../../utils/globalStyles";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const MessageboardScreen = (params) => {
-    // console.log("params", params.route.params);
+    const uid = params.route.params.uid;
     const [event_id, setEvent_id] = useState(
         params.route.params.event_id || ""
     );
@@ -136,54 +139,97 @@ const MessageboardScreen = (params) => {
     };
 
     return (
-        <KeyboardAvoidingView style={globalStyles.container} behavior="padding">
-            <Text style={styles.eventLabel}>Messages for {eventName}</Text>
-            <View style={{}}>
-                {messages.map((message) => (
-                    <View key={message.id} style={{ margin: 10 }}>
-                        <Text
+        <KeyboardAvoidingView style={{...globalStyles.container, padding: 0}} behavior="height">
+            <View style={{padding: 20, alignItems: "center", justifyContent: "center"}}>
+
+            <Text style={{...globalStyles.heading2, textAlign: "center"}}>Messages for</Text><Text style={{...globalStyles.heading1, fontFamily: "Bukhari Script", textAlign: "center", padding: 5}}>{eventName}</Text>
+            </View>
+            <SafeAreaView style={{ flex: 1 }}>
+                <FlatList
+                    data={messages}
+                    keyExtractor={(message) => message.id}
+                    renderItem={({ item }) => (
+                        <View
                             style={{
-                                ...globalStyles.heading3,
-                                marginBottom: 3,
-                                marginTop: 3,
+                                margin: 10,
+                                padding: 10,
+                                borderRadius: 10,
+                                borderColor:
+                                    uid === item.sender_id
+                                        ? "#38b6ff"
+                                        : "#cb6cd6",
+                                borderWidth: 2,
+                                justifyContent:
+                                    uid === item.sender_id
+                                        ? "flex-end"
+                                        : "flex-start",
+                                alignItems:
+                                    uid === item.sender_id
+                                        ? "flex-end"
+                                        : "flex-start",
                             }}
                         >
-                            {message.content}
-                        </Text>
-                        <Text
-                            style={{
-                                ...globalStyles.paragraph,
-                                fontStyle: "italic",
-                            }}
-                        >
-                            posted by{message.senderName}
-                            {"\n"}
-                            {new Date(message.dateTimeStamp).toLocaleString("en",
-                                {
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric",
-                                    hour: "numeric",
-                                    minute: "numeric",
-                                    hour12: true,
-                                }
-                            )}
-                        </Text>
-                    </View>
-                ))}
+                            <Text
+                                style={{
+                                    ...globalStyles.heading3,
+                                    textAlign:
+                                        uid === item.sender_id
+                                            ? "right"
+                                            : "left",
+                                }}
+                            >
+                                {item.content}
+                            </Text>
+                            <Text
+                                style={{
+                                    ...globalStyles.paragraph,
+                                    fontStyle: "italic",
+                                    marginTop: 5,
+                                    textAlign:
+                                        uid === item.sender_id
+                                            ? "right"
+                                            : "left",
+                                }}
+                            >
+                                posted by {item.senderName}
+                                {"\n"}
+                                {new Date(item.dateTimeStamp).toLocaleString(
+                                    "en",
+                                    {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                        hour: "numeric",
+                                        minute: "numeric",
+                                        hour12: true,
+                                    }
+                                )}
+                            </Text>
+                        </View>
+                    )}
+                />
+            </SafeAreaView>
+            <SafeAreaView style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", height: 100, backgroundColor: "#38b6ff" }}>
                 <TextInput
                     placeholder="Write here"
-                    style={globalStyles.input}
+                    style={{...globalStyles.input, backgroundColor: "white", margin: 15, flex: 1}}
                     value={newMessage}
                     onChangeText={(text) => setNewMessage(text)}
                 />
-                <TouchableOpacity
-                    onPress={handleSubmitMessage}
-                    style={globalStyles.button}
-                >
-                    <Text>Add Your Message</Text>
+                <TouchableOpacity onPress={handleSubmitMessage}>
+                    <View
+                        style={{
+                            backgroundColor: "#38b6ff", width: 50, height: 50, borderRadius: 50, justifyContent: "center", alignItems: "center", margin: 15, borderWidth: 2, borderColor: "white"
+                        }}
+                    >
+                        <Ionicons
+                            name="send-outline"
+                            size={25}
+                            color="white"
+                        />
+                    </View>
                 </TouchableOpacity>
-            </View>
+            </SafeAreaView>
         </KeyboardAvoidingView>
     );
 };

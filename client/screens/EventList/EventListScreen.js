@@ -67,7 +67,6 @@ const EventListScreen = (props) => {
         
     // FUNCTIONS
     const getEvents = async (eventIdArray) => {
-        console.log("eventIdArray ==> ", eventIdArray);
         let events = [];
         for (let i = 0; i < eventIdArray.length; i++) {
             try {
@@ -75,8 +74,6 @@ const EventListScreen = (props) => {
                     child(dbRef, `events/${eventIdArray[i]}`)
                 );
                 await get(eventsQuery).then((eventSnapshot) => {
-                    console.log("eventsQuery", eventsQuery);
-                    console.log("eventSnapshot", eventSnapshot);
                     if (eventSnapshot.exists()) {
                         const data = eventSnapshot.val();
                         events = [...events, data];
