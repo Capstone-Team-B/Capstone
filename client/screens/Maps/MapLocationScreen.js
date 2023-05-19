@@ -24,6 +24,9 @@ import MapView, { Callout, Marker } from "react-native-maps";
 import { useAtom } from "jotai";
 import { user as userStore } from "../../store/user";
 import globalStyles from "../../utils/globalStyles";
+import EmptyState from "../../Components/EmptyState/Index";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import Toast from "react-native-root-toast";
 
 const MapLocationScreen = (params) => {
     const eventHost = params.route.params.eventHost;
@@ -35,7 +38,7 @@ const MapLocationScreen = (params) => {
     const [dataInfo, setDataInfo] = useState({
         address: "",
     });
-
+    const [hiddenForm, setHiddenForm] = useState(false);
     const [mapRegion, setmapRegion] = useState(null);
 
     const colors = [
@@ -134,17 +137,30 @@ const MapLocationScreen = (params) => {
                     Keyboard.dismiss();
                 });
             })
-            .catch((error) => console.log("error", error));
+            .catch((error) => {
+                console.log("error", error);
+                Keyboard.dismiss();
+                Toast.show("Check Address Arreglar en clase", {
+                    duration: Toast.durations.LONG,
+                    position: Toast.positions.TOP,
+                    shadow: true,
+                    animation: true,
+                    hideOnPress: true,
+                    delay: 0,
+                });
+            });
+    };
+    const toggleHiddenForm = () => {
+        setHiddenForm(!hiddenForm);
     };
     return (
         <KeyboardAvoidingView style={globalStyles.container}>
-            {eventHost === storeUser.uid && (
+            {eventHost === storeUser.uid && !hiddenForm && (
                 <View>
                     <View>
                         <Text
                             style={{
-                                ...globalStyles.paragraph,
-                                marginBottom: 12,
+                                ...globalStyles.labelInput,
                             }}
                         >
                             Name
@@ -164,8 +180,7 @@ const MapLocationScreen = (params) => {
                     <View>
                         <Text
                             style={{
-                                ...globalStyles.paragraph,
-                                marginBottom: 12,
+                                ...globalStyles.labelInput,
                             }}
                         >
                             Address
@@ -186,8 +201,7 @@ const MapLocationScreen = (params) => {
                     <View>
                         <Text
                             style={{
-                                ...globalStyles.paragraph,
-                                marginBottom: 12,
+                                ...globalStyles.labelInput,
                             }}
                         >
                             Label
@@ -207,13 +221,40 @@ const MapLocationScreen = (params) => {
                     </View>
 
                     <View
-                        style={{ paddingVertical: 10, paddingHorizontal: 10 }}
+                        style={{
+                            paddingVertical: 10,
+                            paddingHorizontal: 10,
+                        }}
                     >
                         <Button title="Save" onPress={handleSave}></Button>
                     </View>
                 </View>
             )}
-
+            {locations.length > 0 && (
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    {!hiddenForm ? (
+                        <>
+                            <Ionicons
+                                onPress={toggleHiddenForm}
+                                name={"chevron-up"}
+                                size={50}
+                                color={"black"}
+                            />
+                            <Text>Hide</Text>
+                        </>
+                    ) : (
+                        <>
+                            <Ionicons
+                                onPress={toggleHiddenForm}
+                                name={"chevron-down"}
+                                size={50}
+                                color={"black"}
+                            />
+                            <Text>Add Event </Text>
+                        </>
+                    )}
+                </View>
+            )}
             <View style={{ flex: 1 }}>
                 {locations.length > 0 ? (
                     <MapView
@@ -243,7 +284,12 @@ const MapLocationScreen = (params) => {
                         ))}
                     </MapView>
                 ) : (
-                    <Text>Not events</Text>
+                    <EmptyState
+                        nameIcon="calendar-outline"
+                        title="Not Events Avaliable"
+                        subtitle="The host for this event has not pinned any locations for your event"
+                        iconColor={"pink"}
+                    />
                 )}
             </View>
         </KeyboardAvoidingView>
@@ -254,9 +300,6 @@ export default MapLocationScreen;
 
 const styles = StyleSheet.create({
     container: {
-        // ...StyleSheet.absoluteFillObject,
-        // justifyContent: "flex-end",
-        // alignItems: "center",
         flex: 1,
         height: "100%",
     },

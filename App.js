@@ -9,6 +9,7 @@ import { Video } from "expo-av";
 import { useFonts } from "expo-font";
 import CheckAccountScreen from "./client/screens/MyAccount/CheckAccountScreen";
 import CreateAccountScreen from "./client/screens/MyAccount/CreateAccountScreen";
+import { RootSiblingParent } from "react-native-root-siblings";
 
 const Stack = createNativeStackNavigator();
 
@@ -43,34 +44,37 @@ export default function App() {
     }
 
     return (
-        <View style={styles.container}>
-            <StatusBar />
-            <NavigationContainer>
-                <Stack.Navigator initialRouteName="LoginScreen">
-                    <Stack.Screen
-                        name="LoginScreen"
-                        component={LoginScreen}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                        name="TabNav"
-                        component={TabNavigator}
-                        options={{ headerShown: false }}
-                    />
-                    {/* ENH added in checkaccount and create account screen */}
-                    <Stack.Screen
-                        name="CheckAccountScreen"
-                        component={CheckAccountScreen}
+        <RootSiblingParent>
+            <View style={styles.container}>
+                <StatusBar />
+                <NavigationContainer>
+                    <Stack.Navigator initialRouteName="LoginScreen">
+                        <Stack.Screen
+                            name="LoginScreen"
+                            component={LoginScreen}
+                            options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                            name="TabNav"
+                            component={TabNavigator}
+                            options={{ headerShown: false }}
+                        />
+                        {/* ENH added in checkaccount and create account screen */}
+                        <Stack.Screen
+                            name="CheckAccountScreen"
+                            component={CheckAccountScreen}
                         options={{ title: "Already Signed Up?" }}
-                    />
-                    <Stack.Screen
-                        name="CreateAccountScreen"
-                        component={CreateAccountScreen}
-                        options={{ title: "Create New Account" }}
-                    />
-                </Stack.Navigator>
-            </NavigationContainer>
-        </View>
+
+                        />
+                        <Stack.Screen
+                            name="CreateAccountScreen"
+                            component={CreateAccountScreen}
+      options={{ title: "Create New Account" }}
+                        />
+                    </Stack.Navigator>
+                </NavigationContainer>
+            </View>
+        </RootSiblingParent>
     );
 }
 

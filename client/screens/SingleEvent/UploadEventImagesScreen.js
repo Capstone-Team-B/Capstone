@@ -109,6 +109,7 @@ const UploadEventImagesScreen = (params) => {
                             ...globalStyles.button,
                             backgroundColor: "#cb6ce6",
                         }}
+                        onPress={uploadImages}
                     >
                         <Ionicons
                             name="cloud-upload-outline"
@@ -207,27 +208,3 @@ export default UploadEventImagesScreen;
 
 const styles = StyleSheet.create({});
 
-// BELOW CODE WORKS FOR UPLOADING A SINGLE IMAGE
-// const uploadImages = async () => {
-//     setUploading(true);
-
-//     const storage = getStorage();
-//     const filename = images[0].substring(
-//         images[0].lastIndexOf("/") + 1
-//     );
-//     const imageRef = ref(
-//         storage,
-//         `event_${event.event_id}/${filename}_${uid}`
-//     );
-//     const response = await fetch(images[0]);
-//     const blob = await response.blob();
-
-//     try {
-//         await uploadBytes(imageRef, blob, metadata);
-//     } catch (error) {
-//         console.log(error);
-//     }
-
-//     setUploading(false);
-//     setImages([]);
-// };

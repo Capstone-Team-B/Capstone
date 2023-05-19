@@ -27,6 +27,11 @@ export default StyleSheet.create({
     paragraph: {
         fontSize: 15,
     },
+    labelInput: {
+        fontSize: 13,
+        marginBottom: 5,
+        marginTop:10,
+    },
     inputLabel: {
         fontSize: 15,
         marginBottom: 12,
