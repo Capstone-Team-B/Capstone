@@ -22,8 +22,8 @@ import {
     orderByChild,
     equalTo,
 } from "firebase/database";
-import { Platform, PermissionsAndroid, Linking } from "react-native";
-import * as SMS from "expo-sms";
+// import { Platform, PermissionsAndroid, Linking } from "react-native";
+// import * as SMS from "expo-sms";
 
 const CreateGuestList = (params) => {
     const [guestList, setGuestList] = useState([]);
@@ -56,61 +56,61 @@ const CreateGuestList = (params) => {
         setGuestList(newGuestList);
     };
 
-    const initiateSMS = async (guestPhone) => {
-        try {
-            if (Platform.OS === "android") {
-                console.log(Platform.OS, "permission granted? ---->", permission === PermissionsAndroid.RESULTS.GRANTED)
-                const permission = await PermissionsAndroid.request(
-                    PermissionsAndroid.PERMISSIONS.SEND_SMS
-                    );
-                if (permission === PermissionsAndroid.RESULTS.GRANTED) {
-                    SmsManager.sendMessageWithoutThreadID(
-                        guestPhone,
-                        bodySMS,
-                        null,
-                        null
-                    );
-                    console.log(`SMS sent successfully to ${guestPhone}`);
-                } else if (permission === PermissionsAndroid.RESULTS.DENIED) {
-                    console.log('Permission to send SMS denied');
-                    return false;
-                } else if (permission === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-                    console.log('Permission to send SMS permanently denied');
-                    return false;
-                } else {
-                    console.log('Permission request failed');
-                    return false;
-                }
-            } else if (Platform.OS === "ios") {
-                Alert.alert(
-                    "iOS devices do not allow BeThere to send bulk SMS messages on your behalf. Please add your guests one at a time to send SMS invites to each guest."
-                );
-                const canSendText = await SMS.isAvailableAsync();
-                if (canSendText) {
-                    const url = `sms:${guestPhone}&body=${encodeURIComponent(
-                        bodySMS
-                    )}`;
-                    Linking.openURL(url).catch((error) => {
-                        console.log(
-                            `Failed to open SMS app for ${guestPhone}:`,
-                            error
-                        );
-                    });
-                } else {
-                    console.log("SMS service is not available on this device");
-                }
-            } else {
-                console.log(
-                    "Sending SMS automatically is not supported on this platform"
-                );
-            }
-        } catch (error) {
-            console.log(
-                `Error occurred when sending SMS to ${guestPhone}:`,
-                error
-            );
-        }
-    };
+    // const initiateSMS = async (guestPhone) => {
+    //     try {
+    //         if (Platform.OS === "android") {
+    //             console.log(Platform.OS, "permission granted? ---->", permission === PermissionsAndroid.RESULTS.GRANTED)
+    //             const permission = await PermissionsAndroid.request(
+    //                 PermissionsAndroid.PERMISSIONS.SEND_SMS
+    //                 );
+    //             if (permission === PermissionsAndroid.RESULTS.GRANTED) {
+    //                 SmsManager.sendMessageWithoutThreadID(
+    //                     guestPhone,
+    //                     bodySMS,
+    //                     null,
+    //                     null
+    //                 );
+    //                 console.log(`SMS sent successfully to ${guestPhone}`);
+    //             } else if (permission === PermissionsAndroid.RESULTS.DENIED) {
+    //                 console.log('Permission to send SMS denied');
+    //                 return false;
+    //             } else if (permission === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+    //                 console.log('Permission to send SMS permanently denied');
+    //                 return false;
+    //             } else {
+    //                 console.log('Permission request failed');
+    //                 return false;
+    //             }
+    //         } else if (Platform.OS === "ios") {
+    //             Alert.alert(
+    //                 "iOS devices do not allow BeThere to send bulk SMS messages on your behalf. Please add your guests one at a time to send SMS invites to each guest."
+    //             );
+    //             const canSendText = await SMS.isAvailableAsync();
+    //             if (canSendText) {
+    //                 const url = `sms:${guestPhone}&body=${encodeURIComponent(
+    //                     bodySMS
+    //                 )}`;
+    //                 Linking.openURL(url).catch((error) => {
+    //                     console.log(
+    //                         `Failed to open SMS app for ${guestPhone}:`,
+    //                         error
+    //                     );
+    //                 });
+    //             } else {
+    //                 console.log("SMS service is not available on this device");
+    //             }
+    //         } else {
+    //             console.log(
+    //                 "Sending SMS automatically is not supported on this platform"
+    //             );
+    //         }
+    //     } catch (error) {
+    //         console.log(
+    //             `Error occurred when sending SMS to ${guestPhone}:`,
+    //             error
+    //         );
+    //     }
+    // };
 
     const handleSubmit = async () => {
         for (const guest of guestList) {
@@ -206,7 +206,7 @@ const CreateGuestList = (params) => {
                         attending: false,
                     });
                 }
-                await initiateSMS(guestPhone.replace(/\D/g, ""));
+                // await initiateSMS(guestPhone.replace(/\D/g, ""));
             } catch (error) {
                 console.log("Error:", error);
                 Alert.alert("Something went wrong, please try again.");
