@@ -8,6 +8,8 @@ import {
     TextInput,
     TouchableOpacity,
     Alert,
+    ImageBackground,
+    Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import {
@@ -19,6 +21,9 @@ import {
     orderByChild,
     equalTo,
 } from "firebase/database";
+const BeThereLogoExpanded = require("../../../assets/BeThereExpanded.png");
+const Background = require("../../../assets/Background.png");
+import globalStyles from "../../utils/globalStyles";
 
 const CheckAccountScreen = (props) => {
     console.log("props are -->", props.route.params);
@@ -121,17 +126,31 @@ const CheckAccountScreen = (props) => {
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="height">
-            <ScrollView style={styles.container}>
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>
-                        Checking for Account
-                    </Text>
+            <ImageBackground
+                source={Background}
+                resizeMode="cover"
+                style={{
+                    flex: 1,
+                    width: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
+                <Text style={globalStyles.heading1}>Checking for Account</Text>
+                <View style={styles.inputContainer}>
+                    <Image
+                        source={BeThereLogoExpanded}
+                        style={{ height: 200, width: 200, alignSelf: "center" }}
+                    />
+
+                    {/* <Text style={globalStyles.heading3}>Email: </Text> */}
                     <TextInput
                         style={styles.input}
                         placeholder="Email"
                         value={email}
                         onChangeText={setEmail}
                     />
+                    {/* <Text style={globalStyles.heading3}>Phone number: </Text> */}
                     <TextInput
                         style={styles.input}
                         placeholder="Phone Number"
@@ -146,25 +165,23 @@ const CheckAccountScreen = (props) => {
                         }
                     />
                 </View>
-                <View>
+                <View style={styles.buttonContainer}>
                     <TouchableOpacity
-                        style={styles.submitButton}
+                        style={styles.button}
                         onPress={handleSubmit}
                         required={true}
                     >
-                        <Text style={styles.submitButtonText}>
-                            Check for Account
-                        </Text>
+                        <Text style={styles.buttonText}>Check for Account</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={styles.submitButton}
+                        style={[styles.button, styles.buttonOutline]}
                         onPress={handleSkip}
                         required={true}
                     >
                         <Text style={styles.submitButtonText}>Skip</Text>
                     </TouchableOpacity>
                 </View>
-            </ScrollView>
+            </ImageBackground>
         </KeyboardAvoidingView>
     );
 };
@@ -172,7 +189,9 @@ const CheckAccountScreen = (props) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
+    },
+    inputContainer: {
+        width: "80%",
     },
     section: {
         marginBottom: 20,
@@ -183,67 +202,68 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     input: {
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 5,
-        padding: 10,
-        marginBottom: 10,
-    },
-    addButton: {
-        backgroundColor: "#007bff",
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    addButtonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    deleteButton: {
         backgroundColor: "white",
-        borderColor: "#dc3545",
-        borderWidth: 2,
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        borderRadius: 10,
+        marginTop: 5,
     },
-    deleteButtonText: {
-        color: "#dc3545",
-        fontSize: 14,
-        fontWeight: "bold",
-    },
-    outlineButton: {
-        backgroundColor: "white",
-        borderColor: "#007bff",
-        borderWidth: 2,
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    outlineButtonText: {
-        color: "#007bff",
-        fontSize: 14,
-        fontWeight: "bold",
-    },
+
     submitButton: {
-        backgroundColor: "#2E8B57",
-        borderRadius: 5,
-        padding: 10,
+        width: "60%",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 40,
+        // backgroundColor: "#2E8B57",
+        // borderRadius: 5,
+        // padding: 10,
         alignItems: "center",
         justifyContent: "center",
-        marginBottom: 10,
+        // marginBottom: 10,
     },
     submitButtonText: {
         color: "#fff",
         fontSize: 16,
         fontWeight: "bold",
+    },
+    container: {
+        flex: 1,
+        // justifyContent: "center",
+        // alignItems: "center",
+    },
+    inputContainer: {
+        width: "80%",
+    },
+
+    buttonContainer: {
+        width: "60%",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 40,
+    },
+    button: {
+        backgroundColor: "#cb6ce6",
+        width: "100%",
+        padding: 15,
+        margin: 10,
+        borderRadius: 10,
+        alignItems: "center",
+    },
+    buttonOutline: {
+        backgroundColor: "transparent",
+        marginTop: 5,
+        borderColor: "white",
+        borderWidth: 2,
+    },
+    buttonText: {
+        color: "white",
+        fontWeight: "700",
+        fontSize: 16,
+    },
+    buttonOutlineText: {
+        color: "white",
+        fontWeight: "700",
+        fontSize: 16,
     },
 });
 
