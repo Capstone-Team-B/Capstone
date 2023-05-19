@@ -244,8 +244,9 @@ const EventGallery = (params) => {
                             }
                         >
                             <Text style={globalStyles.heading3}>
-                                Add your photos {countPhotos}
-                            </Text>
+                                Add your photos
+                            </Text> 
+                            {/* !!!!!! style this button - add an icon? */}
                         </TouchableOpacity>
                     )}
                     {isSearchText && (

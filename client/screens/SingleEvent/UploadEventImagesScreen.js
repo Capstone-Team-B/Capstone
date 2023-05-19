@@ -54,6 +54,9 @@ const UploadEventImagesScreen = (params) => {
             }
         }
         getUserId()
+    }, []);
+
+    useEffect(() => {
         (async () => {
             const galleryStatus =
                 await ImagePicker.requestMediaLibraryPermissionsAsync();

@@ -12,7 +12,6 @@ import CreateAccountScreen from "../screens/MyAccount/CreateAccountScreen";
 const Stack = createNativeStackNavigator();
 
 const MyAccountNavigator = (props) => {
-    const { uid } = props.route.params;
 
     return (
         <Stack.Navigator initialRouteName="MyAccountScreen">
@@ -44,7 +43,6 @@ const MyAccountNavigator = (props) => {
             <Stack.Screen
                 name="CreateAccountScreen"
                 component={CreateAccountScreen}
-                initialParams={{ uid: uid }}
                 options={{ title: "Create Account", headerTitleStyle: globalStyles.screenHeader}}
             />
         </Stack.Navigator>

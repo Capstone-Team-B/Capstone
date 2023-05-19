@@ -7,6 +7,7 @@ import {
     KeyboardAvoidingView,
     Button,
     Keyboard,
+    Alert
 } from "react-native";
 import {
     getDatabase,
@@ -140,14 +141,7 @@ const MapLocationScreen = (params) => {
             .catch((error) => {
                 console.log("error", error);
                 Keyboard.dismiss();
-                Toast.show("Check Address Arreglar en clase", {
-                    duration: Toast.durations.LONG,
-                    position: Toast.positions.TOP,
-                    shadow: true,
-                    animation: true,
-                    hideOnPress: true,
-                    delay: 0,
-                });
+                Alert.alert("Please enter a valid address (123 Street, City, State, Zipcode)");                
             });
     };
     const toggleHiddenForm = () => {
@@ -250,7 +244,7 @@ const MapLocationScreen = (params) => {
                                 size={50}
                                 color={"black"}
                             />
-                            <Text>Add Event </Text>
+                            <Text>Add Event Locations</Text>
                         </>
                     )}
                 </View>
@@ -286,9 +280,9 @@ const MapLocationScreen = (params) => {
                 ) : (
                     <EmptyState
                         nameIcon="calendar-outline"
-                        title="Not Events Avaliable"
+                        title="No Event Locations Avaliable"
                         subtitle="The host for this event has not pinned any locations for your event"
-                        iconColor={"pink"}
+                        iconColor={"#cb6ce6"}
                     />
                 )}
             </View>

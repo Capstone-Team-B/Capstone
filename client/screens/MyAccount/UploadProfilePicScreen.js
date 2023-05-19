@@ -32,9 +32,17 @@ const UploadProfilePicScreen = (props) => {
     const navigation = useNavigation();
 
     useEffect(() => {
+        (async () => {
+            const galleryStatus =
+                await ImagePicker.requestMediaLibraryPermissionsAsync();
+            setHasGalleryPermission(galleryStatus.status === "granted");
+        })();
+    }, []);
+
+    useEffect(() => {
         const getUserId = async () => {
             const currentUserId = auth.currentUser.uid
-            const dbRef = ref(getDatabase());
+            const dbRef = refDB(getDatabase());
             const usersQuery = query(
                 child(dbRef, 'users'),
                 orderByChild('auth_id'),
@@ -48,11 +56,6 @@ const UploadProfilePicScreen = (props) => {
             }
         }
         getUserId()
-        (async () => {
-            const galleryStatus =
-                await ImagePicker.requestMediaLibraryPermissionsAsync();
-            setHasGalleryPermission(galleryStatus.status === "granted");
-        })();
     }, []);
 
     const pickImage = async () => {
