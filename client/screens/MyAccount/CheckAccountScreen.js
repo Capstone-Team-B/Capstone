@@ -89,8 +89,11 @@ const CheckAccountScreen = (props) => {
                             if (snapshot.exists()) {
                                 const userRef = snapshot.val();
                                 const uid = Object.keys(userRef)[0];
+                                Alert.alert(
+                                    "Your Host made an account. Let's update it."
+                                );
                                 navigation.navigate("CreateAccountScreen", {
-                                    uid: uid || "",
+                                    uid: uid,
                                 });
                             } else {
                                 console.log("No email found");

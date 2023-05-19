@@ -102,9 +102,7 @@ const EditAccountScreen = (props) => {
                         </Text>
                         <Text
                             style={{
-                                ...globalStyles.paragraph,
-                                marginBottom: 12,
-                                marginLeft: 8,
+                                ...globalStyles.inputLabel,
                             }}
                         >
                             First name:
@@ -120,9 +118,7 @@ const EditAccountScreen = (props) => {
                         />
                         <Text
                             style={{
-                                ...globalStyles.paragraph,
-                                marginBottom: 12,
-                                marginLeft: 8,
+                                ...globalStyles.inputLabel,
                             }}
                         >
                             Last name:
@@ -138,9 +134,7 @@ const EditAccountScreen = (props) => {
                         />
                         <Text
                             style={{
-                                ...globalStyles.paragraph,
-                                marginBottom: 12,
-                                marginLeft: 8,
+                                ...globalStyles.inputLabel,
                             }}
                         >
                             Email:
@@ -156,9 +150,7 @@ const EditAccountScreen = (props) => {
                         />
                         <Text
                             style={{
-                                ...globalStyles.paragraph,
-                                marginBottom: 12,
-                                marginLeft: 8,
+                                ...globalStyles.inputLabel,
                             }}
                         >
                             Phone:
@@ -174,9 +166,7 @@ const EditAccountScreen = (props) => {
                         />
                         <Text
                             style={{
-                                ...globalStyles.paragraph,
-                                marginBottom: 12,
-                                marginLeft: 8,
+                                ...globalStyles.inputLabel,
                             }}
                         >
                             Address:
