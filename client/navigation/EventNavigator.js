@@ -19,6 +19,7 @@ import EventGallery from "../screens/SingleEvent/EventGallery";
 import SinglePhoto from "../screens/SingleEvent/SinglePhoto";
 import globalStyles from "../utils/globalStyles";
 import EditNotification from "../screens/Notifications/EditNotification";
+import UploadCoverPhotoScreen from "../screens/NewEvent/UploadCoverPhotoScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -82,6 +83,11 @@ const EventNavigator = (props) => {
                 name="Create Event"
                 component={CreateEventForm}
                 options={{ headerTitleStyle: globalStyles.screenHeader }}
+            />
+            <Stack.Screen
+                name="UploadCoverPhotoScreen"
+                component={UploadCoverPhotoScreen}
+                options={{ title: "Upload Event Cover Photo", headerTitleStyle: globalStyles.screenHeader }}
             />
             <Stack.Screen
                 name="Create Sub Event"

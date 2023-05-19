@@ -10,10 +10,15 @@ import {
     Alert,
     SafeAreaView,
     Button,
+    Image,
+    ImageBackground,
 } from "react-native";
 import { auth } from "../../../firebase";
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, update, set, child, get } from "firebase/database";
+import globalStyles from "../../utils/globalStyles";
+const Background = require("../../../assets/Background.png");
+
 const dbRef = ref(getDatabase());
 
 const CreateAccountScreen = (props) => {
@@ -36,7 +41,14 @@ const CreateAccountScreen = (props) => {
     }, [props]);
 
     const [user, setUser] = useState({});
-    const [password, setPassword] = useState("");
+
+    //testing elements
+    const [password, setPassword] = useState("pwpwpwpw" || "");
+    const [confirmPassword, setConfirmPassword] = useState("pwpwpwpw" || "");
+
+    // const [password, setPassword] = useState("");
+    // const [confirmPassword, setConfirmPassword] = useState("");
+
     const [firstName, setFirstName] = useState(user.firstName || "");
     const [lastName, setLastName] = useState(user.lastName || "");
     const [email, setEmail] = useState(user.email || "");
@@ -61,10 +73,22 @@ const CreateAccountScreen = (props) => {
     }, [user]);
 
     const navigation = useNavigation();
+    let errorFlag = false;
+
+    const isConfirmedPassword = () => {
+        if (password !== confirmPassword) {
+            errorFlag = true;
+            Alert.alert({
+                message: "Password and confirm password should be same.",
+            });
+        }
+    };
 
     const handleSubmit = async () => {
         const uid = props.route.params.uid;
         // Check that Form was filled out with name and email
+        isConfirmedPassword();
+        console.log(errorFlag);
         if (firstName === "" || lastName === "" || email === "") {
             Alert.alert("Please provide your name and a contact method");
             return;
@@ -134,7 +158,9 @@ const CreateAccountScreen = (props) => {
                     const newUserRef = child(dbRef, `users/${auth_id}`);
                     console.log(newUserRef);
                     set(newUserRef, newUser).then(() =>
-                        navigation.navigate("MyAccountScreen", {uid: newUser.user_id})
+                        navigation.navigate("MyAccountScreen", {
+                            uid: newUser.user_id,
+                        })
                     );
                 }
             );
@@ -142,72 +168,87 @@ const CreateAccountScreen = (props) => {
     };
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior="height">
-            <ScrollView style={styles.container}>
+        <KeyboardAvoidingView
+            style={{
+                flex: 1,
+                backgroundColor: "#fff",
+                justifyContent: "center",
+            }}
+            behavior="height"
+        >
+            <ImageBackground
+                source={Background}
+                resizeMode="cover"
+                style={{
+                    flex: 1,
+                    width: "100%",
+                }}
+            ></ImageBackground>
+            <ScrollView>
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Account Details</Text>
+                    <Text
+                        style={{
+                            ...globalStyles.heading2,
+                            marginBottom: 20,
+                            textAlign: "center",
+                        }}
+                    >
+                        Create a Password
+                    </Text>
                     <TextInput
                         placeholder="Password"
                         value={password}
                         onChangeText={(text) => setPassword(text)}
-                        style={styles.input}
+                        style={globalStyles.inputAccount}
                         secureTextEntry
                     />
                     <TextInput
-                        style={styles.input}
+                        placeholder="Confirm Password"
+                        value={confirmPassword}
+                        onChangeText={(text) => setConfirmPassword(text)}
+                        style={globalStyles.inputAccount}
+                        secureTextEntry
+                    />
+                    <Text
+                        style={{
+                            ...globalStyles.heading2,
+                            margin: 20,
+                            textAlign: "center",
+                        }}
+                    >
+                        Account Details
+                    </Text>
+
+                    <TextInput
+                        style={globalStyles.inputAccount}
                         placeholder={"First Name"}
                         value={firstName}
                         onChangeText={setFirstName}
                     />
                     <TextInput
-                        style={styles.input}
+                        style={globalStyles.inputAccount}
                         placeholder="Last Name"
                         value={lastName}
                         onChangeText={setLastName}
                     />
                     <TextInput
-                        style={styles.input}
+                        style={globalStyles.inputAccount}
                         placeholder="Email"
                         value={email}
                         onChangeText={setEmail}
                     />
                     <TextInput
-                        style={styles.input}
+                        style={globalStyles.inputAccount}
                         placeholder="Phone Number"
                         value={phoneNumber}
                         onChangeText={setPhoneNumber}
                     />
                     <TextInput
-                        style={styles.input}
+                        style={globalStyles.inputAccount}
                         placeholder="Home City"
                         value={homeCity}
                         onChangeText={setHomeCity}
                     />
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>
-                            Edit Guest Preferences
-                        </Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Dietary"
-                            value={dietary}
-                            onChangeText={setDietary}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Accessibility"
-                            value={accessibility}
-                            onChangeText={setAccessibility}
-                        />
-                    </View>
-                    <SafeAreaView>
-                        <Button
-                            title="Upload Profile Picture"
-                            onPress={() =>
-                                navigation.navigate("UploadProfilePicScreen")
-                            }
-                        />
-                    </SafeAreaView>
                 </View>
                 <View>
                     <TouchableOpacity
@@ -231,20 +272,15 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     section: {
-        marginBottom: 20,
+        margin: 12,
     },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: "bold",
-        marginBottom: 10,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 5,
-        padding: 10,
-        marginBottom: 10,
-    },
+    // input: {
+    //     borderWidth: 1,
+    //     borderColor: "#ccc",
+    //     borderRadius: 5,
+    //     padding: 10,
+    //     marginBottom: 10,
+    // },
     addButton: {
         backgroundColor: "#007bff",
         borderRadius: 5,

@@ -63,10 +63,13 @@ export default function App() {
                         <Stack.Screen
                             name="CheckAccountScreen"
                             component={CheckAccountScreen}
+                        options={{ title: "Already Signed Up?" }}
+
                         />
                         <Stack.Screen
                             name="CreateAccountScreen"
                             component={CreateAccountScreen}
+      options={{ title: "Create New Account" }}
                         />
                     </Stack.Navigator>
                 </NavigationContainer>

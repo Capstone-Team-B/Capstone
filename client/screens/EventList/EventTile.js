@@ -46,7 +46,6 @@ const EventTile = ({ event, uid }) => {
                                     <Text style={globalStyles.heading2}>
                                         {eventData.name}
                                     </Text>
-                                    <Ionicons name="star-outline" size={25} />
                                 </View>
                                 <Text style={globalStyles.heading3}>
                                     {new Date(

@@ -2,10 +2,9 @@ import {
     StyleSheet,
     Text,
     SafeAreaView,
-    Button,
     Image,
     TouchableOpacity,
-    View,
+    View, Dimensions
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
@@ -13,18 +12,20 @@ import globalStyles from "../../utils/globalStyles";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {
     getStorage,
-    uploadBytes,
     uploadBytesResumable,
     getDownloadURL,
-    metadata,
     ref,
     push,
 } from "firebase/storage";
 import { getDatabase, ref as refDB, update } from "firebase/database";
 import { useNavigation } from "@react-navigation/core";
 
-const UploadProfilePicScreen = (props) => {
-    const uid = props.route.params.uid;
+const screenWidth = Dimensions.get("window").width;
+
+
+const UploadCoverPhotoScreen = (params) => {
+    const event = params.route.params.event
+    console.log("event -->", event)
     const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
     const [image, setImage] = useState(null);
     const [uploading, setUploading] = useState(false);
@@ -43,7 +44,7 @@ const UploadProfilePicScreen = (props) => {
             let result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
                 allowsEditing: true,
-                aspect: [1, 1],
+                aspect: [3, 4],
                 quality: 0.2,
             });
             console.log(result);
@@ -58,17 +59,17 @@ const UploadProfilePicScreen = (props) => {
         }
     };
 
-    const uploadProfilePic = async () => {
+    const uploadCoverPhoto = async () => {
         // upload the picture to storage
         const storage = getStorage();
-        const imageRef = ref(storage, `profilePic/user_${uid}`);
+        const imageRef = ref(storage, `coverPhoto/event_${event.event_id}`);
         const img = await fetch(image);
         // console.log("img -->", img);
         const blob = await img.blob();
         const uploadPromise = uploadBytesResumable(imageRef, blob);
         try {
             await push(uploadPromise);
-            console.log("profile picture uploaded successfully");
+            console.log("cover photo uploaded successfully");
         } catch (error) {
             console.log(error);
         }
@@ -76,12 +77,12 @@ const UploadProfilePicScreen = (props) => {
         // download the imageUrl from storage and add it to the user in realtimeDb
         const url = await getDownloadURL(imageRef);
         const dbRef = getDatabase();
-        const userRef = refDB(dbRef, `users/${uid}`);
-        const updatedProPic = { profilePic: url };
+        const eventRef = refDB(dbRef, `events/${event.event_id}`);
+        const newCoverPhoto = { eventPhoto: url };
 
         try {
-            await update(userRef, updatedProPic);
-            console.log("profile pic updated")
+            await update(eventRef, newCoverPhoto);
+            console.log("cover photo updated")
         } catch (error) {
             console.log(error)
         }
@@ -104,7 +105,7 @@ const UploadProfilePicScreen = (props) => {
                 >
                     <Image
                         source={{ uri: image }}
-                        style={{ height: 300, width: 300, borderRadius: 150 }}
+                        style={{ height: 300, width: screenWidth}}
                     />
                     <TouchableOpacity
                         style={{
@@ -112,7 +113,7 @@ const UploadProfilePicScreen = (props) => {
                             backgroundColor: "#cb6cd6",
                             flexDirection: "row",
                         }}
-                        onPress={uploadProfilePic}
+                        onPress={uploadCoverPhoto}
                     >
                         <Text
                             style={{
@@ -121,7 +122,7 @@ const UploadProfilePicScreen = (props) => {
                                 fontWeight: "bold",
                             }}
                         >
-                            Upload profile picture
+                            Upload cover photo
                         </Text>
                         <Ionicons
                             name="cloud-upload-outline"
@@ -149,7 +150,7 @@ const UploadProfilePicScreen = (props) => {
                             color: "white",
                         }}
                     >
-                        Tap to select a new profile picture{"\n"}from your
+                        Tap to select an event cover photo{"\n"}from your
                         camera roll
                     </Text>
                 </TouchableOpacity>
@@ -158,6 +159,6 @@ const UploadProfilePicScreen = (props) => {
     );
 };
 
-export default UploadProfilePicScreen;
+export default UploadCoverPhotoScreen;
 
 const styles = StyleSheet.create({});

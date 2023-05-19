@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { auth } from "../../firebase";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, child, get, set } from "firebase/database";
 import { useAtom } from "jotai";
 import { user as userStore } from "../store/user";
@@ -19,8 +19,11 @@ const BeThereLogoExpanded = require("../../assets/BeThereExpanded.png");
 const Background = require("../../assets/Background.png");
 
 const LoginScreen = () => {
-    const [email, setEmail] = useState("kit@kit.com"); // logging in as kit, who is the host of an event
-    const [password, setPassword] = useState("pwpwpw");
+    // logging in as kit, who is the host of an event
+    // const [email, setEmail] = useState("kit@kit.com");
+    // const [password, setPassword] = useState("pwpwpw");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [storeUser, setStoreUser] = useAtom(userStore);
     const navigation = useNavigation();
 
@@ -41,7 +44,7 @@ const LoginScreen = () => {
                 },
                 {
                     text: "No Thank you",
-                    onPress: () => Alert.alert("no Pressed"),
+                    onPress: () => Alert.alert("Maybe another time then."),
                 },
             ]
         );
@@ -61,21 +64,14 @@ const LoginScreen = () => {
     }, [handleLogin]);
 
     const handleSignUp = () => {
-        console.log("sign up pressed");
-        console.log("check account screen activated", email);
-        // navigation.navigate("CheckAccountScreen", {
-        //     screen: "CheckAccountScreen",
-        //     email: email,
-        // });
-        // navigation.navigate("CheckAccountScreen", { email: email});
+        // if the email is blank then check for an account
+        if (email === "") {
+            navigation.navigate("CheckAccountScreen", { email: "" });
+            return;
+        }
 
-        // navigation.navigate("CreateAccountScreen", {
-        //     screen: "CreateAccountScreen",
-        //     email: email,
-        // });
         const dbRef = ref(getDatabase());
         // Check if the email entered during registration already exists in the database
-        // should this also check if they are signed up too?
         get(child(dbRef, `users`)).then((snapshot) => {
             if (snapshot.exists) {
                 const data = snapshot.val();
@@ -97,7 +93,7 @@ const LoginScreen = () => {
                         .catch((error) => {
                             console.log(error);
                             error.message =
-                                "Password is incorrect. Please try again.";
+                                "This email is registered to an account. Please enter the password.";
                             return alert(error.message);
                         });
                 }
