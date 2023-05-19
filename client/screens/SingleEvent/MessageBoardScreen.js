@@ -139,94 +139,144 @@ const MessageboardScreen = (params) => {
     };
 
     return (
-        <KeyboardAvoidingView style={{...globalStyles.container, padding: 0}} behavior="height">
-            <View style={{padding: 20, alignItems: "center", justifyContent: "center"}}>
-
-            <Text style={{...globalStyles.heading2, textAlign: "center"}}>Messages for</Text><Text style={{...globalStyles.heading1, fontFamily: "Bukhari Script", textAlign: "center", padding: 5}}>{eventName}</Text>
+        <KeyboardAvoidingView
+            style={{ ...globalStyles.container, padding: 0 }}
+            behavior="height"
+        >
+            <View
+                style={{
+                    padding: 20,
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
+            >
+                <Text style={{ ...globalStyles.heading2, textAlign: "center" }}>
+                    Messages for
+                </Text>
+                <Text
+                    style={{
+                        ...globalStyles.heading1,
+                        fontFamily: "Bukhari Script",
+                        textAlign: "center",
+                        padding: 5,
+                    }}
+                >
+                    {eventName}
+                </Text>
             </View>
             <SafeAreaView style={{ flex: 1 }}>
-                <FlatList
-                    data={messages}
-                    keyExtractor={(message) => message.id}
-                    renderItem={({ item }) => (
-                        <View
-                            style={{
-                                margin: 10,
-                                padding: 10,
-                                borderRadius: 10,
-                                borderColor:
-                                    uid === item.sender_id
-                                        ? "#38b6ff"
-                                        : "#cb6cd6",
-                                borderWidth: 2,
-                                justifyContent:
-                                    uid === item.sender_id
-                                        ? "flex-end"
-                                        : "flex-start",
-                                alignItems:
-                                    uid === item.sender_id
-                                        ? "flex-end"
-                                        : "flex-start",
-                            }}
-                        >
-                            <Text
+                {messages.length === 0 ? (
+                    <View
+                        style={{
+                            justifyContent: "center",
+                            alignItem: "center",
+                            flex: 1,
+                        }}
+                    >
+                        <Text style={{ textAlign: "center" }}>
+                            be the first to leave a message!
+                        </Text>
+                    </View>
+                ) : (
+                    <FlatList
+                        data={messages}
+                        keyExtractor={(message) => message.id}
+                        renderItem={({ item }) => (
+                            <View
                                 style={{
-                                    ...globalStyles.heading3,
-                                    textAlign:
+                                    margin: 10,
+                                    padding: 10,
+                                    borderRadius: 10,
+                                    borderColor:
                                         uid === item.sender_id
-                                            ? "right"
-                                            : "left",
+                                            ? "#38b6ff"
+                                            : "#cb6cd6",
+                                    borderWidth: 2,
+                                    justifyContent:
+                                        uid === item.sender_id
+                                            ? "flex-end"
+                                            : "flex-start",
+                                    alignItems:
+                                        uid === item.sender_id
+                                            ? "flex-end"
+                                            : "flex-start",
                                 }}
                             >
-                                {item.content}
-                            </Text>
-                            <Text
-                                style={{
-                                    ...globalStyles.paragraph,
-                                    fontStyle: "italic",
-                                    marginTop: 5,
-                                    textAlign:
-                                        uid === item.sender_id
-                                            ? "right"
-                                            : "left",
-                                }}
-                            >
-                                posted by {item.senderName}
-                                {"\n"}
-                                {new Date(item.dateTimeStamp).toLocaleString(
-                                    "en",
-                                    {
+                                <Text
+                                    style={{
+                                        ...globalStyles.heading3,
+                                        textAlign:
+                                            uid === item.sender_id
+                                                ? "right"
+                                                : "left",
+                                    }}
+                                >
+                                    {item.content}
+                                </Text>
+                                <Text
+                                    style={{
+                                        ...globalStyles.paragraph,
+                                        fontStyle: "italic",
+                                        marginTop: 5,
+                                        textAlign:
+                                            uid === item.sender_id
+                                                ? "right"
+                                                : "left",
+                                    }}
+                                >
+                                    posted by {item.senderName}
+                                    {"\n"}
+                                    {new Date(
+                                        item.dateTimeStamp
+                                    ).toLocaleString("en", {
                                         year: "numeric",
                                         month: "long",
                                         day: "numeric",
                                         hour: "numeric",
                                         minute: "numeric",
                                         hour12: true,
-                                    }
-                                )}
-                            </Text>
-                        </View>
-                    )}
-                />
+                                    })}
+                                </Text>
+                            </View>
+                        )}
+                    />
+                )}
             </SafeAreaView>
-            <SafeAreaView style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", height: 100, backgroundColor: "#38b6ff" }}>
+            <SafeAreaView
+                style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: 100,
+                    backgroundColor: "#38b6ff",
+                }}
+            >
                 <TextInput
                     placeholder="Write here"
-                    style={{...globalStyles.input, backgroundColor: "white", margin: 15, flex: 1}}
+                    style={{
+                        ...globalStyles.input,
+                        backgroundColor: "white",
+                        margin: 15,
+                        flex: 1,
+                    }}
                     value={newMessage}
                     onChangeText={(text) => setNewMessage(text)}
                 />
                 <TouchableOpacity onPress={handleSubmitMessage}>
                     <View
                         style={{
-                            backgroundColor: "#38b6ff", width: 50, height: 50, borderRadius: 50, justifyContent: "center", alignItems: "center", margin: 15, borderWidth: 2, borderColor: "white"
+                            backgroundColor: "#38b6ff",
+                            width: 50,
+                            height: 50,
+                            borderRadius: 50,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            margin: 15,
+                            borderWidth: 2,
+                            borderColor: "white",
                         }}
                     >
-                        <Ionicons
-                            name="send-outline"
-                            size={25}
-                            color="white"
-                        />
+                        <Ionicons name="send-outline" size={25} color="white" />
                     </View>
                 </TouchableOpacity>
             </SafeAreaView>
