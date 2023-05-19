@@ -42,8 +42,8 @@ const CreateAccountScreen = (props) => {
     const [user, setUser] = useState({});
 
     //testing elements
-    const [password, setPassword] = useState("pwpwpwpw" || "");
-    const [confirmPassword, setConfirmPassword] = useState("pwpwpwp" || "");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
     // const [password, setPassword] = useState("");
     // const [confirmPassword, setConfirmPassword] = useState("");
@@ -56,9 +56,9 @@ const CreateAccountScreen = (props) => {
 
     //Pre fills in form if there is a uid
     useEffect(() => {
-        setFirstName("Test" || user.firstName || "");
-        setLastName("test" || user.lastName || "");
-        setEmail("test4@test.com" || user.email || "");
+        setFirstName(user.firstName || "");
+        setLastName(user.lastName || "");
+        setEmail(user.email || "");
         setPhoneNumber(user.phoneNumber || "");
         setHomeCity(user.homeCity || "");
     }, [user]);
@@ -171,85 +171,86 @@ const CreateAccountScreen = (props) => {
                     flex: 1,
                     width: "100%",
                 }}
-            ></ImageBackground>
-            <ScrollView>
-                <View style={styles.section}>
-                    <Text
-                        style={{
-                            ...globalStyles.heading2,
-                            marginBottom: 20,
-                            textAlign: "center",
-                        }}
-                    >
-                        Create a Password
-                    </Text>
-                    <TextInput
-                        placeholder="Password"
-                        value={password}
-                        onChangeText={(text) => setPassword(text)}
-                        style={globalStyles.inputAccount}
-                        secureTextEntry
-                    />
-                    <TextInput
-                        placeholder="Confirm Password"
-                        value={confirmPassword}
-                        onChangeText={(text) => setConfirmPassword(text)}
-                        style={globalStyles.inputAccount}
-                        secureTextEntry
-                    />
-                    <Text
-                        style={{
-                            ...globalStyles.heading2,
-                            margin: 20,
-                            textAlign: "center",
-                        }}
-                    >
-                        Account Details
-                    </Text>
-
-                    <TextInput
-                        style={globalStyles.inputAccount}
-                        placeholder={"First Name"}
-                        value={firstName}
-                        onChangeText={setFirstName}
-                    />
-                    <TextInput
-                        style={globalStyles.inputAccount}
-                        placeholder="Last Name"
-                        value={lastName}
-                        onChangeText={setLastName}
-                    />
-                    <TextInput
-                        style={globalStyles.inputAccount}
-                        placeholder="Email"
-                        value={email}
-                        onChangeText={setEmail}
-                    />
-                    <TextInput
-                        style={globalStyles.inputAccount}
-                        placeholder="Phone Number"
-                        value={phoneNumber}
-                        onChangeText={setPhoneNumber}
-                    />
-                    <TextInput
-                        style={globalStyles.inputAccount}
-                        placeholder="Home City"
-                        value={homeCity}
-                        onChangeText={setHomeCity}
-                    />
-                </View>
-                <View>
-                    <TouchableOpacity
-                        style={styles.submitButton}
-                        onPress={handleSubmit}
-                        required={true}
-                    >
-                        <Text style={styles.submitButtonText}>
-                            Create Account
+            >
+                <ScrollView>
+                    <View style={styles.section}>
+                        <Text
+                            style={{
+                                ...globalStyles.heading2,
+                                marginBottom: 20,
+                                textAlign: "center",
+                            }}
+                        >
+                            Create a Password
                         </Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
+                        <TextInput
+                            placeholder="Password (Required)"
+                            value={password}
+                            onChangeText={(text) => setPassword(text)}
+                            style={globalStyles.inputAccount}
+                            secureTextEntry
+                        />
+                        <TextInput
+                            placeholder="Confirm Password (Required)"
+                            value={confirmPassword}
+                            onChangeText={(text) => setConfirmPassword(text)}
+                            style={globalStyles.inputAccount}
+                            secureTextEntry
+                        />
+                        <Text
+                            style={{
+                                ...globalStyles.heading2,
+                                margin: 20,
+                                textAlign: "center",
+                            }}
+                        >
+                            Account Details
+                        </Text>
+
+                        <TextInput
+                            style={globalStyles.inputAccount}
+                            placeholder={"First Name (Required)"}
+                            value={firstName}
+                            onChangeText={setFirstName}
+                        />
+                        <TextInput
+                            style={globalStyles.inputAccount}
+                            placeholder="Last Name (Required)"
+                            value={lastName}
+                            onChangeText={setLastName}
+                        />
+                        <TextInput
+                            style={globalStyles.inputAccount}
+                            placeholder="Email (Required)"
+                            value={email}
+                            onChangeText={setEmail}
+                        />
+                        <TextInput
+                            style={globalStyles.inputAccount}
+                            placeholder="Phone Number"
+                            value={phoneNumber}
+                            onChangeText={setPhoneNumber}
+                        />
+                        <TextInput
+                            style={globalStyles.inputAccount}
+                            placeholder="Home City"
+                            value={homeCity}
+                            onChangeText={setHomeCity}
+                        />
+                    </View>
+                    <View>
+                        <TouchableOpacity
+                            style={styles.submitButton}
+                            onPress={handleSubmit}
+                            required={true}
+                        >
+                            <Text style={styles.submitButtonText}>
+                                Create Account
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+            </ImageBackground>
         </KeyboardAvoidingView>
     );
 };

@@ -136,7 +136,7 @@ const CheckAccountScreen = (props) => {
                     alignItems: "center",
                 }}
             >
-                <Text style={globalStyles.heading1}>Checking for Account</Text>
+                <Text style={styles.sectionTitle}>Checking for Account</Text>
                 <View style={styles.inputContainer}>
                     <Image
                         source={BeThereLogoExpanded}
@@ -193,53 +193,34 @@ const styles = StyleSheet.create({
     inputContainer: {
         width: "80%",
     },
-    section: {
-        marginBottom: 20,
-    },
     sectionTitle: {
-        fontSize: 18,
+        fontSize: 30,
         fontWeight: "bold",
-        marginBottom: 10,
+        marginBottom: 0,
     },
     input: {
         backgroundColor: "white",
         paddingHorizontal: 15,
         paddingVertical: 10,
         borderRadius: 10,
-        marginTop: 5,
+        marginTop: 10,
     },
 
-    submitButton: {
-        width: "60%",
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 40,
-        // backgroundColor: "#2E8B57",
-        // borderRadius: 5,
-        // padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        // marginBottom: 10,
-    },
     submitButtonText: {
         color: "#fff",
         fontSize: 16,
         fontWeight: "bold",
     },
-    container: {
-        flex: 1,
-        // justifyContent: "center",
-        // alignItems: "center",
-    },
+
     inputContainer: {
         width: "80%",
     },
 
     buttonContainer: {
-        width: "60%",
+        width: "50%",
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 40,
+        marginTop: 10,
     },
     button: {
         backgroundColor: "#cb6ce6",

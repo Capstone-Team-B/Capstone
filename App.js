@@ -65,12 +65,18 @@ export default function App() {
                         <Stack.Screen
                             name="CheckAccountScreen"
                             component={CheckAccountScreen}
-                            options={{ title: "Already Signed Up?" }}
+                            options={{
+                                title: "Already Signed Up?",
+                                headerTitleStyle: globalStyles.screenHeader,
+                            }}
                         />
                         <Stack.Screen
                             name="CreateAccountScreen"
                             component={CreateAccountScreen}
-                            options={{ title: "Create New Account" }}
+                            options={{
+                                title: "Create New Account",
+                                headerTitleStyle: globalStyles.screenHeader,
+                            }}
                         />
                         <Stack.Screen
                             name="MyAccountScreen"
