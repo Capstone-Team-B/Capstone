@@ -9,8 +9,6 @@ import {
     TouchableOpacity,
     Alert,
     SafeAreaView,
-    Button,
-    Image,
     ImageBackground,
 } from "react-native";
 import { auth } from "../../../firebase";
@@ -23,6 +21,7 @@ const dbRef = ref(getDatabase());
 
 const CreateAccountScreen = (props) => {
     // finds the user in database if they were created by a host
+    console.log("props.params inn create account", props.route.params);
     useEffect(() => {
         let uid = props.route.params.uid;
         if (uid !== "") {
@@ -54,41 +53,38 @@ const CreateAccountScreen = (props) => {
     const [email, setEmail] = useState(user.email || "");
     const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || "");
     const [homeCity, setHomeCity] = useState(user.homeCity || "");
-    const [profilePic, setProfilePic] = useState(user.profilePic || "");
-    const [accessibility, setAccessibility] = useState(
-        user.accessibility || ""
-    );
-    const [dietary, setDietary] = useState(user.dietary || "");
 
     //Pre fills in form if there is a uid
     useEffect(() => {
-        setFirstName(user.firstName || "");
-        setLastName(user.lastName || "");
-        setEmail(user.email || "");
+        setFirstName("Test" || user.firstName || "");
+        setLastName("test" || user.lastName || "");
+        setEmail("test4@test.com" || user.email || "");
         setPhoneNumber(user.phoneNumber || "");
         setHomeCity(user.homeCity || "");
-        setProfilePic(user.profilePic || "");
-        setAccessibility(user.accessibility || "");
-        setDietary(user.dietary || "");
     }, [user]);
 
     const navigation = useNavigation();
     // let errorFlag = false;
 
     const isConfirmedPassword = () => {
+        console.log("checking password");
         if (password !== confirmPassword) {
-            // errorFlag = true;
-            return Alert.alert({
-                message: "Password and confirm password should be same.",
-            });
+            console.log("password not matching");
+            return false;
+        } else {
+            return true;
         }
     };
 
     const handleSubmit = async () => {
         const uid = props.route.params.uid;
         // Check that Form was filled out with name and email
-        isConfirmedPassword();
-        console.log(errorFlag);
+        const checkingPassword = isConfirmedPassword();
+        if (!checkingPassword) {
+            Alert.alert("Password and confirm password should be same.");
+            return;
+        }
+        // console.log(errorFlag);
         if (firstName === "" || lastName === "" || email === "") {
             Alert.alert("Please provide your name and a contact method");
             return;
@@ -114,10 +110,6 @@ const CreateAccountScreen = (props) => {
                                 email: email,
                                 phoneNumber: phoneNumber,
                                 homeCity: homeCity,
-                                profilePic: profilePic,
-                                dietary: dietary,
-                                accessibility: accessibility,
-                                guest_id: uid,
                                 auth_id: auth_id,
                             };
                             update(userRef, updateUser).then(() =>
@@ -146,20 +138,16 @@ const CreateAccountScreen = (props) => {
                         email: email,
                         phoneNumber: phoneNumber,
                         homeCity: homeCity,
-                        profilePic: profilePic,
-                        dietary: dietary,
-                        accessibility: accessibility,
-                        userEvents: {},
-                        guest_id: auth_id,
                         user_id: auth_id,
                         auth_id: auth_id,
                     };
                     console.log("New user info -->", newUser);
                     const newUserRef = child(dbRef, `users/${auth_id}`);
-                    console.log(newUserRef);
-                    set(newUserRef, newUser).then(() =>
+                    console.log("new User ref", newUserRef);
+                    set(newUserRef, newUser).then((newUser) =>
                         navigation.navigate("MyAccountScreen", {
                             uid: newUser.user_id,
+                            // uid: newUser.user_id,
                         })
                     );
                 }

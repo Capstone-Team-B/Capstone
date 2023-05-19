@@ -23,9 +23,7 @@ import {
 const CheckAccountScreen = (props) => {
     console.log("props are -->", props.route.params);
     const [user, setUser] = useState(props.route.params);
-    const [email, setEmail] = useState(
-        "nophone@nophone.com" || user.email || ""
-    );
+    const [email, setEmail] = useState(user.email || "");
     const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || "");
 
     useEffect(() => {
@@ -138,10 +136,14 @@ const CheckAccountScreen = (props) => {
                         style={styles.input}
                         placeholder="Phone Number"
                         value={phoneNumber}
-                        onChangeText={(phoneNumber) => setPhoneNumber(phoneNumber.replace(
-                            /(\d{3})(\d{3})(\d{4})/,
-                            "($1) $2-$3"
-                        ))}
+                        onChangeText={(phoneNumber) =>
+                            setPhoneNumber(
+                                phoneNumber.replace(
+                                    /(\d{3})(\d{3})(\d{4})/,
+                                    "($1) $2-$3"
+                                )
+                            )
+                        }
                     />
                 </View>
                 <View>

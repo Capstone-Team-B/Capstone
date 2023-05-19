@@ -10,7 +10,15 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { getDatabase, ref, child, get, query, equalTo, orderByChild } from "firebase/database";
+import {
+    getDatabase,
+    ref,
+    child,
+    get,
+    query,
+    equalTo,
+    orderByChild,
+} from "firebase/database";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { auth } from "../../../firebase";
 import globalStyles from "../../utils/globalStyles";
@@ -25,21 +33,21 @@ const MyAccountScreen = (props) => {
 
     useEffect(() => {
         const getUserId = async () => {
-            const currentUserId = auth.currentUser.uid
+            const currentUserId = auth.currentUser.uid;
             const dbRef = ref(getDatabase());
             const usersQuery = query(
-                child(dbRef, 'users'),
-                orderByChild('auth_id'),
+                child(dbRef, "users"),
+                orderByChild("auth_id"),
                 equalTo(currentUserId)
-            )
-            const snapshot = await get (usersQuery);
-    
+            );
+            const snapshot = await get(usersQuery);
+
             if (snapshot.exists()) {
                 const data = Object.keys(snapshot.val());
-                setUserId(data[0])
+                setUserId(data[0]);
             }
-        }
-        getUserId()
+        };
+        getUserId();
         const dbRef = ref(getDatabase());
         get(child(dbRef, `users/${userId}`))
             .then((snapshot) => {
@@ -57,7 +65,7 @@ const MyAccountScreen = (props) => {
     const navigation = useNavigation();
 
     const handlePressCreateEvent = () => {
-        navigation.navigate("CreateEvent", {uid: userId});
+        navigation.navigate("CreateEvent", { uid: userId });
     };
 
     const handlePressEditAccount = () => {
@@ -65,7 +73,7 @@ const MyAccountScreen = (props) => {
     };
 
     const handlePressViewArchive = () => {
-        navigation.navigate("ViewArchiveScreen", {uid: userId});
+        navigation.navigate("ViewArchiveScreen", { uid: userId });
     };
 
     const handleSignOut = () => {
@@ -110,7 +118,13 @@ const MyAccountScreen = (props) => {
                         <Ionicons name="create-outline" size={25} />
                     </Pressable>
                 </View>
-                <View style={{...globalStyles.tile, backgroundColor: "white", borderWidth: 0}}>
+                <View
+                    style={{
+                        ...globalStyles.tile,
+                        backgroundColor: "white",
+                        borderWidth: 0,
+                    }}
+                >
                     <View
                         style={{
                             flexDirection: "row",
@@ -165,10 +179,16 @@ const MyAccountScreen = (props) => {
                 <View style={styles.sectionHeader}>
                     <Text style={globalStyles.heading2}>Archive</Text>
                     {/* <Pressable onPress={handlePressViewArchive}> */}
-                        <Ionicons name="archive-outline" size={25} />
+                    <Ionicons name="archive-outline" size={25} />
                     {/* </Pressable> */}
                 </View>
-                <View style={{...globalStyles.tile, backgroundColor: "white", borderWidth: 0}}>
+                <View
+                    style={{
+                        ...globalStyles.tile,
+                        backgroundColor: "white",
+                        borderWidth: 0,
+                    }}
+                >
                     <View>
                         <Text style={globalStyles.paragraph}>
                             Past event's I've attended/hosted
@@ -176,7 +196,15 @@ const MyAccountScreen = (props) => {
                     </View>
                 </View>
                 <TouchableOpacity style={styles.button} onPress={handleSignOut}>
-                    <Text style={{...globalStyles.paragraph, color: "white", fontWeight: "bold"}}>Sign out</Text>
+                    <Text
+                        style={{
+                            ...globalStyles.paragraph,
+                            color: "white",
+                            fontWeight: "bold",
+                        }}
+                    >
+                        Sign out
+                    </Text>
                 </TouchableOpacity>
             </ImageBackground>
         </SafeAreaView>
