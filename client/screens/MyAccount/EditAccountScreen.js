@@ -15,7 +15,6 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, update, child, get } from "firebase/database";
 import globalStyles from "../../utils/globalStyles";
-import * as ImagePicker from "expo-image-picker";
 const Background = require("../../../assets/Background.png");
 
 // import { auth } from "../../../firebase";
@@ -31,15 +30,16 @@ const EditAccountScreen = (props) => {
     const [profilePic, setProfilePic] = useState(user.profilePic || "");
     const [accessibility, setAccessibility] = useState(
         user.accessibility || ""
-    );
-    const [dietary, setDietary] = useState(user.dietary || "");
-
-    // COMPONENT VARIABLES
-    const navigation = useNavigation();
-
-    useEffect(() => {
-        setUser(props.route.params);
-    }, [props]);
+        );
+        const [dietary, setDietary] = useState(user.dietary || "");
+        
+        // COMPONENT VARIABLES
+        const navigation = useNavigation();
+        
+        useEffect(() => {
+            setUser(props.route.params);
+        }, [props]);
+        console.log("user on edit user screen -->", user.user_id)
 
     // FUNCTIONS
     const handleSubmit = async () => {
@@ -49,7 +49,7 @@ const EditAccountScreen = (props) => {
         }
         try {
             const dbRef = ref(getDatabase());
-            const userId = user.uid;
+            const userId = user.user_id;
             const userRef = child(dbRef, `users/${userId}`);
             const userSnapshot = await get(userRef);
             if (!userSnapshot.exists()) {

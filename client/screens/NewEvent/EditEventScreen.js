@@ -31,7 +31,7 @@ const EditEvent = (params) => {
 
     // PROPS & PARAMS
     const uid = params.route.params.uid;
-
+    console.log("uid on edit event details page -->", uid)
     // USESTATE
     const [event, setEvent] = useState(params.route.params.event);
     const [weddingName, setWeddingName] = useState(event.name || "");
@@ -117,10 +117,8 @@ const EditEvent = (params) => {
 
             await update(eventRef, updatedEvent);
 
-            navigation.navigate("SingleEvent", {
-                uid: uid,
-                event: updatedEvent,
-            });
+            Alert.alert(`${weddingName} updated`)
+            navigation.goBack()
         } catch (error) {
             console.log(error);
         }

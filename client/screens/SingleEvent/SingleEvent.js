@@ -30,6 +30,7 @@ const SingleEvent = (params) => {
 
     // PROPS & PARAMS
     const uid = params.route.params.uid;
+    console.log("uid on singleEvent -->", uid)
     const event = params.route.params.event;
     const attending = event.guestList[uid].attending;
 
