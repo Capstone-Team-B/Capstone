@@ -5,7 +5,6 @@ import {
     SafeAreaView,
     Image,
     TouchableOpacity,
-    Pressable,
     ImageBackground,
 } from "react-native";
 import React, { useState, useEffect } from "react";
@@ -106,9 +105,9 @@ const MyAccountScreen = (props) => {
                 </View>
                 <View style={styles.sectionHeader}>
                     <Text style={globalStyles.heading2}>Account details</Text>
-                    <Pressable onPress={handlePressEditAccount}>
+                    <TouchableOpacity onPress={handlePressEditAccount}>
                         <Ionicons name="create-outline" size={25} />
-                    </Pressable>
+                    </TouchableOpacity>
                 </View>
                 <View style={{...globalStyles.tile, backgroundColor: "white", borderWidth: 0}}>
                     <View
@@ -164,9 +163,9 @@ const MyAccountScreen = (props) => {
                 </View>
                 <View style={styles.sectionHeader}>
                     <Text style={globalStyles.heading2}>Archive</Text>
-                    {/* <Pressable onPress={handlePressViewArchive}> */}
+                    <TouchableOpacity onPress={handlePressViewArchive}>
                         <Ionicons name="archive-outline" size={25} />
-                    {/* </Pressable> */}
+                    </TouchableOpacity>
                 </View>
                 <View style={{...globalStyles.tile, backgroundColor: "white", borderWidth: 0}}>
                     <View>

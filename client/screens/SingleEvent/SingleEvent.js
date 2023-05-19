@@ -27,6 +27,7 @@ const SingleEvent = (params) => {
     const isFocused = useIsFocused();
     const navigation = useNavigation();
     const dbRef = ref(getDatabase());
+    const today = new Date()
 
     // PROPS & PARAMS
     const uid = params.route.params.uid;
