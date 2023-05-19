@@ -50,9 +50,11 @@ const CreateEventForm = (props) => {
     const onDismiss = useCallback(() => {
         setVisible(false);
     }, [setVisible]);
+
     const onDismissRange = useCallback(() => {
         setOpen(false);
     }, [setOpen]);
+
     const onConfirmRange = useCallback(
         ({ startDate, endDate }) => {
             setOpen(false);
@@ -61,6 +63,7 @@ const CreateEventForm = (props) => {
         },
         [setOpen, setEventStartDate, setEventEndDate]
     );
+
     const handleTimeConfirm = (selectedTime) => {
         const date = new Date();
         date.setHours(selectedTime.hours);

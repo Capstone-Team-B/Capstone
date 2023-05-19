@@ -24,6 +24,8 @@ import {
 } from "firebase/database";
 import * as Contacts from "expo-contacts";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { Platform, PermissionsAndroid, Linking } from 'react-native';
+import * as SMS from 'expo-sms';
 
 const ImportContacts = (params) => {
     const uid = params.route.params.uid
@@ -109,6 +111,43 @@ const ImportContacts = (params) => {
             }
         })();
     }, []);
+
+    // const sendSMS = async (guestPhone, bodySMS) => {
+    //     try {
+    //       if (Platform.OS === 'android') {
+    //         const permission = await PermissionsAndroid.request(
+    //           PermissionsAndroid.PERMISSIONS.SEND_SMS
+    //         );
+    //         if (permission === PermissionsAndroid.RESULTS.GRANTED) {
+    //           SmsManager.sendMessageWithoutThreadID(guestPhone, bodySMS, null, null);
+    //           console.log(`SMS sent successfully to ${guestPhone}`);
+    //         } else {
+    //           console.log('Permission to send SMS denied');
+    //         }
+    //       } else if (Platform.OS === 'ios') {
+    //         Alert.alert("iOS devices do not allow BeThere to send bulk SMS messages on your behalf. Please add your guests one at a time to send SMS invites to each guest.")
+    //         const canSendText = await SMS.isAvailableAsync();
+    //         if (canSendText) {
+    //         const url = `sms:${guestPhone}&body=${encodeURIComponent(bodySMS)}`;
+    //           Linking.openURL(url).catch((error) => {
+    //             console.log(`Failed to open SMS app for ${guestPhone}:`, error);
+    //           });
+    //         } else {
+    //           console.log('SMS service is not available on this device');
+    //         }
+    //       } else {
+    //         console.log('Sending SMS automatically is not supported on this platform');
+    //       }
+    //     } catch (error) {
+    //       console.log(`Error occurred when sending SMS to ${guestPhone}:`, error);
+    //     }
+    //   };
+      
+    // const initiateSMS = async (guestPhones) => {
+    //     for (const guestPhone of guestPhones) {
+    //       await sendSMS(guestPhone, bodySMS);
+    //     }
+    // };
 
     const handleSubmit = async () => {
         const dbRef = ref(getDatabase());
@@ -230,9 +269,10 @@ const ImportContacts = (params) => {
                             attending: false,
                         });
                     }
+                    // await initiateSMS(guestPhone.replace(/\D/g, ""));
                 } catch (error) {
                     console.log("Error:", error);
-                    //Alert.alert("Something went wrong, please try again.");
+                    // Alert.alert("Something went wrong, please try again.");
                     return;
                 }
             } else {
@@ -242,7 +282,6 @@ const ImportContacts = (params) => {
                 return;
             }
         }
-
         navigation.navigate("SingleEvent", { uid: uid, event: event });
     };
 
