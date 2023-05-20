@@ -37,21 +37,20 @@ const MyAccountScreen = (props) => {
             if (snapshot.exists()) {
                 const data = Object.keys(snapshot.val());
                 setUserId(data[0])
+                get(child(dbRef, `users/${data[0]}`))
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        setUser(snapshot.val());
+                    } else {
+                        console.log("No data available");
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
             }
         }
         getUserId()
-        const dbRef = ref(getDatabase());
-        get(child(dbRef, `users/${userId}`))
-            .then((snapshot) => {
-                if (snapshot.exists()) {
-                    setUser(snapshot.val());
-                } else {
-                    console.log("No data available");
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            });
     }, [isFocused]);
 
     const navigation = useNavigation();

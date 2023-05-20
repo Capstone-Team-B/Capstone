@@ -246,7 +246,7 @@ const SingleEvent = (params) => {
                                                         fontWeight: "bold",
                                                     }}
                                                 >
-                                                    Create{"\n"}reminders
+                                                    Edit{"\n"}reminders
                                                 </Text>
                                             </ImageBackground>
                                         </View>
