@@ -18,47 +18,53 @@ const AllNotifications = (params) => {
     const navigation = useNavigation();
     const dbRef = ref(getDatabase());
     const isFocused = useIsFocused();
+    const [loading, setLoading] = useState(true);
+    const [initialLoad, setInitialLoad] = useState(true);
 
     useEffect(() => {
         const getNotifications = async () => {
+            setLoading(true);
             const eventQuery = query(child(dbRef, `events/${eventId}`));
             try {
-                await get(eventQuery).then((snapshot) => {
-                    if (snapshot.exists()) {
-                        const data = snapshot.val();
-                        setEvent(data);
-                        console.log("data", data);
-                    } else {
-                        console.log("No data available");
+                const snapshot = await get(eventQuery);
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    setEvent(data);
+
+                    let notificationData = [];
+                    const notificationIds = Object.keys(data.notifications);
+
+                    for (let i = 0; i < notificationIds.length; i++) {
+                        const notificationQuery = query(
+                            child(dbRef, `notifications/${notificationIds[i]}`)
+                        );
+                        try {
+                            const notificationSnapshot = await get(
+                                notificationQuery
+                            );
+                            if (notificationSnapshot.exists()) {
+                                const notificationDataItem =
+                                    notificationSnapshot.val();
+                                notificationData.push(notificationDataItem);
+                            } else {
+                                console.log("No data available");
+                            }
+                        } catch (error) {
+                            console.log(error);
+                        }
                     }
-                });
+                    setNotifications(notificationData);
+                } else {
+                    console.log("No data available");
+                }
             } catch (error) {
                 console.log(error);
+            } finally {
+                setLoading(false);
+                setInitialLoad(false);
             }
-            let notificationData = [];
-            let notificationIds = [];
-            console.log("events", event);
-            notificationIds = Object.keys(event.notifications);
-            console.log("notificationIds", notificationIds);
-            for (let i = 0; i < notificationIds.length; i++) {
-                const notificationQuery = query(
-                    child(dbRef, `notifications/${notificationIds[i]}`)
-                );
-                try {
-                    await get(notificationQuery).then((snapshot) => {
-                        if (snapshot.exists()) {
-                            const data = snapshot.val();
-                            notificationData = [...notificationData, data];
-                        } else {
-                            console.log("No data available");
-                        }
-                    });
-                } catch (error) {
-                    console.log(error);
-                }
-            }
-            setNotifications(notificationData);
         };
+
         getNotifications();
     }, [isFocused]);
 
@@ -66,7 +72,9 @@ const AllNotifications = (params) => {
         <KeyboardAvoidingView style={styles.container} behavior="height">
             <ScrollView style={styles.container}>
                 <View style={styles.section}>
-                    {notifications.length > 0 ? (
+                    {loading ? (
+                        <Text>...Loading your reminders</Text>
+                    ) : notifications.length > 0 ? (
                         notifications.map((notification) => (
                             <View
                                 key={notification.notification_id}
