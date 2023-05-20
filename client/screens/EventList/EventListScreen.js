@@ -108,13 +108,10 @@ const EventListScreen = (props) => {
             }
         }
         const today = new Date();
-        console.log("today -->", today);
-        console.log("events -->", events);
         const filteredEventsUpcoming = events.filter((event) => {
             const eventStartDate = new Date(event.startDate);
             return eventStartDate >= today;
         });
-        console.log("filteredEvents -->", filteredEventsUpcoming);
         const sortedEventsUpcoming = filteredEventsUpcoming.sort((a, b) => {
             const startDateA = new Date(a.startDate);
             const startDateB = new Date(b.startDate);
@@ -176,7 +173,13 @@ const EventListScreen = (props) => {
                                 alignSelf: "center",
                             }}
                         />
-                    </TouchableOpacity>
+                        <Text
+                        style={{
+                            ...globalStyles.heading3, textAlign: "center"
+                        }}
+                    >
+                        Tap here to
+                    </Text>
                     <Text
                         style={{
                             ...globalStyles.heading1,
@@ -184,8 +187,9 @@ const EventListScreen = (props) => {
                             padding: 12,
                         }}
                     >
-                        Plan something!
+                        plan something!
                     </Text>
+                    </TouchableOpacity>
                 </View>
             )}
         </SafeAreaView>

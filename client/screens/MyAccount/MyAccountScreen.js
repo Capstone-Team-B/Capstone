@@ -93,13 +93,16 @@ const MyAccountScreen = (props) => {
                             source={BeThereLogo}
                             style={{ height: 200, width: 200 }}
                         />
+                        <Text style={{
+                                ...globalStyles.heading3,
+                            }}>Tap here to</Text>
                         <Text
                             style={{
                                 ...globalStyles.heading1,
                                 fontFamily: "Bukhari Script",
                             }}
                         >
-                            Create an event
+                            create an event
                         </Text>
                     </TouchableOpacity>
                 </View>

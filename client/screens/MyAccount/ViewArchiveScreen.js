@@ -108,20 +108,16 @@ const ViewArchiveScreen = (params) => {
             }
         }
         const today = new Date();
-        console.log("today -->", today);
-        // console.log("events -->", events);
         const filteredEventsPast = events.filter((event) => {
             const eventStartDate = new Date(event.startDate);
             return eventStartDate < today;
         });
-        console.log("filteredEventsPast -->", filteredEventsPast);
         if (filteredEventsPast.length > 0) {
             const sortedEventsPast = filteredEventsPast.sort((a, b) => {
                 const startDateA = new Date(a.startDate);
                 const startDateB = new Date(b.startDate);
                 return startDateA - startDateB;
             });
-            console.log("sortedEventsPast -->", sortedEventsPast)
             setEventList(sortedEventsPast);
         }
         setLoading(false);
