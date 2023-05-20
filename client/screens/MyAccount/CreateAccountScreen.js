@@ -3,12 +3,10 @@ import {
     KeyboardAvoidingView,
     ScrollView,
     View,
-    StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
     Alert,
-    SafeAreaView,
     ImageBackground,
 } from "react-native";
 import { auth } from "../../../firebase";

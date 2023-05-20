@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
     KeyboardAvoidingView,
-    ScrollView,
     View,
     StyleSheet,
     Text,
@@ -45,76 +44,80 @@ const CheckAccountScreen = (props) => {
             return;
         }
         // check for matching phone number first
-        if (phoneNumber === "") {
-            console.log("run check email?");
-        }
         try {
-            const dbRef = ref(getDatabase());
-            get(
-                query(
-                    child(dbRef, "users"),
-                    orderByChild("phoneNumber"),
-                    equalTo(phoneNumber)
+            if (phoneNumber !== "") {
+                const dbRef = ref(getDatabase());
+                get(
+                    query(
+                        child(dbRef, "users"),
+                        orderByChild("phoneNumber"),
+                        equalTo(phoneNumber)
+                    )
                 )
-            )
-                .then((snapshot) => {
-                    if (snapshot.exists()) {
-                        const userRef = snapshot.val();
-                        const uid = Object.keys(userRef)[0];
-                        Alert.alert(
-                            "Your Host made an account. Let's update it."
-                        );
-                        navigation.navigate("CreateAccountScreen", {
-                            uid: uid,
-                        });
-                        return;
-                    } else {
-                        //now should check for email not there go to create account
-                        if (email === "") {
+                    .then((snapshot) => {
+                        if (snapshot.exists()) {
+                            const userRef = snapshot.val();
+                            const uid = Object.keys(userRef)[0];
+                            console.log("uid in phone check", uid);
                             Alert.alert(
-                                "No matching account. Let's create one"
+                                "Your Host made an account. Let's update it."
                             );
-
                             navigation.navigate("CreateAccountScreen", {
-                                uid: "",
+                                uid: uid,
                             });
                             return;
-                        }
-                        console.log("Checking for email ", email);
-                        get(
-                            query(
-                                child(dbRef, "users"),
-                                orderByChild("email"),
-                                equalTo(email)
-                            )
-                        ).then((snapshot) => {
-                            console.log("Checked for email ", email);
-                            if (snapshot.exists()) {
-                                const userRef = snapshot.val();
-                                const uid = Object.keys(userRef)[0];
-                                Alert.alert(
-                                    "Your Host made an account. Let's update it."
-                                );
-                                navigation.navigate("CreateAccountScreen", {
-                                    uid: uid,
-                                });
-                            } else {
-                                console.log("No email found");
+                        } else {
+                            //now should check for email not there go to create account
+                            if (email === "") {
                                 Alert.alert(
                                     "No matching account. Let's create one"
                                 );
+
                                 navigation.navigate("CreateAccountScreen", {
                                     uid: "",
                                 });
+                                return;
                             }
-                        });
-                        Alert.alert("No matching account. Let's create one");
-                        navigation.navigate("CreateAccountScreen", { uid: "" });
-                    }
-                })
-                .catch((error) => {
-                    console.log("line 105", error);
-                });
+                            console.log("Checking for email ", email);
+                            get(
+                                query(
+                                    child(dbRef, "users"),
+                                    orderByChild("email"),
+                                    equalTo(email)
+                                )
+                            ).then((snapshot) => {
+                                console.log("Checked for email ", email);
+                                if (snapshot.exists()) {
+                                    const userRef = snapshot.val();
+                                    const uid = Object.keys(userRef)[0];
+                                    Alert.alert(
+                                        "Your Host made an account. Let's update it."
+                                    );
+                                    navigation.navigate("CreateAccountScreen", {
+                                        uid: uid,
+                                    });
+                                } else {
+                                    console.log("No email found");
+                                    Alert.alert(
+                                        "No matching account. Let's create one"
+                                    );
+                                    navigation.navigate("CreateAccountScreen", {
+                                        uid: "",
+                                    });
+                                }
+                            });
+                            Alert.alert(
+                                "No matching account. Let's create one"
+                            );
+                            navigation.navigate("CreateAccountScreen", {
+                                uid: "",
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        console.log("line 105", error);
+                    });
+            }
         } catch (error) {
             console.log(error);
         }
