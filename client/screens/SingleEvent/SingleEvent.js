@@ -122,7 +122,11 @@ const SingleEvent = (params) => {
                     <View style={styles.tomorrow}>
                         <Text style={styles.countdownText}>Tomorrow!</Text>
                     </View>
-                ) : null}
+                ) : (
+                    <View style={styles.archive}>
+                        <Text style={styles.countdownText}>Archive</Text>
+                    </View>
+                )}
                 {uid === event.host_id && today < new Date(event.startDate) ? (
                     <>
                         <View style={styles.hostControls}>
@@ -198,7 +202,7 @@ const SingleEvent = (params) => {
                                     <TouchableOpacity
                                         onPress={() =>
                                             navigation.navigate(
-                                                "Create Guest List",
+                                                "Create Reminder",
                                                 {
                                                     event: event,
                                                     uid: uid,
@@ -595,5 +599,16 @@ const styles = StyleSheet.create({
         height: 80,
         width: 300,
         marginBottom: 20,
+    },
+    archive: {
+        ...globalStyles.heading3,
+        width: 100,
+        height: 70,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "black",
+        position: "absolute",
+        right: 20,
+        top: 20,
     },
 });

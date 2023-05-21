@@ -239,8 +239,16 @@ const CreateGuestList = (params) => {
             >
                 <ScrollView>
                     <View>
-                        <Text style={styles.sectionHeader}>
-                            Send invites to your event
+                        <Text
+                            style={{
+                                ...globalStyles.heading1,
+                                fontFamily: "Bukhari Script",
+                                margin: 20,
+                                padding: 5,
+                                textAlign: "center",
+                            }}
+                        >
+                            Send invites{"\n"}to your event
                         </Text>
                         <View>
                             {guestList.map((guest, index) => (
@@ -325,6 +333,12 @@ const CreateGuestList = (params) => {
                                                 handleDeleteGuest(index)
                                             }
                                         >
+                                            <Ionicons
+                                                name="close-circle-outline"
+                                                size={25}
+                                                color="white"
+                                                marginBottom={12}
+                                            />
                                             <Text
                                                 style={{
                                                     ...globalStyles.paragraph,
@@ -422,9 +436,12 @@ const CreateGuestList = (params) => {
                         }}
                     >
                         <TouchableOpacity
-                            style={{...globalStyles.button,
+                            style={{
+                                ...globalStyles.button,
                                 justifyContent: "center",
-                                alignItems: "center", borderWidth: 2, borderColor: "#38b6ff"
+                                alignItems: "center",
+                                borderWidth: 2,
+                                borderColor: "#38b6ff",
                             }}
                             onPress={() => {
                                 navigation.navigate("GuestListScreen", {

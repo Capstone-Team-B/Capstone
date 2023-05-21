@@ -31,7 +31,7 @@ const CreateEventForm = (props) => {
 
     // PROPS & PARAMS
     const { uid } = props.route.params;
-    console.log("uid on createeventform -->", uid)
+    console.log("uid on createeventform -->", uid);
     // STATE
     const [weddingName, setWeddingName] = useState("");
     const [location, setLocation] = useState("");
@@ -153,6 +153,7 @@ const CreateEventForm = (props) => {
                                 ...globalStyles.heading1,
                                 fontFamily: "Bukhari Script",
                                 margin: 20,
+                                padding: 5,
                                 textAlign: "center",
                             }}
                         >

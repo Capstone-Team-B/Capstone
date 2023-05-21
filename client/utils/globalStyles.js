@@ -8,8 +8,7 @@ export default StyleSheet.create({
         padding: 12,
     },
     screenHeader: {
-        fontFamily: "Bukhari Script",
-        fontSize: 20,
+        fontSize: 18,
         padding: 20,
     },
     heading1: {
