@@ -5,6 +5,7 @@ import {
     View,
     StyleSheet,
     Text,
+    SafeAreaView,
 } from "react-native";
 import {
     getDatabase,
@@ -16,6 +17,7 @@ import {
 } from "firebase/database";
 import { auth } from "../../../firebase";
 import { useIsFocused } from "@react-navigation/native";
+import globalStyles from "../../utils/globalStyles";
 
 const NotificationsScreen = () => {
     const uid = auth.currentUser.uid;
@@ -99,7 +101,8 @@ const NotificationsScreen = () => {
     }, [isFocused]);
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior="height">
+        // <KeyboardAvoidingView style={styles.container} behavior="height">
+        <SafeAreaView style={globalStyles.container}>
             <ScrollView style={styles.container}>
                 <View style={styles.section}>
                     {loading ? (
@@ -151,7 +154,8 @@ const NotificationsScreen = () => {
                     )}
                 </View>
             </ScrollView>
-        </KeyboardAvoidingView>
+        </SafeAreaView>
+        // </KeyboardAvoidingView>
     );
 };
 
