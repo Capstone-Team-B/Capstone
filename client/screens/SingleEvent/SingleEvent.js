@@ -27,6 +27,7 @@ const SingleEvent = (params) => {
     const isFocused = useIsFocused();
     const navigation = useNavigation();
     const dbRef = ref(getDatabase());
+    const today = new Date();
 
     // PROPS & PARAMS
     const uid = params.route.params.uid;
@@ -38,6 +39,7 @@ const SingleEvent = (params) => {
     const [user, setUser] = useState({});
     const [userName, setUserName] = useState({});
     const [userEventId, setUserEventId] = useState("");
+    const [countdown, setCountDown] = useState("");
 
     // USEEFFECT
     useEffect(() => {
@@ -88,6 +90,12 @@ const SingleEvent = (params) => {
         getHost();
     }, [isFocused, navigation]);
 
+    useEffect(() => {
+        const timeleft = new Date(event.startDate) - today;
+        const days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
+        setCountDown(days);
+    }, []);
+
     return (
         <SafeAreaView style={globalStyles.container}>
             <ScrollView>
@@ -98,41 +106,30 @@ const SingleEvent = (params) => {
                             : { uri: event.eventPhoto }
                     }
                     resizeMode="cover"
-                    style={{
-                        flex: 1,
-                        width: "100%",
-                        height: 200,
-                    }}
+                    style={styles.coverPhoto}
                 />
-                {uid === event.host_id ? (
+                {today < new Date(event.startDate) && countdown > 1 ? (
+                    <View style={styles.daysAway}>
+                        <Text style={styles.countdownText}>{countdown}</Text>
+                        <Text style={styles.countdownSubtext}>days away</Text>
+                    </View>
+                ) : today < new Date(event.startDate) && countdown === 1 ? (
+                    <View style={styles.daysAway}>
+                        <Text style={styles.countdownText}>{countdown}</Text>
+                        <Text style={styles.countdownSubtext}>day away</Text>
+                    </View>
+                ) : countdown === 0 ? (
+                    <View style={styles.tomorrow}>
+                        <Text style={styles.countdownText}>Tomorrow!</Text>
+                    </View>
+                ) : (
+                    <View style={styles.archive}>
+                        <Text style={styles.countdownText}>Archive</Text>
+                    </View>
+                )}
+                {uid === event.host_id && today < new Date(event.startDate) ? (
                     <>
-                        {/* <View
-                            style={{
-                                paddingTop: 12,
-                                backgroundColor: "black",
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    ...globalStyles.heading2,
-                                    textAlign: "center",
-                                    color: "white",
-                                }}
-                            >
-                                Manage my event
-                            </Text>
-                        </View> */}
-                        <View
-                            style={{
-                                flexDirection: "row",
-                                marginBottom: 20,
-                                justifyContent: "center",
-                                alignItems: "center",
-                                borderWidth: 2,
-                                padding: 8,
-                                backgroundColor: "black",
-                            }}
-                        >
+                        <View style={styles.hostControls}>
                             <View style={styles.imageContainer}>
                                 <View style={styles.borderContainer}>
                                     <TouchableOpacity
@@ -157,13 +154,7 @@ const SingleEvent = (params) => {
                                                     name="create-outline"
                                                     size={25}
                                                 />
-                                                <Text
-                                                    style={{
-                                                        ...globalStyles.paragraph,
-                                                        textAlign: "center",
-                                                        fontWeight: "bold",
-                                                    }}
-                                                >
+                                                <Text style={styles.hostBtn}>
                                                     Edit event
                                                 </Text>
                                             </ImageBackground>
@@ -198,13 +189,7 @@ const SingleEvent = (params) => {
                                                     name="mail-outline"
                                                     size={25}
                                                 />
-                                                <Text
-                                                    style={{
-                                                        ...globalStyles.paragraph,
-                                                        textAlign: "center",
-                                                        fontWeight: "bold",
-                                                    }}
-                                                >
+                                                <Text style={styles.hostBtn}>
                                                     Invite guests
                                                 </Text>
                                             </ImageBackground>
@@ -217,7 +202,7 @@ const SingleEvent = (params) => {
                                     <TouchableOpacity
                                         onPress={() =>
                                             navigation.navigate(
-                                                "All Reminders",
+                                                "Create Reminder",
                                                 {
                                                     event: event,
                                                     uid: uid,
@@ -239,14 +224,8 @@ const SingleEvent = (params) => {
                                                     name="alarm-outline"
                                                     size={25}
                                                 />
-                                                <Text
-                                                    style={{
-                                                        ...globalStyles.paragraph,
-                                                        textAlign: "center",
-                                                        fontWeight: "bold",
-                                                    }}
-                                                >
-                                                    Edit{"\n"}reminders
+                                                <Text style={styles.hostBtn}>
+                                                    Create{"\n"}reminders
                                                 </Text>
                                             </ImageBackground>
                                         </View>
@@ -256,36 +235,11 @@ const SingleEvent = (params) => {
                         </View>
                     </>
                 ) : null}
-                <Text
-                    style={{
-                        fontFamily: "Bukhari Script",
-                        fontSize: 30,
-                        padding: 5,
-                        marginTop: 12,
-                        marginLeft: 12,
-                        marginRight: 12,
-                    }}
-                >
-                    {event.name}
-                </Text>
-                <Text
-                    style={{
-                        fontSize: 15,
-                        marginLeft: 12,
-                        marginRight: 12,
-                    }}
-                >
+                <Text style={styles.eventTitle}>{event.name}</Text>
+                <Text style={styles.hostedBy}>
                     hosted by {host.firstName} {host.lastName}
                 </Text>
-                <Text
-                    style={{
-                        fontSize: 20,
-                        fontWeight: "bold",
-                        marginTop: 5,
-                        marginLeft: 12,
-                        marginRight: 12,
-                    }}
-                >
+                <Text style={styles.dates}>
                     {new Date(event.startDate).toLocaleDateString("en-US", {
                         weekday: "short",
                         month: "short",
@@ -300,58 +254,22 @@ const SingleEvent = (params) => {
                         year: "numeric",
                     })}
                 </Text>
-                <Text
-                    style={{
-                        fontSize: 17,
-                        fontWeight: "bold",
-                        marginTop: 5,
-                        marginLeft: 12,
-                        marginRight: 12,
-                    }}
-                >
-                    {event.startTime} & {event.endTime}
+                <Text style={styles.times}>
+                    {event.startTime} - {event.endTime}
                 </Text>
-                <Text
-                    style={{
-                        fontSize: 17,
-                        fontWeight: "bold",
-                        marginTop: 5,
-                        marginLeft: 12,
-                        marginRight: 12,
-                    }}
-                >
-                    {event.mainLocation}
-                </Text>
-                <Text
-                    style={{
-                        fontSize: 15,
-                        marginTop: 5,
-                        marginLeft: 12,
-                        marginRight: 12,
-                        marginBottom: 20,
-                    }}
-                >
-                    {event.description}
-                </Text>
-
+                <Text style={styles.times}>{event.mainLocation}</Text>
+                <Text style={styles.description}>{event.description}</Text>
                 <View
-                    style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                    }}
+                    style={{ justifyContent: "center", alignItems: "center" }}
                 >
                     {uid != event.host_id && (
                         <View
                             style={{
-                                justifyContent: "center",
-                                alignItems: "center",
-                                height: 80,
+                                ...styles.myRSVP,
                                 backgroundColor: attending
                                     ? "#38b6ff"
                                     : "black",
-                                width: 300,
                                 borderRadius: attending === true ? 300 : 0,
-                                marginBottom: 20,
                             }}
                         >
                             <Text
@@ -362,40 +280,17 @@ const SingleEvent = (params) => {
                             >
                                 My RSVP
                             </Text>
-                            {
-                                attending === true ? (
-                                    <Text
-                                        style={{
-                                            fontSize: 25,
-                                            fontFamily: "Bukhari Script",
-                                            color: "white",
-                                        }}
-                                    >
-                                        I'll be there
-                                    </Text>
-                                ) : (
-                                    <Text
-                                        style={{
-                                            fontSize: 25,
-                                            fontFamily: "Bukhari Script",
-                                            color: "white",
-                                        }}
-                                    >
-                                        Can't make it
-                                    </Text>
-                                )
-                                // : attending === undefined ? (
-                                //     <Text
-                                //         style={{
-                                //             fontSize: 25,
-                                //             fontFamily: "Bukhari Script",
-                                //             color: "black",
-                                //         }}
-                                //     >
-                                //         RSVP pending
-                                //     </Text>
-                                // )
-                            }
+                            <Text
+                                style={{
+                                    fontSize: 25,
+                                    fontFamily: "Bukhari Script",
+                                    color: "white",
+                                }}
+                            >
+                                {attending === true
+                                    ? `I'll be there`
+                                    : `Can't make it`}
+                            </Text>
                         </View>
                     )}
                 </View>
@@ -437,8 +332,19 @@ const SingleEvent = (params) => {
                     }
                 >
                     <View style={{ alignItems: "center" }}>
-                        <Ionicons name="people-outline" size={25} />
-                        <Text>Guest List</Text>
+                        <Ionicons
+                            name="people-outline"
+                            size={25}
+                            color="#5DA4F9"
+                        />
+                        <Text
+                            style={{
+                                ...globalStyles.heading3,
+                                color: "#5DA4F9",
+                            }}
+                        >
+                            Guest List
+                        </Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -456,8 +362,19 @@ const SingleEvent = (params) => {
                     }
                 >
                     <View style={{ alignItems: "center" }}>
-                        <Ionicons name="map-outline" size={25} />
-                        <Text>Maps and Events</Text>
+                        <Ionicons
+                            name="map-outline"
+                            size={25}
+                            color="#8291F3"
+                        />
+                        <Text
+                            style={{
+                                ...globalStyles.heading3,
+                                color: "#8291F3",
+                            }}
+                        >
+                            Maps and Events
+                        </Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -477,8 +394,19 @@ const SingleEvent = (params) => {
                     }
                 >
                     <View style={{ alignItems: "center" }}>
-                        <Ionicons name="chatbubbles-outline" size={25} />
-                        <Text>Message Board</Text>
+                        <Ionicons
+                            name="chatbubbles-outline"
+                            size={25}
+                            color="#A67FEC"
+                        />
+                        <Text
+                            style={{
+                                ...globalStyles.heading3,
+                                color: "#A67FEC",
+                            }}
+                        >
+                            Message Board
+                        </Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -497,8 +425,19 @@ const SingleEvent = (params) => {
                     }
                 >
                     <View style={{ alignItems: "center" }}>
-                        <Ionicons name="camera-outline" size={25} />
-                        <Text>Gallery</Text>
+                        <Ionicons
+                            name="camera-outline"
+                            size={25}
+                            color="#CB6CE6"
+                        />
+                        <Text
+                            style={{
+                                ...globalStyles.heading3,
+                                color: "#CB6CE6",
+                            }}
+                        >
+                            Gallery
+                        </Text>
                     </View>
                 </TouchableOpacity>
             </ScrollView>
@@ -566,5 +505,110 @@ const styles = StyleSheet.create({
         height: screenWidth / 4,
         justifyContent: "center",
         alignItems: "center",
+    },
+    tomorrow: {
+        ...globalStyles.heading3,
+        width: 100,
+        height: 100,
+        borderRadius: 100,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#CB6CE6",
+        position: "absolute",
+        right: 20,
+        top: 20,
+    },
+    daysAway: {
+        ...globalStyles.heading3,
+        width: 100,
+        height: 100,
+        borderRadius: 100,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#38b6ff",
+        position: "absolute",
+        right: 10,
+        top: 10,
+    },
+    countdownText: {
+        ...globalStyles.heading3,
+        textAlign: "center",
+        color: "white",
+    },
+    countdownSubtext: {
+        ...globalStyles.paragraph,
+        fontWeight: "bold",
+        color: "white",
+    },
+    hostControls: {
+        flexDirection: "row",
+        marginBottom: 20,
+        justifyContent: "center",
+        alignItems: "center",
+        borderWidth: 2,
+        padding: 8,
+        backgroundColor: "black",
+    },
+    coverPhoto: {
+        flex: 1,
+        width: "100%",
+        height: 200,
+    },
+    hostBtn: {
+        ...globalStyles.paragraph,
+        textAlign: "center",
+        fontWeight: "bold",
+    },
+    eventTitle: {
+        fontFamily: "Bukhari Script",
+        fontSize: 30,
+        padding: 5,
+        marginTop: 12,
+        marginLeft: 12,
+        marginRight: 12,
+    },
+    hostedBy: {
+        fontSize: 15,
+        marginLeft: 12,
+        marginRight: 12,
+    },
+    dates: {
+        fontSize: 20,
+        fontWeight: "bold",
+        marginTop: 5,
+        marginLeft: 12,
+        marginRight: 12,
+    },
+    times: {
+        fontSize: 17,
+        fontWeight: "bold",
+        marginTop: 5,
+        marginLeft: 12,
+        marginRight: 12,
+    },
+    description: {
+        fontSize: 15,
+        marginTop: 5,
+        marginLeft: 12,
+        marginRight: 12,
+        marginBottom: 20,
+    },
+    myRSVP: {
+        justifyContent: "center",
+        alignItems: "center",
+        height: 80,
+        width: 300,
+        marginBottom: 20,
+    },
+    archive: {
+        ...globalStyles.heading3,
+        width: 100,
+        height: 70,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "black",
+        position: "absolute",
+        right: 20,
+        top: 20,
     },
 });

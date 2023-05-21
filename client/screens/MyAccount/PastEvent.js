@@ -8,12 +8,13 @@ import {
 } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/core";
-
 // PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
 const Backgroundhorizontal = require("../../../assets/Backgroundhorizontal.png");
 
-const EventTile = ({ event, uid }) => {
+const PastEvent = ({ event, uid }) => {
+    // const event = props.route.params.event;
+    // const uid = props.route.params.uid
     // COMPONENT VARIABLES
     const navigation = useNavigation();
     // PROPS & PARAMS
@@ -115,7 +116,7 @@ const EventTile = ({ event, uid }) => {
     );
 };
 
-export default EventTile;
+export default PastEvent;
 
 const styles = StyleSheet.create({
     itemGuest: {

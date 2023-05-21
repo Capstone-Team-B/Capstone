@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/core";
+import React, { useEffect, useState } from "react";
 import {
     StyleSheet,
     Text,
@@ -9,7 +9,10 @@ import {
     Dimensions,
     SafeAreaView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/core";
+import { useIsFocused } from "@react-navigation/native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { Video } from "expo-av";
 import {
     getDatabase,
     ref,
@@ -20,29 +23,26 @@ import {
     orderByChild,
     equalTo,
 } from "firebase/database";
-import { useIsFocused } from "@react-navigation/native";
-import globalStyles from "../../utils/globalStyles";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import { Video } from "expo-av";
 import { auth } from "../../../firebase";
+import globalStyles from "../../utils/globalStyles";
 
 const GuestListScreen = (params) => {
+    // COMPONENT VARIABLES
+    const isFocused = useIsFocused();
+    const dbRef = ref(getDatabase());
+    const navigation = useNavigation();
+    const screenWidth = Dimensions.get("window").width;
+
+    // PROPS & PARAMS
+    const event = params.route.params.event;
+    const host_id = event.host_id;
+    const eventId = event.event_id;
+
+    // USESTATE
     const [loading, setLoading] = useState(true);
     const [guestList, setGuestList] = useState([]);
     const [host, setHost] = useState({});
     const [userId, setUserId] = useState("");
-    const event = params.route.params.event;
-    // const attending = params.route.params.attending
-    const host_id = event.host_id;
-    const eventId = event.event_id;
-
-    // console.log("guestList -->", guestList)
-
-    const isFocused = useIsFocused();
-    const dbRef = ref(getDatabase());
-
-    const navigation = useNavigation();
-    const screenWidth = Dimensions.get("window").width;
 
     const getGuests = async () => {
         let guestIds = [];
@@ -69,8 +69,6 @@ const GuestListScreen = (params) => {
                     .then((snapshot) => {
                         if (snapshot.exists()) {
                             const data = snapshot.val();
-                            // console.log("data -->", data)
-                            // const userEvent = Object.entries(data.userEvents).find(([key, value]) => value.event_id)[0]
                             const attendingStatus = Object.values(
                                 data.userEvents
                             ).find(({ event_id }) => event_id === eventId);
@@ -81,7 +79,6 @@ const GuestListScreen = (params) => {
                                 userEvent: attendingStatus,
                                 user_id: data.user_id,
                             };
-                            console.log("neededInfo -->", neededInfo);
                             guests = [...guests, neededInfo];
                         } else {
                             console.log("No data available");
@@ -144,15 +141,10 @@ const GuestListScreen = (params) => {
         const guestListRef = child(dbRef, `events/${eventId}/guestList`);
         const userId = guest.user_id;
 
-        console.log("guestListRef -->", guestListRef);
-        console.log("userId -->", userId);
-
         const guestToDeleteRef = child(guestListRef, userId);
         await remove(guestToDeleteRef);
 
-        console.log("guest.userEvent -->", guest.userEvent);
         const usersEventsRef = child(dbRef, `users/${userId}/userEvents}`);
-        console.log("usersEventsRef -->", usersEventsRef);
 
         const eventToDeleteRef = child(usersEventsRef, guest.userEvent);
         await remove(eventToDeleteRef);
@@ -164,20 +156,106 @@ const GuestListScreen = (params) => {
     };
 
     const showAttending = async () => {
+        let guestIds = [];
+        let guests = [];
+        try {
+            const guestsQuery = query(
+                child(dbRef, `events/${eventId}/guestList`)
+            );
+            await get(guestsQuery).then((guestsSnapshot) => {
+                if (guestsSnapshot.exists()) {
+                    const data = guestsSnapshot.val();
+                    guestIds = Object.keys(data);
+                } else {
+                    console.log("no guest data found");
+                }
+            });
+        } catch (error) {
+            console.log(error);
+        }
+        for (let i = 0; i < guestIds.length; i++) {
+            const guestQuery = query(child(dbRef, `users/${guestIds[i]}`));
+            try {
+                await get(guestQuery)
+                    .then((snapshot) => {
+                        if (snapshot.exists()) {
+                            const data = snapshot.val();
+                            const attendingStatus = Object.values(
+                                data.userEvents
+                            ).find(({ event_id }) => event_id === eventId);
+                            const neededInfo = {
+                                firstName: data.firstName,
+                                lastName: data.lastName,
+                                profilePic: data.profilePic,
+                                userEvent: attendingStatus,
+                                user_id: data.user_id,
+                            };
+                            guests = [...guests, neededInfo];
+                        } else {
+                            console.log("No data available");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            } catch (error) {
+                console.log(error);
+            }
+        }
         setGuestList(
-            guestList.filter((guest) => guest.userEvent.attending === true)
+            guests.filter((guest) => guest.userEvent.attending === true)
         );
     };
 
     const showNotAttending = async () => {
+        let guestIds = [];
+        let guests = [];
+        try {
+            const guestsQuery = query(
+                child(dbRef, `events/${eventId}/guestList`)
+            );
+            await get(guestsQuery).then((guestsSnapshot) => {
+                if (guestsSnapshot.exists()) {
+                    const data = guestsSnapshot.val();
+                    guestIds = Object.keys(data);
+                } else {
+                    console.log("no guest data found");
+                }
+            });
+        } catch (error) {
+            console.log(error);
+        }
+        for (let i = 0; i < guestIds.length; i++) {
+            const guestQuery = query(child(dbRef, `users/${guestIds[i]}`));
+            try {
+                await get(guestQuery)
+                    .then((snapshot) => {
+                        if (snapshot.exists()) {
+                            const data = snapshot.val();
+                            const attendingStatus = Object.values(
+                                data.userEvents
+                            ).find(({ event_id }) => event_id === eventId);
+                            const neededInfo = {
+                                firstName: data.firstName,
+                                lastName: data.lastName,
+                                profilePic: data.profilePic,
+                                userEvent: attendingStatus,
+                                user_id: data.user_id,
+                            };
+                            guests = [...guests, neededInfo];
+                        } else {
+                            console.log("No data available");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            } catch (error) {
+                console.log(error);
+            }
+        }
         setGuestList(
-            guestList.filter((guest) => guest.userEvent.attending === false)
-        );
-    };
-
-    const showNotResponded = async () => {
-        setGuestList(
-            guestList.filter((guest) => guest.userEvent.attending === undefined)
+            guests.filter((guest) => guest.userEvent.attending === false)
         );
     };
 

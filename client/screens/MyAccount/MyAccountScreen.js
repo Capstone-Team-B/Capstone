@@ -5,7 +5,6 @@ import {
     SafeAreaView,
     Image,
     TouchableOpacity,
-    Pressable,
     ImageBackground,
 } from "react-native";
 import React, { useState, useEffect } from "react";
@@ -105,19 +104,26 @@ const MyAccountScreen = (props) => {
                         />
                         <Text
                             style={{
+                                ...globalStyles.heading3,
+                            }}
+                        >
+                            Tap here to
+                        </Text>
+                        <Text
+                            style={{
                                 ...globalStyles.heading1,
                                 fontFamily: "Bukhari Script",
                             }}
                         >
-                            Create an event
+                            create an event
                         </Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.sectionHeader}>
                     <Text style={globalStyles.heading2}>Account details</Text>
-                    <Pressable onPress={handlePressEditAccount}>
+                    <TouchableOpacity onPress={handlePressEditAccount}>
                         <Ionicons name="create-outline" size={25} />
-                    </Pressable>
+                    </TouchableOpacity>
                 </View>
                 <View
                     style={{
@@ -179,9 +185,9 @@ const MyAccountScreen = (props) => {
                 </View>
                 <View style={styles.sectionHeader}>
                     <Text style={globalStyles.heading2}>Archive</Text>
-                    {/* <Pressable onPress={handlePressViewArchive}> */}
-                    <Ionicons name="archive-outline" size={25} />
-                    {/* </Pressable> */}
+                    <TouchableOpacity onPress={handlePressViewArchive}>
+                        <Ionicons name="archive-outline" size={25} />
+                    </TouchableOpacity>
                 </View>
                 <View
                     style={{

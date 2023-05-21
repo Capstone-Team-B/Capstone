@@ -100,7 +100,7 @@ const GuestProfileScreen = (params) => {
                 >
                     Will you be there?
                 </Text>
-                <Text style={globalStyles.paragraph}>
+                <Text style={globalStyles.heading3}>
                     Toggle your RSVP status
                 </Text>
             </View>

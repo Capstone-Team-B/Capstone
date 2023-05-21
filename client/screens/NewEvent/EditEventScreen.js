@@ -31,7 +31,7 @@ const EditEvent = (params) => {
 
     // PROPS & PARAMS
     const uid = params.route.params.uid;
-    console.log("uid on edit event details page -->", uid)
+    console.log("uid on edit event details page -->", uid);
     // USESTATE
     const [event, setEvent] = useState(params.route.params.event);
     const [weddingName, setWeddingName] = useState(event.name || "");
@@ -117,8 +117,8 @@ const EditEvent = (params) => {
 
             await update(eventRef, updatedEvent);
 
-            Alert.alert(`${weddingName} updated`)
-            navigation.goBack()
+            Alert.alert(`${weddingName} updated`);
+            navigation.goBack();
         } catch (error) {
             console.log(error);
         }
@@ -143,6 +143,7 @@ const EditEvent = (params) => {
                                 ...globalStyles.heading1,
                                 fontFamily: "Bukhari Script",
                                 margin: 20,
+                                padding: 5,
                                 textAlign: "center",
                             }}
                         >
