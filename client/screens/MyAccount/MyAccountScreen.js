@@ -28,7 +28,8 @@ const Background = require("../../../assets/Background.png");
 const MyAccountScreen = (props) => {
     const [user, setUser] = useState({});
     // const { uid } = props.route.params.uid;
-    const isFocused = useIsFocused();
+    let isFocused = useIsFocused();
+    console.log("isFocused", isFocused);
     const [userId, setUserId] = useState("");
 
     useEffect(() => {

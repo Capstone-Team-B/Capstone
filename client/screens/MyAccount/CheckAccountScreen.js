@@ -36,9 +36,8 @@ const CheckAccountScreen = (props) => {
 
     const navigation = useNavigation();
 
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
         //Make sure phone or email is entered to look up
-        console.log("submit clicked");
         if (phoneNumber === "" && email === "") {
             Alert.alert(`Please provide an email or phone number`);
             return;
