@@ -44,9 +44,9 @@ const CheckAccountScreen = (props) => {
             return;
         }
         // check for matching phone number first
+        const dbRef = ref(getDatabase());
         try {
             if (phoneNumber !== "") {
-                const dbRef = ref(getDatabase());
                 get(
                     query(
                         child(dbRef, "users"),
@@ -64,6 +64,8 @@ const CheckAccountScreen = (props) => {
                             );
                             navigation.navigate("CreateAccountScreen", {
                                 uid: uid,
+                                email: email,
+                                phoneNumber: phoneNumber,
                             });
                             return;
                         } else {
@@ -75,6 +77,8 @@ const CheckAccountScreen = (props) => {
 
                                 navigation.navigate("CreateAccountScreen", {
                                     uid: "",
+                                    email: email,
+                                    phoneNumber: phoneNumber,
                                 });
                                 return;
                             }
@@ -95,6 +99,8 @@ const CheckAccountScreen = (props) => {
                                     );
                                     navigation.navigate("CreateAccountScreen", {
                                         uid: uid,
+                                        email: email,
+                                        phoneNumber: phoneNumber,
                                     });
                                 } else {
                                     console.log("No email found");
@@ -103,6 +109,8 @@ const CheckAccountScreen = (props) => {
                                     );
                                     navigation.navigate("CreateAccountScreen", {
                                         uid: "",
+                                        email: email,
+                                        phoneNumber: phoneNumber,
                                     });
                                 }
                             });
@@ -111,12 +119,62 @@ const CheckAccountScreen = (props) => {
                             );
                             navigation.navigate("CreateAccountScreen", {
                                 uid: "",
+                                email: email,
+                                phoneNumber: phoneNumber,
                             });
                         }
                     })
                     .catch((error) => {
                         console.log("line 105", error);
                     });
+            } else {
+                //now should check for email not there go to create account
+                if (email === "") {
+                    Alert.alert("No matching account. Let's create one");
+
+                    navigation.navigate("CreateAccountScreen", {
+                        uid: "",
+                        email: email,
+                        phoneNumber: phoneNumber,
+                    });
+                    return;
+                }
+                console.log("Checking for email ", email);
+                get(
+                    query(
+                        child(dbRef, "users"),
+                        orderByChild("email"),
+                        equalTo(email)
+                    )
+                ).then((snapshot) => {
+                    console.log("Checked for email ", email);
+                    if (snapshot.exists()) {
+                        const userRef = snapshot.val();
+                        const uid = Object.keys(userRef)[0];
+                        Alert.alert(
+                            "Your Host made an account. Let's update it."
+                        );
+                        navigation.navigate("CreateAccountScreen", {
+                            uid: uid,
+                            email: email,
+                            phoneNumber: phoneNumber,
+                        });
+                    } else {
+                        console.log("No email found");
+                        Alert.alert("No matching account. Let's create one");
+                        navigation.navigate("CreateAccountScreen", {
+                            uid: "",
+                            email: email,
+                            phoneNumber: phoneNumber,
+                        });
+                    }
+                });
+                Alert.alert("No matching account. Let's create one");
+                navigation.navigate("CreateAccountScreen", {
+                    uid: "",
+                    email: email,
+                    phoneNumber: phoneNumber,
+                });
             }
         } catch (error) {
             console.log(error);
@@ -124,7 +182,11 @@ const CheckAccountScreen = (props) => {
     };
 
     const handleSkip = async () => {
-        navigation.navigate("CreateAccountScreen", { uid: "" });
+        navigation.navigate("CreateAccountScreen", {
+            uid: "",
+            email: email,
+            phoneNumber: phoneNumber,
+        });
     };
 
     return (

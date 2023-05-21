@@ -19,9 +19,10 @@ const dbRef = ref(getDatabase());
 
 const CreateAccountScreen = (props) => {
     // finds the user in database if they were created by a host
-    console.log("props.params inn create account", props.route.params);
+    console.log("props.params in create account", props.route.params);
     useEffect(() => {
         let uid = props.route.params.uid;
+
         if (uid !== "") {
             get(child(dbRef, `users/${uid}`)).then((snapshot) => {
                 if (snapshot.exists()) {
@@ -44,16 +45,24 @@ const CreateAccountScreen = (props) => {
 
     const [firstName, setFirstName] = useState(user.firstName || "");
     const [lastName, setLastName] = useState(user.lastName || "");
-    const [email, setEmail] = useState(user.email || "");
-    const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || "");
+    const [email, setEmail] = useState(
+        user.email || props.route.params.email || ""
+    );
+    const [phoneNumber, setPhoneNumber] = useState(
+        user.phoneNumber || props.route.params.phoneNumber || ""
+    );
     const [homeCity, setHomeCity] = useState(user.homeCity || "");
 
     //Pre fills in form if there is a uid
     useEffect(() => {
         setFirstName(user.firstName || "");
         setLastName(user.lastName || "");
-        setEmail(user.email || "");
-        setPhoneNumber(user.phoneNumber || "");
+        if (email === " ") {
+            setEmail(user.email || "");
+        }
+        if (phoneNumber === " ") {
+            setPhoneNumber(user.phoneNumber || "");
+        }
         setHomeCity(user.homeCity || "");
     }, [user]);
 
