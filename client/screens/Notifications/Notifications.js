@@ -13,16 +13,16 @@ import {
     get,
     query,
     orderByChild,
-    equalTo
 } from "firebase/database";
-import { useIsFocused } from "@react-navigation/native";
 import { auth } from "../../../firebase";
+import { useIsFocused } from "@react-navigation/native";
 
-const NotificationsScreen = (props) => {
+const NotificationsScreen = () => {
+    const uid = auth.currentUser.uid;
     const [eventNotificationIds, setEventNotificationIds] = useState([]);
     const [notificationData, setNotificationData] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [userId, setUserId] = useState("");
+    const [initialLoad, setInitialLoad] = useState(true);
     const dbRef = ref(getDatabase());
     const isFocused = useIsFocused();
 
@@ -34,40 +34,36 @@ const NotificationsScreen = (props) => {
                 const eventsQuery = query(
                     child(dbRef, `events/${eventId}/notifications`)
                 );
-                await get(eventsQuery).then((eventSnapshot) => {
-                    if (eventSnapshot.exists()) {
-                        const data = eventSnapshot.val();
-                        const eventObjs = Object.values(data);
-                        for (let j=0; j<eventObjs.length; j++){
-                            let eventId = eventObjs[j].notification_id
-                            eventNotifications.push(eventId);
-                        }
-                    } else {
-                        console.log("no event data");
+                const eventSnapshot = await get(eventsQuery);
+                if (eventSnapshot.exists()) {
+                    const data = eventSnapshot.val();
+                    const eventObjs = Object.values(data);
+                    for (let j = 0; j < eventObjs.length; j++) {
+                        let eventId = eventObjs[j].notification_id;
+                        eventNotifications.push(eventId);
                     }
-                });
+                } else {
+                    console.log("no event data");
+                }
             } catch (error) {
                 console.log(error);
             }
         }
         setEventNotificationIds(eventNotifications);
-    };    
 
-    const getNotificationData = async (arr) => {
         let notificationData = [];
-        for (let i = 0; i < arr.length; i++) {
+        for (let i = 0; i < eventNotifications.length; i++) {
             try {
                 const notificationsQuery = query(
-                    child(dbRef, `notifications/${arr[i]}`)
+                    child(dbRef, `notifications/${eventNotifications[i]}`)
                 );
-                await get(notificationsQuery).then((notificationSnapshot) => {
-                    if (notificationSnapshot.exists()) {
-                        const data = notificationSnapshot.val();
-                        notificationData.push(data);
-                    } else {
-                        console.log("no reminder data");
-                    }
-                });
+                const notificationSnapshot = await get(notificationsQuery);
+                if (notificationSnapshot.exists()) {
+                    const data = notificationSnapshot.val();
+                    notificationData.push(data);
+                } else {
+                    console.log("no reminder data");
+                }
             } catch (error) {
                 console.log(error);
             }
@@ -76,86 +72,87 @@ const NotificationsScreen = (props) => {
     };
 
     useEffect(() => {
-        const getUserId = async () => {
-            const currentUserId = auth.currentUser.uid
-            const dbRef = ref(getDatabase());
-            const usersQuery = query(
-                child(dbRef, 'users'),
-                orderByChild('auth_id'),
-                equalTo(currentUserId)
-            )
-            const snapshot = await get (usersQuery);
-    
-            if (snapshot.exists()) {
-                const data = Object.keys(snapshot.val());
-                setUserId(data[0])
-            }
-        }
-        getUserId()
-        setLoading(true);
-        const eventIdsQuery = query(
-            child(dbRef, `users/${userId}`),
-            orderByChild("userEvents")
-        );
-        try {
-            get(eventIdsQuery).then((eventSnapshot) => {
+        const loadNotifications = async () => {
+            setLoading(true);
+            const eventIdsQuery = query(
+                child(dbRef, `users/${uid}`),
+                orderByChild("userEvents")
+            );
+            try {
+                const eventSnapshot = await get(eventIdsQuery);
                 if (eventSnapshot.exists()) {
                     const data = eventSnapshot.val();
                     const userEventIds = Object.values(data.userEvents);
-                    getEventNotifications(userEventIds);
-                    getNotificationData(eventNotificationIds);
-                    setLoading(false);
+                    await getEventNotifications(userEventIds);
                 } else {
                     console.log("no reminder data");
                 }
-            });
-        } catch (error) {
-            console.log(error);
-        }
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+                setInitialLoad(false);
+            }
+        };
 
+        loadNotifications();
     }, [isFocused]);
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="height">
-          <ScrollView style={styles.container}>
-            <View style={styles.section}>
-              {loading ? (
-                <Text>...Loading your reminders</Text>
-              ) : notificationData.length > 0 ? (
-                notificationData.map((notification) => {
-                  console.log("notification--->", notification);
-                  const scheduledDate = new Date(notification.scheduled_date);
-                  const currentDate = new Date();
-                  const isPastDate = scheduledDate < currentDate;
-                  console.log("isPastDate --->", !isPastDate);
-                  return !isPastDate ? (
-                    <View key={notification.notification_id} style={styles.item}>
-                      <Text style={styles.input}>{notification.event_name}</Text>
-                      <Text style={styles.input}>{notification.title}:</Text>
-                      <Text style={styles.input}>{notification.body}</Text>
-                      <View>
-                        <Text style={styles.input}>
-                          {" "}
-                          {scheduledDate.toLocaleString("en-US", {
-                            weekday: "long",
-                            month: "long",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
-                        </Text>
-                      </View>
-                    </View>
-                  ) : (
-                    <View key={notification.notification_id}></View>
-                  );
-                })
-              ) : (
-                <Text>No reminders found.</Text>
-              )}
-            </View>
-          </ScrollView>
+            <ScrollView style={styles.container}>
+                <View style={styles.section}>
+                    {loading ? (
+                        <Text>...Loading your reminders</Text>
+                    ) : notificationData.length > 0 ? (
+                        notificationData.map((notification) => {
+                            console.log("notification--->", notification);
+                            const scheduledDate = new Date(
+                                notification.scheduled_date
+                            );
+                            const currentDate = new Date();
+                            const isPastDate = scheduledDate < currentDate;
+                            console.log("isPastDate --->", !isPastDate);
+                            return !isPastDate ? (
+                                <View
+                                    key={notification.notification_id}
+                                    style={styles.item}
+                                >
+                                    <Text style={styles.input}>
+                                        {notification.event_name}
+                                    </Text>
+                                    <Text style={styles.input}>
+                                        {notification.title}:
+                                    </Text>
+                                    <Text style={styles.input}>
+                                        {notification.body}
+                                    </Text>
+                                    <View>
+                                        <Text style={styles.input}>
+                                            {" "}
+                                            {scheduledDate.toLocaleString(
+                                                "en-US",
+                                                {
+                                                    weekday: "long",
+                                                    month: "long",
+                                                    day: "numeric",
+                                                    year: "numeric",
+                                                }
+                                            )}
+                                        </Text>
+                                    </View>
+                                </View>
+                            ) : (
+                                <View key={notification.notification_id}></View>
+                            );
+                        })
+                    ) : (
+                        <Text>No reminders found.</Text>
+                    )}
+                </View>
+            </ScrollView>
         </KeyboardAvoidingView>
-      );      
+    );
 };
 
 export default NotificationsScreen;

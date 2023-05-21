@@ -30,7 +30,6 @@ const SingleEvent = (params) => {
 
     // PROPS & PARAMS
     const uid = params.route.params.uid;
-    console.log("uid on singleEvent -->", uid)
     const event = params.route.params.event;
     const attending = event.guestList[uid].attending;
 
@@ -218,7 +217,7 @@ const SingleEvent = (params) => {
                                     <TouchableOpacity
                                         onPress={() =>
                                             navigation.navigate(
-                                                "Create Guest List",
+                                                "All Reminders",
                                                 {
                                                     event: event,
                                                     uid: uid,
@@ -247,7 +246,7 @@ const SingleEvent = (params) => {
                                                         fontWeight: "bold",
                                                     }}
                                                 >
-                                                    Create{"\n"}reminders
+                                                    Edit{"\n"}reminders
                                                 </Text>
                                             </ImageBackground>
                                         </View>

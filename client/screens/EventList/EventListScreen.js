@@ -53,36 +53,37 @@ const EventListScreen = (props) => {
             if (snapshot.exists()) {
                 const data = Object.keys(snapshot.val());
                 setUserId(data[0])
-            }
-        }
-        getUserId()
-        const checkUserEvents = child(dbRef, `users/${userId}/userEvents`)
-        if (!checkUserEvents) {
-            return setLoading(false)
-        }
-        const eventIdsQuery = query(
-            child(dbRef, `users/${userId}`),
-            orderByChild("userEvents")
-            );
-            try {
-                get(eventIdsQuery).then((eventSnapshot) => {
-                    if (eventSnapshot.exists()) {
-                        const data = eventSnapshot.val();
-                        if(data.userEvents){
-                            const objVal = Object.values(data.userEvents)
-                            const userEventIds = objVal.map((event) => event.event_id)
-                            getEvents(userEventIds);
-                        } else {
-                            return;
-                        }
-                    } else {
-                        console.log("no data");
+                const checkUserEvents = child(dbRef, `users/${data[0]}/userEvents`)
+                if (!checkUserEvents) {
+                    return setLoading(false)
+                }
+                const eventIdsQuery = query(
+                    child(dbRef, `users/${data[0]}`),
+                    orderByChild("userEvents")
+                    );
+                    try {
+                        get(eventIdsQuery).then((eventSnapshot) => {
+                            if (eventSnapshot.exists()) {
+                                const data = eventSnapshot.val();
+                                if(data.userEvents){
+                                    const objVal = Object.values(data.userEvents)
+                                    const userEventIds = objVal.map((event) => event.event_id)
+                                    getEvents(userEventIds);
+                                } else {
+                                    return;
+                                }
+                            } else {
+                                console.log("no data");
+                            }
+                        });
+                    } catch (error) {
+                        console.log(error);
                     }
-                });
-            } catch (error) {
-                console.log(error);
             }
-            setLoading(false)
+        }
+
+        getUserId()
+        setLoading(false)
         }, [isFocused]);
         
     // FUNCTIONS
