@@ -417,7 +417,7 @@ const SingleEvent = (params) => {
                         borderColor: "#CB6CE6",
                     }}
                     onPress={() =>
-                        navigation.navigate("EventGallery", {
+                        navigation.navigate("UploadEventImagesScreen", {
                             event: event,
                             uid: uid,
                             userName: `${user.firstName} ${user.lastName}`,

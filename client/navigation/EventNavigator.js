@@ -15,7 +15,6 @@ import AllSubEvents from "../screens/SubEvents/AllSubEvents";
 import MapLocationScreen from "../screens/Maps/MapLocationScreen";
 import ImportContacts from "../screens/GuestList/ImportGuests";
 import UploadEventImagesScreen from "../screens/SingleEvent/UploadEventImagesScreen";
-import EventGallery from "../screens/SingleEvent/EventGallery";
 import SinglePhoto from "../screens/SingleEvent/SinglePhoto";
 import globalStyles from "../utils/globalStyles";
 import EditNotification from "../screens/Notifications/EditNotification";
@@ -127,14 +126,6 @@ const EventNavigator = (props) => {
                 component={UploadEventImagesScreen}
                 options={{
                     title: "Upload Event Images",
-                    headerTitleStyle: globalStyles.screenHeader,
-                }}
-            />
-            <Stack.Screen
-                name="EventGallery"
-                component={EventGallery}
-                options={{
-                    title: "Event Gallery",
                     headerTitleStyle: globalStyles.screenHeader,
                 }}
             />
