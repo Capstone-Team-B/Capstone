@@ -105,7 +105,6 @@ const LoginScreen = () => {
                 const existingUser = Object.keys(data).find(
                     (key) => data[key].email === email
                 );
-                console.log("existing user uid --> ", existingUser);
                 if (!existingUser) {
                     console.log("no existing user", email);
                     navigation.navigate("CheckAccountScreen", {

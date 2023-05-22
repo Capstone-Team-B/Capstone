@@ -125,7 +125,7 @@ const EventNavigator = (props) => {
                 name="UploadEventImagesScreen"
                 component={UploadEventImagesScreen}
                 options={{
-                    title: "Upload Event Images",
+                    title: "View & Upload Event Images",
                     headerTitleStyle: globalStyles.screenHeader,
                 }}
             />
