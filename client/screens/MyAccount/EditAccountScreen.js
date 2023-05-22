@@ -93,7 +93,7 @@ const EditAccountScreen = (props) => {
                         <Text style={styles.sectionHeader}>
                             Account Details
                         </Text>
-                        <Text style={{...globalStyles.inputLabel}}>
+                        <Text style={{ ...globalStyles.inputLabel }}>
                             First name:
                         </Text>
                         <TextInput
@@ -151,7 +151,14 @@ const EditAccountScreen = (props) => {
                             }}
                             placeholder="Phone Number"
                             value={phoneNumber}
-                            onChangeText={setPhoneNumber}
+                            onChangeText={(phoneNumber) =>
+                                setPhoneNumber(
+                                    phoneNumber.replace(
+                                        /(\d{3})(\d{3})(\d{4})/,
+                                        "($1) $2-$3"
+                                    )
+                                )
+                            }
                         />
                         <Text
                             style={{
@@ -169,42 +176,44 @@ const EditAccountScreen = (props) => {
                             value={homeCity}
                             onChangeText={setHomeCity}
                         />
-                            <Text style={styles.sectionHeader}>
-                                Edit Guest Profile
-                            </Text>
-                            <Text
-                                style={{
-                                    ...globalStyles.inputLabel,
-                                }}
-                            >
-                                Dietary restrictions:
-                            </Text>
-                            <TextInput
-                                style={{
-                                    ...globalStyles.input,
-                                    backgroundColor: "white",
-                                }}
-                                placeholder="Dietary"
-                                value={dietary}
-                                onChangeText={setDietary}
-                            />
-                            <Text
-                                style={{
-                                    ...globalStyles.inputLabel,
-                                }}
-                            >
-                                Accessibility notes:
-                            </Text>
-                            <TextInput
-                                style={{
-                                    ...globalStyles.input,
-                                    backgroundColor: "white",
-                                }}
-                                placeholder="Accessibility"
-                                value={accessibility}
-                                onChangeText={setAccessibility}
-                            />
-                        <SafeAreaView style={{ alignItems: "center", marginTop: 20 }}>
+                        <Text style={styles.sectionHeader}>
+                            Edit Guest Profile
+                        </Text>
+                        <Text
+                            style={{
+                                ...globalStyles.inputLabel,
+                            }}
+                        >
+                            Dietary restrictions:
+                        </Text>
+                        <TextInput
+                            style={{
+                                ...globalStyles.input,
+                                backgroundColor: "white",
+                            }}
+                            placeholder="Dietary"
+                            value={dietary}
+                            onChangeText={setDietary}
+                        />
+                        <Text
+                            style={{
+                                ...globalStyles.inputLabel,
+                            }}
+                        >
+                            Accessibility notes:
+                        </Text>
+                        <TextInput
+                            style={{
+                                ...globalStyles.input,
+                                backgroundColor: "white",
+                            }}
+                            placeholder="Accessibility"
+                            value={accessibility}
+                            onChangeText={setAccessibility}
+                        />
+                        <SafeAreaView
+                            style={{ alignItems: "center", marginTop: 20 }}
+                        >
                             {profilePic ? (
                                 <Image
                                     style={styles.profilePic}
@@ -339,7 +348,7 @@ const styles = StyleSheet.create({
         ...globalStyles.heading2,
         margin: 20,
         textAlign: "center",
-    }
+    },
 });
 
 export default EditAccountScreen;
