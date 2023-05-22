@@ -6,6 +6,7 @@ import {
     StyleSheet,
     Text,
     SafeAreaView,
+    TouchableOpacity,
 } from "react-native";
 import {
     getDatabase,
@@ -18,6 +19,7 @@ import {
 import { auth } from "../../../firebase";
 import { useIsFocused } from "@react-navigation/native";
 import globalStyles from "../../utils/globalStyles";
+import { useNavigation } from "@react-navigation/native";
 
 const NotificationsScreen = () => {
     const uid = auth.currentUser.uid;
@@ -100,38 +102,64 @@ const NotificationsScreen = () => {
         loadNotifications();
     }, [isFocused]);
 
+    const navigation = useNavigation();
+
     return (
         // <KeyboardAvoidingView style={styles.container} behavior="height">
         <SafeAreaView style={globalStyles.container}>
-            <ScrollView style={styles.container}>
+            <ScrollView>
+                <Text
+                    style={{
+                        ...globalStyles.heading1,
+                        fontFamily: "Bukhari Script",
+                        textAlign: "center",
+                        padding: 25,
+                    }}
+                >
+                    Event Reminders
+                </Text>
                 <View style={styles.section}>
                     {loading ? (
                         <Text>...Loading your reminders</Text>
                     ) : notificationData.length > 0 ? (
                         notificationData.map((notification) => {
-                            console.log("notification--->", notification);
                             const scheduledDate = new Date(
                                 notification.scheduled_date
                             );
                             const currentDate = new Date();
                             const isPastDate = scheduledDate < currentDate;
-                            console.log("isPastDate --->", !isPastDate);
                             return !isPastDate ? (
                                 <View
                                     key={notification.notification_id}
-                                    style={styles.item}
+                                    style={{
+                                        ...globalStyles.tile,
+                                        margin: 12,
+                                        padding: 12,
+                                    }}
                                 >
-                                    <Text style={styles.input}>
+                                    <Text style={{ ...globalStyles.heading3 }}>
                                         {notification.event_name}
                                     </Text>
-                                    <Text style={styles.input}>
+                                    <Text
+                                        style={{
+                                            ...globalStyles.paragraph,
+                                        }}
+                                    >
                                         {notification.title}:
                                     </Text>
-                                    <Text style={styles.input}>
+                                    <Text
+                                        style={{
+                                            ...globalStyles.paragraph,
+                                        }}
+                                    >
                                         {notification.body}
                                     </Text>
                                     <View>
-                                        <Text style={styles.input}>
+                                        <Text
+                                            style={{
+                                                ...globalStyles.paragraph,
+                                            }}
+                                        >
                                             {" "}
                                             {scheduledDate.toLocaleString(
                                                 "en-US",
@@ -167,7 +195,7 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     section: {
-        marginBottom: 20,
+        margin: 12,
     },
     sectionTitle: {
         fontSize: 18,

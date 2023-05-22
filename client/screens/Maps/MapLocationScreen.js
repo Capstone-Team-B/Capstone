@@ -87,7 +87,6 @@ const MapLocationScreen = (params) => {
             .then(async (snapshot) => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
-                    console.log("shanpshot data", data);
                     const _data = Object.keys(data).map((key) => ({
                         ...data[key],
                     }));
@@ -133,7 +132,6 @@ const MapLocationScreen = (params) => {
                 const newEventId = newLocationRef.key;
                 set(newLocationRef, newLocation).then(() => {
                     setDataInfo({});
-                    console.log(locations);
                     onLoadData();
                     Keyboard.dismiss();
                 });

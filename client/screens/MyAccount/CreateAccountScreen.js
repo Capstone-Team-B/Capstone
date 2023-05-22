@@ -19,7 +19,6 @@ const dbRef = ref(getDatabase());
 
 const CreateAccountScreen = (props) => {
     // finds the user in database if they were created by a host
-    console.log("props.params in create account", props.route.params);
     useEffect(() => {
         let uid = props.route.params.uid;
 
@@ -144,9 +143,7 @@ const CreateAccountScreen = (props) => {
                         user_id: auth_id,
                         auth_id: auth_id,
                     };
-                    console.log("New user info -->", newUser);
                     const newUserRef = child(dbRef, `users/${auth_id}`);
-                    console.log("new User ref", newUserRef);
                     set(newUserRef, newUser).then((newUser) =>
                         navigation.navigate("MyAccountScreen", {
                             uid: newUser.user_id,

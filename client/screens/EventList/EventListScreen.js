@@ -183,7 +183,7 @@ const EventListScreen = (props) => {
                                 textAlign: "center",
                             }}
                         >
-                            Tap here to
+                            tap here to
                         </Text>
                         <Text
                             style={{
@@ -192,7 +192,7 @@ const EventListScreen = (props) => {
                                 padding: 12,
                             }}
                         >
-                            plan something!
+                            Plan something!
                         </Text>
                     </TouchableOpacity>
                 </View>

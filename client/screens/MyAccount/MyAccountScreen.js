@@ -106,7 +106,7 @@ const MyAccountScreen = (props) => {
                                 ...globalStyles.heading3,
                             }}
                         >
-                            Tap here to
+                            tap here to
                         </Text>
                         <Text
                             style={{
@@ -114,7 +114,7 @@ const MyAccountScreen = (props) => {
                                 fontFamily: "Bukhari Script",
                             }}
                         >
-                            create an event
+                            Create an event
                         </Text>
                     </TouchableOpacity>
                 </View>

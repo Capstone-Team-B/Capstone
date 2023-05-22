@@ -39,7 +39,6 @@ const EditAccountScreen = (props) => {
     useEffect(() => {
         setUser(props.route.params);
     }, [props]);
-    console.log("user on edit user screen -->", user.user_id);
 
     // FUNCTIONS
     const handleSubmit = async () => {

@@ -25,7 +25,6 @@ const Background = require("../../../assets/Background.png");
 import globalStyles from "../../utils/globalStyles";
 
 const CheckAccountScreen = (props) => {
-    console.log("props are -->", props.route.params);
     const [user, setUser] = useState(props.route.params);
     const [email, setEmail] = useState(user.email || "");
     const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || "");
@@ -57,7 +56,6 @@ const CheckAccountScreen = (props) => {
                         if (snapshot.exists()) {
                             const userRef = snapshot.val();
                             const uid = Object.keys(userRef)[0];
-                            console.log("uid in phone check", uid);
                             Alert.alert(
                                 "Your Host made an account. Let's update it."
                             );

@@ -1,16 +1,37 @@
 import { useNavigation } from "@react-navigation/core";
 import * as ImagePicker from "expo-image-picker";
 import {
-    child, equalTo, get, getDatabase, orderByChild, push, query, ref as refD,
-    set
+    child,
+    equalTo,
+    get,
+    getDatabase,
+    orderByChild,
+    push,
+    query,
+    ref as refD,
+    set,
 } from "firebase/database";
 import {
-    getDownloadURL, getStorage, listAll, ref, uploadBytesResumable
+    getDownloadURL,
+    getStorage,
+    listAll,
+    ref,
+    uploadBytesResumable,
 } from "firebase/storage";
 import React, { useEffect, useState } from "react";
 import {
-    Button, Dimensions, FlatList, Image, Modal, SafeAreaView, ScrollView, StyleSheet,
-    Text, TouchableOpacity, TouchableWithoutFeedback, View
+    Button,
+    Dimensions,
+    FlatList,
+    Image,
+    Modal,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View,
 } from "react-native";
 import Swiper from "react-native-swiper";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -18,6 +39,7 @@ import { auth } from "../../../firebase";
 import globalStyles from "../../utils/globalStyles";
 
 const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
 
 const UploadEventImagesScreen = (params) => {
     const uid = params.route.params.uid;
@@ -259,44 +281,7 @@ const UploadEventImagesScreen = (params) => {
 
     return (
         <SafeAreaView style={globalStyles.container}>
-            {images.length == 0 && eventImages.length <= 5 && (
-                <View
-                    style={{
-                        justifyContent: "center",
-                    }}
-                >
-                    <TouchableOpacity
-                        style={{
-                            padding: 8,
-                            backgroundColor: "#38b6ff",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            flexDirection: "row",
-                            borderRadius: 8,
-                        }}
-                        onPress={pickImage}
-                    >
-                        <Ionicons
-                            name="add-circle-outline"
-                            size={35}
-                            color={"white"}
-                        />
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                alignSelf: "center",
-                                textAlign: "center",
-                                color: "white",
-                                marginLeft: 12,
-                            }}
-                        >
-                            Add photos to shared
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            )}
-
-            {eventImages.length > 0 && (
+            {eventImages.length > 0 && images.length === 0 && (
                 <Swiper style={{ position: "relative" }} showsButtons={true}>
                     {eventImages.map((photo, index) => (
                         <>
@@ -308,10 +293,11 @@ const UploadEventImagesScreen = (params) => {
                                     <Image
                                         source={{ uri: photo }}
                                         style={{
-                                            height: "100%",
-                                            width: "100%",
+                                            // height: screenHeight,
+                                            width: screenWidth,
+                                            aspectRatio: 1,
                                             margin: 6,
-                                            borderRadius: 10,
+                                            // borderRadius: 10,
                                         }}
                                     />
                                 </TouchableWithoutFeedback>
@@ -348,30 +334,6 @@ const UploadEventImagesScreen = (params) => {
 
             {images.length > 0 && (
                 <View>
-                    <TouchableOpacity
-                        style={{
-                            ...globalStyles.button,
-                            backgroundColor: "#cb6ce6",
-                        }}
-                        onPress={uploadImages}
-                    >
-                        <Ionicons
-                            name="cloud-upload-outline"
-                            color={"white"}
-                            size={25}
-                        />
-                        <Text
-                            style={{
-                                ...globalStyles.heading3,
-                                alignSelf: "center",
-                                textAlign: "center",
-                                color: "black",
-                            }}
-                        >
-                            Share your selected photos from {"\n"}
-                            {event.name}
-                        </Text>
-                    </TouchableOpacity>
                     <FlatList
                         data={images}
                         numColumns={2}
@@ -421,9 +383,62 @@ const UploadEventImagesScreen = (params) => {
                             Edit your photo selection
                         </Text>
                     </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{
+                            ...globalStyles.button,
+                            backgroundColor: "#cb6ce6",
+                        }}
+                        onPress={uploadImages}
+                    >
+                        <Ionicons
+                            name="cloud-upload-outline"
+                            color={"white"}
+                            size={25}
+                        />
+                        <Text
+                            style={{
+                                ...globalStyles.heading3,
+                                alignSelf: "center",
+                                textAlign: "center",
+                                color: "white",
+                            }}
+                        >
+                            Share selected photos from {"\n"}
+                            {event.name}
+                        </Text>
+                    </TouchableOpacity>
                 </View>
             )}
-
+            {images.length == 0 && eventImages.length <= 5 && (
+                <View
+                    style={{
+                        justifyContent: "center",
+                        backgroundColor: "black",
+                    }}
+                >
+                    <TouchableOpacity
+                        style={{
+                            ...globalStyles.button,
+                            padding: 8,
+                            backgroundColor: "#38b6ff",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                        onPress={pickImage}
+                    >
+                        <Ionicons
+                            name="add-circle-outline"
+                            size={35}
+                            color={"white"}
+                        />
+                        <Text
+                            style={{ ...globalStyles.heading3, color: "white" }}
+                        >
+                            Add photos to shared album
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            )}
             {isSearchText && (
                 <Modal visible={isSearchText}>
                     <ScrollView style={{ marginTop: 50 }}>
@@ -459,8 +474,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#9DD6EB",
-        position: 'relative',
+        backgroundColor: "black",
+        position: "relative",
     },
     userSearch: {
         zIndex: 99,

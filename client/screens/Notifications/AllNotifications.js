@@ -10,6 +10,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, child, get, query } from "firebase/database";
 import { useIsFocused } from "@react-navigation/native";
+import globalStyles from "../../utils/globalStyles";
 
 const AllNotifications = (params) => {
     const [event, setEvent] = useState(params.route.params.event);

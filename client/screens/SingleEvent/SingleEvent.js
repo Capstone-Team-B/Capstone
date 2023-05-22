@@ -311,8 +311,13 @@ const SingleEvent = (params) => {
                         }
                     >
                         <View style={{ alignItems: "center" }}>
-                            <Ionicons name="happy-outline" size={25} />
-                            <Text>Update RSVP Status</Text>
+                            <Ionicons name="happy-outline" size={25} color={"#38b6ff"}/>
+                            <Text
+                            style={{
+                                ...globalStyles.heading3,
+                                color: "#38b6ff",
+                            }}
+                        >Update RSVP Status</Text>
                         </View>
                     </TouchableOpacity>
                 )}

@@ -25,7 +25,6 @@ const screenWidth = Dimensions.get("window").width;
 
 const UploadCoverPhotoScreen = (params) => {
     const event = params.route.params.event
-    console.log("event -->", event)
     const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
     const [image, setImage] = useState(null);
     const [uploading, setUploading] = useState(false);
