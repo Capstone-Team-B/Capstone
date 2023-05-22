@@ -424,7 +424,7 @@ const CreateGuestList = (params) => {
                                         color: "white",
                                     }}
                                 >
-                                    Save Updates & Send SMS Invites
+                                    Save Updates & Send Invites
                                 </Text>
                             </TouchableOpacity>
                         )}

@@ -229,7 +229,14 @@ const CreateAccountScreen = (props) => {
                             style={globalStyles.inputAccount}
                             placeholder="Phone Number"
                             value={phoneNumber}
-                            onChangeText={setPhoneNumber}
+                            onChangeText={(phoneNumber) =>
+                                setPhoneNumber(
+                                    phoneNumber.replace(
+                                        /(\d{3})(\d{3})(\d{4})/,
+                                        "($1) $2-$3"
+                                    )
+                                )
+                            }
                         />
                         <TextInput
                             style={globalStyles.inputAccount}
