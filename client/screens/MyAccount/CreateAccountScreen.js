@@ -3,14 +3,10 @@ import {
     KeyboardAvoidingView,
     ScrollView,
     View,
-    StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
     Alert,
-    SafeAreaView,
-    Button,
-    Image,
     ImageBackground,
 } from "react-native";
 import { auth } from "../../../firebase";
@@ -23,8 +19,10 @@ const dbRef = ref(getDatabase());
 
 const CreateAccountScreen = (props) => {
     // finds the user in database if they were created by a host
+    console.log("props.params in create account", props.route.params);
     useEffect(() => {
         let uid = props.route.params.uid;
+
         if (uid !== "") {
             get(child(dbRef, `users/${uid}`)).then((snapshot) => {
                 if (snapshot.exists()) {
@@ -41,54 +39,55 @@ const CreateAccountScreen = (props) => {
     }, [props]);
 
     const [user, setUser] = useState({});
-    
-    //testing elements
-    const [password, setPassword] = useState("pwpwpwpw" || "");
-    const [confirmPassword, setConfirmPassword] = useState("pwpwpwpw" || "");
 
-    // const [password, setPassword] = useState("");
-    // const [confirmPassword, setConfirmPassword] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
     const [firstName, setFirstName] = useState(user.firstName || "");
     const [lastName, setLastName] = useState(user.lastName || "");
-    const [email, setEmail] = useState(user.email || "");
-    const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || "");
-    const [homeCity, setHomeCity] = useState(user.homeCity || "");
-    const [profilePic, setProfilePic] = useState(user.profilePic || "");
-    const [accessibility, setAccessibility] = useState(
-        user.accessibility || ""
+    const [email, setEmail] = useState(
+        user.email || props.route.params.email || ""
     );
-    const [dietary, setDietary] = useState(user.dietary || "");
+    const [phoneNumber, setPhoneNumber] = useState(
+        user.phoneNumber || props.route.params.phoneNumber || ""
+    );
+    const [homeCity, setHomeCity] = useState(user.homeCity || "");
 
     //Pre fills in form if there is a uid
     useEffect(() => {
         setFirstName(user.firstName || "");
         setLastName(user.lastName || "");
-        setEmail(user.email || "");
-        setPhoneNumber(user.phoneNumber || "");
+        if (email === " ") {
+            setEmail(user.email || "");
+        }
+        if (phoneNumber === " ") {
+            setPhoneNumber(user.phoneNumber || "");
+        }
         setHomeCity(user.homeCity || "");
-        setProfilePic(user.profilePic || "");
-        setAccessibility(user.accessibility || "");
-        setDietary(user.dietary || "");
     }, [user]);
 
     const navigation = useNavigation();
-    let errorFlag = false;
+    // let errorFlag = false;
 
     const isConfirmedPassword = () => {
+        console.log("checking password");
         if (password !== confirmPassword) {
-            errorFlag = true;
-            Alert.alert({
-                message: "Password and confirm password should be same.",
-            });
+            console.log("password not matching");
+            return false;
+        } else {
+            return true;
         }
     };
 
     const handleSubmit = async () => {
         const uid = props.route.params.uid;
         // Check that Form was filled out with name and email
-        isConfirmedPassword();
-        console.log(errorFlag);
+        const checkingPassword = isConfirmedPassword();
+        if (!checkingPassword) {
+            Alert.alert("Password and confirm password should be same.");
+            return;
+        }
+        // console.log(errorFlag);
         if (firstName === "" || lastName === "" || email === "") {
             Alert.alert("Please provide your name and a contact method");
             return;
@@ -114,10 +113,6 @@ const CreateAccountScreen = (props) => {
                                 email: email,
                                 phoneNumber: phoneNumber,
                                 homeCity: homeCity,
-                                profilePic: profilePic,
-                                dietary: dietary,
-                                accessibility: accessibility,
-                                guest_id: uid,
                                 auth_id: auth_id,
                             };
                             update(userRef, updateUser).then(() =>
@@ -146,20 +141,16 @@ const CreateAccountScreen = (props) => {
                         email: email,
                         phoneNumber: phoneNumber,
                         homeCity: homeCity,
-                        profilePic: profilePic,
-                        dietary: dietary,
-                        accessibility: accessibility,
-                        userEvents: {},
-                        guest_id: auth_id,
                         user_id: auth_id,
                         auth_id: auth_id,
                     };
                     console.log("New user info -->", newUser);
                     const newUserRef = child(dbRef, `users/${auth_id}`);
-                    console.log(newUserRef);
-                    set(newUserRef, newUser).then(() =>
+                    console.log("new User ref", newUserRef);
+                    set(newUserRef, newUser).then((newUser) =>
                         navigation.navigate("MyAccountScreen", {
                             uid: newUser.user_id,
+                            // uid: newUser.user_id,
                         })
                     );
                 }
@@ -183,160 +174,97 @@ const CreateAccountScreen = (props) => {
                     flex: 1,
                     width: "100%",
                 }}
-            ></ImageBackground>
-            <ScrollView>
-                <View style={styles.section}>
-                    <Text
-                        style={{
-                            ...globalStyles.heading2,
-                            marginBottom: 20,
-                            textAlign: "center",
-                        }}
-                    >
-                        Create a Password
-                    </Text>
-                    <TextInput
-                        placeholder="Password"
-                        value={password}
-                        onChangeText={(text) => setPassword(text)}
-                        style={globalStyles.inputAccount}
-                        secureTextEntry
-                    />
-                    <TextInput
-                        placeholder="Confirm Password"
-                        value={confirmPassword}
-                        onChangeText={(text) => setConfirmPassword(text)}
-                        style={globalStyles.inputAccount}
-                        secureTextEntry
-                    />
-                    <Text
-                        style={{
-                            ...globalStyles.heading2,
-                            margin: 20,
-                            textAlign: "center",
-                        }}
-                    >
-                        Account Details
-                    </Text>
-
-                    <TextInput
-                        style={globalStyles.inputAccount}
-                        placeholder={"First Name"}
-                        value={firstName}
-                        onChangeText={setFirstName}
-                    />
-                    <TextInput
-                        style={globalStyles.inputAccount}
-                        placeholder="Last Name"
-                        value={lastName}
-                        onChangeText={setLastName}
-                    />
-                    <TextInput
-                        style={globalStyles.inputAccount}
-                        placeholder="Email"
-                        value={email}
-                        onChangeText={setEmail}
-                    />
-                    <TextInput
-                        style={globalStyles.inputAccount}
-                        placeholder="Phone Number"
-                        value={phoneNumber}
-                        onChangeText={setPhoneNumber}
-                    />
-                    <TextInput
-                        style={globalStyles.inputAccount}
-                        placeholder="Home City"
-                        value={homeCity}
-                        onChangeText={setHomeCity}
-                    />
-                </View>
-                <View>
-                    <TouchableOpacity
-                        style={styles.submitButton}
-                        onPress={handleSubmit}
-                        required={true}
-                    >
-                        <Text style={styles.submitButtonText}>
-                            Create Account
+            >
+                <ScrollView>
+                    <View style={{ margin: 25 }}>
+                        <Text
+                            style={{
+                                ...globalStyles.heading2,
+                                marginBottom: 20,
+                                textAlign: "center",
+                            }}
+                        >
+                            Create a Password
                         </Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
+                        <TextInput
+                            placeholder="Password (Required)"
+                            value={password}
+                            onChangeText={(text) => setPassword(text)}
+                            style={globalStyles.inputAccount}
+                            secureTextEntry
+                        />
+                        <TextInput
+                            placeholder="Confirm Password (Required)"
+                            value={confirmPassword}
+                            onChangeText={(text) => setConfirmPassword(text)}
+                            style={globalStyles.inputAccount}
+                            secureTextEntry
+                        />
+                        <Text
+                            style={{
+                                ...globalStyles.heading2,
+                                margin: 20,
+                                textAlign: "center",
+                            }}
+                        >
+                            Account Details
+                        </Text>
+
+                        <TextInput
+                            style={globalStyles.inputAccount}
+                            placeholder={"First Name (Required)"}
+                            value={firstName}
+                            onChangeText={setFirstName}
+                        />
+                        <TextInput
+                            style={globalStyles.inputAccount}
+                            placeholder="Last Name (Required)"
+                            value={lastName}
+                            onChangeText={setLastName}
+                        />
+                        <TextInput
+                            style={globalStyles.inputAccount}
+                            placeholder="Email (Required)"
+                            value={email}
+                            onChangeText={setEmail}
+                        />
+                        <TextInput
+                            style={globalStyles.inputAccount}
+                            placeholder="Phone Number"
+                            value={phoneNumber}
+                            onChangeText={setPhoneNumber}
+                        />
+                        <TextInput
+                            style={globalStyles.inputAccount}
+                            placeholder="Home City"
+                            value={homeCity}
+                            onChangeText={setHomeCity}
+                        />
+                    </View>
+                    <View>
+                        <TouchableOpacity
+                            style={{
+                                ...globalStyles.button,
+                                backgroundColor: "#ad6ce6",
+                            }}
+                            onPress={handleSubmit}
+                            required={true}
+                        >
+                            <Text
+                                style={{
+                                    ...globalStyles.paragraph,
+                                    color: "white",
+                                    fontWeight: "bold",
+                                }}
+                            >
+                                Create Account
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+            </ImageBackground>
         </KeyboardAvoidingView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-    },
-    section: {
-        margin: 12,
-    },
-    // input: {
-    //     borderWidth: 1,
-    //     borderColor: "#ccc",
-    //     borderRadius: 5,
-    //     padding: 10,
-    //     marginBottom: 10,
-    // },
-    addButton: {
-        backgroundColor: "#007bff",
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    addButtonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    deleteButton: {
-        backgroundColor: "white",
-        borderColor: "#dc3545",
-        borderWidth: 2,
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    deleteButtonText: {
-        color: "#dc3545",
-        fontSize: 14,
-        fontWeight: "bold",
-    },
-    outlineButton: {
-        backgroundColor: "white",
-        borderColor: "#007bff",
-        borderWidth: 2,
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    outlineButtonText: {
-        color: "#007bff",
-        fontSize: 14,
-        fontWeight: "bold",
-    },
-    submitButton: {
-        backgroundColor: "#2E8B57",
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    submitButtonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-});
 
 export default CreateAccountScreen;

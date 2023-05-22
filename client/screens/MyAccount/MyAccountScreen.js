@@ -10,7 +10,15 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { getDatabase, ref, child, get, query, equalTo, orderByChild } from "firebase/database";
+import {
+    getDatabase,
+    ref,
+    child,
+    get,
+    query,
+    equalTo,
+    orderByChild,
+} from "firebase/database";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { auth } from "../../../firebase";
 import globalStyles from "../../utils/globalStyles";
@@ -20,44 +28,43 @@ const Background = require("../../../assets/Background.png");
 const MyAccountScreen = (props) => {
     const [user, setUser] = useState({});
     // const { uid } = props.route.params.uid;
-    const isFocused = useIsFocused();
+    let isFocused = useIsFocused();
     const [userId, setUserId] = useState("");
 
     useEffect(() => {
         const getUserId = async () => {
-            const currentUserId = auth.currentUser.uid
+            const currentUserId = auth.currentUser.uid;
             const dbRef = ref(getDatabase());
             const usersQuery = query(
-                child(dbRef, 'users'),
-                orderByChild('auth_id'),
+                child(dbRef, "users"),
+                orderByChild("auth_id"),
                 equalTo(currentUserId)
-            )
-            const snapshot = await get (usersQuery);
-    
+            );
+            const snapshot = await get(usersQuery);
+
             if (snapshot.exists()) {
                 const data = Object.keys(snapshot.val());
-                setUserId(data[0])
+                setUserId(data[0]);
+                get(child(dbRef, `users/${data[0]}`))
+                    .then((snapshot) => {
+                        if (snapshot.exists()) {
+                            setUser(snapshot.val());
+                        } else {
+                            console.log("No data available");
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
             }
-        }
-        getUserId()
-        const dbRef = ref(getDatabase());
-        get(child(dbRef, `users/${userId}`))
-            .then((snapshot) => {
-                if (snapshot.exists()) {
-                    setUser(snapshot.val());
-                } else {
-                    console.log("No data available");
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        };
+        getUserId();
     }, [isFocused]);
 
     const navigation = useNavigation();
 
     const handlePressCreateEvent = () => {
-        navigation.navigate("CreateEvent", {uid: userId});
+        navigation.navigate("CreateEvent", { uid: userId });
     };
 
     const handlePressEditAccount = () => {
@@ -65,7 +72,7 @@ const MyAccountScreen = (props) => {
     };
 
     const handlePressViewArchive = () => {
-        navigation.navigate("ViewArchiveScreen", {uid: userId});
+        navigation.navigate("ViewArchiveScreen", { uid: userId });
     };
 
     const handleSignOut = () => {
@@ -96,21 +103,34 @@ const MyAccountScreen = (props) => {
                         />
                         <Text
                             style={{
+                                ...globalStyles.heading3,
+                            }}
+                        >
+                            Tap here to
+                        </Text>
+                        <Text
+                            style={{
                                 ...globalStyles.heading1,
                                 fontFamily: "Bukhari Script",
                             }}
                         >
-                            Create an event
+                            create an event
                         </Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.sectionHeader}>
                     <Text style={globalStyles.heading2}>Account details</Text>
-                    <Pressable onPress={handlePressEditAccount}>
+                    <TouchableOpacity onPress={handlePressEditAccount}>
                         <Ionicons name="create-outline" size={25} />
-                    </Pressable>
+                    </TouchableOpacity>
                 </View>
-                <View style={{...globalStyles.tile, backgroundColor: "white", borderWidth: 0}}>
+                <View
+                    style={{
+                        ...globalStyles.tile,
+                        backgroundColor: "white",
+                        borderWidth: 0,
+                    }}
+                >
                     <View
                         style={{
                             flexDirection: "row",
@@ -164,11 +184,17 @@ const MyAccountScreen = (props) => {
                 </View>
                 <View style={styles.sectionHeader}>
                     <Text style={globalStyles.heading2}>Archive</Text>
-                    {/* <Pressable onPress={handlePressViewArchive}> */}
+                    <TouchableOpacity onPress={handlePressViewArchive}>
                         <Ionicons name="archive-outline" size={25} />
-                    {/* </Pressable> */}
+                    </TouchableOpacity>
                 </View>
-                <View style={{...globalStyles.tile, backgroundColor: "white", borderWidth: 0}}>
+                <View
+                    style={{
+                        ...globalStyles.tile,
+                        backgroundColor: "white",
+                        borderWidth: 0,
+                    }}
+                >
                     <View>
                         <Text style={globalStyles.paragraph}>
                             Past event's I've attended/hosted
@@ -176,7 +202,15 @@ const MyAccountScreen = (props) => {
                     </View>
                 </View>
                 <TouchableOpacity style={styles.button} onPress={handleSignOut}>
-                    <Text style={{...globalStyles.paragraph, color: "white", fontWeight: "bold"}}>Sign out</Text>
+                    <Text
+                        style={{
+                            ...globalStyles.paragraph,
+                            color: "white",
+                            fontWeight: "bold",
+                        }}
+                    >
+                        Sign out
+                    </Text>
                 </TouchableOpacity>
             </ImageBackground>
         </SafeAreaView>

@@ -24,9 +24,11 @@ import {
 } from "firebase/database";
 import * as Contacts from "expo-contacts";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import globalStyles from "../../utils/globalStyles";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const ImportContacts = (params) => {
-    const uid = params.route.params.uid
+    const uid = params.route.params.uid;
     const [event, setEvent] = useState(params.route.params.event);
     const eventId = event.event_id;
     const [error, setError] = useState(undefined);
@@ -322,15 +324,31 @@ const ImportContacts = (params) => {
     };
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior="height">
-            <ScrollView style={styles.container}>
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Imported Contacts</Text>
+        <KeyboardAvoidingView style={globalStyles.container} behavior="height">
+            <ScrollView style={{ flex: 1 }}>
+                <View>
+                    <Text
+                        style={{
+                            ...globalStyles.heading1,
+                            fontFamily: "Bukhari Script",
+                            margin: 20,
+                            padding: 5,
+                            textAlign: "center",
+                        }}
+                    >
+                        Imported Contacts
+                    </Text>
                     <TouchableOpacity
-                        style={styles.outlineButton}
+                        style={{ ...globalStyles.button, backgroundColor: toggleCheckBox ? "#38b6ff" : "#cb6ce6" }}
                         onPress={handleSelectAll}
                     >
-                        <Text style={styles.outlineButtonText}>
+                        <Text
+                            style={{
+                                ...globalStyles.paragraph,
+                                fontWeight: "bold",
+                                color: "white",
+                            }}
+                        >
                             {toggleCheckBox ? "Deselect All" : "Select All"}
                         </Text>
                     </TouchableOpacity>
@@ -342,9 +360,13 @@ const ImportContacts = (params) => {
                 </View>
                 <View>
                     <TouchableOpacity
-                        style={styles.submitButton}
+                        style={{
+                            ...globalStyles.button,
+                            backgroundColor: "green",
+                        }}
                         onPress={handleSubmit}
                     >
+                        <Ionicons name="send-outline" size={25} color="white" />
                         <Text style={styles.submitButtonText}>
                             Save Updates
                         </Text>

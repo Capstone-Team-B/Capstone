@@ -30,16 +30,16 @@ const EditAccountScreen = (props) => {
     const [profilePic, setProfilePic] = useState(user.profilePic || "");
     const [accessibility, setAccessibility] = useState(
         user.accessibility || ""
-        );
-        const [dietary, setDietary] = useState(user.dietary || "");
-        
-        // COMPONENT VARIABLES
-        const navigation = useNavigation();
-        
-        useEffect(() => {
-            setUser(props.route.params);
-        }, [props]);
-        console.log("user on edit user screen -->", user.user_id)
+    );
+    const [dietary, setDietary] = useState(user.dietary || "");
+
+    // COMPONENT VARIABLES
+    const navigation = useNavigation();
+
+    useEffect(() => {
+        setUser(props.route.params);
+    }, [props]);
+    console.log("user on edit user screen -->", user.user_id);
 
     // FUNCTIONS
     const handleSubmit = async () => {
@@ -91,20 +91,10 @@ const EditAccountScreen = (props) => {
             >
                 <ScrollView>
                     <View style={styles.section}>
-                        <Text
-                            style={{
-                                ...globalStyles.heading2,
-                                margin: 20,
-                                textAlign: "center",
-                            }}
-                        >
+                        <Text style={styles.sectionHeader}>
                             Account Details
                         </Text>
-                        <Text
-                            style={{
-                                ...globalStyles.inputLabel,
-                            }}
-                        >
+                        <Text style={{...globalStyles.inputLabel}}>
                             First name:
                         </Text>
                         <TextInput
@@ -180,21 +170,12 @@ const EditAccountScreen = (props) => {
                             value={homeCity}
                             onChangeText={setHomeCity}
                         />
-                        <View style={styles.section}>
-                            <Text
-                                style={{
-                                    ...globalStyles.heading2,
-                                    margin: 20,
-                                    textAlign: "center",
-                                }}
-                            >
+                            <Text style={styles.sectionHeader}>
                                 Edit Guest Profile
                             </Text>
                             <Text
                                 style={{
-                                    ...globalStyles.paragraph,
-                                    marginBottom: 12,
-                                    marginLeft: 8,
+                                    ...globalStyles.inputLabel,
                                 }}
                             >
                                 Dietary restrictions:
@@ -210,9 +191,7 @@ const EditAccountScreen = (props) => {
                             />
                             <Text
                                 style={{
-                                    ...globalStyles.paragraph,
-                                    marginBottom: 12,
-                                    marginLeft: 8,
+                                    ...globalStyles.inputLabel,
                                 }}
                             >
                                 Accessibility notes:
@@ -226,8 +205,7 @@ const EditAccountScreen = (props) => {
                                 value={accessibility}
                                 onChangeText={setAccessibility}
                             />
-                        </View>
-                        <SafeAreaView style={{ alignItems: "center" }}>
+                        <SafeAreaView style={{ alignItems: "center", marginTop: 20 }}>
                             {profilePic ? (
                                 <Image
                                     style={styles.profilePic}
@@ -358,6 +336,11 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         resizeMode: "cover",
     },
+    sectionHeader: {
+        ...globalStyles.heading2,
+        margin: 20,
+        textAlign: "center",
+    }
 });
 
 export default EditAccountScreen;

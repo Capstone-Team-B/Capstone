@@ -8,6 +8,7 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
+    ImageBackground,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import {
@@ -24,6 +25,9 @@ import {
 } from "firebase/database";
 // import { Platform, PermissionsAndroid, Linking } from "react-native";
 // import * as SMS from "expo-sms";
+const PurpleBG = require("../../../assets/PurpleBG.png");
+import globalStyles from "../../utils/globalStyles";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const CreateGuestList = (params) => {
     const [guestList, setGuestList] = useState([]);
@@ -217,119 +221,252 @@ const CreateGuestList = (params) => {
     };
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior="height">
-            <ScrollView style={styles.container}>
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Guest List</Text>
-                    <View style={styles.section}>
-                        {guestList.map((guest, index) => (
-                            <View style={styles.section} key={index}>
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder="First name"
-                                    value={guest.firstName}
-                                    onChangeText={(value) =>
-                                        handleUpdateGuest(
-                                            index,
-                                            "firstName",
-                                            value
-                                        )
-                                    }
-                                    required={true}
-                                />
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder="Last name"
-                                    value={guest.lastName}
-                                    onChangeText={(value) =>
-                                        handleUpdateGuest(
-                                            index,
-                                            "lastName",
-                                            value
-                                        )
-                                    }
-                                    required={true}
-                                />
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder="Phone number"
-                                    value={guest.phoneNumber}
-                                    onChangeText={(value) =>
-                                        handleUpdateGuest(
-                                            index,
-                                            "phoneNumber",
-                                            value
-                                        )
-                                    }
-                                    required={true}
-                                />
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder="Email address (optional)"
-                                    value={guest.email}
-                                    onChangeText={(value) =>
-                                        handleUpdateGuest(index, "email", value)
-                                    }
-                                    required={false}
-                                />
-                                <TouchableOpacity
-                                    style={styles.deleteButton}
-                                    onPress={() => handleDeleteGuest(index)}
-                                >
-                                    <Text style={styles.deleteButtonText}>
-                                        Delete
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                        ))}
+        <KeyboardAvoidingView
+            style={{
+                flex: 1,
+                backgroundColor: "#fff",
+                justifyContent: "center",
+            }}
+            behavior="height"
+        >
+            <ImageBackground
+                source={PurpleBG}
+                resizeMode="cover"
+                style={{
+                    flex: 1,
+                    width: "100%",
+                }}
+            >
+                <ScrollView>
+                    <View>
+                        <Text
+                            style={{
+                                ...globalStyles.heading1,
+                                fontFamily: "Bukhari Script",
+                                margin: 20,
+                                padding: 5,
+                                textAlign: "center",
+                            }}
+                        >
+                            Send invites{"\n"}to your event
+                        </Text>
+                        <View>
+                            {guestList.map((guest, index) => (
+                                <View style={{ ...styles.section }} key={index}>
+                                    <TextInput
+                                        style={{
+                                            ...globalStyles.input,
+                                            backgroundColor: "white",
+                                        }}
+                                        placeholder="First name"
+                                        value={guest.firstName}
+                                        onChangeText={(value) =>
+                                            handleUpdateGuest(
+                                                index,
+                                                "firstName",
+                                                value
+                                            )
+                                        }
+                                        required={true}
+                                    />
+                                    <TextInput
+                                        style={{
+                                            ...globalStyles.input,
+                                            backgroundColor: "white",
+                                        }}
+                                        placeholder="Last name"
+                                        value={guest.lastName}
+                                        onChangeText={(value) =>
+                                            handleUpdateGuest(
+                                                index,
+                                                "lastName",
+                                                value
+                                            )
+                                        }
+                                        required={true}
+                                    />
+                                    <TextInput
+                                        style={{
+                                            ...globalStyles.input,
+                                            backgroundColor: "white",
+                                        }}
+                                        placeholder="Phone number"
+                                        value={guest.phoneNumber}
+                                        onChangeText={(value) =>
+                                            handleUpdateGuest(
+                                                index,
+                                                "phoneNumber",
+                                                value
+                                            )
+                                        }
+                                        required={true}
+                                    />
+                                    <TextInput
+                                        style={{
+                                            ...globalStyles.input,
+                                            backgroundColor: "white",
+                                        }}
+                                        placeholder="Email address (optional)"
+                                        value={guest.email}
+                                        onChangeText={(value) =>
+                                            handleUpdateGuest(
+                                                index,
+                                                "email",
+                                                value
+                                            )
+                                        }
+                                        required={false}
+                                    />
+                                    <View
+                                        style={{
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <TouchableOpacity
+                                            style={{
+                                                ...globalStyles.button,
+                                                width: 150,
+                                                backgroundColor: "red",
+                                            }}
+                                            onPress={() =>
+                                                handleDeleteGuest(index)
+                                            }
+                                        >
+                                            <Ionicons
+                                                name="close-circle-outline"
+                                                size={25}
+                                                color="white"
+                                                marginBottom={12}
+                                            />
+                                            <Text
+                                                style={{
+                                                    ...globalStyles.paragraph,
+                                                    fontWeight: "bold",
+                                                    color: "white",
+                                                }}
+                                            >
+                                                Cancel invite
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            ))}
+                        </View>
+                        <TouchableOpacity
+                            style={{
+                                ...globalStyles.button,
+                                backgroundColor: "#cb6ce6",
+                            }}
+                            onPress={() =>
+                                navigation.navigate("Import Contacts", {
+                                    event: event,
+                                    uid: uid,
+                                })
+                            }
+                        >
+                            <Ionicons
+                                name="phone-portrait-outline"
+                                size={25}
+                                color="white"
+                            />
+                            <Text
+                                style={{
+                                    ...globalStyles.paragraph,
+                                    fontWeight: "bold",
+                                    color: "white",
+                                }}
+                            >
+                                Import from Contacts
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{
+                                ...globalStyles.button,
+                                backgroundColor: "#38b6ff",
+                            }}
+                            onPress={handleAddGuest}
+                        >
+                            <Ionicons
+                                name="keypad-outline"
+                                size={25}
+                                color="white"
+                            />
+                            <Text
+                                style={{
+                                    ...globalStyles.paragraph,
+                                    fontWeight: "bold",
+                                    color: "white",
+                                }}
+                            >
+                                Add New Guest Manually
+                            </Text>
+                        </TouchableOpacity>
                     </View>
-                    <TouchableOpacity
-                        style={styles.outlineButton}
-                        onPress={() =>
-                            navigation.navigate("Import Contacts", {
-                                event: event,
-                                uid: uid,
-                            })
-                        }
-                    >
-                        <Text style={styles.outlineButtonText}>
-                            Import from Contacts
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.addButton}
-                        onPress={handleAddGuest}
-                    >
-                        <Text style={styles.addButtonText}>
-                            Add New Guest Manually
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-                <View>
-                    <TouchableOpacity
-                        style={styles.submitButton}
-                        onPress={handleSubmit}
-                    >
-                        <Text style={styles.submitButtonText}>
-                            Save Updates & Send SMS Invites
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-                <View>
-                    <TouchableOpacity
-                        style={styles.addButton}
-                        onPress={() => {
-                            navigation.navigate("GuestListScreen", {
-                                event: event,
-                            });
+                    <View>
+                        {guestList.length > 0 && (
+                            <TouchableOpacity
+                                style={{
+                                    ...globalStyles.button,
+                                    backgroundColor: "green",
+                                }}
+                                onPress={handleSubmit}
+                            >
+                                <Ionicons
+                                    name="send-outline"
+                                    size={25}
+                                    color="white"
+                                />
+                                <Text
+                                    style={{
+                                        ...globalStyles.paragraph,
+                                        fontWeight: "bold",
+                                        color: "white",
+                                    }}
+                                >
+                                    Save Updates & Send SMS Invites
+                                </Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                    <View
+                        style={{
+                            justifyContent: "center",
+                            alignItems: "center",
                         }}
                     >
-                        <Text style={styles.addButtonText}>
-                            View All Guests
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
+                        <TouchableOpacity
+                            style={{
+                                ...globalStyles.button,
+                                justifyContent: "center",
+                                alignItems: "center",
+                                borderWidth: 2,
+                                borderColor: "#38b6ff",
+                            }}
+                            onPress={() => {
+                                navigation.navigate("GuestListScreen", {
+                                    event: event,
+                                });
+                            }}
+                        >
+                            <Ionicons
+                                name="people-outline"
+                                size={25}
+                                color="#38b6ff"
+                            />
+                            <Text
+                                style={{
+                                    ...globalStyles.paragraph,
+                                    fontWeight: "bold",
+                                    color: "#38b6ff",
+                                }}
+                            >
+                                View All Guests
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+            </ImageBackground>
         </KeyboardAvoidingView>
     );
 };
@@ -340,7 +477,7 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     section: {
-        marginBottom: 20,
+        margin: 12,
     },
     sectionTitle: {
         fontSize: 18,
@@ -409,6 +546,11 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontSize: 16,
         fontWeight: "bold",
+    },
+    sectionHeader: {
+        ...globalStyles.heading2,
+        margin: 20,
+        textAlign: "center",
     },
 });
 

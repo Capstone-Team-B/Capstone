@@ -224,7 +224,7 @@ const MapLocationScreen = (params) => {
                     </View>
                 </View>
             )}
-            {locations.length > 0 && (
+            {locations.length > 0 && eventHost === storeUser.uid && (
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                     {!hiddenForm ? (
                         <>

@@ -1,59 +1,66 @@
-import {
-    StyleSheet,
-    Text,
-    SafeAreaView,
-    Button,
-    Image,
-    View,
-    FlatList,
-    Alert,
-    TouchableOpacity,
-    Dimensions,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import * as ImagePicker from "expo-image-picker";
-import globalStyles from "../../utils/globalStyles";
-import {
-    getStorage,
-    uploadBytes,
-    uploadBytesResumable,
-    getDownloadURL,
-    metadata,
-    ref,
-} from "firebase/storage";
 import { useNavigation } from "@react-navigation/core";
-import { auth } from "../../../firebase";
+import * as ImagePicker from "expo-image-picker";
+import {
+    child, equalTo, get, getDatabase, orderByChild, push, query, ref as refD,
+    set
+} from "firebase/database";
+import {
+    getDownloadURL, getStorage, listAll, ref, uploadBytesResumable
+} from "firebase/storage";
+import React, { useEffect, useState } from "react";
+import {
+    Button, Dimensions, FlatList, Image, Modal, SafeAreaView, ScrollView, StyleSheet,
+    Text, TouchableOpacity, TouchableWithoutFeedback, View
+} from "react-native";
+import Swiper from "react-native-swiper";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { getDatabase, child, get, query, equalTo, orderByChild, ref as refD } from "firebase/database";
+import { auth } from "../../../firebase";
+import globalStyles from "../../utils/globalStyles";
+
+const screenWidth = Dimensions.get("window").width;
 
 const UploadEventImagesScreen = (params) => {
     const uid = params.route.params.uid;
     const userName = params.route.params.uploaderName;
     const event = params.route.params.event;
     const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [images, setImages] = useState([]);
     const [uploading, setUploading] = useState(false);
     const [userId, setUserId] = useState("");
     const navigation = useNavigation();
 
+    const storage = getStorage();
+
+    //Images saved
+    const [eventImages, setEventImages] = useState([]);
+
+    //Tags
+    const [tagList, setTagList] = useState([]);
+    const [cordinates, setCordinates] = useState({ top: 0, left: 0 });
+    const [imageSelected, setImageSelected] = useState("");
+    const [isSearchText, setIsSearchText] = useState(false);
+
+    const [userList, setUserList] = useState([]);
+
     // useEffect to get logged-in user approval to access media library
     useEffect(() => {
         const getUserId = async () => {
-            const currentUserId = auth.currentUser.uid
+            const currentUserId = auth.currentUser.uid;
             const dbRef = refD(getDatabase());
             const usersQuery = query(
-                child(dbRef, 'users'),
-                orderByChild('auth_id'),
+                child(dbRef, "users"),
+                orderByChild("auth_id"),
                 equalTo(currentUserId)
-            )
-            const snapshot = await get (usersQuery);
-    
+            );
+            const snapshot = await get(usersQuery);
+
             if (snapshot.exists()) {
                 const data = Object.keys(snapshot.val());
-                setUserId(data[0])
+                setUserId(data[0]);
             }
-        }
-        getUserId()
+        };
+        getUserId();
     }, []);
 
     useEffect(() => {
@@ -63,6 +70,14 @@ const UploadEventImagesScreen = (params) => {
             setHasGalleryPermission(galleryStatus.status === "granted");
         })();
     }, []);
+
+    useEffect(() => {
+        if (params.route.params?.event) {
+            getPhotos();
+            getGuesses();
+            getPhotoTags();
+        }
+    }, [params.route.params]);
 
     const pickImage = async () => {
         try {
@@ -89,42 +104,249 @@ const UploadEventImagesScreen = (params) => {
         }
     };
 
+    const getGuesses = async () => {
+        try {
+            const dbRef = refD(getDatabase());
+            await get(
+                query(child(dbRef, `events/${event.event_id}/guestList`))
+            ).then(async (guestIdsData) => {
+                if (guestIdsData.exists()) {
+                    const data = guestIdsData.val();
+                    const guestIds = Object.keys(data);
+
+                    let guests = [];
+
+                    for (let index = 0; index < guestIds.length; index++) {
+                        const guestId = guestIds[index];
+                        await get(query(child(dbRef, `users/${guestId}`))).then(
+                            (guestUsers) => {
+                                if (guestUsers.exists()) {
+                                    const data = guestUsers.val();
+                                    guests.push(data);
+                                } else {
+                                    console.log("no guests in this event");
+                                }
+                            }
+                        );
+                    }
+                    setUserList(guests);
+                } else {
+                    console.log("no guests in this event");
+                }
+            });
+        } catch (error) {
+            console.error("err", error);
+        }
+    };
+
     const uploadImages = async () => {
-//        COMMENT BACK IN ONCE STORAGE USAGE RESOLVED
+        //        COMMENT BACK IN ONCE STORAGE USAGE RESOLVED
         setUploading(true);
 
-        const storage = getStorage();
         const uploadPromises = [];
 
         for (let i = 0; i < images.length; i++) {
             const filename = images[i].fileName;
             const imageRef = ref(
                 storage,
-                `event_${event.event_id}/${filename}_${uid}`
-                );
-                const img = await fetch(images[i].uri);
-                const blob = await img.blob();
-                const uploadPromise = uploadBytesResumable(imageRef, blob);
-                uploadPromises.push(uploadPromise);
-            }
+                `event_${event.event_id}/${filename}_${uid}_${Math.floor(
+                    Math.random() * 100000
+                )}`
+            );
+            const img = await fetch(images[i].uri);
+            const blob = await img.blob();
+            const uploadPromise = uploadBytesResumable(imageRef, blob);
+            uploadPromises.push(uploadPromise);
+        }
 
-            try {
-                await Promise.all(uploadPromises);
-                console.log("All images uploaded successfully");
-            } catch (error) {
-                console.log(error);
-            }
+        try {
+            await Promise.all(uploadPromises);
+            getPhotos();
+            console.log("All images uploaded successfully");
+        } catch (error) {
+            console.log(error);
+        }
 
-            setUploading(false);
+        setUploading(false);
         setImages([]);
-        navigation.navigate("EventGallery", {event, uid, userName});
+    };
+
+    const getPhotos = async () => {
+        let imageURLs = [];
+        const listRef = ref(storage, `event_${event.event_id}`);
+        listAll(listRef)
+            .then((res) => {
+                res.items.forEach((itemRef) => {
+                    getDownloadURL(itemRef).then((url) => {
+                        imageURLs = [...imageURLs, url];
+                        setEventImages(imageURLs);
+                    });
+                });
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        setLoading(false);
     };
 
     const screenWidth = Dimensions.get("window").width;
 
+    //Tags
+
+    const getPhotoTags = async () => {
+        const dbRef = refD(getDatabase());
+        try {
+            await get(
+                query(
+                    child(dbRef, `photoTags`),
+                    orderByChild("event_id"),
+                    equalTo(event.event_id)
+                )
+            ).then(async (photoTagsData) => {
+                if (photoTagsData.exists()) {
+                    const data = photoTagsData.val();
+                    //const tags = Object.keys(data);
+                    const tags = Object.keys(data).map((key) => ({
+                        ...data[key],
+                    }));
+                    console.info("tags", tags);
+                    setTagList(tags);
+                } else {
+                    console.log("no tags in this event");
+                }
+            });
+        } catch (error) {
+            console.error("err", error);
+        }
+    };
+
+    const handlePress = (evt, photo) => {
+        let top = evt.nativeEvent.locationY;
+        let left = evt.nativeEvent.locationX;
+
+        setIsSearchText(true);
+        setCordinates({ top, left });
+        setImageSelected(photo);
+    };
+
+    const tagUser = async (guest) => {
+        const dbRef = refD(getDatabase());
+        let newTag = {
+            event_id: event.event_id,
+            imageUrl: imageSelected,
+            top: cordinates.top,
+            left: cordinates.left,
+            user: guest.firstName,
+        };
+
+        try {
+            await set(push(child(dbRef, `photoTags`)), newTag);
+            setTagList(tagList.concat([newTag]));
+        } catch (error) {
+            console.error("tag", error);
+        }
+        setIsSearchText(false);
+    };
+
+    const dynamicStyle = (location) => {
+        return {
+            position: "absolute",
+            top: location.top,
+            left: location.left - 22,
+        };
+    };
+
     return (
         <SafeAreaView style={globalStyles.container}>
-            {images.length > 0 ? (
+            {images.length == 0 && eventImages.length <= 5 && (
+                <View
+                    style={{
+                        justifyContent: "center",
+                    }}
+                >
+                    <TouchableOpacity
+                        style={{
+                            padding: 8,
+                            backgroundColor: "#38b6ff",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flexDirection: "row",
+                            borderRadius: 8,
+                        }}
+                        onPress={pickImage}
+                    >
+                        <Ionicons
+                            name="add-circle-outline"
+                            size={35}
+                            color={"white"}
+                        />
+                        <Text
+                            style={{
+                                fontSize: 14,
+                                alignSelf: "center",
+                                textAlign: "center",
+                                color: "white",
+                                marginLeft: 12,
+                            }}
+                        >
+                            Add photos to shared
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            )}
+
+            {eventImages.length > 0 && (
+                <Swiper style={{ position: "relative" }} showsButtons={true}>
+                    {eventImages.map((photo, index) => (
+                        <>
+                            <View key={index} style={styles.slide1}>
+                                <TouchableWithoutFeedback
+                                    onPress={(evt) => handlePress(evt, photo)}
+                                    disabled={false}
+                                >
+                                    <Image
+                                        source={{ uri: photo }}
+                                        style={{
+                                            height: "100%",
+                                            width: "100%",
+                                            margin: 6,
+                                            borderRadius: 10,
+                                        }}
+                                    />
+                                </TouchableWithoutFeedback>
+                                {tagList.map(
+                                    (item) =>
+                                        item.imageUrl == photo && (
+                                            <View
+                                                key={item.id}
+                                                style={dynamicStyle(item)}
+                                            >
+                                                <View
+                                                    style={styles.tagTriangle}
+                                                ></View>
+                                                <View
+                                                    style={styles.tagUserView}
+                                                >
+                                                    <Text
+                                                        style={
+                                                            styles.tagListText
+                                                        }
+                                                    >
+                                                        {" "}
+                                                        {item.user}{" "}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                        )
+                                )}
+                            </View>
+                        </>
+                    ))}
+                </Swiper>
+            )}
+
+            {images.length > 0 && (
                 <View>
                     <TouchableOpacity
                         style={{
@@ -143,7 +365,7 @@ const UploadEventImagesScreen = (params) => {
                                 ...globalStyles.heading3,
                                 alignSelf: "center",
                                 textAlign: "center",
-                                color: "white",
+                                color: "black",
                             }}
                         >
                             Share your selected photos from {"\n"}
@@ -155,15 +377,17 @@ const UploadEventImagesScreen = (params) => {
                         numColumns={2}
                         renderItem={({ item }) => {
                             return (
-                                <Image
-                                    source={{ uri: item.uri }}
-                                    style={{
-                                        height: screenWidth / 2 - 12,
-                                        width: screenWidth / 2 - 12,
-                                        margin: 6,
-                                        borderRadius: 10,
-                                    }}
-                                />
+                                <>
+                                    <Image
+                                        source={{ uri: item.uri }}
+                                        style={{
+                                            height: screenWidth / 2 - 12,
+                                            width: screenWidth / 2 - 12,
+                                            margin: 6,
+                                            borderRadius: 10,
+                                        }}
+                                    />
+                                </>
                             );
                         }}
                         keyExtractor={(item, index) => {
@@ -171,14 +395,20 @@ const UploadEventImagesScreen = (params) => {
                         }}
                     />
                     <TouchableOpacity
-                        style={{...globalStyles.button, backgroundColor: "#38b6ff",
+                        style={{
+                            ...globalStyles.button,
+                            backgroundColor: "#38b6ff",
                             justifyContent: "center",
                             alignItems: "center",
                             margin: 12,
                         }}
                         onPress={pickImage}
                     >
-                        <Ionicons name="add-circle-outline" size={25} color={"white"}/>
+                        <Ionicons
+                            name="add-circle-outline"
+                            size={25}
+                            color={"white"}
+                        />
                         <Text
                             style={{
                                 ...globalStyles.paragraph,
@@ -192,35 +422,31 @@ const UploadEventImagesScreen = (params) => {
                         </Text>
                     </TouchableOpacity>
                 </View>
-            ) : (
-                <View
-                    style={{
-                        ...globalStyles.container,
-                        justifyContent: "center",
-                    }}
-                >
-                    <TouchableOpacity
-                        style={{
-                            ...globalStyles.button,
-                            backgroundColor: "#38b6ff",
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
-                        onPress={pickImage}
-                    >
-                        <Ionicons name="add-circle-outline" size={55} color={"white"}/>
-                        <Text
-                            style={{
-                                ...globalStyles.heading3,
-                                alignSelf: "center",
-                                textAlign: "center",
-                                color: "white"
-                            }}
-                        >
-                            Add photos from your camera roll to the shared photo gallery
-                        </Text>
-                    </TouchableOpacity>
-                </View>
+            )}
+
+            {isSearchText && (
+                <Modal visible={isSearchText}>
+                    <ScrollView style={{ marginTop: 50 }}>
+                        {userList.map((user) => (
+                            <TouchableOpacity
+                                key={user.id}
+                                onPress={() => {
+                                    tagUser(user);
+                                }}
+                            >
+                                <View style={styles.userList}>
+                                    <Text style={styles.userListText}>
+                                        {user.firstName} {user.lastName}
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        ))}
+                        <Button
+                            title="Close"
+                            onPress={() => setIsSearchText(false)}
+                        ></Button>
+                    </ScrollView>
+                </Modal>
             )}
         </SafeAreaView>
     );
@@ -228,5 +454,91 @@ const UploadEventImagesScreen = (params) => {
 
 export default UploadEventImagesScreen;
 
-const styles = StyleSheet.create({});
-
+const styles = StyleSheet.create({
+    slide1: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#9DD6EB",
+        position: 'relative',
+    },
+    userSearch: {
+        zIndex: 99,
+        backgroundColor: "rgba(225,225,225,0.85)",
+    },
+    userList: {
+        padding: 10,
+        paddingLeft: 20,
+        borderWidth: 1,
+        borderColor: "#ccc",
+    },
+    userListText: {
+        fontWeight: "600",
+    },
+    searchContainer: {
+        flexDirection: "row",
+        paddingLeft: 10,
+        backgroundColor: "white",
+        borderColor: "#999",
+        borderWidth: 1,
+        width: screenWidth,
+        justifyContent: "space-between",
+    },
+    searchIconStyle: {
+        width: 20,
+        height: 20,
+        marginTop: 10,
+        marginLeft: 10,
+    },
+    closeIconStyle: {
+        width: 20,
+        height: 20,
+        marginTop: 10,
+        marginRight: 10,
+    },
+    textInputStyle: {
+        height: 40,
+        marginLeft: 10,
+        alignItems: "flex-start",
+        width: 250,
+    },
+    tagTriangle: {
+        height: 0,
+        width: 0,
+        left: 15,
+        borderLeftColor: "transparent",
+        borderLeftWidth: 7,
+        borderRightColor: "transparent",
+        borderRightWidth: 7,
+        borderBottomColor: "rgba(0,0,0,.30)",
+        borderBottomWidth: 7,
+    },
+    tagUserView: {
+        backgroundColor: "rgba(0,0,0,.30)",
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: "rgba(0,0,0,.30)",
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop: 3,
+        paddingBottom: 3,
+        flexDirection: "row",
+    },
+    tagListText: {
+        color: "white",
+        fontWeight: "800",
+    },
+    removeTagUser: {
+        backgroundColor: "white",
+        height: 15,
+        width: 15,
+        marginLeft: 5,
+        borderRadius: 15,
+    },
+    removeIcon: {
+        height: 8,
+        width: 8,
+        marginTop: 3,
+        marginLeft: 3.5,
+    },
+});

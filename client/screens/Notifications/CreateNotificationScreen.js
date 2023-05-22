@@ -8,12 +8,20 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
+    Dimensions,
+    ImageBackground,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, child, push, set, update } from "firebase/database";
 import { DatePickerModal } from "react-native-paper-dates";
 // import { TimePickerModal } from "react-native-paper-dates";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import Ionicons from "react-native-vector-icons/Ionicons";
+// PROJECT IMPORTS
+import globalStyles from "../../utils/globalStyles";
+import BlueBG from "../../../assets/BlueBG.png";
+
+const screenWidth = Dimensions.get("window").width;
 
 const CreateNotification = (params) => {
     const [event, setEvent] = useState(params.route.params.event);
@@ -88,43 +96,118 @@ const CreateNotification = (params) => {
             newNotificationKey
         );
         await update(newEventNotificationRef, {
-            "notification_id": newNotificationKey,
+            notification_id: newNotificationKey,
         });
 
         navigation.navigate("All Reminders", { event: event });
     };
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior="height">
-            <ScrollView style={styles.container}>
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Reminders</Text>
-                    <View style={styles.section}>
-                        <View style={styles.section}>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="RSVP deadline, Reminder to book flights, etc."
-                                value={notification.type}
-                                onChangeText={(value) =>
-                                    handleUpdateNotification("title", value)
-                                }
-                                required={true}
-                            />
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Enter reminder text here..."
-                                value={notification.type}
-                                onChangeText={(value) =>
-                                    handleUpdateNotification("body", value)
-                                }
-                                required={true}
-                            />
+        <ImageBackground
+            source={BlueBG}
+            resizeMode="cover"
+            style={{
+                flex: 1,
+                width: "100%",
+            }}
+        >
+            <ScrollView style={{ flex: 1 }}>
+                <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
+                    <View style={{ margin: 12 }}>
+                        <Text
+                            style={{
+                                ...globalStyles.heading1,
+                                fontFamily: "Bukhari Script",
+                                margin: 20,
+                                padding: 5,
+                                textAlign: "center",
+                            }}
+                        >
+                            Reminders
+                        </Text>
+                        <Text
+                            style={{
+                                ...globalStyles.paragraph,
+                                marginBottom: 12,
+                                marginLeft: 8,
+                                fontWeight: "bold",
+                            }}
+                        >
+                            Reminder type:
+                        </Text>
+                        <TextInput
+                            style={{
+                                ...globalStyles.input,
+                                backgroundColor: "white",
+                            }}
+                            placeholder="RSVP deadline, Reminder to book flights, etc."
+                            value={notification.type}
+                            onChangeText={(value) =>
+                                handleUpdateNotification("title", value)
+                            }
+                            required={true}
+                        />
+                        <Text
+                            style={{
+                                ...globalStyles.paragraph,
+                                marginBottom: 12,
+                                marginLeft: 8,
+                                fontWeight: "bold",
+                            }}
+                        >
+                            Reminder text:
+                        </Text>
+                        <TextInput
+                            style={{
+                                ...globalStyles.input,
+                                backgroundColor: "white",
+                            }}
+                            placeholder="Enter reminder text here..."
+                            value={notification.type}
+                            onChangeText={(value) =>
+                                handleUpdateNotification("body", value)
+                            }
+                            required={true}
+                        />
+                        <View
+                            style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                                margin: 12,
+                            }}
+                        >
                             <TouchableOpacity
-                                style={styles.outlineButton}
+                                style={{
+                                    ...globalStyles.button,
+                                    flex: 1,
+                                    margin: 0,
+                                    backgroundColor: "#38b6ff",
+                                    height: 100,
+                                    width: screenWidth / 1.5,
+                                }}
                                 onPress={() => setOpen(true)}
                             >
-                                <TouchableOpacity onPress={() => setOpen(true)}>
-                                    <Text style={styles.outlineButtonText}>
+                                <TouchableOpacity
+                                    style={{
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                    }}
+                                    onPress={() => setOpen(true)}
+                                >
+                                    <Ionicons
+                                        name="calendar-outline"
+                                        size={25}
+                                        color="white"
+                                        marginBottom={12}
+                                    />
+                                    <Text
+                                        style={{
+                                            ...globalStyles.paragraph,
+                                            color: "white",
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                        }}
+                                    >
                                         {notification.scheduled_date
                                             ? new Date(
                                                   notification.scheduled_date
@@ -137,84 +220,71 @@ const CreateNotification = (params) => {
                                             : "Select date"}
                                     </Text>
                                 </TouchableOpacity>
-                                <SafeAreaProvider>
-                                    <DatePickerModal
-                                        locale="en"
-                                        mode="single"
-                                        visible={open}
-                                        onDismiss={onDismissSingle}
-                                        date={notification.scheduled_date}
-                                        onConfirm={(selectedDate) => {
-                                            handleUpdateNotification(
-                                                "scheduled_date",
-                                                selectedDate.date.toISOString()
-                                            );
-                                            setOpen(false);
-                                        }}
-                                        saveLabel="Save"
-                                        required={true}
-                                    />
-                                </SafeAreaProvider>
-                            </TouchableOpacity>
-                            {/* <TouchableOpacity
-                                style={styles.outlineButton}
-                                onPress={() => setVisible(true)}
-                            >
-                                <Text style={styles.outlineButtonText}>
-                                    {notification.scheduled_time
-                                        ? `${notification.scheduled_time}`
-                                        : "Select time (optional)"}
-                                </Text>
                             </TouchableOpacity>
                             <SafeAreaProvider>
-                                <TimePickerModal
-                                    visible={visible}
-                                    mode="time"
-                                    time={notification.scheduled_time}
-                                    onConfirm={(selectedTime) => {
-                                        const date = new Date();
-                                        date.setHours(selectedTime.hours);
-                                        date.setMinutes(selectedTime.minutes);
-                                        const formattedTime =
-                                            date.toLocaleTimeString([], {
-                                                hour: "2-digit",
-                                                minute: "2-digit",
-                                            });
+                                <DatePickerModal
+                                    locale="en"
+                                    mode="single"
+                                    visible={open}
+                                    onDismiss={onDismissSingle}
+                                    date={notification.scheduled_date}
+                                    onConfirm={(selectedDate) => {
                                         handleUpdateNotification(
-                                            "scheduled_time",
-                                            formattedTime
+                                            "scheduled_date",
+                                            selectedDate.date.toISOString()
                                         );
-                                        setVisible(false);
+                                        setOpen(false);
                                     }}
-                                    onDismiss={onDismiss}
-                                    hours={12}
-                                    minutes={30}
-                                    required={false}
+                                    saveLabel="Save"
+                                    required={true}
                                 />
-                            </SafeAreaProvider> */}
+                            </SafeAreaProvider>
                             <TouchableOpacity
-                                style={styles.deleteButton}
+                                style={{
+                                    ...globalStyles.button,
+                                    width: 150,
+                                    backgroundColor: "red",
+                                }}
                                 onPress={() => handleDeleteNotification()}
                             >
-                                <Text style={styles.deleteButtonText}>
+                                <Ionicons
+                                    name="close-circle-outline"
+                                    size={25}
+                                    color="white"
+                                    marginBottom={12}
+                                />
+                                <Text
+                                    style={{
+                                        ...globalStyles.paragraph,
+                                        fontWeight: "bold",
+                                        color: "white",
+                                    }}
+                                >
                                     Clear Form
                                 </Text>
                             </TouchableOpacity>
                         </View>
+                        <TouchableOpacity
+                            style={{
+                                ...globalStyles.button,
+                                backgroundColor: "green",
+                            }}
+                            onPress={handleSubmit}
+                        >
+                            <Ionicons
+                                name="send-outline"
+                                size={25}
+                                color="white"
+                                marginBottom={12}
+                            />
+                            <Text style={styles.submitButtonText}>
+                                Create Reminder
+                            </Text>
+                        </TouchableOpacity>
                     </View>
-                </View>
-                <View>
-                    <TouchableOpacity
-                        style={styles.submitButton}
-                        onPress={handleSubmit}
-                    >
-                        <Text style={styles.submitButtonText}>
-                            Create Reminder
-                        </Text>
-                    </TouchableOpacity>
-                </View>
+                </KeyboardAvoidingView>
             </ScrollView>
-        </KeyboardAvoidingView>
+        </ImageBackground>
     );
 };
 
@@ -238,49 +308,6 @@ const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 10,
     },
-    addButton: {
-        backgroundColor: "#007bff",
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    addButtonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    deleteButton: {
-        backgroundColor: "white",
-        borderColor: "#dc3545",
-        borderWidth: 2,
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    deleteButtonText: {
-        color: "#dc3545",
-        fontSize: 14,
-        fontWeight: "bold",
-    },
-    outlineButton: {
-        backgroundColor: "white",
-        borderColor: "#007bff",
-        borderWidth: 2,
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    outlineButtonText: {
-        color: "#007bff",
-        fontSize: 14,
-        fontWeight: "bold",
-    },
     submitButton: {
         backgroundColor: "#2E8B57",
         borderRadius: 5,
@@ -297,3 +324,40 @@ const styles = StyleSheet.create({
 });
 
 export default CreateNotification;
+
+//  {/* <TouchableOpacity
+//                                 style={styles.outlineButton}
+//                                 onPress={() => setVisible(true)}
+//                             >
+//                                 <Text style={styles.outlineButtonText}>
+//                                     {notification.scheduled_time
+//                                         ? `${notification.scheduled_time}`
+//                                         : "Select time (optional)"}
+//                                 </Text>
+//                             </TouchableOpacity>
+//                             <SafeAreaProvider>
+//                                 <TimePickerModal
+//                                     visible={visible}
+//                                     mode="time"
+//                                     time={notification.scheduled_time}
+//                                     onConfirm={(selectedTime) => {
+//                                         const date = new Date();
+//                                         date.setHours(selectedTime.hours);
+//                                         date.setMinutes(selectedTime.minutes);
+//                                         const formattedTime =
+//                                             date.toLocaleTimeString([], {
+//                                                 hour: "2-digit",
+//                                                 minute: "2-digit",
+//                                             });
+//                                         handleUpdateNotification(
+//                                             "scheduled_time",
+//                                             formattedTime
+//                                         );
+//                                         setVisible(false);
+//                                     }}
+//                                     onDismiss={onDismiss}
+//                                     hours={12}
+//                                     minutes={30}
+//                                     required={false}
+//                                 />
+//                             </SafeAreaProvider> */}

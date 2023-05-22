@@ -9,7 +9,6 @@ import globalStyles from "../utils/globalStyles";
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
-
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -64,8 +63,12 @@ const TabNavigator = () => {
                 name="NotificationsScreen"
                 component={Notifications}
                 options={{
+                    // headerShown: false,
                     title: "Reminders",
-                    headerTitleStyle: globalStyles.screenHeader,  //!!!KIT this formatting doesn't work
+                    tabBarLabel: "Reminders",
+
+                    // headerTitleStyle: globalStyles.screenHeader,
+                    //!!!KIT this formatting doesn't work commented out as it seems more distracting for it to render half on than not have the drop shadow like other events
                 }}
             />
         </Tab.Navigator>

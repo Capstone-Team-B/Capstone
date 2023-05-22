@@ -8,8 +8,7 @@ export default StyleSheet.create({
         padding: 12,
     },
     screenHeader: {
-        fontFamily: "Bukhari Script",
-        fontSize: 20,
+        fontSize: 18,
         padding: 20,
     },
     heading1: {
@@ -30,12 +29,13 @@ export default StyleSheet.create({
     labelInput: {
         fontSize: 13,
         marginBottom: 5,
-        marginTop:10,
+        marginTop: 10,
     },
     inputLabel: {
         fontSize: 15,
         marginBottom: 12,
         marginLeft: 8,
+        fontWeight: "bold",
     },
     tile: {
         margin: 12,
