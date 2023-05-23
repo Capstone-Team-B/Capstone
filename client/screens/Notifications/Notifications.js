@@ -20,6 +20,7 @@ import { auth } from "../../../firebase";
 import { useIsFocused } from "@react-navigation/native";
 import globalStyles from "../../utils/globalStyles";
 import { useNavigation } from "@react-navigation/native";
+import { Video } from "expo-av";
 
 const NotificationsScreen = () => {
     const uid = auth.currentUser.uid;
@@ -108,7 +109,7 @@ const NotificationsScreen = () => {
         // <KeyboardAvoidingView style={styles.container} behavior="height">
         <SafeAreaView style={globalStyles.container}>
             <ScrollView>
-                <Text
+                {/* <Text
                     style={{
                         ...globalStyles.heading1,
                         fontFamily: "Bukhari Script",
@@ -117,10 +118,21 @@ const NotificationsScreen = () => {
                     }}
                 >
                     Event Reminders
-                </Text>
-                <View style={styles.section}>
+                </Text> */}
+                <View >
                     {loading ? (
-                        <Text>...Loading your reminders</Text>
+                        <Video
+                        source={require("../../../assets/BeThereAnimation.mp4")}
+                        style={styles.video}
+                        shouldPlay
+                        isLooping={false}
+                        resizeMode="cover"
+                        onPlaybackStatusUpdate={(status) => {
+                            if (!status.isPlaying && status.didJustFinish) {
+                                handleVideoEnd();
+                            }
+                        }}
+                    />
                     ) : notificationData.length > 0 ? (
                         notificationData.map((notification) => {
                             const scheduledDate = new Date(
@@ -132,9 +144,16 @@ const NotificationsScreen = () => {
                                 <View
                                     key={notification.notification_id}
                                     style={{
-                                        ...globalStyles.tile,
-                                        margin: 12,
-                                        padding: 12,
+                                        // ...globalStyles.tile,
+                                        borderWidth: 2,
+                                        borderColor: "#fff",
+                                        borderRadius: 10,
+                                        backgroundColor: "#8291F3",
+                                        flex: 1,
+                                        marginTop: 12,
+                                        marginRight: 12,
+                                        marginLeft: 12,
+                                        padding: 20,
                                     }}
                                 >
                                     <Text style={{ ...globalStyles.heading3 }}>
@@ -142,14 +161,14 @@ const NotificationsScreen = () => {
                                     </Text>
                                     <Text
                                         style={{
-                                            ...globalStyles.paragraph,
+                                            ...globalStyles.paragraph
                                         }}
                                     >
                                         {notification.title}:
                                     </Text>
                                     <Text
                                         style={{
-                                            ...globalStyles.paragraph,
+                                            ...globalStyles.paragraph
                                         }}
                                     >
                                         {notification.body}
@@ -157,10 +176,9 @@ const NotificationsScreen = () => {
                                     <View>
                                         <Text
                                             style={{
-                                                ...globalStyles.paragraph,
+                                                ...globalStyles.paragraph
                                             }}
                                         >
-                                            {" "}
                                             {scheduledDate.toLocaleString(
                                                 "en-US",
                                                 {

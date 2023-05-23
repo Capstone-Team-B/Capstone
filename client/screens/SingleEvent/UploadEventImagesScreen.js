@@ -280,9 +280,9 @@ const UploadEventImagesScreen = (params) => {
     };
 
     return (
-        <SafeAreaView style={globalStyles.container}>
+        <SafeAreaView style={{...globalStyles.container, backgroundColor: "black"}}>
             {eventImages.length > 0 && images.length === 0 && (
-                <Swiper style={{ position: "relative" }} showsButtons={true}>
+                <Swiper style={{ position: "relative", backgroundColor: "black" }} showsButtons={true}>
                     {eventImages.map((photo, index) => (
                         <>
                             <View key={index} style={styles.slide1}>
