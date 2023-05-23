@@ -66,8 +66,9 @@ const SingleEvent = (params) => {
                 });
         };
         getUser();
-    }, [isFocused, navigation]);
-    useEffect(() => {
+    // }, [isFocused, navigation]);
+
+    // useEffect(() => {
         const getHost = async () => {
             const hostQuery = query(child(dbRef, `users/${event.host_id}`));
             try {
@@ -88,13 +89,13 @@ const SingleEvent = (params) => {
             }
         };
         getHost();
-    }, [isFocused, navigation]);
+    // }, [isFocused, navigation]);
 
-    useEffect(() => {
+    // useEffect(() => {
         const timeleft = new Date(event.startDate) - today;
         const days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
         setCountDown(days);
-    }, []);
+    }, [event.eventPhoto, attending]);
 
     return (
         <SafeAreaView style={globalStyles.container}>
