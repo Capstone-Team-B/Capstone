@@ -261,7 +261,7 @@ const GuestListScreen = (params) => {
 
     return (
         <SafeAreaView style={globalStyles.container}>
-            <ScrollView>
+            {/* <ScrollView> */}
                 {loading ? (
                     <Video
                         source={require("../../../assets/LoadingScreen.mp4")}
@@ -524,7 +524,7 @@ const GuestListScreen = (params) => {
                         </View>
                     </>
                 )}
-            </ScrollView>
+            {/* </ScrollView> */}
         </SafeAreaView>
     );
 };
