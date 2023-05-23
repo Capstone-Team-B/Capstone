@@ -99,7 +99,7 @@ const CreateNotification = (params) => {
             notification_id: newNotificationKey,
         });
 
-        navigation.navigate("All Reminders", { event: event });
+        navigation.goBack();
     };
 
     return (

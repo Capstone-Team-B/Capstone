@@ -46,11 +46,20 @@ const EventTile = ({ event, uid }) => {
                                         justifyContent: "space-between",
                                     }}
                                 >
-                                    <Text style={globalStyles.heading2}>
+                                    <Text
+                                        style={{
+                                            ...globalStyles.heading2,
+                                            overflow: "hidden",
+                                        }}
+                                        numberOfLines={1}
+                                        ellipsizeMode="tail"
+                                    >
                                         {eventData.name}
                                     </Text>
                                 </View>
-                                <Text style={globalStyles.heading3}>
+                                <Text style={{...globalStyles.heading3, overflow: "hidden"}} 
+                                                            numberOfLines={1}
+                                                            ellipsizeMode="tail">
                                     {new Date(
                                         eventData.startDate
                                     ).toLocaleDateString("en-US", {

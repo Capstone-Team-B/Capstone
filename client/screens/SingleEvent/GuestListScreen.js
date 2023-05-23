@@ -7,7 +7,7 @@ import {
     FlatList,
     Image,
     Dimensions,
-    SafeAreaView,
+    SafeAreaView, ScrollView
 } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { useIsFocused } from "@react-navigation/native";
@@ -261,117 +261,120 @@ const GuestListScreen = (params) => {
 
     return (
         <SafeAreaView style={globalStyles.container}>
-            {loading ? (
-                <Video
-                    source={require("../../../assets/LoadingScreen.mp4")}
-                    style={{ flex: 1 }}
-                    shouldPlay
-                    isLooping
-                    resizeMode="cover"
-                />
-            ) : (
-                <>
-                    <View
-                        style={{
-                            justifyContent: "center",
-                            alignItems: "center",
-                            margin: 12,
-                        }}
-                    >
-                        <Text style={globalStyles.heading2}>Invitees of</Text>
-                        <Text
-                            style={{
-                                ...globalStyles.heading1,
-                                fontFamily: "Bukhari Script",
-                                padding: 10,
-                                textAlign: "center",
-                            }}
-                        >
-                            {event.name}
-                        </Text>
-                        <Text style={globalStyles.heading3}>
-                            Hosted by: {host.firstName} {host.lastName}
-                        </Text>
-                    </View>
-                    <View
-                        style={{
-                            flexDirection: "row",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            margin: 20,
-                            marginBottom: 35,
-                        }}
-                    >
+            <ScrollView>
+                {loading ? (
+                    <Video
+                        source={require("../../../assets/LoadingScreen.mp4")}
+                        style={{ flex: 1 }}
+                        shouldPlay
+                        isLooping
+                        resizeMode="cover"
+                    />
+                ) : (
+                    <>
                         <View
                             style={{
                                 justifyContent: "center",
                                 alignItems: "center",
-                                height: 100,
-                                width: 100,
-                                borderRadius: 80,
-                                margin: 10,
-                                backgroundColor: "black",
+                                margin: 12,
                             }}
                         >
+                            <Text style={globalStyles.heading2}>
+                                Invitees of
+                            </Text>
                             <Text
                                 style={{
-                                    ...globalStyles.paragraph,
+                                    ...globalStyles.heading1,
+                                    fontFamily: "Bukhari Script",
+                                    padding: 10,
                                     textAlign: "center",
-                                    color: "white",
-                                    fontWeight: "bold",
                                 }}
-                                onPress={getGuests}
                             >
-                                All{"\n"}invitees
+                                {event.name}
+                            </Text>
+                            <Text style={globalStyles.heading3}>
+                                Hosted by: {host.firstName} {host.lastName}
                             </Text>
                         </View>
                         <View
                             style={{
+                                flexDirection: "row",
                                 justifyContent: "center",
                                 alignItems: "center",
-                                height: 100,
-                                width: 100,
-                                borderRadius: 80,
-                                margin: 10,
-                                backgroundColor: "#38b6ff",
+                                margin: 20,
+                                marginBottom: 35,
                             }}
                         >
-                            <Text
+                            <View
                                 style={{
-                                    ...globalStyles.paragraph,
-                                    textAlign: "center",
-                                    color: "white",
-                                    fontWeight: "bold",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    height: 100,
+                                    width: 100,
+                                    borderRadius: 80,
+                                    margin: 10,
+                                    backgroundColor: "black",
                                 }}
-                                onPress={showAttending}
                             >
-                                Will{"\n"}be there
-                            </Text>
-                        </View>
-                        <View
-                            style={{
-                                justifyContent: "center",
-                                alignItems: "center",
-                                height: 100,
-                                width: 100,
-                                borderRadius: 80,
-                                margin: 10,
-                                backgroundColor: "#cb6ce6",
-                            }}
-                        >
-                            <Text
+                                <Text
+                                    style={{
+                                        ...globalStyles.paragraph,
+                                        textAlign: "center",
+                                        color: "white",
+                                        fontWeight: "bold",
+                                    }}
+                                    onPress={getGuests}
+                                >
+                                    All{"\n"}invitees
+                                </Text>
+                            </View>
+                            <View
                                 style={{
-                                    ...globalStyles.paragraph,
-                                    textAlign: "center",
-                                    color: "white",
-                                    fontWeight: "bold",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    height: 100,
+                                    width: 100,
+                                    borderRadius: 80,
+                                    margin: 10,
+                                    backgroundColor: "#38b6ff",
                                 }}
-                                onPress={showNotAttending}
                             >
-                                Can't{"\n"}make it
-                            </Text>
-                        </View>
-                        {/* <View
+                                <Text
+                                    style={{
+                                        ...globalStyles.paragraph,
+                                        textAlign: "center",
+                                        color: "white",
+                                        fontWeight: "bold",
+                                    }}
+                                    onPress={showAttending}
+                                >
+                                    Will{"\n"}be there
+                                </Text>
+                            </View>
+                            <View
+                                style={{
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    height: 100,
+                                    width: 100,
+                                    borderRadius: 80,
+                                    margin: 10,
+                                    backgroundColor: "#cb6ce6",
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        ...globalStyles.paragraph,
+                                        textAlign: "center",
+                                        color: "white",
+                                        fontWeight: "bold",
+                                    }}
+                                    onPress={showNotAttending}
+                                >
+                                    Can't{"\n"}make it
+                                </Text>
+                            </View>
+                            {/* <View
                             style={{
                                 justifyContent: "center",
                                 alignItems: "center",
@@ -394,127 +397,134 @@ const GuestListScreen = (params) => {
                                 RSVP pending
                             </Text>
                         </View> */}
-                    </View>
-                    <View style={{ alignItems: "center" }}>
-                        {guestList.length > 0 ? (
-                            <FlatList
-                                data={Object.keys(guestList)}
-                                numColumns={3}
-                                renderItem={({ item: key }) => {
-                                    const guest = guestList[key];
-                                    return (
-                                        <View
-                                            key={key}
-                                            style={{
-                                                width: screenWidth / 3 - 20,
-                                                margin: 5,
-                                                padding: 5,
-                                                position: "relative",
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                            }}
-                                        >
-                                            {userId === event.host_id ? (
-                                                <TouchableOpacity
-                                                    style={{
-                                                        position: "absolute",
-                                                        top: 0,
-                                                        right: 0,
-                                                        zIndex: 5,
-                                                    }}
-                                                    onPress={() =>
-                                                        handleDeleteGuest(
-                                                            guest,
-                                                            key
-                                                        )
-                                                    }
-                                                >
-                                                    <Ionicons
-                                                        name="close-circle-outline"
-                                                        size={25}
-                                                    />
-                                                </TouchableOpacity>
-                                            ) : null}
+                        </View>
+                        <View style={{ alignItems: "center" }}>
+                            {guestList.length > 0 ? (
+                                <FlatList
+                                    data={Object.keys(guestList)}
+                                    numColumns={3}
+                                    renderItem={({ item: key }) => {
+                                        const guest = guestList[key];
+                                        return (
                                             <View
+                                                key={key}
                                                 style={{
+                                                    width: screenWidth / 3 - 20,
+                                                    margin: 5,
+                                                    padding: 5,
+                                                    position: "relative",
                                                     justifyContent: "center",
                                                     alignItems: "center",
                                                 }}
                                             >
-                                                {guest.profilePic === "" ? (
-                                                    <View
+                                                {userId === event.host_id ? (
+                                                    <TouchableOpacity
                                                         style={{
-                                                            ...styles.profilePic,
-                                                            marginBottom: 10,
-                                                            borderWidth: 8,
-                                                            borderColor: guest
-                                                                .userEvent
-                                                                .attending
-                                                                ? "#36b6ff"
-                                                                : "#cb6ce6",
-                                                            justifyContent:
-                                                                "center",
-                                                            alignItems:
-                                                                "center",
+                                                            position:
+                                                                "absolute",
+                                                            top: 0,
+                                                            right: 0,
+                                                            zIndex: 5,
                                                         }}
+                                                        onPress={() =>
+                                                            handleDeleteGuest(
+                                                                guest,
+                                                                key
+                                                            )
+                                                        }
                                                     >
                                                         <Ionicons
-                                                            name="person-outline"
-                                                            size={55}
-                                                            color={
-                                                                guest.userEvent
-                                                                    .attending
-                                                                    ? "#36b6ff"
-                                                                    : "#cb6ce6"
-                                                            }
+                                                            name="close-circle-outline"
+                                                            size={25}
                                                         />
-                                                    </View>
-                                                ) : (
-                                                    <Image
-                                                        style={{
-                                                            ...styles.profilePic,
-                                                            marginBottom: 10,
-                                                            borderWidth: 8,
-                                                            borderColor: guest
-                                                                .userEvent
-                                                                .attending
-                                                                ? "#36b6ff"
-                                                                : "#cb6ce6",
-                                                        }}
-                                                        source={{
-                                                            uri: guest.profilePic,
-                                                        }}
-                                                    />
-                                                )}
+                                                    </TouchableOpacity>
+                                                ) : null}
                                                 <View
                                                     style={{
-                                                        overflow: "hidden",
+                                                        justifyContent:
+                                                            "center",
+                                                        alignItems: "center",
                                                     }}
                                                 >
-                                                    <Text
+                                                    {guest.profilePic === "" ? (
+                                                        <View
+                                                            style={{
+                                                                ...styles.profilePic,
+                                                                marginBottom: 10,
+                                                                borderWidth: 8,
+                                                                borderColor:
+                                                                    guest
+                                                                        .userEvent
+                                                                        .attending
+                                                                        ? "#36b6ff"
+                                                                        : "#cb6ce6",
+                                                                justifyContent:
+                                                                    "center",
+                                                                alignItems:
+                                                                    "center",
+                                                            }}
+                                                        >
+                                                            <Ionicons
+                                                                name="person-outline"
+                                                                size={55}
+                                                                color={
+                                                                    guest
+                                                                        .userEvent
+                                                                        .attending
+                                                                        ? "#36b6ff"
+                                                                        : "#cb6ce6"
+                                                                }
+                                                            />
+                                                        </View>
+                                                    ) : (
+                                                        <Image
+                                                            style={{
+                                                                ...styles.profilePic,
+                                                                marginBottom: 10,
+                                                                borderWidth: 8,
+                                                                borderColor:
+                                                                    guest
+                                                                        .userEvent
+                                                                        .attending
+                                                                        ? "#36b6ff"
+                                                                        : "#cb6ce6",
+                                                            }}
+                                                            source={{
+                                                                uri: guest.profilePic,
+                                                            }}
+                                                        />
+                                                    )}
+                                                    <View
                                                         style={{
-                                                            ...globalStyles.paragraph,
                                                             overflow: "hidden",
                                                         }}
-                                                        numberOfLines={1}
-                                                        ellipsizeMode="tail"
                                                     >
-                                                        {guest.firstName}{" "}
-                                                        {guest.lastName}
-                                                    </Text>
+                                                        <Text
+                                                            style={{
+                                                                ...globalStyles.paragraph,
+                                                                overflow:
+                                                                    "hidden",
+                                                            }}
+                                                            numberOfLines={1}
+                                                            ellipsizeMode="tail"
+                                                        >
+                                                            {guest.firstName}{" "}
+                                                            {guest.lastName}
+                                                        </Text>
+                                                    </View>
                                                 </View>
                                             </View>
-                                        </View>
-                                    );
-                                }}
-                                keyExtractor={(key) => key} // Use the 'key' as the unique identifier
-                            />
-                        ) : (
-                            <Text>No guests at this time!</Text>
-                        )}
-                    </View>
-                </>
-            )}
+                                        );
+                                    }}
+                                    keyExtractor={(key) => key} // Use the 'key' as the unique identifier
+                                />
+                            ) : (
+                                <Text>No guests at this time!</Text>
+                            )}
+                        </View>
+                    </>
+                )}
+            </ScrollView>
         </SafeAreaView>
     );
 };
