@@ -1,5 +1,5 @@
 ## BeThere  <img src="https://github.com/Capstone-Team-B/Capstone/blob/main/assets/BeThereConcise.png" width=8% height=10% align="center">
-Be There is a dynamic and user-friendly party app designed to enhance your event experience. Whether you're hosting or attending a party, Be There offers a range of features to facilitate seamless communication, efficient planning, and memorable moments.
+BeThere is a dynamic and user-friendly party app designed to enhance your event experience. Whether you're hosting or attending a party, BeThere offers a range of features to facilitate seamless communication, efficient planning, and memorable moments.
 
 <img src="https://github.com/Capstone-Team-B/Capstone/assets/101681383/50f6419c-909d-4c1f-91ba-e11ec8f8f627" width=20% height=25%>   <img src="https://github.com/Capstone-Team-B/Capstone/assets/101681383/4d2d0fe4-7b48-4472-b824-bbf1bcd02355" width=20% height=25%>  <img src="https://github.com/Capstone-Team-B/Capstone/assets/101681383/fdf51ef7-9f99-4d71-8e10-9051f4cf5baf" width=20% height=25%> 
 
