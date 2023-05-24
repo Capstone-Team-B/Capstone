@@ -1,3 +1,4 @@
+// REACT IMPORTS
 import React, { useEffect, useState } from "react";
 import {
     KeyboardAvoidingView,
@@ -12,16 +13,20 @@ import {
     Image,
     ImageBackground,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+// FIREBASE IMPORTS
 import { getDatabase, ref, update, child, get } from "firebase/database";
+// PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
 const Background = require("../../../assets/Background.png");
 
-// import { auth } from "../../../firebase";
-
-const EditAccountScreen = (props) => {
+const EditAccountScreen = (params) => {
+    // COMPONENT VARIABLES
+    const navigation = useNavigation();
+    const r = useRoute();
+    console.log("r -->", r);
     // STATE
-    const [user, setUser] = useState(props.route.params);
+    const [user, setUser] = useState(params.route.params);
     const [firstName, setFirstName] = useState(user.firstName || "");
     const [lastName, setLastName] = useState(user.lastName || "");
     const [email, setEmail] = useState(user.email || "");
@@ -32,13 +37,11 @@ const EditAccountScreen = (props) => {
         user.accessibility || ""
     );
     const [dietary, setDietary] = useState(user.dietary || "");
-
-    // COMPONENT VARIABLES
-    const navigation = useNavigation();
-
+    console.log("proPic -->", profilePic);
+    // USEEFFECTS
     useEffect(() => {
-        setUser(props.route.params);
-    }, [props]);
+        setUser(params.route.params);
+    }, [params]);
 
     // FUNCTIONS
     const handleSubmit = async () => {
@@ -72,21 +75,11 @@ const EditAccountScreen = (props) => {
     };
 
     return (
-        <KeyboardAvoidingView
-            style={{
-                flex: 1,
-                backgroundColor: "#fff",
-                justifyContent: "center",
-            }}
-            behavior="height"
-        >
+        <KeyboardAvoidingView style={styles.keyboardView} behavior="height">
             <ImageBackground
                 source={Background}
                 resizeMode="cover"
-                style={{
-                    flex: 1,
-                    width: "100%",
-                }}
+                style={styles.imageBG}
             >
                 <ScrollView>
                     <View style={styles.section}>
@@ -97,58 +90,28 @@ const EditAccountScreen = (props) => {
                             First name:
                         </Text>
                         <TextInput
-                            style={{
-                                ...globalStyles.input,
-                                backgroundColor: "white",
-                            }}
+                            style={globalStyles.input}
                             placeholder={"First Name"}
                             value={firstName}
                             onChangeText={setFirstName}
                         />
-                        <Text
-                            style={{
-                                ...globalStyles.inputLabel,
-                            }}
-                        >
-                            Last name:
-                        </Text>
+                        <Text style={globalStyles.inputLabel}>Last name:</Text>
                         <TextInput
-                            style={{
-                                ...globalStyles.input,
-                                backgroundColor: "white",
-                            }}
+                            style={globalStyles.input}
                             placeholder="Last Name"
                             value={lastName}
                             onChangeText={setLastName}
                         />
-                        <Text
-                            style={{
-                                ...globalStyles.inputLabel,
-                            }}
-                        >
-                            Email:
-                        </Text>
+                        <Text style={globalStyles.inputLabel}>Email:</Text>
                         <TextInput
-                            style={{
-                                ...globalStyles.input,
-                                backgroundColor: "white",
-                            }}
+                            style={globalStyles.input}
                             placeholder="Email"
                             value={email}
                             onChangeText={setEmail}
                         />
-                        <Text
-                            style={{
-                                ...globalStyles.inputLabel,
-                            }}
-                        >
-                            Phone:
-                        </Text>
+                        <Text style={globalStyles.inputLabel}>Phone:</Text>
                         <TextInput
-                            style={{
-                                ...globalStyles.input,
-                                backgroundColor: "white",
-                            }}
+                            style={globalStyles.input}
                             placeholder="Phone Number"
                             value={phoneNumber}
                             onChangeText={(phoneNumber) =>
@@ -160,18 +123,9 @@ const EditAccountScreen = (props) => {
                                 )
                             }
                         />
-                        <Text
-                            style={{
-                                ...globalStyles.inputLabel,
-                            }}
-                        >
-                            Address:
-                        </Text>
+                        <Text style={globalStyles.inputLabel}>Address:</Text>
                         <TextInput
-                            style={{
-                                ...globalStyles.input,
-                                backgroundColor: "white",
-                            }}
+                            style={globalStyles.input}
                             placeholder="Home City"
                             value={homeCity}
                             onChangeText={setHomeCity}
@@ -179,34 +133,20 @@ const EditAccountScreen = (props) => {
                         <Text style={styles.sectionHeader}>
                             Edit Guest Profile
                         </Text>
-                        <Text
-                            style={{
-                                ...globalStyles.inputLabel,
-                            }}
-                        >
+                        <Text style={globalStyles.inputLabel}>
                             Dietary restrictions:
                         </Text>
                         <TextInput
-                            style={{
-                                ...globalStyles.input,
-                                backgroundColor: "white",
-                            }}
+                            style={globalStyles.input}
                             placeholder="Dietary"
                             value={dietary}
                             onChangeText={setDietary}
                         />
-                        <Text
-                            style={{
-                                ...globalStyles.inputLabel,
-                            }}
-                        >
+                        <Text style={globalStyles.inputLabel}>
                             Accessibility notes:
                         </Text>
                         <TextInput
-                            style={{
-                                ...globalStyles.input,
-                                backgroundColor: "white",
-                            }}
+                            style={globalStyles.input}
                             placeholder="Accessibility"
                             value={accessibility}
                             onChangeText={setAccessibility}
@@ -223,26 +163,15 @@ const EditAccountScreen = (props) => {
                                 />
                             ) : null}
                             <TouchableOpacity
-                                style={{
-                                    ...globalStyles.button,
-                                    backgroundColor: "#38b6ff",
-                                }}
+                                style={styles.changeProPicBtn}
                                 onPress={() =>
                                     navigation.navigate(
                                         "UploadProfilePicScreen",
-                                        {
-                                            uid: user.user_id,
-                                        }
+                                        { setProfilePic: setProfilePic, user: user }
                                     )
                                 }
                             >
-                                <Text
-                                    style={{
-                                        ...globalStyles.paragraph,
-                                        color: "white",
-                                        fontWeight: "bold",
-                                    }}
-                                >
+                                <Text style={styles.buttonText}>
                                     Change profile picture
                                 </Text>
                             </TouchableOpacity>
@@ -250,20 +179,11 @@ const EditAccountScreen = (props) => {
                     </View>
                     <View>
                         <TouchableOpacity
-                            style={{
-                                ...globalStyles.button,
-                                backgroundColor: "#cb6ce6",
-                            }}
+                            style={styles.updateBtn}
                             onPress={handleSubmit}
                             required={true}
                         >
-                            <Text
-                                style={{
-                                    ...globalStyles.paragraph,
-                                    color: "white",
-                                    fontWeight: "bold",
-                                }}
-                            >
+                            <Text style={styles.buttonText}>
                                 Update Account
                             </Text>
                         </TouchableOpacity>
@@ -275,68 +195,8 @@ const EditAccountScreen = (props) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-    },
     section: {
         margin: 12,
-    },
-    addButton: {
-        backgroundColor: "#007bff",
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    addButtonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    deleteButton: {
-        backgroundColor: "white",
-        borderColor: "#dc3545",
-        borderWidth: 2,
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    deleteButtonText: {
-        color: "#dc3545",
-        fontSize: 14,
-        fontWeight: "bold",
-    },
-    outlineButton: {
-        backgroundColor: "white",
-        borderColor: "#007bff",
-        borderWidth: 2,
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    outlineButtonText: {
-        color: "#007bff",
-        fontSize: 14,
-        fontWeight: "bold",
-    },
-    submitButton: {
-        backgroundColor: "#2E8B57",
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    submitButtonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
     },
     profilePic: {
         width: 200,
@@ -348,6 +208,28 @@ const styles = StyleSheet.create({
         ...globalStyles.heading2,
         margin: 20,
         textAlign: "center",
+    },
+    keyboardView: {
+        flex: 1,
+        backgroundColor: "#fff",
+        justifyContent: "center",
+    },
+    imageBG: {
+        flex: 1,
+        width: "100%",
+    },
+    changeProPicBtn: {
+        ...globalStyles.button,
+        backgroundColor: "#38b6ff",
+    },
+    buttonText: {
+        ...globalStyles.paragraph,
+        color: "white",
+        fontWeight: "bold",
+    },
+    updateBtn: {
+        ...globalStyles.button,
+        backgroundColor: "#cb6ce6",
     },
 });
 

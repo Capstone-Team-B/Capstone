@@ -32,7 +32,7 @@ const EditEvent = (params) => {
     // PROPS & PARAMS
     const uid = params.route.params.uid;
 
-    // USESTATE
+    // STATE
     const [event, setEvent] = useState(params.route.params.event);
     const [weddingName, setWeddingName] = useState(event.name || "");
     const [eventStartDate, setEventStartDate] = useState(

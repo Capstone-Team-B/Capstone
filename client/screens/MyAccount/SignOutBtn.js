@@ -1,8 +1,7 @@
 import { useNavigation } from "@react-navigation/core";
 import React from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, View, Button } from "react-native";
 import { auth } from "../../../firebase";
-import globalStyles from "../../utils/globalStyles";
 
 const SignOutBtn = () => {
     const navigation = useNavigation();

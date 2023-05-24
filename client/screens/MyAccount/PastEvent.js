@@ -13,12 +13,13 @@ import globalStyles from "../../utils/globalStyles";
 const Backgroundhorizontal = require("../../../assets/Backgroundhorizontal.png");
 
 const PastEvent = ({ event, uid }) => {
-    // const event = props.route.params.event;
-    // const uid = props.route.params.uid
     // COMPONENT VARIABLES
     const navigation = useNavigation();
+
     // PROPS & PARAMS
     const eventData = event.item;
+    // const event = props.route.params.event;
+    // const uid = props.route.params.uid
 
     return (
         <TouchableOpacity
@@ -35,10 +36,7 @@ const PastEvent = ({ event, uid }) => {
                         <ImageBackground
                             source={Backgroundhorizontal}
                             resizeMode="cover"
-                            style={{
-                                flex: 1,
-                                padding: 20,
-                            }}
+                            style={styles.imageBG}
                         >
                             <View key={eventData.event_id}>
                                 <View
@@ -143,5 +141,9 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         overflow: "hidden",
         backgroundColor: "white",
+    },
+    imageBG: {
+        flex: 1,
+        padding: 20,
     },
 });

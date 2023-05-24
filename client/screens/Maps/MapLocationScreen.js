@@ -1,3 +1,4 @@
+//REACT IMPORTS
 import React, { useState, useEffect } from "react";
 import {
     StyleSheet,
@@ -9,6 +10,8 @@ import {
     Keyboard,
     Alert
 } from "react-native";
+import MapView, { Callout, Marker } from "react-native-maps";
+// FIREBASE IMPORTS
 import {
     getDatabase,
     ref,
@@ -18,30 +21,18 @@ import {
     query,
     orderByChild,
     equalTo,
-    orderByValue,
     push,
 } from "firebase/database";
-import MapView, { Callout, Marker } from "react-native-maps";
+// STATE IMPORTS
 import { useAtom } from "jotai";
 import { user as userStore } from "../../store/user";
-import globalStyles from "../../utils/globalStyles";
 import EmptyState from "../../Components/EmptyState/Index";
+// PROJECT IMPORTS
+import globalStyles from "../../utils/globalStyles";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Toast from "react-native-root-toast";
 
 const MapLocationScreen = (params) => {
-    const eventHost = params.route.params.eventHost;
-    const [storeUser, setStoreUser] = useAtom(userStore);
-
-    const [eventId, setEventId] = useState();
-    const [locations, setLocations] = useState([]);
-
-    const [dataInfo, setDataInfo] = useState({
-        address: "",
-    });
-    const [hiddenForm, setHiddenForm] = useState(false);
-    const [mapRegion, setmapRegion] = useState(null);
-
+    // COMPONENT VARIABLES
     const colors = [
         "red",
         "tomato",
@@ -56,9 +47,22 @@ const MapLocationScreen = (params) => {
         "navy",
         "plum",
     ];
-
     const dbRef = ref(getDatabase());
 
+    // PROPS & PARAMS
+    const eventHost = params.route.params.eventHost;
+
+    // STATE
+    const [storeUser, setStoreUser] = useAtom(userStore);
+    const [eventId, setEventId] = useState();
+    const [locations, setLocations] = useState([]);
+    const [dataInfo, setDataInfo] = useState({
+        address: "",
+    });
+    const [hiddenForm, setHiddenForm] = useState(false);
+    const [mapRegion, setmapRegion] = useState(null);
+
+    // USEEFFECTS
     useEffect(() => {
         if (params.route.params.eventId) {
             setEventId(params.route.params.eventId);
@@ -76,6 +80,7 @@ const MapLocationScreen = (params) => {
         }
     }, [locations]);
 
+    // FUNCTIONS
     const onLoadData = () => {
         get(
             query(
@@ -142,18 +147,18 @@ const MapLocationScreen = (params) => {
                 Alert.alert("Please enter a valid address (123 Street, City, State, Zipcode)");                
             });
     };
+
     const toggleHiddenForm = () => {
         setHiddenForm(!hiddenForm);
     };
+
     return (
         <KeyboardAvoidingView style={globalStyles.container}>
             {eventHost === storeUser.uid && !hiddenForm && (
                 <View>
                     <View>
                         <Text
-                            style={{
-                                ...globalStyles.labelInput,
-                            }}
+                            style={{...globalStyles.labelInput}}
                         >
                             Name
                         </Text>
@@ -171,9 +176,7 @@ const MapLocationScreen = (params) => {
                     </View>
                     <View>
                         <Text
-                            style={{
-                                ...globalStyles.labelInput,
-                            }}
+                            style={{...globalStyles.labelInput}}
                         >
                             Address
                         </Text>
@@ -192,9 +195,7 @@ const MapLocationScreen = (params) => {
                     </View>
                     <View>
                         <Text
-                            style={{
-                                ...globalStyles.labelInput,
-                            }}
+                            style={{...globalStyles.labelInput}}
                         >
                             Label
                         </Text>

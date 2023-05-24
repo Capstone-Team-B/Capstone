@@ -1,13 +1,11 @@
+// REACT IMPORTS
 import React, { useEffect, useState } from "react";
-import {
-    KeyboardAvoidingView,
-    ScrollView,
-    View,
-    StyleSheet,
-    Text,
-    SafeAreaView,
-    TouchableOpacity,
-} from "react-native";
+import { ScrollView, View, StyleSheet, Text, SafeAreaView } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+// EXPO IMPORTS
+import { Video } from "expo-av";
+// FIREBASE IMPORTS
 import {
     getDatabase,
     ref,
@@ -17,20 +15,51 @@ import {
     orderByChild,
 } from "firebase/database";
 import { auth } from "../../../firebase";
-import { useIsFocused } from "@react-navigation/native";
+// PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
-import { useNavigation } from "@react-navigation/native";
-import { Video } from "expo-av";
 
 const NotificationsScreen = () => {
+    // COMPONENT VARIABLES
     const uid = auth.currentUser.uid;
+    const dbRef = ref(getDatabase());
+    const isFocused = useIsFocused();
+    const navigation = useNavigation();
+
+    // STATE
     const [eventNotificationIds, setEventNotificationIds] = useState([]);
     const [notificationData, setNotificationData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [initialLoad, setInitialLoad] = useState(true);
-    const dbRef = ref(getDatabase());
-    const isFocused = useIsFocused();
 
+    // USEEFFECTS
+    useEffect(() => {
+        const loadNotifications = async () => {
+            setLoading(true);
+            const eventIdsQuery = query(
+                child(dbRef, `users/${uid}`),
+                orderByChild("userEvents")
+            );
+            try {
+                const eventSnapshot = await get(eventIdsQuery);
+                if (eventSnapshot.exists()) {
+                    const data = eventSnapshot.val();
+                    const userEventIds = Object.values(data.userEvents);
+                    await getEventNotifications(userEventIds);
+                } else {
+                    console.log("no reminder data");
+                }
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+                setInitialLoad(false);
+            }
+        };
+
+        loadNotifications();
+    }, [isFocused]);
+
+    // FUNCTIONS
     const getEventNotifications = async (eventIdArray) => {
         let eventNotifications = [];
         for (let i = 0; i < eventIdArray.length; i++) {
@@ -76,63 +105,23 @@ const NotificationsScreen = () => {
         setNotificationData(notificationData);
     };
 
-    useEffect(() => {
-        const loadNotifications = async () => {
-            setLoading(true);
-            const eventIdsQuery = query(
-                child(dbRef, `users/${uid}`),
-                orderByChild("userEvents")
-            );
-            try {
-                const eventSnapshot = await get(eventIdsQuery);
-                if (eventSnapshot.exists()) {
-                    const data = eventSnapshot.val();
-                    const userEventIds = Object.values(data.userEvents);
-                    await getEventNotifications(userEventIds);
-                } else {
-                    console.log("no reminder data");
-                }
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setLoading(false);
-                setInitialLoad(false);
-            }
-        };
-
-        loadNotifications();
-    }, [isFocused]);
-
-    const navigation = useNavigation();
-
     return (
-        // <KeyboardAvoidingView style={styles.container} behavior="height">
         <SafeAreaView style={globalStyles.container}>
             <ScrollView>
-                {/* <Text
-                    style={{
-                        ...globalStyles.heading1,
-                        fontFamily: "Bukhari Script",
-                        textAlign: "center",
-                        padding: 25,
-                    }}
-                >
-                    Event Reminders
-                </Text> */}
-                <View >
+                <View>
                     {loading ? (
                         <Video
-                        source={require("../../../assets/BeThereAnimation.mp4")}
-                        style={styles.video}
-                        shouldPlay
-                        isLooping={false}
-                        resizeMode="cover"
-                        onPlaybackStatusUpdate={(status) => {
-                            if (!status.isPlaying && status.didJustFinish) {
-                                handleVideoEnd();
-                            }
-                        }}
-                    />
+                            source={require("../../../assets/BeThereAnimation.mp4")}
+                            style={styles.video}
+                            shouldPlay
+                            isLooping={false}
+                            resizeMode="cover"
+                            onPlaybackStatusUpdate={(status) => {
+                                if (!status.isPlaying && status.didJustFinish) {
+                                    handleVideoEnd();
+                                }
+                            }}
+                        />
                     ) : notificationData.length > 0 ? (
                         notificationData.map((notification) => {
                             const scheduledDate = new Date(
@@ -143,32 +132,21 @@ const NotificationsScreen = () => {
                             return !isPastDate ? (
                                 <View
                                     key={notification.notification_id}
-                                    style={{
-                                        // ...globalStyles.tile,
-                                        borderWidth: 2,
-                                        borderColor: "#fff",
-                                        borderRadius: 10,
-                                        backgroundColor: "#8291F3",
-                                        flex: 1,
-                                        marginTop: 12,
-                                        marginRight: 12,
-                                        marginLeft: 12,
-                                        padding: 20,
-                                    }}
+                                    style={styles.notificationView}
                                 >
                                     <Text style={{ ...globalStyles.heading3 }}>
                                         {notification.event_name}
                                     </Text>
                                     <Text
                                         style={{
-                                            ...globalStyles.paragraph
+                                            ...globalStyles.paragraph,
                                         }}
                                     >
                                         {notification.title}:
                                     </Text>
                                     <Text
                                         style={{
-                                            ...globalStyles.paragraph
+                                            ...globalStyles.paragraph,
                                         }}
                                     >
                                         {notification.body}
@@ -176,7 +154,7 @@ const NotificationsScreen = () => {
                                     <View>
                                         <Text
                                             style={{
-                                                ...globalStyles.paragraph
+                                                ...globalStyles.paragraph,
                                             }}
                                         >
                                             {scheduledDate.toLocaleString(
@@ -201,86 +179,21 @@ const NotificationsScreen = () => {
                 </View>
             </ScrollView>
         </SafeAreaView>
-        // </KeyboardAvoidingView>
     );
 };
 
 export default NotificationsScreen;
 
 const styles = StyleSheet.create({
-    container: {
+    notificationView: {
+        borderWidth: 2,
+        borderColor: "#fff",
+        borderRadius: 10,
+        backgroundColor: "#8291F3",
         flex: 1,
+        marginTop: 12,
+        marginRight: 12,
+        marginLeft: 12,
         padding: 20,
-    },
-    section: {
-        margin: 12,
-    },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: "bold",
-        marginBottom: 10,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 5,
-        padding: 10,
-        marginBottom: 10,
-    },
-    addButton: {
-        backgroundColor: "#007bff",
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    addButtonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    deleteButton: {
-        backgroundColor: "white",
-        borderColor: "#dc3545",
-        borderWidth: 2,
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    deleteButtonText: {
-        color: "#dc3545",
-        fontSize: 14,
-        fontWeight: "bold",
-    },
-    outlineButton: {
-        backgroundColor: "white",
-        borderColor: "#007bff",
-        borderWidth: 2,
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    outlineButtonText: {
-        color: "#007bff",
-        fontSize: 14,
-        fontWeight: "bold",
-    },
-    submitButton: {
-        backgroundColor: "#2E8B57",
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    submitButtonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
     },
 });

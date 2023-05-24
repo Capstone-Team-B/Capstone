@@ -12,8 +12,9 @@ import {
     Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/core";
-import { useIsFocused } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+// EXPO IMPORTS
+import { Video } from "expo-av";
 // FIREBASE IMPORTS
 import { getDatabase, ref, child, get, query } from "firebase/database";
 // PROJECT IMPORTS
@@ -24,22 +25,22 @@ const screenWidth = Dimensions.get("window").width;
 
 const SingleEvent = (params) => {
     // COMPONENT VARIABLES
-    const isFocused = useIsFocused();
     const navigation = useNavigation();
     const dbRef = ref(getDatabase());
     const today = new Date();
 
-    // PROPS & PARAMS
+    // PARAMS
     const uid = params.route.params.uid;
     const event = params.route.params.event;
     const attending = event.guestList[uid].attending;
 
-    // USESTATE
+    // STATE
     const [host, setHost] = useState({});
     const [user, setUser] = useState({});
     const [userName, setUserName] = useState({});
     const [userEventId, setUserEventId] = useState("");
     const [countdown, setCountDown] = useState("");
+    const [loading, setLoading] = useState(true);
 
     // USEEFFECT
     useEffect(() => {
@@ -66,9 +67,7 @@ const SingleEvent = (params) => {
                 });
         };
         getUser();
-    // }, [isFocused, navigation]);
 
-    // useEffect(() => {
         const getHost = async () => {
             const hostQuery = query(child(dbRef, `users/${event.host_id}`));
             try {
@@ -89,364 +88,415 @@ const SingleEvent = (params) => {
             }
         };
         getHost();
-    // }, [isFocused, navigation]);
 
-    // useEffect(() => {
         const timeleft = new Date(event.startDate) - today;
         const days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
         setCountDown(days);
-    }, [event.eventPhoto, attending]);
+
+        if (user.auth_id != "" && host.auth_id != "" && countdown != null) {
+            setLoading(false);
+        }
+    }, [params.route.params?.event]);
 
     return (
         <SafeAreaView style={globalStyles.container}>
-            <ScrollView>
-                <Image
-                    source={
-                        !event.eventPhoto
-                            ? Backgroundhorizontal
-                            : { uri: event.eventPhoto }
-                    }
+            {loading ? (
+                <Video
+                    source={require("../../../assets/LoadingScreen.mp4")}
+                    style={{ flex: 1 }}
+                    shouldPlay
+                    isLooping
                     resizeMode="cover"
-                    style={styles.coverPhoto}
                 />
-                {today < new Date(event.startDate) && countdown > 1 ? (
-                    <View style={styles.daysAway}>
-                        <Text style={styles.countdownText}>{countdown}</Text>
-                        <Text style={styles.countdownSubtext}>days away</Text>
-                    </View>
-                ) : today < new Date(event.startDate) && countdown === 1 ? (
-                    <View style={styles.daysAway}>
-                        <Text style={styles.countdownText}>{countdown}</Text>
-                        <Text style={styles.countdownSubtext}>day away</Text>
-                    </View>
-                ) : countdown === 0 ? (
-                    <View style={styles.tomorrow}>
-                        <Text style={styles.countdownText}>Tomorrow!</Text>
-                    </View>
-                ) : (
-                    <View style={styles.archive}>
-                        <Text style={styles.countdownText}>Archive</Text>
-                    </View>
-                )}
-                {uid === event.host_id && today < new Date(event.startDate) ? (
-                    <>
-                        <View style={styles.hostControls}>
-                            <View style={styles.imageContainer}>
-                                <View style={styles.borderContainer}>
-                                    <TouchableOpacity
-                                        onPress={() =>
-                                            navigation.navigate("Edit Event", {
-                                                event: event,
-                                                uid: uid,
-                                            })
-                                        }
-                                    >
-                                        <View
-                                            style={
-                                                styles.imageBackgroundWrapper
-                                            }
-                                        >
-                                            <ImageBackground
-                                                source={Backgroundhorizontal}
-                                                resizeMode="cover"
-                                                style={styles.imageBackground}
-                                            >
-                                                <Ionicons
-                                                    name="create-outline"
-                                                    size={25}
-                                                />
-                                                <Text style={styles.hostBtn}>
-                                                    Edit event
-                                                </Text>
-                                            </ImageBackground>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            <View style={styles.imageContainer}>
-                                <View style={styles.borderContainer}>
-                                    <TouchableOpacity
-                                        onPress={() =>
-                                            navigation.navigate(
-                                                "Create Guest List",
-                                                {
-                                                    event: event,
-                                                    uid: uid,
-                                                }
-                                            )
-                                        }
-                                    >
-                                        <View
-                                            style={
-                                                styles.imageBackgroundWrapper
-                                            }
-                                        >
-                                            <ImageBackground
-                                                source={Backgroundhorizontal}
-                                                resizeMode="cover"
-                                                style={styles.imageBackground}
-                                            >
-                                                <Ionicons
-                                                    name="mail-outline"
-                                                    size={25}
-                                                />
-                                                <Text style={styles.hostBtn}>
-                                                    Invite guests
-                                                </Text>
-                                            </ImageBackground>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            <View style={styles.imageContainer}>
-                                <View style={styles.borderContainer}>
-                                    <TouchableOpacity
-                                        onPress={() =>
-                                            navigation.navigate(
-                                                "Create Reminder",
-                                                {
-                                                    event: event,
-                                                    uid: uid,
-                                                }
-                                            )
-                                        }
-                                    >
-                                        <View
-                                            style={
-                                                styles.imageBackgroundWrapper
-                                            }
-                                        >
-                                            <ImageBackground
-                                                source={Backgroundhorizontal}
-                                                resizeMode="cover"
-                                                style={styles.imageBackground}
-                                            >
-                                                <Ionicons
-                                                    name="alarm-outline"
-                                                    size={25}
-                                                />
-                                                <Text style={styles.hostBtn}>
-                                                    Create{"\n"}reminders
-                                                </Text>
-                                            </ImageBackground>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
+            ) : (
+                <ScrollView>
+                    <Image
+                        source={
+                            !event.eventPhoto
+                                ? Backgroundhorizontal
+                                : { uri: event.eventPhoto }
+                        }
+                        resizeMode="cover"
+                        style={styles.coverPhoto}
+                    />
+                    {today < new Date(event.startDate) && countdown > 1 ? (
+                        <View style={styles.daysAway}>
+                            <Text style={styles.countdownText}>
+                                {countdown}
+                            </Text>
+                            <Text style={styles.countdownSubtext}>
+                                days away
+                            </Text>
                         </View>
-                    </>
-                ) : null}
-                <Text style={styles.eventTitle}>{event.name}</Text>
-                <Text style={styles.hostedBy}>
-                    hosted by {host.firstName} {host.lastName}
-                </Text>
-                <Text style={styles.dates}>
-                    {new Date(event.startDate).toLocaleDateString("en-US", {
-                        weekday: "short",
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                    })}{" "}
-                    -{" "}
-                    {new Date(event.endDate).toLocaleDateString("en-US", {
-                        weekday: "short",
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                    })}
-                </Text>
-                <Text style={styles.times}>
-                    {event.startTime} - {event.endTime}
-                </Text>
-                <Text style={styles.times}>{event.mainLocation}</Text>
-                <Text style={styles.description}>{event.description}</Text>
-                <View
-                    style={{ justifyContent: "center", alignItems: "center" }}
-                >
-                    {uid != event.host_id && (
-                        <View
-                            style={{
-                                ...styles.myRSVP,
-                                backgroundColor: attending
-                                    ? "#38b6ff"
-                                    : "black",
-                                borderRadius: attending === true ? 300 : 0,
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    ...globalStyles.heading3,
-                                    color: "white",
-                                }}
-                            >
-                                My RSVP
+                    ) : today < new Date(event.startDate) && countdown === 1 ? (
+                        <View style={styles.daysAway}>
+                            <Text style={styles.countdownText}>
+                                {countdown}
                             </Text>
-                            <Text
-                                style={{
-                                    fontSize: 25,
-                                    fontFamily: "Bukhari Script",
-                                    color: "white",
-                                }}
-                            >
-                                {attending === true
-                                    ? `I'll be there`
-                                    : `Can't make it`}
+                            <Text style={styles.countdownSubtext}>
+                                day away
                             </Text>
+                        </View>
+                    ) : countdown === 0 ? (
+                        <View style={styles.tomorrow}>
+                            <Text style={styles.countdownText}>Tomorrow!</Text>
+                        </View>
+                    ) : (
+                        <View style={styles.archive}>
+                            <Text style={styles.countdownText}>Archive</Text>
                         </View>
                     )}
-                </View>
-                {uid != event.host_id && (
+                    {uid === event.host_id &&
+                    today < new Date(event.startDate) ? (
+                        <>
+                            <View style={styles.hostControls}>
+                                <View style={styles.imageContainer}>
+                                    <View style={styles.borderContainer}>
+                                        <TouchableOpacity
+                                            onPress={() =>
+                                                navigation.navigate(
+                                                    "Edit Event",
+                                                    {
+                                                        event: event,
+                                                        uid: uid,
+                                                    }
+                                                )
+                                            }
+                                        >
+                                            <View
+                                                style={
+                                                    styles.imageBackgroundWrapper
+                                                }
+                                            >
+                                                <ImageBackground
+                                                    source={
+                                                        Backgroundhorizontal
+                                                    }
+                                                    resizeMode="cover"
+                                                    style={
+                                                        styles.imageBackground
+                                                    }
+                                                >
+                                                    <Ionicons
+                                                        name="create-outline"
+                                                        size={25}
+                                                    />
+                                                    <Text
+                                                        style={styles.hostBtn}
+                                                    >
+                                                        Edit event
+                                                    </Text>
+                                                </ImageBackground>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                <View style={styles.imageContainer}>
+                                    <View style={styles.borderContainer}>
+                                        <TouchableOpacity
+                                            onPress={() =>
+                                                navigation.navigate(
+                                                    "Create Guest List",
+                                                    {
+                                                        event: event,
+                                                        uid: uid,
+                                                    }
+                                                )
+                                            }
+                                        >
+                                            <View
+                                                style={
+                                                    styles.imageBackgroundWrapper
+                                                }
+                                            >
+                                                <ImageBackground
+                                                    source={
+                                                        Backgroundhorizontal
+                                                    }
+                                                    resizeMode="cover"
+                                                    style={
+                                                        styles.imageBackground
+                                                    }
+                                                >
+                                                    <Ionicons
+                                                        name="mail-outline"
+                                                        size={25}
+                                                    />
+                                                    <Text
+                                                        style={styles.hostBtn}
+                                                    >
+                                                        Invite guests
+                                                    </Text>
+                                                </ImageBackground>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                <View style={styles.imageContainer}>
+                                    <View style={styles.borderContainer}>
+                                        <TouchableOpacity
+                                            onPress={() =>
+                                                navigation.navigate(
+                                                    "Create Reminder",
+                                                    {
+                                                        event: event,
+                                                        uid: uid,
+                                                    }
+                                                )
+                                            }
+                                        >
+                                            <View
+                                                style={
+                                                    styles.imageBackgroundWrapper
+                                                }
+                                            >
+                                                <ImageBackground
+                                                    source={
+                                                        Backgroundhorizontal
+                                                    }
+                                                    resizeMode="cover"
+                                                    style={
+                                                        styles.imageBackground
+                                                    }
+                                                >
+                                                    <Ionicons
+                                                        name="alarm-outline"
+                                                        size={25}
+                                                    />
+                                                    <Text
+                                                        style={styles.hostBtn}
+                                                    >
+                                                        Create{"\n"}reminders
+                                                    </Text>
+                                                </ImageBackground>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                        </>
+                    ) : null}
+                    <Text style={styles.eventTitle}>{event.name}</Text>
+                    <Text style={styles.hostedBy}>
+                        hosted by {host.firstName} {host.lastName}
+                    </Text>
+                    <Text style={styles.dates}>
+                        {new Date(event.startDate).toLocaleDateString("en-US", {
+                            weekday: "short",
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                        })}{" "}
+                        -{" "}
+                        {new Date(event.endDate).toLocaleDateString("en-US", {
+                            weekday: "short",
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                        })}
+                    </Text>
+                    <Text style={styles.times}>
+                        {event.startTime} - {event.endTime}
+                    </Text>
+                    <Text style={styles.times}>{event.mainLocation}</Text>
+                    <Text style={styles.description}>{event.description}</Text>
+                    <View
+                        style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                    >
+                        {uid != event.host_id && (
+                            <View
+                                style={{
+                                    ...styles.myRSVP,
+                                    backgroundColor: attending
+                                        ? "#38b6ff"
+                                        : "black",
+                                    borderRadius: attending === true ? 300 : 0,
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        ...globalStyles.heading3,
+                                        color: "white",
+                                    }}
+                                >
+                                    My RSVP
+                                </Text>
+                                <Text
+                                    style={{
+                                        fontSize: 25,
+                                        fontFamily: "Bukhari Script",
+                                        color: "white",
+                                    }}
+                                >
+                                    {attending === true
+                                        ? `I'll be there`
+                                        : `Can't make it`}
+                                </Text>
+                            </View>
+                        )}
+                    </View>
+                    {uid != event.host_id && (
+                        <TouchableOpacity
+                            style={{
+                                ...globalStyles.button,
+                                borderWidth: 2,
+                                marginBottom: 5,
+                                borderColor: "#38B6FF",
+                            }}
+                            onPress={() =>
+                                navigation.navigate("GuestProfileScreen", {
+                                    event: event,
+                                    uid: uid,
+                                    userEventId: userEventId,
+                                })
+                            }
+                        >
+                            <View style={{ alignItems: "center" }}>
+                                <Ionicons
+                                    name="happy-outline"
+                                    size={25}
+                                    color={"#38b6ff"}
+                                />
+                                <Text
+                                    style={{
+                                        ...globalStyles.heading3,
+                                        color: "#38b6ff",
+                                    }}
+                                >
+                                    Update RSVP Status
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
+                    )}
+
                     <TouchableOpacity
                         style={{
                             ...globalStyles.button,
                             borderWidth: 2,
                             marginBottom: 5,
-                            borderColor: "#38B6FF",
+                            borderColor: "#5DA4F9",
                         }}
                         onPress={() =>
-                            navigation.navigate("GuestProfileScreen", {
+                            navigation.navigate("GuestListScreen", {
                                 event: event,
-                                uid: uid,
-                                userEventId: userEventId,
+                                attending: attending,
                             })
                         }
                     >
                         <View style={{ alignItems: "center" }}>
-                            <Ionicons name="happy-outline" size={25} color={"#38b6ff"}/>
+                            <Ionicons
+                                name="people-outline"
+                                size={25}
+                                color="#5DA4F9"
+                            />
                             <Text
-                            style={{
-                                ...globalStyles.heading3,
-                                color: "#38b6ff",
-                            }}
-                        >Update RSVP Status</Text>
+                                style={{
+                                    ...globalStyles.heading3,
+                                    color: "#5DA4F9",
+                                }}
+                            >
+                                Guest List
+                            </Text>
                         </View>
                     </TouchableOpacity>
-                )}
-
-                <TouchableOpacity
-                    style={{
-                        ...globalStyles.button,
-                        borderWidth: 2,
-                        marginBottom: 5,
-                        borderColor: "#5DA4F9",
-                    }}
-                    onPress={() =>
-                        navigation.navigate("GuestListScreen", {
-                            event: event,
-                            attending: attending,
-                        })
-                    }
-                >
-                    <View style={{ alignItems: "center" }}>
-                        <Ionicons
-                            name="people-outline"
-                            size={25}
-                            color="#5DA4F9"
-                        />
-                        <Text
-                            style={{
-                                ...globalStyles.heading3,
-                                color: "#5DA4F9",
-                            }}
-                        >
-                            Guest List
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={{
-                        ...globalStyles.button,
-                        borderWidth: 2,
-                        marginBottom: 5,
-                        borderColor: "#8291F3",
-                    }}
-                    onPress={() =>
-                        navigation.navigate("Maps", {
-                            eventId: event.event_id || "0",
-                            eventHost: event.host_id,
-                        })
-                    }
-                >
-                    <View style={{ alignItems: "center" }}>
-                        <Ionicons
-                            name="map-outline"
-                            size={25}
-                            color="#8291F3"
-                        />
-                        <Text
-                            style={{
-                                ...globalStyles.heading3,
-                                color: "#8291F3",
-                            }}
-                        >
-                            Maps and Events
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={{
-                        ...globalStyles.button,
-                        borderWidth: 2,
-                        marginBottom: 5,
-                        borderColor: "#A67FEC",
-                    }}
-                    onPress={() =>
-                        navigation.navigate("MessageboardScreen", {
-                            event_id: event.event_id,
-                            eventMessages: event.messages,
-                            name: event.name,
-                            uid: params.route.params.uid,
-                        })
-                    }
-                >
-                    <View style={{ alignItems: "center" }}>
-                        <Ionicons
-                            name="chatbubbles-outline"
-                            size={25}
-                            color="#A67FEC"
-                        />
-                        <Text
-                            style={{
-                                ...globalStyles.heading3,
-                                color: "#A67FEC",
-                            }}
-                        >
-                            Message Board
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={{
-                        ...globalStyles.button,
-                        borderWidth: 2,
-                        marginBottom: 5,
-                        borderColor: "#CB6CE6",
-                    }}
-                    onPress={() =>
-                        navigation.navigate("UploadEventImagesScreen", {
-                            event: event,
-                            uid: uid,
-                            userName: `${user.firstName} ${user.lastName}`,
-                        })
-                    }
-                >
-                    <View style={{ alignItems: "center" }}>
-                        <Ionicons
-                            name="camera-outline"
-                            size={25}
-                            color="#CB6CE6"
-                        />
-                        <Text
-                            style={{
-                                ...globalStyles.heading3,
-                                color: "#CB6CE6",
-                            }}
-                        >
-                            Gallery
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-            </ScrollView>
+                    <TouchableOpacity
+                        style={{
+                            ...globalStyles.button,
+                            borderWidth: 2,
+                            marginBottom: 5,
+                            borderColor: "#8291F3",
+                        }}
+                        onPress={() =>
+                            navigation.navigate("Maps", {
+                                eventId: event.event_id || "0",
+                                eventHost: event.host_id,
+                            })
+                        }
+                    >
+                        <View style={{ alignItems: "center" }}>
+                            <Ionicons
+                                name="map-outline"
+                                size={25}
+                                color="#8291F3"
+                            />
+                            <Text
+                                style={{
+                                    ...globalStyles.heading3,
+                                    color: "#8291F3",
+                                }}
+                            >
+                                Maps and Events
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{
+                            ...globalStyles.button,
+                            borderWidth: 2,
+                            marginBottom: 5,
+                            borderColor: "#A67FEC",
+                        }}
+                        onPress={() =>
+                            navigation.navigate("MessageboardScreen", {
+                                event_id: event.event_id,
+                                eventMessages: event.messages,
+                                name: event.name,
+                                uid: params.route.params.uid,
+                            })
+                        }
+                    >
+                        <View style={{ alignItems: "center" }}>
+                            <Ionicons
+                                name="chatbubbles-outline"
+                                size={25}
+                                color="#A67FEC"
+                            />
+                            <Text
+                                style={{
+                                    ...globalStyles.heading3,
+                                    color: "#A67FEC",
+                                }}
+                            >
+                                Message Board
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{
+                            ...globalStyles.button,
+                            borderWidth: 2,
+                            marginBottom: 5,
+                            borderColor: "#CB6CE6",
+                        }}
+                        onPress={() =>
+                            navigation.navigate("UploadEventImagesScreen", {
+                                event: event,
+                                uid: uid,
+                                userName: `${user.firstName} ${user.lastName}`,
+                            })
+                        }
+                    >
+                        <View style={{ alignItems: "center" }}>
+                            <Ionicons
+                                name="camera-outline"
+                                size={25}
+                                color="#CB6CE6"
+                            />
+                            <Text
+                                style={{
+                                    ...globalStyles.heading3,
+                                    color: "#CB6CE6",
+                                }}
+                            >
+                                Gallery
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                </ScrollView>
+            )}
         </SafeAreaView>
     );
 };

@@ -6,6 +6,7 @@ import {
     Image,
     FlatList,
     TouchableOpacity,
+    StyleSheet,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 // EXPO IMPORTS
@@ -27,13 +28,13 @@ import EventTile from "./EventTile";
 import { auth } from "../../../firebase";
 const BeThereConcise = require("../../../assets/BeThereConcise.png");
 
-const EventListScreen = (props) => {
+const EventListScreen = () => {
     // COMPONENT VARIABLES
     const isFocused = useIsFocused();
     const dbRef = ref(getDatabase());
     const navigation = useNavigation();
 
-    // USESTATE
+    // STATE
     const [eventList, setEventList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [userId, setUserId] = useState("");
@@ -159,9 +160,7 @@ const EventListScreen = (props) => {
                         alignItems: "center",
                     }}
                 >
-                    <Text style={{ ...globalStyles.heading2, padding: 12 }}>
-                        No events coming up
-                    </Text>
+                    <Text style={styles.noEvents}>No events coming up</Text>
                     <TouchableOpacity
                         onPress={() => {
                             navigation.navigate("Create Event", {
@@ -171,27 +170,10 @@ const EventListScreen = (props) => {
                     >
                         <Image
                             source={BeThereConcise}
-                            style={{
-                                height: 150,
-                                width: 150,
-                                alignSelf: "center",
-                            }}
+                            style={styles.conciseLogo}
                         />
-                        <Text
-                            style={{
-                                ...globalStyles.heading3,
-                                textAlign: "center",
-                            }}
-                        >
-                            tap here to
-                        </Text>
-                        <Text
-                            style={{
-                                ...globalStyles.heading1,
-                                fontFamily: "Bukhari Script",
-                                padding: 12,
-                            }}
-                        >
+                        <Text style={styles.tapHere}>tap here to</Text>
+                        <Text style={styles.planSomething}>
                             Plan something!
                         </Text>
                     </TouchableOpacity>
@@ -202,3 +184,21 @@ const EventListScreen = (props) => {
 };
 
 export default EventListScreen;
+
+const styles = StyleSheet.create({
+    planSomething: {
+        ...globalStyles.heading1,
+        fontFamily: "Bukhari Script",
+        padding: 12,
+    },
+    tapHere: {
+        ...globalStyles.heading3,
+        textAlign: "center",
+    },
+    conciseLogo: {
+        height: 150,
+        width: 150,
+        alignSelf: "center",
+    },
+    noEvents: { ...globalStyles.heading2, padding: 12 },
+});

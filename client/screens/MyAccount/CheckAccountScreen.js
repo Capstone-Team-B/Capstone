@@ -1,3 +1,4 @@
+// REACT IMPORTS
 import React, { useEffect, useState } from "react";
 import {
     KeyboardAvoidingView,
@@ -11,6 +12,7 @@ import {
     Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+// FIREBASE IMPORTS
 import {
     getDatabase,
     ref,
@@ -20,21 +22,25 @@ import {
     orderByChild,
     equalTo,
 } from "firebase/database";
+// PROJECT IMPORTS
 const BeThereLogoExpanded = require("../../../assets/BeThereExpanded.png");
 const Background = require("../../../assets/Background.png");
-import globalStyles from "../../utils/globalStyles";
 
 const CheckAccountScreen = (props) => {
+    // COMPONENT VARIABLES
+    const navigation = useNavigation();
+
+    // STATE
     const [user, setUser] = useState(props.route.params);
     const [email, setEmail] = useState(user.email || "");
     const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || "");
 
+    // USEEFFECTS
     useEffect(() => {
         setUser(props.route.params);
     }, [props]);
 
-    const navigation = useNavigation();
-
+    // FUNCTIONS
     const handleSubmit = () => {
         //Make sure phone or email is entered to look up
         if (phoneNumber === "" && email === "") {
@@ -191,12 +197,7 @@ const CheckAccountScreen = (props) => {
             <ImageBackground
                 source={Background}
                 resizeMode="cover"
-                style={{
-                    flex: 1,
-                    width: "100%",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
+                style={styles.imageBG}
             >
                 <Text style={styles.sectionTitle}>Checking for Account</Text>
                 <View style={styles.inputContainer}>
@@ -307,6 +308,12 @@ const styles = StyleSheet.create({
         color: "white",
         fontWeight: "700",
         fontSize: 16,
+    },
+    imageBG: {
+        flex: 1,
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
     },
 });
 

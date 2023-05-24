@@ -1,15 +1,19 @@
+// REACT IMPORTS
 import {
     StyleSheet,
     Text,
     SafeAreaView,
     Image,
     TouchableOpacity,
-    View, Dimensions
+    View,
+    Dimensions,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import * as ImagePicker from "expo-image-picker";
-import globalStyles from "../../utils/globalStyles";
+import { useNavigation } from "@react-navigation/core";
 import Ionicons from "react-native-vector-icons/Ionicons";
+// EXPO IMPORTS
+import * as ImagePicker from "expo-image-picker";
+// FIREBASE IMPORTS
 import {
     getStorage,
     uploadBytesResumable,
@@ -18,18 +22,24 @@ import {
     push,
 } from "firebase/storage";
 import { getDatabase, ref as refDB, update } from "firebase/database";
-import { useNavigation } from "@react-navigation/core";
+// PROJECT IMPORTS
+import globalStyles from "../../utils/globalStyles";
 
 const screenWidth = Dimensions.get("window").width;
 
-
 const UploadCoverPhotoScreen = (params) => {
-    const event = params.route.params.event
+    // COMPONENT VARIABLES
+    const navigation = useNavigation();
+
+    // PROPS & PARAMS
+    const event = params.route.params.event;
+
+    // STATE
     const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
     const [image, setImage] = useState(null);
     const [uploading, setUploading] = useState(false);
-    const navigation = useNavigation();
 
+    // USEEFFECTS
     useEffect(() => {
         (async () => {
             const galleryStatus =
@@ -38,6 +48,7 @@ const UploadCoverPhotoScreen = (params) => {
         })();
     }, []);
 
+    // FUNCTIONS
     const pickImage = async () => {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
@@ -81,46 +92,30 @@ const UploadCoverPhotoScreen = (params) => {
 
         try {
             await update(eventRef, newCoverPhoto);
-            console.log("cover photo updated")
+            console.log("cover photo updated");
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
 
         setImage(null);
-        navigation.goBack()
+        navigation.goBack();
     };
 
     return (
-        <SafeAreaView
-            style={{
-                ...globalStyles.container,
-                justifyContent: "center",
-                alignItems: "center",
-            }}
-        >
+        <SafeAreaView style={styles.container}>
             {image ? (
                 <View
                     style={{ justifyContent: "center", alignItems: "center" }}
                 >
                     <Image
                         source={{ uri: image }}
-                        style={{ height: 300, width: screenWidth}}
+                        style={{ height: 300, width: screenWidth }}
                     />
                     <TouchableOpacity
-                        style={{
-                            ...globalStyles.button,
-                            backgroundColor: "#cb6cd6",
-                            flexDirection: "row",
-                        }}
+                        style={styles.uploadBtn}
                         onPress={uploadCoverPhoto}
                     >
-                        <Text
-                            style={{
-                                ...globalStyles.paragraph,
-                                color: "white",
-                                fontWeight: "bold",
-                            }}
-                        >
+                        <Text style={styles.buttonText}>
                             Upload cover photo
                         </Text>
                         <Ionicons
@@ -134,23 +129,12 @@ const UploadCoverPhotoScreen = (params) => {
             ) : (
                 <TouchableOpacity
                     onPress={() => pickImage()}
-                    style={{
-                        ...globalStyles.button,
-                        backgroundColor: "#38b6ff",
-                        justifyContent: "center",
-                        alignItems: "center",
-                    }}
+                    style={styles.tapToSelectBtn}
                 >
                     <Ionicons name="camera-outline" size={55} color="white" />
-                    <Text
-                        style={{
-                            ...globalStyles.heading2,
-                            textAlign: "center",
-                            color: "white",
-                        }}
-                    >
-                        Tap to select an event cover photo{"\n"}from your
-                        camera roll
+                    <Text style={styles.tapToSelectBtnText}>
+                        Tap to select an event cover photo{"\n"}from your camera
+                        roll
                     </Text>
                 </TouchableOpacity>
             )}
@@ -160,4 +144,31 @@ const UploadCoverPhotoScreen = (params) => {
 
 export default UploadCoverPhotoScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+    tapToSelectBtn: {
+        ...globalStyles.button,
+        backgroundColor: "#38b6ff",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    tapToSelectBtnText: {
+        ...globalStyles.heading2,
+        textAlign: "center",
+        color: "white",
+    },
+    buttonText: {
+        ...globalStyles.paragraph,
+        color: "white",
+        fontWeight: "bold",
+    },
+    uploadBtn: {
+        ...globalStyles.button,
+        backgroundColor: "#cb6cd6",
+        flexDirection: "row",
+    },
+    container: {
+        ...globalStyles.container,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+});

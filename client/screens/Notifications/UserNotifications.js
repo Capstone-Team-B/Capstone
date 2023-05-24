@@ -1,12 +1,10 @@
+// REACT IMPORTS
 import React, { useEffect, useState, useRef } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import * as storage from "@react-native-async-storage/async-storage";
+// EXPO IMPORTS
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
-import * as storage from "@react-native-async-storage/async-storage";
-import globalStyles from "../../utils/globalStyles";
-
-// need to incorporate into create/edit 
-// maybe not allow edit? search
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({

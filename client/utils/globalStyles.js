@@ -56,6 +56,7 @@ export default StyleSheet.create({
         padding: 10,
         marginBottom: 10,
         fontSize: 15,
+        backgroundColor: "white"
     },
     inputAccount: {
         borderWidth: 1,

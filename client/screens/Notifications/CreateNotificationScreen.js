@@ -1,3 +1,4 @@
+// REACT IMPORTS
 import React, { useState, useCallback } from "react";
 import {
     KeyboardAvoidingView,
@@ -12,11 +13,12 @@ import {
     ImageBackground,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getDatabase, ref, child, push, set, update } from "firebase/database";
-import { DatePickerModal } from "react-native-paper-dates";
-// import { TimePickerModal } from "react-native-paper-dates";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { DatePickerModal } from "react-native-paper-dates";
+// import { TimePickerModal } from "react-native-paper-dates";
+// FIREBASE IMPORTS
+import { getDatabase, ref, child, push, set, update } from "firebase/database";
 // PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
 import BlueBG from "../../../assets/BlueBG.png";
@@ -24,15 +26,18 @@ import BlueBG from "../../../assets/BlueBG.png";
 const screenWidth = Dimensions.get("window").width;
 
 const CreateNotification = (params) => {
+    // COMPONENT VARIABLES
+    const navigation = useNavigation();
+
+    // STATE
     const [event, setEvent] = useState(params.route.params.event);
-    const eventId = event.event_id;
-    const eventName = event.name;
     const [notification, setNotification] = useState([]);
     const [open, setOpen] = useState(false);
     const [visible, setVisible] = useState(false);
+    const eventId = event.event_id;
+    const eventName = event.name;
 
-    const navigation = useNavigation();
-
+    // FUNCTIONS
     const onDismiss = useCallback(() => {
         setVisible(false);
     }, [setVisible]);
@@ -158,10 +163,7 @@ const CreateNotification = (params) => {
                             Reminder text:
                         </Text>
                         <TextInput
-                            style={{
-                                ...globalStyles.input,
-                                backgroundColor: "white",
-                            }}
+                            style={globalStyles.input}
                             placeholder="Enter reminder text here..."
                             value={notification.type}
                             onChangeText={(value) =>
@@ -253,22 +255,13 @@ const CreateNotification = (params) => {
                                     color="white"
                                     marginBottom={12}
                                 />
-                                <Text
-                                    style={{
-                                        ...globalStyles.paragraph,
-                                        fontWeight: "bold",
-                                        color: "white",
-                                    }}
-                                >
+                                <Text style={styles.buttonText}>
                                     Clear Form
                                 </Text>
                             </TouchableOpacity>
                         </View>
                         <TouchableOpacity
-                            style={{
-                                ...globalStyles.button,
-                                backgroundColor: "green",
-                            }}
+                            style={styles.submitButton}
                             onPress={handleSubmit}
                         >
                             <Ionicons
@@ -277,7 +270,7 @@ const CreateNotification = (params) => {
                                 color="white"
                                 marginBottom={12}
                             />
-                            <Text style={styles.submitButtonText}>
+                            <Text style={styles.buttonText}>
                                 Create Reminder
                             </Text>
                         </TouchableOpacity>
@@ -296,11 +289,6 @@ const styles = StyleSheet.create({
     section: {
         marginBottom: 20,
     },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: "bold",
-        marginBottom: 10,
-    },
     input: {
         borderWidth: 1,
         borderColor: "#ccc",
@@ -309,55 +297,14 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     submitButton: {
-        backgroundColor: "#2E8B57",
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
+        ...globalStyles.button,
+        backgroundColor: "green",
     },
-    submitButtonText: {
-        color: "#fff",
-        fontSize: 16,
+    buttonText: {
+        ...globalStyles.paragraph,
         fontWeight: "bold",
+        color: "white",
     },
 });
 
 export default CreateNotification;
-
-//  {/* <TouchableOpacity
-//                                 style={styles.outlineButton}
-//                                 onPress={() => setVisible(true)}
-//                             >
-//                                 <Text style={styles.outlineButtonText}>
-//                                     {notification.scheduled_time
-//                                         ? `${notification.scheduled_time}`
-//                                         : "Select time (optional)"}
-//                                 </Text>
-//                             </TouchableOpacity>
-//                             <SafeAreaProvider>
-//                                 <TimePickerModal
-//                                     visible={visible}
-//                                     mode="time"
-//                                     time={notification.scheduled_time}
-//                                     onConfirm={(selectedTime) => {
-//                                         const date = new Date();
-//                                         date.setHours(selectedTime.hours);
-//                                         date.setMinutes(selectedTime.minutes);
-//                                         const formattedTime =
-//                                             date.toLocaleTimeString([], {
-//                                                 hour: "2-digit",
-//                                                 minute: "2-digit",
-//                                             });
-//                                         handleUpdateNotification(
-//                                             "scheduled_time",
-//                                             formattedTime
-//                                         );
-//                                         setVisible(false);
-//                                     }}
-//                                     onDismiss={onDismiss}
-//                                     hours={12}
-//                                     minutes={30}
-//                                     required={false}
-//                                 />
-//                             </SafeAreaProvider> */}

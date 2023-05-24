@@ -8,6 +8,8 @@ import { useRoute } from "@react-navigation/native";
 import UploadProfilePicScreen from "../screens/MyAccount/UploadProfilePicScreen";
 import globalStyles from "../utils/globalStyles";
 import CreateAccountScreen from "../screens/MyAccount/CreateAccountScreen";
+import SingleEvent from "../screens/SingleEvent/SingleEvent"
+import UploadEventImagesScreen from "../screens/SingleEvent/UploadEventImagesScreen"
 
 const Stack = createNativeStackNavigator();
 
@@ -44,6 +46,22 @@ const MyAccountNavigator = (props) => {
                 name="CreateAccountScreen"
                 component={CreateAccountScreen}
                 options={{ title: "Create Account", headerTitleStyle: globalStyles.screenHeader}}
+            />
+            <Stack.Screen
+                name="SingleEvent"
+                component={SingleEvent}
+                options={{
+                    title: "Event Details",
+                    headerTitleStyle: globalStyles.screenHeader,
+                }}
+            />
+            <Stack.Screen
+                name="UploadEventImagesScreen"
+                component={UploadEventImagesScreen}
+                options={{
+                    title: "View & Upload Event Images",
+                    headerTitleStyle: globalStyles.screenHeader,
+                }}
             />
         </Stack.Navigator>
     );
