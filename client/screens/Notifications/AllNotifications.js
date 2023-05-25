@@ -1,3 +1,4 @@
+// REACT IMPORTS
 import React, { useState, useEffect } from "react";
 import {
     KeyboardAvoidingView,
@@ -8,20 +9,26 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getDatabase, ref, child, get, query } from "firebase/database";
 import { useIsFocused } from "@react-navigation/native";
-import globalStyles from "../../utils/globalStyles";
+// FIREBASE IMPORTS
+import { getDatabase, ref, child, get, query } from "firebase/database";
 
 const AllNotifications = (params) => {
-    const [event, setEvent] = useState(params.route.params.event);
+    // COMPONENT VARIABLES
+    const isFocused = useIsFocused();
+    const dbRef = ref(getDatabase());
+
+    // PROPS & PARAMS
     const eventId = event.event_id;
+    
+    // STATE
+    const [event, setEvent] = useState(params.route.params.event);
     const [notifications, setNotifications] = useState([]);
     const navigation = useNavigation();
-    const dbRef = ref(getDatabase());
-    const isFocused = useIsFocused();
     const [loading, setLoading] = useState(true);
     const [initialLoad, setInitialLoad] = useState(true);
 
+    // USEEFFECTS
     useEffect(() => {
         const getNotifications = async () => {
             setLoading(true);
@@ -98,10 +105,6 @@ const AllNotifications = (params) => {
                                         year: "numeric",
                                     })}
                                 </Text>
-                                {/* <Text style={styles.input}>
-                                    Scheduled Time:{" "}
-                                    {notification.scheduled_time}
-                                </Text> */}
                                 <TouchableOpacity
                                     style={styles.outlineButton}
                                     onPress={() =>

@@ -1,3 +1,4 @@
+// REACT IMPORTS
 import React, { useState, useCallback } from "react";
 import {
     KeyboardAvoidingView,
@@ -10,16 +11,23 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getDatabase, ref, child, remove, update } from "firebase/database";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { DatePickerModal } from "react-native-paper-dates";
 // import { TimePickerModal } from "react-native-paper-dates";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+// FIREBASE IMPORTS
+import { getDatabase, ref, child, remove, update } from "firebase/database";
 
 const EditNotification = (params) => {
+    // COMPONENT VARIABLES
+    const navigation = useNavigation();
+
+    // PROPS & PARAMS
     const notification = params.route.params.notification;
     const event = params.route.params.event;
     const eventId = event.event_id;
     const notificationId = notification.notification_id;
+
+    // STATE
     const [title, setTitle] = useState(notification.title || "");
     const [body, setBody] = useState(notification.body || "");
     const [date, setDate] = useState(
@@ -29,8 +37,7 @@ const EditNotification = (params) => {
     const [open, setOpen] = useState(false);
     const [visible, setVisible] = useState(false);
 
-    const navigation = useNavigation();
-
+    // FUNCTIONS
     const onDismiss = useCallback(() => {
         setVisible(false);
     }, [setVisible]);

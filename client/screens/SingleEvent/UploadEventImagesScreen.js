@@ -1,5 +1,25 @@
+// REACT IMPORTS
+import React, { useEffect, useState } from "react";
+import {
+    Button,
+    Dimensions,
+    FlatList,
+    Image,
+    Modal,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View,
+} from "react-native";
+import Swiper from "react-native-swiper";
 import { useNavigation } from "@react-navigation/core";
+import Ionicons from "react-native-vector-icons/Ionicons";
+// EXPO IMPORTS
 import * as ImagePicker from "expo-image-picker";
+// FIREBASE IMPORTS
 import {
     child,
     equalTo,
@@ -18,55 +38,39 @@ import {
     ref,
     uploadBytesResumable,
 } from "firebase/storage";
-import React, { useEffect, useState } from "react";
-import {
-    Button,
-    Dimensions,
-    FlatList,
-    Image,
-    Modal,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    View,
-} from "react-native";
-import Swiper from "react-native-swiper";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import { auth } from "../../../firebase";
+// PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 const UploadEventImagesScreen = (params) => {
+    // COMPONENT VARIABLES
+    const navigation = useNavigation();
+    const storage = getStorage();
+
+    // PROPS & PARAMS
     const uid = params.route.params.uid;
     const userName = params.route.params.uploaderName;
     const event = params.route.params.event;
+
+    // STATE
     const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
     const [loading, setLoading] = useState(true);
     const [images, setImages] = useState([]);
     const [uploading, setUploading] = useState(false);
     const [userId, setUserId] = useState("");
-    const navigation = useNavigation();
-
-    const storage = getStorage();
-
-    //Images saved
     const [eventImages, setEventImages] = useState([]);
-
-    //Tags
     const [tagList, setTagList] = useState([]);
     const [cordinates, setCordinates] = useState({ top: 0, left: 0 });
     const [imageSelected, setImageSelected] = useState("");
     const [isSearchText, setIsSearchText] = useState(false);
-
     const [userList, setUserList] = useState([]);
 
-    // useEffect to get logged-in user approval to access media library
+    // USEEFFECTS
     useEffect(() => {
+        // useEffect to get logged-in user approval to access media library
         const getUserId = async () => {
             const currentUserId = auth.currentUser.uid;
             const dbRef = refD(getDatabase());
@@ -101,6 +105,7 @@ const UploadEventImagesScreen = (params) => {
         }
     }, [params.route.params]);
 
+    // FUNCTIONS
     const pickImage = async () => {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
@@ -162,7 +167,6 @@ const UploadEventImagesScreen = (params) => {
     };
 
     const uploadImages = async () => {
-        //        COMMENT BACK IN ONCE STORAGE USAGE RESOLVED
         setUploading(true);
 
         const uploadPromises = [];
@@ -228,7 +232,6 @@ const UploadEventImagesScreen = (params) => {
             ).then(async (photoTagsData) => {
                 if (photoTagsData.exists()) {
                     const data = photoTagsData.val();
-                    //const tags = Object.keys(data);
                     const tags = Object.keys(data).map((key) => ({
                         ...data[key],
                     }));
@@ -293,7 +296,6 @@ const UploadEventImagesScreen = (params) => {
                                     <Image
                                         source={{ uri: photo }}
                                         style={{
-                                            // height: screenHeight,
                                             width: screenWidth,
                                             aspectRatio: 1,
                                             margin: 6,
@@ -356,6 +358,8 @@ const UploadEventImagesScreen = (params) => {
                             return index.toString();
                         }}
                     />
+                    <View >
+
                     <TouchableOpacity
                         style={{
                             ...globalStyles.button,
@@ -365,12 +369,12 @@ const UploadEventImagesScreen = (params) => {
                             margin: 12,
                         }}
                         onPress={pickImage}
-                    >
+                        >
                         <Ionicons
                             name="add-circle-outline"
                             size={25}
                             color={"white"}
-                        />
+                            />
                         <Text
                             style={{
                                 ...globalStyles.paragraph,
@@ -379,7 +383,7 @@ const UploadEventImagesScreen = (params) => {
                                 alignSelf: "center",
                                 textAlign: "center",
                             }}
-                        >
+                            >
                             Edit your photo selection
                         </Text>
                     </TouchableOpacity>
@@ -389,12 +393,12 @@ const UploadEventImagesScreen = (params) => {
                             backgroundColor: "#cb6ce6",
                         }}
                         onPress={uploadImages}
-                    >
+                        >
                         <Ionicons
                             name="cloud-upload-outline"
                             color={"white"}
                             size={25}
-                        />
+                            />
                         <Text
                             style={{
                                 ...globalStyles.heading3,
@@ -402,11 +406,12 @@ const UploadEventImagesScreen = (params) => {
                                 textAlign: "center",
                                 color: "white",
                             }}
-                        >
+                            >
                             Share selected photos from {"\n"}
                             {event.name}
                         </Text>
                     </TouchableOpacity>
+                            </View>
                 </View>
             )}
             {images.length == 0 && eventImages.length <= 5 && (

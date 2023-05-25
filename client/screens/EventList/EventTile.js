@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/core";
-
 // PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
 const Backgroundhorizontal = require("../../../assets/Backgroundhorizontal.png");
@@ -16,6 +15,7 @@ const Backgroundhorizontal = require("../../../assets/Backgroundhorizontal.png")
 const EventTile = ({ event, uid }) => {
     // COMPONENT VARIABLES
     const navigation = useNavigation();
+
     // PROPS & PARAMS
     const eventData = event.item;
 
@@ -34,10 +34,7 @@ const EventTile = ({ event, uid }) => {
                         <ImageBackground
                             source={Backgroundhorizontal}
                             resizeMode="cover"
-                            style={{
-                                flex: 1,
-                                padding: 20,
-                            }}
+                            style={styles.imageBG}
                         >
                             <View key={eventData.event_id}>
                                 <View
@@ -57,9 +54,14 @@ const EventTile = ({ event, uid }) => {
                                         {eventData.name}
                                     </Text>
                                 </View>
-                                <Text style={{...globalStyles.heading3, overflow: "hidden"}} 
-                                                            numberOfLines={1}
-                                                            ellipsizeMode="tail">
+                                <Text
+                                    style={{
+                                        ...globalStyles.heading3,
+                                        overflow: "hidden",
+                                    }}
+                                    numberOfLines={1}
+                                    ellipsizeMode="tail"
+                                >
                                     {new Date(
                                         eventData.startDate
                                     ).toLocaleDateString("en-US", {
@@ -151,5 +153,9 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         overflow: "hidden",
         backgroundColor: "white",
+    },
+    imageBG: {
+        flex: 1,
+        padding: 20,
     },
 });

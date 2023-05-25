@@ -5,9 +5,10 @@ import {
     SafeAreaView,
     Image,
     FlatList,
-    TouchableOpacity,
+    TouchableOpacity, StyleSheet
 } from "react-native";
 import React, { useEffect, useState } from "react";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 // EXPO IMPORTS
 import { Video } from "expo-av";
 // FIREBASE IMPORTS
@@ -18,13 +19,11 @@ import {
     get,
     query,
     orderByChild,
-    equalTo,
 } from "firebase/database";
-import { useNavigation, useIsFocused } from "@react-navigation/native";
+// import { auth } from "../../../firebase";
 // PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
 import PastEvent from "./PastEvent";
-import { auth } from "../../../firebase";
 const BeThereConcise = require("../../../assets/BeThereConcise.png");
 
 const ViewArchiveScreen = (params) => {
@@ -33,7 +32,7 @@ const ViewArchiveScreen = (params) => {
     const dbRef = ref(getDatabase());
     const navigation = useNavigation();
 
-    // USESTATE
+    // STATE
     const [eventList, setEventList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [userId, setUserId] = useState(params.route.params.uid);
@@ -74,6 +73,7 @@ const ViewArchiveScreen = (params) => {
                             (event) => event.event_id
                         );
                         getEvents(userEventIds);
+                        setLoading(false);
                     } else {
                         return;
                     }
@@ -84,7 +84,6 @@ const ViewArchiveScreen = (params) => {
         } catch (error) {
             console.log(error);
         }
-        setLoading(false);
     }, [isFocused]);
 
     // FUNCTIONS
@@ -120,7 +119,6 @@ const ViewArchiveScreen = (params) => {
             });
             setEventList(sortedEventsPast);
         }
-        setLoading(false);
     };
 
     return (

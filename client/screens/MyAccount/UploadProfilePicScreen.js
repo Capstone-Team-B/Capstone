@@ -1,36 +1,50 @@
+// REACT IMPORTS
 import {
     StyleSheet,
     Text,
     SafeAreaView,
-    Button,
     Image,
     TouchableOpacity,
     View,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import * as ImagePicker from "expo-image-picker";
-import globalStyles from "../../utils/globalStyles";
+import { useNavigation, useRoute } from "@react-navigation/core";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import * as ImagePicker from "expo-image-picker";
+// FIREBASE IMPORTS
 import {
     getStorage,
-    uploadBytes,
     uploadBytesResumable,
     getDownloadURL,
-    metadata,
     ref,
     push,
 } from "firebase/storage";
-import { getDatabase, ref as refDB, update, child, get, query, equalTo, orderByChild } from "firebase/database";
-import { useNavigation } from "@react-navigation/core";
+import {
+    getDatabase,
+    ref as refDB,
+    update,
+    child,
+    get,
+    query,
+    equalTo,
+    orderByChild,
+} from "firebase/database";
 import { auth } from "../../../firebase";
+// PROJECT IMPORTS
+import globalStyles from "../../utils/globalStyles";
 
-const UploadProfilePicScreen = (props) => {
+const UploadProfilePicScreen = (params) => {
+    // COMPONENT VARIABLES
+    const { user } = params.route.params.user
+
+    // STATE
     const [userId, setUserId] = useState("");
     const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
     const [image, setImage] = useState(null);
     const [uploading, setUploading] = useState(false);
     const navigation = useNavigation();
 
+    // USEEFFECTS
     useEffect(() => {
         (async () => {
             const galleryStatus =
@@ -41,23 +55,24 @@ const UploadProfilePicScreen = (props) => {
 
     useEffect(() => {
         const getUserId = async () => {
-            const currentUserId = auth.currentUser.uid
+            const currentUserId = auth.currentUser.uid;
             const dbRef = refDB(getDatabase());
             const usersQuery = query(
-                child(dbRef, 'users'),
-                orderByChild('auth_id'),
+                child(dbRef, "users"),
+                orderByChild("auth_id"),
                 equalTo(currentUserId)
-            )
-            const snapshot = await get (usersQuery);
-    
+            );
+            const snapshot = await get(usersQuery);
+
             if (snapshot.exists()) {
                 const data = Object.keys(snapshot.val());
-                setUserId(data[0])
+                setUserId(data[0]);
             }
-        }
-        getUserId()
+        };
+        getUserId();
     }, []);
 
+    // FUNCTIONS
     const pickImage = async () => {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
@@ -83,7 +98,6 @@ const UploadProfilePicScreen = (props) => {
         const storage = getStorage();
         const imageRef = ref(storage, `profilePic/user_${userId}`);
         const img = await fetch(image);
-        // console.log("img -->", img);
         const blob = await img.blob();
         const uploadPromise = uploadBytesResumable(imageRef, blob);
         try {
@@ -101,46 +115,31 @@ const UploadProfilePicScreen = (props) => {
 
         try {
             await update(userRef, updatedProPic);
-            console.log("profile pic updated")
+            console.log("profile pic updated");
+            setImage(null);
+            get(child(dbRef, `users/${userId}`)).then((snapshot) => {
+                const updatedUser = snapshot.val()
+                navigation.navigate("EditAccountScreen", {updatedUser});
+            })
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
 
-        setImage(null);
-        navigation.goBack()
     };
 
     return (
-        <SafeAreaView
-            style={{
-                ...globalStyles.container,
-                justifyContent: "center",
-                alignItems: "center",
-            }}
-        >
+        <SafeAreaView style={styles.container}>
             {image ? (
-                <View
-                    style={{ justifyContent: "center", alignItems: "center" }}
-                >
+                <View style={styles.justAlign}>
                     <Image
                         source={{ uri: image }}
                         style={{ height: 300, width: 300, borderRadius: 150 }}
                     />
                     <TouchableOpacity
-                        style={{
-                            ...globalStyles.button,
-                            backgroundColor: "#cb6cd6",
-                            flexDirection: "row",
-                        }}
+                        style={styles.uploadBtn}
                         onPress={uploadProfilePic}
                     >
-                        <Text
-                            style={{
-                                ...globalStyles.paragraph,
-                                color: "white",
-                                fontWeight: "bold",
-                            }}
-                        >
+                        <Text style={styles.buttonText}>
                             Upload profile picture
                         </Text>
                         <Ionicons
@@ -154,21 +153,10 @@ const UploadProfilePicScreen = (props) => {
             ) : (
                 <TouchableOpacity
                     onPress={() => pickImage()}
-                    style={{
-                        ...globalStyles.button,
-                        backgroundColor: "#38b6ff",
-                        justifyContent: "center",
-                        alignItems: "center",
-                    }}
+                    style={styles.selectImageBtn}
                 >
                     <Ionicons name="camera-outline" size={55} color="white" />
-                    <Text
-                        style={{
-                            ...globalStyles.heading2,
-                            textAlign: "center",
-                            color: "white",
-                        }}
-                    >
+                    <Text style={styles.selectBtnText}>
                         Tap to select a new profile picture{"\n"}from your
                         camera roll
                     </Text>
@@ -180,4 +168,32 @@ const UploadProfilePicScreen = (props) => {
 
 export default UploadProfilePicScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+    container: {
+        ...globalStyles.container,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    justAlign: { justifyContent: "center", alignItems: "center" },
+    uploadBtn: {
+        ...globalStyles.button,
+        backgroundColor: "#cb6cd6",
+        flexDirection: "row",
+    },
+    buttonText: {
+        ...globalStyles.paragraph,
+        color: "white",
+        fontWeight: "bold",
+    },
+    selectImageBtn: {
+        ...globalStyles.button,
+        backgroundColor: "#38b6ff",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    selectBtnText: {
+        ...globalStyles.heading2,
+        textAlign: "center",
+        color: "white",
+    },
+});

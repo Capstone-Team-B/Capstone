@@ -130,90 +130,36 @@ const CreateEventForm = (props) => {
     };
 
     return (
-        // <View
-        //     style={{...globalStyles.container,
-        //         alignItems: "center", justifyContent: "center"
-        //     }}
-        // >
         <ImageBackground
             source={BlueBG}
             resizeMode="cover"
-            style={{
-                flex: 1,
-                width: "100%",
-                // alignItems: "center",
-                // justifyContent: "center",
-            }}
+            style={styles.imageBG}
         >
             <ScrollView style={{ flex: 1 }}>
                 <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
                     <View style={{ margin: 12 }}>
-                        <Text
-                            style={{
-                                ...globalStyles.heading1,
-                                fontFamily: "Bukhari Script",
-                                margin: 20,
-                                padding: 5,
-                                textAlign: "center",
-                            }}
-                        >
+                        <Text style={styles.newEventDetailsHeader}>
                             New Event Details
                         </Text>
-                        <Text
-                            style={{
-                                ...globalStyles.paragraph,
-                                marginBottom: 12,
-                                marginLeft: 8,
-                                fontWeight: "bold",
-                            }}
-                        >
-                            Event name:
-                        </Text>
+                        <Text style={styles.label}>Event name:</Text>
                         <TextInput
-                            style={{
-                                ...globalStyles.input,
-                                backgroundColor: "white",
-                            }}
+                            style={globalStyles.input}
                             placeholder="Event name"
                             value={weddingName}
                             onChangeText={setWeddingName}
                             required={true}
                         />
-                        <Text
-                            style={{
-                                ...globalStyles.paragraph,
-                                marginBottom: 12,
-                                marginLeft: 8,
-                                fontWeight: "bold",
-                            }}
-                        >
-                            Description:
-                        </Text>
+                        <Text style={styles.label}>Description:</Text>
                         <TextInput
-                            style={{
-                                ...globalStyles.input,
-                                backgroundColor: "white",
-                            }}
+                            style={globalStyles.input}
                             placeholder="Description"
                             value={description}
                             onChangeText={setDescription}
                             required={true}
                         />
-                        <Text
-                            style={{
-                                ...globalStyles.paragraph,
-                                marginBottom: 12,
-                                marginLeft: 8,
-                                fontWeight: "bold",
-                            }}
-                        >
-                            Main location:
-                        </Text>
+                        <Text style={styles.label}>Main location:</Text>
                         <TextInput
-                            style={{
-                                ...globalStyles.input,
-                                backgroundColor: "white",
-                            }}
+                            style={globalStyles.input}
                             placeholder="Main location"
                             value={location}
                             onChangeText={setLocation}
@@ -430,7 +376,6 @@ const CreateEventForm = (props) => {
                 </KeyboardAvoidingView>
             </ScrollView>
         </ImageBackground>
-        // {/* </View> */}
     );
 };
 
@@ -508,6 +453,23 @@ const styles = StyleSheet.create({
     submitButtonText: {
         color: "#fff",
         fontSize: 16,
+        fontWeight: "bold",
+    },
+    imageBG: {
+        flex: 1,
+        width: "100%",
+    },
+    newEventDetailsHeader: {
+        ...globalStyles.heading1,
+        fontFamily: "Bukhari Script",
+        margin: 20,
+        padding: 5,
+        textAlign: "center",
+    },
+    label: {
+        ...globalStyles.paragraph,
+        marginBottom: 12,
+        marginLeft: 8,
         fontWeight: "bold",
     },
 });

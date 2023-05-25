@@ -14,7 +14,7 @@ import Toggle from "react-native-toggle-element";
 import Ionicons from "react-native-vector-icons/Ionicons";
 // FIREBASE IMPORTS
 import { auth } from "../../../firebase";
-import { getDatabase, ref, child, get, update } from "firebase/database";
+import { getDatabase, ref, child, get, query, update } from "firebase/database";
 // PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
 const BeThereConcise = require("../../../assets/BeThereConcise.png");
@@ -27,12 +27,19 @@ const GuestProfileScreen = (params) => {
     // PROPS & PARAMS
     const uid = params.route.params.uid;
     const event = params.route.params.event;
-    const userEventId = params.route.params.userEventId
+    const userEventId = params.route.params.userEventId;
 
-    // USESTATE
+    // STATE
     const [user, setUser] = useState({});
-    const [rsvpStatus, setRSVPStatus] = useState(event.guestList[uid].attending);
+    const [rsvpStatus, setRSVPStatus] = useState(
+        event.guestList[uid].attending
+    );
     const [toggleValue, setToggleValue] = useState(rsvpStatus);
+
+    console.log(
+        "event.guestList[uid].attending ON NAV TO SCREEN -->",
+        event.guestList[uid].attending
+    );
 
     // USEEFFECT
     useEffect(() => {
@@ -66,96 +73,42 @@ const GuestProfileScreen = (params) => {
             `events/${event.event_id}/guestList/${uid}`
         );
         const updateEventRef = { attending: toggleValue };
-        await update(eventRef, updateEventRef);
-
-        Alert.alert("Updated RSVP sent")
-        navigation.navigate("SingleEvent", {uid: uid, event: event});
+        try {
+            await update(eventRef, updateEventRef);
+            get(child(dbRef, `events/${event.event_id}`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const updatedEvent = snapshot.val();
+                    console.log("updatedevent-->", updatedEvent.guestList[uid]);
+                    navigation.navigate("SingleEvent", { uid: uid, event: updatedEvent });
+                }
+            });
+        } catch (error) {
+            console.log(error);
+        }
+        Alert.alert("Updated RSVP sent");
     };
 
     return (
         <ImageBackground
             source={Background}
             resizeMode="cover"
-            style={{
-                flex: 1,
-                width: "100%",
-                alignItems: "center",
-            }}
+            style={styles.imageBG}
         >
-            <View
-                style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    padding: 20,
-                    margin: 20,
-                    marginBottom: 60,
-                }}
-            >
-                <Text
-                    style={{
-                        fontSize: 20,
-                        padding: 10,
-                        fontWeight: "bold",
-                    }}
-                >
-                    Will you be there?
-                </Text>
+            <View style={styles.headerContainer}>
+                <Text style={styles.willYouBeThere}>Will you be there?</Text>
                 <Text style={globalStyles.heading3}>
                     Toggle your RSVP status
                 </Text>
             </View>
-            <View
-                style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: 150,
-                    padding: 20,
-                }}
-            >
+            <View style={styles.rsvpContainer}>
                 <View style={{ margin: 40 }}>
                     {toggleValue ? (
-                        <View
-                            style={{
-                                ...globalStyles.button,
-                                backgroundColor: "#38b6ff",
-                                height: 175,
-                                width: 175,
-                                padding: 30,
-                                borderRadius: 175,
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    fontSize: 25,
-                                    fontFamily: "Bukhari Script",
-                                    color: "white",
-                                    textAlign: "center",
-                                }}
-                            >
-                                I'll BeThere
-                            </Text>
+                        <View style={styles.rsvpYes}>
+                            <Text style={styles.rsvpText}>I'll BeThere</Text>
                         </View>
                     ) : (
-                        <View
-                            style={{
-                                backgroundColor: "black",
-                                height: 175,
-                                width: 175,
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    fontSize: 25,
-                                    fontFamily: "Bukhari Script",
-                                    color: "white",
-                                }}
-                            >
-                                Can't make it
-                            </Text>
+                        <View style={styles.rsvpNo}>
+                            <Text style={styles.rsvpText}>Can't make it</Text>
                         </View>
                     )}
                 </View>
@@ -213,12 +166,7 @@ const GuestProfileScreen = (params) => {
             </View>
             {rsvpStatus != toggleValue ? (
                 <TouchableOpacity
-                    style={{
-                        ...globalStyles.button,
-                        backgroundColor: "#cb6ce6",
-                        position: "absolute",
-                        bottom: "20%",
-                    }}
+                    style={styles.sendUpdateBtn}
                     onPress={sendRsvpUpdate}
                 >
                     <Ionicons name="send-outline" size={25} color={"white"} />
@@ -234,24 +182,56 @@ const GuestProfileScreen = (params) => {
 export default GuestProfileScreen;
 
 const styles = StyleSheet.create({
-    title: {
-        fontSize: 24,
+    imageBG: {
+        flex: 1,
+        width: "100%",
+        alignItems: "center",
+    },
+    headerContainer: {
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 20,
+        margin: 20,
+        marginBottom: 60,
+    },
+    willYouBeThere: {
+        fontSize: 20,
+        padding: 10,
         fontWeight: "bold",
+    },
+    rsvpContainer: {
+        justifyContent: "center",
+        alignItems: "center",
+        height: 150,
+        padding: 20,
+    },
+    rsvpYes: {
+        ...globalStyles.button,
+        backgroundColor: "#38b6ff",
+        height: 175,
+        width: 175,
+        padding: 30,
+        borderRadius: 175,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    rsvpText: {
+        fontSize: 25,
+        fontFamily: "Bukhari Script",
+        color: "white",
         textAlign: "center",
     },
-    container: {
-        width: "90%",
-        borderRadius: 8,
-        border: 1,
-        borderWidth: 1,
-        borderColor: "gray",
-        padding: 12,
+    rsvpNo: {
+        backgroundColor: "black",
+        height: 175,
+        width: 175,
         justifyContent: "center",
-        alignSelf: "center",
         alignItems: "center",
-        marginTop: 8,
     },
-    label: {
-        fontWeight: "bold",
+    sendUpdateBtn: {
+        ...globalStyles.button,
+        backgroundColor: "#cb6ce6",
+        position: "absolute",
+        bottom: "20%",
     },
 });

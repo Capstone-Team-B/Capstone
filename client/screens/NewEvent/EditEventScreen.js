@@ -1,5 +1,5 @@
 // REACT IMPORTS
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
     KeyboardAvoidingView,
     Alert,
@@ -29,10 +29,10 @@ const EditEvent = (params) => {
     // COMPONENT VARIABLES
     const navigation = useNavigation();
 
-    // PROPS & PARAMS
+    // PARAMS
     const uid = params.route.params.uid;
 
-    // USESTATE
+    // STATE
     const [event, setEvent] = useState(params.route.params.event);
     const [weddingName, setWeddingName] = useState(event.name || "");
     const [eventStartDate, setEventStartDate] = useState(
@@ -48,6 +48,11 @@ const EditEvent = (params) => {
     const [selectedEventType, setSelectedEventType] = useState("");
     const [open, setOpen] = useState(false);
     const [visible, setVisible] = useState(false);
+
+    // USEEFFECT
+    useEffect(() => {
+        setEvent(params.route.params.event);
+    }, [params.route.params?.event]);
 
     // FUNCTIONS
     const onDismiss = useCallback(() => {
@@ -117,8 +122,17 @@ const EditEvent = (params) => {
 
             await update(eventRef, updatedEvent);
 
-            Alert.alert(`${weddingName} updated`);
-            navigation.goBack();
+            try {
+                get(child(dbRef, `events/${eventId}`)).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        Alert.alert(`${weddingName} updated`);
+                        navigation.navigate("SingleEvent", {event: snapshot.val(), uid: uid});
+                    }
+                });
+
+
+            } catch (error) {console.log(error)}
+
         } catch (error) {
             console.log(error);
         }

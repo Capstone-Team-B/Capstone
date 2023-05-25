@@ -1,3 +1,4 @@
+// REACT IMPORTS
 import React, { useState, useEffect, useCallback } from "react";
 import {
     KeyboardAvoidingView,
@@ -10,6 +11,11 @@ import {
     Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+import Ionicons from "react-native-vector-icons/Ionicons";
+// EXPO IMPORTS
+import * as Contacts from "expo-contacts";
+// FIREBASE IMPORTS
 import {
     getDatabase,
     ref,
@@ -22,33 +28,26 @@ import {
     equalTo,
     update,
 } from "firebase/database";
-import * as Contacts from "expo-contacts";
-import BouncyCheckbox from "react-native-bouncy-checkbox";
+// PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
-import Ionicons from "react-native-vector-icons/Ionicons";
 
 const ImportContacts = (params) => {
+    // COMPONENT VARIABLES
+    const navigation = useNavigation();
+
+    // PROPS & PARAMS
     const uid = params.route.params.uid;
-    const [event, setEvent] = useState(params.route.params.event);
     const eventId = event.event_id;
+
+    // STATE
+    const [event, setEvent] = useState(params.route.params.event);
     const [error, setError] = useState(undefined);
     const [contacts, setContacts] = useState(undefined);
     const [selectedContacts, setSelectedContacts] = useState([]);
     const [toggleCheckBox, setToggleCheckBox] = useState(false);
     const [checks, setChecks] = useState([]);
 
-    const handleSelectAll = useCallback(() => {
-        setToggleCheckBox((previous) => !previous);
-
-        if (!toggleCheckBox) {
-            setSelectedContacts([...contacts]);
-            setChecks(contacts.map(() => true));
-        } else {
-            setSelectedContacts([]);
-            setChecks(contacts.map(() => false));
-        }
-    }, [toggleCheckBox, contacts, setSelectedContacts, setChecks]);
-
+    // USEEFFECTS
     useEffect(() => {
         if (!contacts) {
             return;
@@ -60,25 +59,6 @@ const ImportContacts = (params) => {
             setChecks(contacts.map(() => false));
         }
     }, [toggleCheckBox, contacts, setSelectedContacts, setChecks]);
-
-    const onCheck = useCallback(
-        (index) => {
-            let previous = [...checks];
-            previous[index] = !previous[index];
-            setChecks(previous);
-
-            let newSelectedContacts = [];
-            for (let i = 0; i < previous.length; i++) {
-                if (previous[i]) {
-                    newSelectedContacts.push(contacts[i]);
-                }
-            }
-            setSelectedContacts(newSelectedContacts);
-        },
-        [checks, contacts, setSelectedContacts, setChecks]
-    );
-
-    const navigation = useNavigation();
 
     useEffect(() => {
         (async () => {
@@ -111,6 +91,36 @@ const ImportContacts = (params) => {
             }
         })();
     }, []);
+
+    // FUNCTIONS
+    const handleSelectAll = useCallback(() => {
+        setToggleCheckBox((previous) => !previous);
+
+        if (!toggleCheckBox) {
+            setSelectedContacts([...contacts]);
+            setChecks(contacts.map(() => true));
+        } else {
+            setSelectedContacts([]);
+            setChecks(contacts.map(() => false));
+        }
+    }, [toggleCheckBox, contacts, setSelectedContacts, setChecks]);
+
+    const onCheck = useCallback(
+        (index) => {
+            let previous = [...checks];
+            previous[index] = !previous[index];
+            setChecks(previous);
+
+            let newSelectedContacts = [];
+            for (let i = 0; i < previous.length; i++) {
+                if (previous[i]) {
+                    newSelectedContacts.push(contacts[i]);
+                }
+            }
+            setSelectedContacts(newSelectedContacts);
+        },
+        [checks, contacts, setSelectedContacts, setChecks]
+    );
 
     const handleSubmit = async () => {
         const dbRef = ref(getDatabase());
@@ -326,28 +336,19 @@ const ImportContacts = (params) => {
         <KeyboardAvoidingView style={globalStyles.container} behavior="height">
             <ScrollView style={{ flex: 1 }}>
                 <View>
-                    <Text
-                        style={{
-                            ...globalStyles.heading1,
-                            fontFamily: "Bukhari Script",
-                            margin: 20,
-                            padding: 5,
-                            textAlign: "center",
-                        }}
-                    >
+                    <Text style={styles.importedContacts}>
                         Imported Contacts
                     </Text>
                     <TouchableOpacity
-                        style={{ ...globalStyles.button, backgroundColor: toggleCheckBox ? "#38b6ff" : "#cb6ce6" }}
+                        style={{
+                            ...globalStyles.button,
+                            backgroundColor: toggleCheckBox
+                                ? "#38b6ff"
+                                : "#cb6ce6",
+                        }}
                         onPress={handleSelectAll}
                     >
-                        <Text
-                            style={{
-                                ...globalStyles.paragraph,
-                                fontWeight: "bold",
-                                color: "white",
-                            }}
-                        >
+                        <Text style={styles.selectDeselect}>
                             {toggleCheckBox ? "Deselect All" : "Select All"}
                         </Text>
                     </TouchableOpacity>
@@ -359,10 +360,7 @@ const ImportContacts = (params) => {
                 </View>
                 <View>
                     <TouchableOpacity
-                        style={{
-                            ...globalStyles.button,
-                            backgroundColor: "green",
-                        }}
+                        style={styles.saveUpdatesButton}
                         onPress={handleSubmit}
                     >
                         <Ionicons name="send-outline" size={25} color="white" />
@@ -377,67 +375,8 @@ const ImportContacts = (params) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-    },
     section: {
         marginBottom: 20,
-    },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: "bold",
-        marginBottom: 10,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 5,
-        padding: 10,
-        marginBottom: 10,
-    },
-    addButton: {
-        backgroundColor: "#007bff",
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    addButtonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    deleteButton: {
-        backgroundColor: "white",
-        borderColor: "#dc3545",
-        borderWidth: 2,
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    deleteButtonText: {
-        color: "#dc3545",
-        fontSize: 14,
-        fontWeight: "bold",
-    },
-    outlineButton: {
-        backgroundColor: "white",
-        borderColor: "#007bff",
-        borderWidth: 2,
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: 10,
-    },
-    outlineButtonText: {
-        color: "#007bff",
-        fontSize: 14,
-        fontWeight: "bold",
     },
     submitButton: {
         backgroundColor: "#2E8B57",
@@ -451,6 +390,22 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontSize: 16,
         fontWeight: "bold",
+    },
+    importedContacts: {
+        ...globalStyles.heading1,
+        fontFamily: "Bukhari Script",
+        margin: 20,
+        padding: 5,
+        textAlign: "center",
+    },
+    selectDeselect: {
+        ...globalStyles.paragraph,
+        fontWeight: "bold",
+        color: "white",
+    },
+    saveUpdatesButton: {
+        ...globalStyles.button,
+        backgroundColor: "green",
     },
 });
 

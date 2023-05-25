@@ -1,6 +1,4 @@
-//TO DO get userprofile name to pass down from single event?
-//get messages to render on screen.
-
+// REACT IMPORTS
 import React, { useState, useEffect } from "react";
 import {
     KeyboardAvoidingView,
@@ -12,6 +10,8 @@ import {
     FlatList,
     SafeAreaView,
 } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+// FIREBASE IMPORTS
 import {
     getDatabase,
     ref,
@@ -23,23 +23,28 @@ import {
     equalTo,
     orderByKey,
 } from "firebase/database";
+// PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
-import Ionicons from "react-native-vector-icons/Ionicons";
 
 const MessageboardScreen = (params) => {
+    // COMPONENT VARIABLES
+    const dbRef = ref(getDatabase());
+    const db = getDatabase();
+
+    // PROPS & PARAMS
     const uid = params.route.params.uid;
+
+    // STATE
     const [event_id, setEvent_id] = useState(
         params.route.params.event_id || ""
     );
     const [userName, setUserName] = useState("");
-
-    const dbRef = ref(getDatabase());
-    const db = getDatabase();
     const [newMessage, setNewMessage] = useState("");
     const [eventName, setEventName] = useState(params.route.params.name || "");
     const [user_id, setUser_id] = useState(params.route.params.uid || "");
     const [messages, setMessages] = useState([]);
 
+    // USEEFFECTS
     useEffect(() => {
         // querys database for messages
         get(
@@ -90,6 +95,7 @@ const MessageboardScreen = (params) => {
             });
     }, [user_id]);
 
+    // FUNCTIONS
     const handleSubmitMessage = () => {
         // this makes the unique ID for the message
         let message_id = Date.now();
@@ -123,10 +129,6 @@ const MessageboardScreen = (params) => {
                             id: key,
                             ...data[key],
                         }));
-                        // console.log(
-                        //     "messageList after submit -->",
-                        //     messageList
-                        // );
                         setMessages(messageList);
                     } else {
                         console.log("No data available");
@@ -242,40 +244,15 @@ const MessageboardScreen = (params) => {
                     />
                 )}
             </SafeAreaView>
-            <SafeAreaView
-                style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: 100,
-                    backgroundColor: "#38b6ff",
-                }}
-            >
+            <SafeAreaView style={styles.messageInputContainer}>
                 <TextInput
                     placeholder="Write here"
-                    style={{
-                        ...globalStyles.input,
-                        backgroundColor: "white",
-                        margin: 15,
-                        flex: 1,
-                    }}
+                    style={styles.messageInput}
                     value={newMessage}
                     onChangeText={(text) => setNewMessage(text)}
                 />
                 <TouchableOpacity onPress={handleSubmitMessage}>
-                    <View
-                        style={{
-                            backgroundColor: "#38b6ff",
-                            width: 50,
-                            height: 50,
-                            borderRadius: 50,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            margin: 15,
-                            borderWidth: 2,
-                            borderColor: "white",
-                        }}
-                    >
+                    <View style={styles.sendBtn}>
                         <Ionicons name="send-outline" size={25} color="white" />
                     </View>
                 </TouchableOpacity>
@@ -287,50 +264,28 @@ const MessageboardScreen = (params) => {
 export default MessageboardScreen;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
+    sendBtn: {
+        backgroundColor: "#38b6ff",
+        width: 50,
+        height: 50,
+        borderRadius: 50,
         justifyContent: "center",
         alignItems: "center",
+        margin: 15,
+        borderWidth: 2,
+        borderColor: "white",
     },
-    button: {
-        backgroundColor: "#0782F9",
-        width: "60%",
-        padding: 5,
-        borderRadius: 10,
-        alignItems: "center",
-        marginTop: 10,
-    },
-    buttonText: {
-        color: "white",
-        fontWeight: "700",
-        fontSize: 16,
-    },
-    inputContainer: {
-        width: "80%",
-    },
-    input: {
+    messageInput: {
+        ...globalStyles.input,
         backgroundColor: "white",
-        paddingHorizontal: 15,
-        paddingVertical: 10,
-        borderRadius: 10,
-        marginTop: 5,
+        margin: 15,
+        flex: 1,
     },
-    // nameText: {
-    //     color: "blue",
-    //     fontWeight: "400",
-    //     fontSize: "12",
-    // },
-    // eventLabel: {
-    //     color: "purple",
-    //     fontWeight: "700",
-    //     fontSize: "24",
-    // },
-    item: {
-        padding: 20,
-        marginVertical: 8,
-        marginHorizontal: 16,
-    },
-    title: {
-        fontSize: 32,
+    messageInputContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        height: 100,
+        backgroundColor: "#38b6ff",
     },
 });

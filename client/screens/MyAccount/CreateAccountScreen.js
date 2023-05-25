@@ -1,3 +1,4 @@
+// REACT IMPORTS
 import React, { useEffect, useState } from "react";
 import {
     KeyboardAvoidingView,
@@ -7,19 +8,38 @@ import {
     TextInput,
     TouchableOpacity,
     Alert,
-    ImageBackground,
+    ImageBackground, StyleSheet
 } from "react-native";
-import { auth } from "../../../firebase";
 import { useNavigation } from "@react-navigation/native";
+// FIREBASE IMPORTS
+import { auth } from "../../../firebase";
 import { getDatabase, ref, update, set, child, get } from "firebase/database";
+// PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
 const Background = require("../../../assets/Background.png");
 
-const dbRef = ref(getDatabase());
-
 const CreateAccountScreen = (props) => {
-    // finds the user in database if they were created by a host
+    // COMPONENT VARIABLES
+    const dbRef = ref(getDatabase());
+    const navigation = useNavigation();
+
+    // STATE
+    const [user, setUser] = useState({});
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [firstName, setFirstName] = useState(user.firstName || "");
+    const [lastName, setLastName] = useState(user.lastName || "");
+    const [email, setEmail] = useState(
+        user.email || props.route.params.email || ""
+    );
+    const [phoneNumber, setPhoneNumber] = useState(
+        user.phoneNumber || props.route.params.phoneNumber || ""
+    );
+    const [homeCity, setHomeCity] = useState(user.homeCity || "");
+
+    // USEEFFECTS
     useEffect(() => {
+        // finds the user in database if they were created by a host
         let uid = props.route.params.uid;
 
         if (uid !== "") {
@@ -37,23 +57,8 @@ const CreateAccountScreen = (props) => {
         }
     }, [props]);
 
-    const [user, setUser] = useState({});
-
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-
-    const [firstName, setFirstName] = useState(user.firstName || "");
-    const [lastName, setLastName] = useState(user.lastName || "");
-    const [email, setEmail] = useState(
-        user.email || props.route.params.email || ""
-    );
-    const [phoneNumber, setPhoneNumber] = useState(
-        user.phoneNumber || props.route.params.phoneNumber || ""
-    );
-    const [homeCity, setHomeCity] = useState(user.homeCity || "");
-
-    //Pre fills in form if there is a uid
     useEffect(() => {
+        //Pre fills in form if there is a uid
         setFirstName(user.firstName || "");
         setLastName(user.lastName || "");
         if (email === " ") {
@@ -65,9 +70,7 @@ const CreateAccountScreen = (props) => {
         setHomeCity(user.homeCity || "");
     }, [user]);
 
-    const navigation = useNavigation();
-    // let errorFlag = false;
-
+    // FUNCTIONS
     const isConfirmedPassword = () => {
         console.log("checking password");
         if (password !== confirmPassword) {
@@ -156,33 +159,15 @@ const CreateAccountScreen = (props) => {
     };
 
     return (
-        <KeyboardAvoidingView
-            style={{
-                flex: 1,
-                backgroundColor: "#fff",
-                justifyContent: "center",
-            }}
-            behavior="height"
-        >
+        <KeyboardAvoidingView style={styles.keyboardView} behavior="height">
             <ImageBackground
                 source={Background}
                 resizeMode="cover"
-                style={{
-                    flex: 1,
-                    width: "100%",
-                }}
+                style={styles.imageBG}
             >
                 <ScrollView>
                     <View style={{ margin: 25 }}>
-                        <Text
-                            style={{
-                                ...globalStyles.heading2,
-                                marginBottom: 20,
-                                textAlign: "center",
-                            }}
-                        >
-                            Create a Password
-                        </Text>
+                        <Text style={styles.createPW}>Create a Password</Text>
                         <TextInput
                             placeholder="Password (Required)"
                             value={password}
@@ -197,13 +182,7 @@ const CreateAccountScreen = (props) => {
                             style={globalStyles.inputAccount}
                             secureTextEntry
                         />
-                        <Text
-                            style={{
-                                ...globalStyles.heading2,
-                                margin: 20,
-                                textAlign: "center",
-                            }}
-                        >
+                        <Text style={styles.accountDetails}>
                             Account Details
                         </Text>
 
@@ -247,20 +226,11 @@ const CreateAccountScreen = (props) => {
                     </View>
                     <View>
                         <TouchableOpacity
-                            style={{
-                                ...globalStyles.button,
-                                backgroundColor: "#ad6ce6",
-                            }}
+                            style={styles.submitBtn}
                             onPress={handleSubmit}
                             required={true}
                         >
-                            <Text
-                                style={{
-                                    ...globalStyles.paragraph,
-                                    color: "white",
-                                    fontWeight: "bold",
-                                }}
-                            >
+                            <Text style={styles.createAccount}>
                                 Create Account
                             </Text>
                         </TouchableOpacity>
@@ -272,3 +242,34 @@ const CreateAccountScreen = (props) => {
 };
 
 export default CreateAccountScreen;
+
+const styles = StyleSheet.create({
+    keyboardView: {
+        flex: 1,
+        backgroundColor: "#fff",
+        justifyContent: "center",
+    },
+    imageBG: {
+        flex: 1,
+        width: "100%",
+    },
+    createPW: {
+        ...globalStyles.heading2,
+        marginBottom: 20,
+        textAlign: "center",
+    },
+    accountDetails: {
+        ...globalStyles.heading2,
+        margin: 20,
+        textAlign: "center",
+    },
+    submitBtn: {
+        ...globalStyles.button,
+        backgroundColor: "#ad6ce6",
+    },
+    createAccount: {
+        ...globalStyles.paragraph,
+        color: "white",
+        fontWeight: "bold",
+    },
+});

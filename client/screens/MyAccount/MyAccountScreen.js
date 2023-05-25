@@ -1,3 +1,4 @@
+// REACT IMPORTS
 import {
     StyleSheet,
     Text,
@@ -5,11 +6,12 @@ import {
     SafeAreaView,
     Image,
     TouchableOpacity,
-    Pressable,
     ImageBackground,
 } from "react-native";
 import React, { useState, useEffect } from "react";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+// FIREBASE IMPORTS
 import {
     getDatabase,
     ref,
@@ -19,18 +21,22 @@ import {
     equalTo,
     orderByChild,
 } from "firebase/database";
-import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { auth } from "../../../firebase";
+// PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
 const BeThereLogo = require("../../../assets/BeThereConcise.png");
 const Background = require("../../../assets/Background.png");
 
-const MyAccountScreen = (props) => {
-    const [user, setUser] = useState({});
-    // const { uid } = props.route.params.uid;
+const MyAccountScreen = () => {
+    // COMPONENT VARIABLES
     let isFocused = useIsFocused();
+    const navigation = useNavigation();
+
+    // STATE
+    const [user, setUser] = useState({});
     const [userId, setUserId] = useState("");
 
+    // USEEFFECTS
     useEffect(() => {
         const getUserId = async () => {
             const currentUserId = auth.currentUser.uid;
@@ -61,8 +67,7 @@ const MyAccountScreen = (props) => {
         getUserId();
     }, [isFocused]);
 
-    const navigation = useNavigation();
-
+    // FUNCTIONS
     const handlePressCreateEvent = () => {
         navigation.navigate("CreateEvent", { uid: userId });
     };
@@ -82,15 +87,13 @@ const MyAccountScreen = (props) => {
             })
             .catch((error) => alert(error.message));
     };
+
     return (
         <SafeAreaView style={styles.container}>
             <ImageBackground
                 source={Background}
                 resizeMode="cover"
-                style={{
-                    flex: 1,
-                    width: "100%",
-                }}
+                style={styles.imageBG}
             >
                 <View style={styles.createEvent}>
                     <TouchableOpacity
@@ -101,19 +104,8 @@ const MyAccountScreen = (props) => {
                             source={BeThereLogo}
                             style={{ height: 200, width: 200 }}
                         />
-                        <Text
-                            style={{
-                                ...globalStyles.heading3,
-                            }}
-                        >
-                            tap here to
-                        </Text>
-                        <Text
-                            style={{
-                                ...globalStyles.heading1,
-                                fontFamily: "Bukhari Script",
-                            }}
-                        >
+                        <Text style={globalStyles.heading3}>tap here to</Text>
+                        <Text style={styles.createEventHeader}>
                             Create an event
                         </Text>
                     </TouchableOpacity>
@@ -233,14 +225,6 @@ const styles = StyleSheet.create({
     createEventTitle: {
         fontSize: 24,
     },
-    section: {
-        margin: 12,
-        borderWidth: 2,
-        borderColor: "#38b6ff",
-        padding: 10,
-        flexDirection: "row",
-        justifyContent: "space-between",
-    },
     sectionHeader: {
         marginLeft: 18,
         marginRight: 18,
@@ -259,5 +243,13 @@ const styles = StyleSheet.create({
         margin: 10,
         borderRadius: 10,
         alignItems: "center",
+    },
+    imageBG: {
+        flex: 1,
+        width: "100%",
+    },
+    createEventHeader: {
+        ...globalStyles.heading1,
+        fontFamily: "Bukhari Script",
     },
 });
