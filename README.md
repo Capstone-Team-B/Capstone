@@ -19,6 +19,8 @@ BeThere is a dynamic and user-friendly party app designed to enhance your event 
 * Event Photos with Face Tagging: Explore and share captivating event photos stored in Firebase Storage, with convenient face tagging for easy identification.
 
 ## Technologies Used
+<img src="https://www.iteachrecruiters.com/img/blog/logo/react-native.png" width=6% height=7%>  <img src="https://firebase.google.com/static/downloads/brand-guidelines/PNG/logo-built_white.png" width=10% height=12%>  <img src="https://www.gard.ps/uploads/event/thumb/1561566545expo.png" width=8% height=10%> <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXFbQLoxy75jw5muod5MZQtqrTwRiyoJ1m2Q&usqp=CAU" width=5% height=7%> 
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4Cs5JmyaVFPK-8GdWH8rDqJFU3HUJSkJD-Q&usqp=CAU" width=5% height=7%>  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHZmvntMkGBj67UKskIsqfS8OBoil3NDa-Kg&usqp=CAU" width=8% height=10%>  <img src="https://maps.co/img/logos/full-color-black-text-600x225.png" width=8% height=10%>
 * React Native: A powerful framework for building cross-platform mobile applications.
 * Expo: A set of tools and services for developing and deploying React Native applications.
 * Firebase: A comprehensive platform for backend services, including user authentication and database management.
