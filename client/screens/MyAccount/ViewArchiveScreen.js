@@ -73,6 +73,7 @@ const ViewArchiveScreen = (params) => {
                             (event) => event.event_id
                         );
                         getEvents(userEventIds);
+                        setLoading(false);
                     } else {
                         return;
                     }
@@ -83,7 +84,6 @@ const ViewArchiveScreen = (params) => {
         } catch (error) {
             console.log(error);
         }
-        setLoading(false);
     }, [isFocused]);
 
     // FUNCTIONS
@@ -119,7 +119,6 @@ const ViewArchiveScreen = (params) => {
             });
             setEventList(sortedEventsPast);
         }
-        setLoading(false);
     };
 
     return (

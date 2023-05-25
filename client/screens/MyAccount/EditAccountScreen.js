@@ -23,8 +23,7 @@ const Background = require("../../../assets/Background.png");
 const EditAccountScreen = (params) => {
     // COMPONENT VARIABLES
     const navigation = useNavigation();
-    const r = useRoute();
-    console.log("r -->", r);
+    
     // STATE
     const [user, setUser] = useState(params.route.params);
     const [firstName, setFirstName] = useState(user.firstName || "");
@@ -167,7 +166,7 @@ const EditAccountScreen = (params) => {
                                 onPress={() =>
                                     navigation.navigate(
                                         "UploadProfilePicScreen",
-                                        { setProfilePic: setProfilePic, user: user }
+                                        { user: user }
                                     )
                                 }
                             >

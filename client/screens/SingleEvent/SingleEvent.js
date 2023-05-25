@@ -33,7 +33,7 @@ const SingleEvent = (params) => {
     const uid = params.route.params.uid;
     const event = params.route.params.event;
     const attending = event.guestList[uid].attending;
-
+    console.log("attending -->", attending)
     // STATE
     const [host, setHost] = useState({});
     const [user, setUser] = useState({});

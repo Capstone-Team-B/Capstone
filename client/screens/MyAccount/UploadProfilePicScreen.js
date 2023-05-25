@@ -33,11 +33,9 @@ import { auth } from "../../../firebase";
 // PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
 
-const UploadProfilePicScreen = () => {
+const UploadProfilePicScreen = (params) => {
     // COMPONENT VARIABLES
-    const route = useRoute();
-    const { setProfilePic } = route.params.setProfilePic;
-    const { user } = route.params.user
+    const { user } = params.route.params.user
 
     // STATE
     const [userId, setUserId] = useState("");
@@ -118,13 +116,15 @@ const UploadProfilePicScreen = () => {
         try {
             await update(userRef, updatedProPic);
             console.log("profile pic updated");
+            setImage(null);
+            get(child(dbRef, `users/${userId}`)).then((snapshot) => {
+                const updatedUser = snapshot.val()
+                navigation.navigate("EditAccountScreen", {updatedUser});
+            })
         } catch (error) {
             console.log(error);
         }
 
-        setImage(null);
-        setProfilePic(url)
-        navigation.navigate("EditAccountScreen", {user: user});
     };
 
     return (

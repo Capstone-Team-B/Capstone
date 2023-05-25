@@ -19,9 +19,10 @@ import {
     uploadBytesResumable,
     getDownloadURL,
     ref,
+    child,
     push,
 } from "firebase/storage";
-import { getDatabase, ref as refDB, update } from "firebase/database";
+import { getDatabase, ref as refDB, update, get } from "firebase/database";
 // PROJECT IMPORTS
 import globalStyles from "../../utils/globalStyles";
 
@@ -93,12 +94,15 @@ const UploadCoverPhotoScreen = (params) => {
         try {
             await update(eventRef, newCoverPhoto);
             console.log("cover photo updated");
+            // setImage(null);
+            get(child(dbRef, `events/${event.event_id}`)).then((snapshot) => {
+                navigation.navigate("Edit Event", {
+                    event: snapshot.val(),
+                });
+            });
         } catch (error) {
             console.log(error);
         }
-
-        setImage(null);
-        navigation.goBack();
     };
 
     return (
